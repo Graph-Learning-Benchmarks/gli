@@ -1,0 +1,1 @@
+{"description": "CORA dataset.", "attributes": {"node_feature": {"type": "SparseTensor", "file": "cora_feat.npz"}, "edge": {"type": "Edge"}, "node_list": {"type": "NodeList"}}}
