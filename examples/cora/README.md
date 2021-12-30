@@ -4,6 +4,11 @@
 
 The CORA dataset contains a citation network with with documents as nodes and citations as edges. Each node has bag-of-words features of the document and a class label represents the research area this document belongs to.
 
+Statistics:
+- Nodes: 2708
+- Edges: 10556
+- Number of Classes: 7
+
 #### Citation
 
 ```
