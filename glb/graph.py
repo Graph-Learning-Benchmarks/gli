@@ -26,6 +26,10 @@ class Graph(object):
         self.descirption = description
         self.citation = citation
 
+        print(self.descirption)
+        print("\t#nodes: ", self.num_nodes)
+        print("\t#edges: ", self.num_edges)
+
     @staticmethod
     def load_graph(meta_path: os.PathLike):
         """Initialize and return a Graph instance given metadata.json."""
