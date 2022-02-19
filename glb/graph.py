@@ -110,11 +110,13 @@ class Feature:
     """Base class Feature for all feature attributes in dataset loading."""
 
     def __init__(self, **kwargs) -> None:
+        """Initialize Feature."""
         valid_keys = ["name", "description", "type", "format", "data"]
         for key in valid_keys:
             setattr(self, key, kwargs.get(key))
 
     def __repr__(self) -> str:
+        """Represent Feature."""
         desc = getattr(self, "description", "")
         name = getattr(self, "name")
         data = repr(getattr(self, "data"))
@@ -122,7 +124,7 @@ class Feature:
         return repr_str
 
     def to_type(self, cls):
-        """Return a proper subclass of Feature: Edges, NodeList, or EdgeList."""
+        """Return a proper Feature subclass: Edges, NodeList, or EdgeList."""
         return cls(data=getattr(self, "data"))
 
 
@@ -130,6 +132,7 @@ class Edges(Feature):
     """Reserved attributes for edges matrix."""
 
     def __init__(self, data) -> None:
+        """Initialize Edges."""
         name = "_Edge"
         desc = "Edge matrix of graph, (2 x #edges)"
         dtype = "int"
@@ -145,6 +148,7 @@ class NodeList(Feature):
     """Reserved attributes for NodeList."""
 
     def __init__(self, data) -> None:
+        """Initialize NodeList."""
         name = "_NodeList"
         desc = "Node list of graph(s), (#graphs x #nodes)"
         dtype = "int"
@@ -160,6 +164,7 @@ class EdgeList(Feature):
     """Reserved attributes for NodeList."""
 
     def __init__(self, data) -> None:
+        """Initialize EdgeList."""
         name = "_EdgeList"
         desc = "Edge list of graph(s), (#graphs x #edges)"
         dtype = "int"
