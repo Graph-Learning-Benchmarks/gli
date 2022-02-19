@@ -13,10 +13,11 @@ class Graph:
     """Base graph class for dataset loading."""
 
     def __init__(self, **kwargs):
-        """Graph class does not distinguish between features and labels.
-        They are treated equally in the class."""
-        valid_keys = ["edges", "node_list", "edge_list", "node_attrs",
-                      "edge_attrs", "graph_attrs", "description", "citation"]
+        """Initialize graph."""
+        valid_keys = [
+            "edges", "node_list", "edge_list", "node_attrs", "edge_attrs",
+            "graph_attrs", "description", "citation"
+        ]
         for key in valid_keys:
             setattr(self, key, kwargs.get(key))
 
@@ -34,7 +35,8 @@ class Graph:
         assert "data" in metadata, "attribute `data` not in metadata.json."
 
         for neg in ["Node", "Edge", "Graph"]:
-            assert neg in metadata["data"], f"attribute `{neg}` not in metadata.json"
+            assert neg in metadata[
+                "data"], f"attribute `{neg}` not in metadata.json"
 
         assert "_Edge" in metadata["data"]["Edge"]
         assert "_NodeList" in metadata["data"]["Graph"]
@@ -132,7 +134,11 @@ class Edges(Feature):
         desc = "Edge matrix of graph, (2 x #edges)"
         dtype = "int"
         dformat = "Tensor"
-        super().__init__(name=name, description=desc, type=dtype, format=dformat, data=data)
+        super().__init__(name=name,
+                         description=desc,
+                         type=dtype,
+                         format=dformat,
+                         data=data)
 
 
 class NodeList(Feature):
@@ -143,7 +149,11 @@ class NodeList(Feature):
         desc = "Node list of graph(s), (#graphs x #nodes)"
         dtype = "int"
         dformat = "SparseTensor"
-        super().__init__(name=name, description=desc, type=dtype, format=dformat, data=data)
+        super().__init__(name=name,
+                         description=desc,
+                         type=dtype,
+                         format=dformat,
+                         data=data)
 
 
 class EdgeList(Feature):
@@ -154,4 +164,8 @@ class EdgeList(Feature):
         desc = "Edge list of graph(s), (#graphs x #edges)"
         dtype = "int"
         dformat = "SparseTensor"
-        super().__init__(name=name, description=desc, type=dtype, format=dformat, data=data)
+        super().__init__(name=name,
+                         description=desc,
+                         type=dtype,
+                         format=dformat,
+                         data=data)
