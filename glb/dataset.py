@@ -28,22 +28,22 @@ def get_split_dataset(metadata_path: os.PathLike,
     if task["type"] == "NodeClassification":
         if len(task["feature"]) > 1:
             raise NotImplementedError("Only support single feature currently.")
-        feature = _get_feature(graph, task["feature"][0]["object"],
-                               task["feature"][0]["attribute"])
-        target = _get_feature(graph, task["target"]["object"],
-                              task["target"]["attribute"])
-        num_classes = task["target"]["num_classes"]
         info = {
-            "feature": feature,
-            "target": target,
-            "num_classes": num_classes
+            "feature":
+            _get_feature(graph, task["feature"][0]["object"],
+                         task["feature"][0]["attribute"]),
+            "target":
+            _get_feature(graph, task["target"]["object"],
+                         task["target"]["attribute"]),
+            "num_classes":
+            task["target"]["num_classes"]
         }
         file_buffer = {}
         data_split = []
-        for ds in ["train_set", "val_set", "test_set"]:
+        for _set in ["train_set", "val_set", "test_set"]:
             ds_info = info.copy()
-            filename = task[ds]["file"]
-            key = task[ds].get("key")
+            filename = task[_set]["file"]
+            key = task[_set].get("key")
             if filename not in file_buffer:
                 file_buffer[filename] = load_data(os.path.join(pwd, filename))
             ds_info["indices"] = file_buffer[filename][
@@ -51,12 +51,10 @@ def get_split_dataset(metadata_path: os.PathLike,
             data_split.append(
                 NodeClassificationDataset(graph, verbose=verbose, **ds_info))
             if verbose:
-                split = ds[:-4].capitalize()
                 num_samples = len(ds_info["indices"])
-                print(f"  #{split}Samples: {num_samples}")
+                print(f"  #{_set[:-4].capitalize()}Samples: {num_samples}")
         return data_split
-    else:
-        raise NotImplementedError
+    raise NotImplementedError
 
 
 class GLBDataset(Dataset):
@@ -76,12 +74,10 @@ class GLBDataset(Dataset):
     @abstractmethod
     def __getitem__(self, idx):
         """Get item at idx."""
-        pass
 
     @abstractmethod
     def __len__(self):
         """Get number of examples in the dataset."""
-        pass
 
     def process(self):
         """Overwrite to realize your own logic of processing the input data."""
@@ -101,21 +97,23 @@ class NodeClassificationDataset(GLBDataset):
         4. ``num_classes``: number of classes.
         """
         super().__init__(graph, verbose=verbose)
-        for key in kwargs:
+        for key, value in kwargs.items():
             try:
-                setattr(self, key, kwargs[key])
-            except KeyError:
-                raise ValueError(f"Missing kwarg {key}.")
+                setattr(self, key, value)
+            except KeyError as excep:
+                raise ValueError from excep
 
         self.description = kwargs.get("description", None)
+
+    def process(self):
+        pass
 
     def __getitem__(self, idx):
         """Get item at place idx."""
         if idx > 0:
             raise IndexError
-        else:
-            return getattr(
-                self, "feature").data  # TODO - consider multi-feature cases
+        return getattr(self, "feature").data
+        # TODO - consider multi-feature cases
 
     def __len__(self):
         """Return 1 for node classification task."""

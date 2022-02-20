@@ -1,9 +1,7 @@
 """Dataloader for GLB."""
-from torch.utils.data.dataloader import DataLoader
-from .dataset import Dataset
 
 
-class NodeDataLoader(DataLoader):
+class NodeDataLoader():
     """Base class for node dataloader."""
 
     def __init__(self, dataset, sampler=None, batch_size=0, shuffle=False):

@@ -6,9 +6,9 @@ instance should be initialized given by a metadata.json.
 import json
 import os
 
-import numpy as np
+import torch
 
-from .utils import load_data
+from .utils import load_data, is_raw_sparse
 
 
 class Graph:
@@ -28,7 +28,7 @@ class Graph:
         print("  #Edges: ", self.num_edges)
 
     @staticmethod
-    def load_graph(metadata_path: os.PathLike):
+    def load_graph(metadata_path: os.PathLike, device="cpu"):
         """Initialize and return a Graph instance given metadata.json."""
         pwd = os.path.dirname(metadata_path)
         with open(metadata_path, 'r', encoding="utf-8") as fptr:
@@ -59,12 +59,15 @@ class Graph:
                         _raw = raw[key]
                     else:
                         _raw = raw
-                    feat = Feature(name=attr,
-                                   desc=props.get("description"),
-                                   dtype=props.get("type"),
-                                   dformat=props.get("format"),
-                                   data=_raw)
-                    data[neg][attr] = feat
+                    # TODO - consider sparse case
+                    if is_raw_sparse(_raw):
+                        _raw = _raw.all().toarray()
+                    _raw = torch.from_numpy(_raw).to(device=device)
+                    data[neg][attr] = Feature(name=attr,
+                                              desc=props.get("description"),
+                                              dtype=props.get("type"),
+                                              dformat=props.get("format"),
+                                              data=_raw)
 
         # collate features into graph
         init_dict = {
