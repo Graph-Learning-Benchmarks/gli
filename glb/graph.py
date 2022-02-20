@@ -8,6 +8,8 @@ import os
 
 import numpy as np
 
+from .utils import load_data
+
 
 class Graph:
     """Base graph class for dataset loading."""
@@ -22,14 +24,14 @@ class Graph:
             setattr(self, key, kwargs.get(key))
 
         print(getattr(self, "description"))
-        print("\t#nodes: ", self.num_nodes)
-        print("\t#edges: ", self.num_edges)
+        print("  #Nodes: ", self.num_nodes)
+        print("  #Edges: ", self.num_edges)
 
     @staticmethod
-    def load_graph(meta_path: os.PathLike):
+    def load_graph(metadata_path: os.PathLike):
         """Initialize and return a Graph instance given metadata.json."""
-        pwd = os.path.dirname(meta_path)
-        with open(meta_path, 'r', encoding="utf-8") as fptr:
+        pwd = os.path.dirname(metadata_path)
+        with open(metadata_path, 'r', encoding="utf-8") as fptr:
             metadata = json.load(fptr)
 
         assert "data" in metadata, "attribute `data` not in metadata.json."
@@ -91,27 +93,12 @@ class Graph:
         return getattr(self, "edges").data.shape[0]
 
 
-def load_data(path: os.PathLike):
-    """Load data from given path.
-
-    Supported file format:
-    1. .npz
-    2. .npy
-    """
-    _, ext = os.path.splitext(path)
-    if ext in (".npz", ".npy"):
-        data = np.load(path, allow_pickle=True)
-    else:
-        raise NotImplementedError(f"{ext} file is currently not supported.")
-    return data
-
-
 class Feature:
     """Base class Feature for all feature attributes in dataset loading."""
 
     def __init__(self, **kwargs) -> None:
         """Initialize Feature."""
-        valid_keys = ["name", "description", "type", "format", "data"]
+        valid_keys = ["name", "description", "dtype", "dformat", "data"]
         for key in valid_keys:
             setattr(self, key, kwargs.get(key))
 
