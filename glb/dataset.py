@@ -1,10 +1,8 @@
+"""Dataset for GLB."""
 from abc import abstractmethod
-from asyncore import dispatcher_with_send
 import json
 import os
 
-import numpy as np
-import torch
 from torch.utils.data.dataset import Dataset
 
 from .graph import Graph
@@ -12,6 +10,7 @@ from .utils import load_data
 
 
 def _get_feature(graph: Graph, obj: str, attr: str):
+    """Get the feature of a graph given object and attribute name."""
     obj = obj.lower()
     return getattr(graph, f"{obj}_attrs").get(attr)
 
@@ -19,6 +18,7 @@ def _get_feature(graph: Graph, obj: str, attr: str):
 def get_split_dataset(metadata_path: os.PathLike,
                       task_path: os.PathLike,
                       verbose=False):
+    """Read metadata and task, and return the splitted datasets."""
     pwd = os.path.dirname(task_path)
     graph = Graph.load_graph(metadata_path)
     with open(task_path, "r", encoding="utf-8") as fptr:
@@ -61,10 +61,11 @@ def get_split_dataset(metadata_path: os.PathLike,
 
 class GLBDataset(Dataset):
     """An abstract class representing a GLB dataset.
-    
+
     All other datasets should subclass it. All subclasses should override
     ``__len__``, that provides the size of the dataset, and ``__getitem__``,
-    supporting integer indexing in range from 0 to len(self) exclusive."""
+    supporting integer indexing in range from 0 to len(self) exclusive.
+    """
 
     def __init__(self, graph: Graph, verbose=False):
         """Initialize GLBDataset."""
@@ -74,12 +75,12 @@ class GLBDataset(Dataset):
 
     @abstractmethod
     def __getitem__(self, idx):
-        """Gets the data object at index."""
+        """Get item at idx."""
         pass
 
     @abstractmethod
     def __len__(self):
-        """The number of examples in the dataset."""
+        """Get number of examples in the dataset."""
         pass
 
     def process(self):
@@ -92,7 +93,7 @@ class NodeClassificationDataset(GLBDataset):
 
     def __init__(self, graph: Graph, verbose=False, **kwargs):
         """Initialize dataset.
-        
+
         Valid & required keyword arguments include
         1. ``feature``: List of Feature objects.
         2. ``target``: Single Feature object (label).
@@ -109,6 +110,7 @@ class NodeClassificationDataset(GLBDataset):
         self.description = kwargs.get("description", None)
 
     def __getitem__(self, idx):
+        """Get item at place idx."""
         if idx > 0:
             raise IndexError
         else:
@@ -116,4 +118,5 @@ class NodeClassificationDataset(GLBDataset):
                 self, "feature").data  # TODO - consider multi-feature cases
 
     def __len__(self):
+        """Return 1 for node classification task."""
         return 1
