@@ -40,10 +40,10 @@ def get_split_dataset(metadata_path: os.PathLike,
         }
         file_buffer = {}
         data_split = []
-        for _set in ["train_set", "val_set", "test_set"]:
+        for ds in ["train_set", "val_set", "test_set"]:
             ds_info = info.copy()
-            filename = task[_set]["file"]
-            key = task[_set].get("key")
+            filename = task[ds]["file"]
+            key = task[ds].get("key")
             if filename not in file_buffer:
                 file_buffer[filename] = load_data(os.path.join(pwd, filename))
             ds_info["indices"] = file_buffer[filename][
@@ -52,7 +52,7 @@ def get_split_dataset(metadata_path: os.PathLike,
                 NodeClassificationDataset(graph, verbose=verbose, **ds_info))
             if verbose:
                 num_samples = len(ds_info["indices"])
-                print(f"  #{_set[:-4].capitalize()}Samples: {num_samples}")
+                print(f"  #{ds[:-4].capitalize()}Samples: {num_samples}")
         return data_split
     raise NotImplementedError
 
@@ -107,7 +107,6 @@ class NodeClassificationDataset(GLBDataset):
 
     def process(self):
         """Do nothing for node prediction task."""
-        pass
 
     def __getitem__(self, idx):
         """Get item at place idx."""

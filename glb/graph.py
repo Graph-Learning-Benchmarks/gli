@@ -31,7 +31,7 @@ class Graph:
     def load_graph(metadata_path: os.PathLike, device="cpu"):
         """Initialize and return a Graph instance given metadata.json."""
         pwd = os.path.dirname(metadata_path)
-        with open(metadata_path, 'r', encoding="utf-8") as fptr:
+        with open(metadata_path, "r", encoding="utf-8") as fptr:
             metadata = json.load(fptr)
 
         assert "data" in metadata, "attribute `data` not in metadata.json."
@@ -56,18 +56,18 @@ class Graph:
                         raw = data_buffer[filename]
                     if "key" in props:
                         key = props["key"]
-                        _raw = raw[key]
+                        array = raw[key]
                     else:
-                        _raw = raw
+                        array = raw
                     # TODO - consider sparse case
-                    if is_raw_sparse(_raw):
-                        _raw = _raw.all().toarray()
-                    _raw = torch.from_numpy(_raw).to(device=device)
+                    if is_raw_sparse(array):
+                        array = array.all().toarray()
+                    array = torch.from_numpy(array).to(device=device)
                     data[neg][attr] = Feature(name=attr,
                                               desc=props.get("description"),
                                               dtype=props.get("type"),
                                               dformat=props.get("format"),
-                                              data=_raw)
+                                              data=array)
 
         # collate features into graph
         init_dict = {
