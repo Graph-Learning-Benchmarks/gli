@@ -22,8 +22,8 @@ def load_data(path: os.PathLike):
 def is_raw_sparse(array):
     """Return true if array is sparse.
 
-    This method is to deal with the situation where array is loaded from sparse matrix
-    ny np.load(), which will wrap array to be a numpy.ndarray.
+    This method is to deal with the situation where array is loaded from
+    sparse matrix by np.load(), which will wrap array to be a numpy.ndarray.
     """
     if sp.issparse(array):
         return True

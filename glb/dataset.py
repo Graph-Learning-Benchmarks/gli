@@ -106,6 +106,7 @@ class NodeClassificationDataset(GLBDataset):
         self.description = kwargs.get("description", None)
 
     def process(self):
+        """Do nothing for node prediction task."""
         pass
 
     def __getitem__(self, idx):
