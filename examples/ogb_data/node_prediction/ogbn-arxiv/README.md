@@ -55,5 +55,5 @@ The preprocessing code requires the following packages.
 
 ```
 scipy==1.7.1
-dgl-cuda11.3==0.7.2
+ogb==1.3.2
 ```
