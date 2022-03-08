@@ -26,5 +26,17 @@
     "test_edge": {
         "file": "ogbl-collab_task.npz",
         "key": "test"
+    },
+    "train_time_window": {
+        "file": "ogbl-collab_task.npz",
+        "key": "train_time_window"
+    },
+    "valid_time_window": {
+        "file": "ogbl-collab_task.npz",
+        "key": "valid_time_window"
+    },
+    "test_time_window": {
+        "file": "ogbl-collab_task.npz",
+        "key": "test_time_window"
     }
 }
