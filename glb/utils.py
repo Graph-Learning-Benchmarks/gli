@@ -19,7 +19,7 @@ def load_data(path: os.PathLike):
     return data
 
 
-def is_raw_sparse(array):
+def is_sparse(array):
     """Return true if array is sparse.
 
     This method is to deal with the situation where array is loaded from
