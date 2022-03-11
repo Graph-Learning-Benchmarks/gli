@@ -1,18 +1,21 @@
 """Dataset for GLB."""
-from abc import abstractmethod
-import os
 import json
+import os
 
 import torch
-from dgl.data import DGLDataset
 from dgl import DGLGraph
+from dgl.data import DGLDataset
+
 from glb.utils import load_data
 
 SUPPORT_TASK_TYPES = ["NodeClassification"]
 
 
 class GLBTask:
+    """GLB task base class."""
+
     def __init__(self, task_dict, pwd):
+        """Initialize GLBTask."""
         self.pwd = pwd
         self.type = task_dict["type"]
         self.description = task_dict["description"]
@@ -28,23 +31,27 @@ class GLBTask:
 
     def _load(self, task_dict):
         file_buffer = {}
-        for _dataset in self.split:
-            filename = task_dict[_dataset]["file"]
-            key = task_dict[_dataset].get("key")
+        for dataset_ in self.split:
+            filename = task_dict[dataset_]["file"]
+            key = task_dict[dataset_].get("key")
             if filename not in file_buffer:
-                file_buffer[filename] = load_data(os.path.join(self.pwd, filename))
-            indices = file_buffer[filename][key] if key else file_buffer[filename]
-            self.split[_dataset] = indices  # indices can be mask tensor or an index tensor
+                file_buffer[filename] = load_data(
+                    os.path.join(self.pwd, filename))
+            indices = file_buffer[filename][key] if key else \
+                file_buffer[filename]
+            self.split[dataset_] = indices
+            # indices can be mask tensor or an index tensor
 
 
 def node_classification_dataset_factory(graph: DGLGraph, task: GLBTask):
-    """Initialize and return a NodeClassification Dataset"""
+    """Initialize and return a NodeClassification Dataset."""
     if len(task.features) > 1:
         raise NotImplementedError("Only support single feature currently.")
 
     class NodeClassificationDataset(DGLDataset):
+        """Node classification dataset."""
         def __init__(self):
-            super(NodeClassificationDataset, self).__init__(name=task.description)
+            super().__init__(name=task.description)
             self._g = None
             self.features = task.features
             self.target = task.target
@@ -75,7 +82,7 @@ def node_classification_dataset_factory(graph: DGLGraph, task: GLBTask):
 
 
 def read_glb_task(task_path: os.PathLike, verbose=True):
-    """Initialize and return a Task object given task_path"""
+    """Initialize and return a Task object given task_path."""
     pwd = os.path.dirname(task_path)
     with open(task_path, "r", encoding="utf-8") as fptr:
         task_dict = json.load(fptr)

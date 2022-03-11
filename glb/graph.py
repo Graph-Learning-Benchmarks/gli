@@ -9,11 +9,12 @@ import os
 import dgl
 import torch
 from dgl import DGLGraph
+
 from .utils import load_data, is_sparse
 
 
 def is_single_graph(data):
-    """Return true if the glb data contains one single graph (not necessarily connected)."""
+    """Return true if the glb data contains a single graph."""
     nodelist = data["Graph"]["_NodeList"]
     if nodelist.dim() == 1:
         return True
@@ -30,7 +31,8 @@ def get_single_graph(data, device="cpu"):
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
     num_nodes = node_list.shape[-1]
 
-    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), num_nodes=num_nodes, device=device)
+    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), num_nodes=num_nodes,
+                                device=device)
     for attr, array in data["Node"].items():
         g.ndata[attr] = array
 
