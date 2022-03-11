@@ -47,11 +47,14 @@ def get_multi_graph(data, device="cpu"):
     raise NotImplementedError
 
 
-def read_glb_graph(metadata_path: os.PathLike, device="cpu") -> DGLGraph:
+def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True) -> DGLGraph:
     """Initialize and return a Graph instance given metadata.json."""
     pwd = os.path.dirname(metadata_path)
     with open(metadata_path, "r", encoding="utf-8") as fptr:
         metadata = json.load(fptr)
+
+    if verbose:
+        print(metadata["description"])
 
     assert "data" in metadata, "attribute `data` not in metadata.json."
 

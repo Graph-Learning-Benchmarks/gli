@@ -22,6 +22,7 @@ def node_classification_dataset_factory(graph: DGLGraph, task: GLBTask):
             super().__init__(name=task.description, force_reload=True)
 
         def process(self):
+            """Add train, val, and test masks to graph."""
             self._g = graph
             for dataset_, indices_ in task.split.items():
                 assert dataset_ not in self._g.ndata
@@ -34,9 +35,6 @@ def node_classification_dataset_factory(graph: DGLGraph, task: GLBTask):
                 else:
                     mask = indices_
                 self._g.ndata[dataset_] = mask.bool()
-
-        def save(self):
-            pass
 
         def __getitem__(self, idx):
             assert idx == 0, "This dataset has only one graph"
