@@ -8,7 +8,6 @@ import os
 
 import dgl
 import torch
-from dgl import DGLGraph
 
 from .utils import load_data, is_sparse
 
@@ -47,7 +46,7 @@ def get_multi_graph(data, device="cpu"):
     raise NotImplementedError
 
 
-def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True) -> DGLGraph:
+def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     """Initialize and return a Graph instance given metadata.json."""
     pwd = os.path.dirname(metadata_path)
     with open(metadata_path, "r", encoding="utf-8") as fptr:
