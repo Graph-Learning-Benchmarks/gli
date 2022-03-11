@@ -6,4 +6,5 @@ task = glb.task.read_glb_task(task_path="./examples/cora/task.json")
 
 dataset = glb.dataloading.combine_graph_and_task(g, task)
 
-print(dataset)
+g = dataset[0]
+print(g)

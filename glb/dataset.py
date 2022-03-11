@@ -15,11 +15,11 @@ def node_classification_dataset_factory(graph: DGLGraph, task: GLBTask):
         """Node classification dataset."""
 
         def __init__(self):
-            super().__init__(name=task.description)
             self._g = None
             self.features = task.features
             self.target = task.target
             self._num_labels = task.target["num_classes"]
+            super().__init__(name=task.description, force_reload=True)
 
         def process(self):
             self._g = graph
@@ -34,6 +34,9 @@ def node_classification_dataset_factory(graph: DGLGraph, task: GLBTask):
                 else:
                     mask = indices_
                 self._g.ndata[dataset_] = mask.bool()
+
+        def save(self):
+            pass
 
         def __getitem__(self, idx):
             assert idx == 0, "This dataset has only one graph"
