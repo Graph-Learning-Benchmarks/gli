@@ -1,14 +1,10 @@
-"""TwoLayerGCN example."""
+"""Example of data loading for users."""
 import glb
 
+g = glb.graph.read_glb_graph(metadata_path="./examples/cora/metadata.json")
+task = glb.task.read_glb_task(task_path="./examples/cora/task.json")
 
-METADATA_PATH = "examples/citeseer/metadata.json"
-TASK_PATH = "examples/citeseer/task.json"
+dataset = glb.dataloading.combine_graph_and_task(g, task)
 
-# pylint: disable=unbalanced-tuple-unpacking
-train_set, val_set, test_set = glb.dataset.get_split_dataset(METADATA_PATH,
-                                                             TASK_PATH,
-                                                             verbose=True)
-train_loader = glb.dataloader.NodeDataLoader(train_set)
-val_loader = glb.dataloader.NodeDataLoader(val_set)
-test_loader = glb.dataloader.NodeDataLoader(test_set)
+g = dataset[0]
+print(g)
