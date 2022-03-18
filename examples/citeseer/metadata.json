@@ -14,8 +14,7 @@
                 "type": "int",
                 "format": "Tensor",
                 "file": "citeseer.npz",
-                "key": "node_class",
-                "num_classes": 6
+                "key": "node_class"
             }
         },
         "Edge": {
