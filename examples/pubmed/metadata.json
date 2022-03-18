@@ -14,8 +14,7 @@
                 "type": "int",
                 "format": "Tensor",
                 "file": "pubmed.npz",
-                "key": "node_class",
-                "num_classes": 3
+                "key": "node_class"
             }
         },
         "Edge": {
