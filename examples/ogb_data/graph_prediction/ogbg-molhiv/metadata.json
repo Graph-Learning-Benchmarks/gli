@@ -1,0 +1,48 @@
+{
+    "description": "OGBN-molhiv dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of ogbn-molhiv dataset.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbn-molhiv.npz",
+                "key": "node_feats"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "ogbn-molhiv.npz",
+                "key": "edge"
+            },
+            "EdgeFeature": {
+                "description": "Node features of ogbn-molhiv dataset.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbn-molhiv.npz",
+                "key": "edge_feats"
+            }
+        },
+        "Graph": {
+            "_NodeMatrix": {
+                "file": "ogbn-molhiv.npz",
+                "type": "int",
+                "format": "SparseTensor",
+                "key": "node_matrix"
+            },
+            "_EdgeMatrix": {
+                "file": "ogbn-molhiv.npz",
+                "type": "int",
+                "format": "SparseTensor",
+                "key": "edge_matrix"
+            },
+            "GraphLabel": {
+                "file": "ogbn-molhiv.npz",
+                "type": "int",
+                "format": "Tensor",
+                "key": "graph_class"
+            }
+        }
+    },
+    "citation": "@inproceedings{Wu2018Stanford,\ntitle={Moleculenet: a benchmark for molecular machine learning},\nauthor={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},\nbooktitle={Chemical Science},\npages={513=520},\nyear={2018}\n}"
+}
