@@ -1,6 +1,7 @@
 """Task for GLB."""
 import json
 import os
+from typing import List
 
 from glb.utils import load_data
 
@@ -15,8 +16,8 @@ class GLBTask:
         self.pwd = pwd
         self.type = task_dict["type"]
         self.description = task_dict["description"]
-        self.features = task_dict["feature"]
-        self.target = task_dict["target"]
+        self.features: List[str] = task_dict["feature"]
+        self.target: str = task_dict["target"]
         self.split = {
             "train_set": None,
             "val_set": None,
