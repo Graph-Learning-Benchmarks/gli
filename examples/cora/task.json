@@ -2,16 +2,10 @@
     "description": "Node classification on CORA dataset. Planetoid split.",
     "type": "NodeClassification",
     "feature": [
-        {
-            "object": "Node",
-            "attribute": "NodeFeature"
-        }
+        "Node/NodeFeature"
     ],
-    "target": {
-        "object": "Node",
-        "attribute": "NodeLabel",
-        "num_classes": 7
-    },
+    "target": "Node/NodeLabel",
+    "num_classes": 7,
     "train_set": {
         "file": "cora_task.npz",
         "key": "train"
