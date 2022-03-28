@@ -10,6 +10,7 @@ SUPPORT_TASK_TYPES = ["NodeClassification", "GraphClassification"]
 
 class GLBTask:
     """GLB task base class."""
+
     def __init__(self, task_dict, pwd):
         """Initialize GLBTask."""
         self.pwd = pwd
@@ -37,18 +38,22 @@ class GLBTask:
 
 class ClassificationTask(GLBTask):
     """Classification task."""
+
     def __init__(self, task_dict, pwd):
+        """Initialize num_classes."""
         super().__init__(task_dict, pwd)
         self.num_classes = task_dict["num_classes"]
 
 
 class NodeClassificationTask(ClassificationTask):
     """Node classification task, alias."""
+
     pass
 
 
 class GraphClassificationTask(ClassificationTask):
     """Graph classification task, alias."""
+
     pass
 
 

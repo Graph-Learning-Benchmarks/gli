@@ -5,7 +5,6 @@ instance should be initialized given by a metadata.json.
 """
 import json
 import os
-from platform import node
 
 import dgl
 import torch
@@ -40,7 +39,6 @@ def is_hetero_graph(data):
 def get_single_graph(data, device="cpu"):
     """Initialize and return a single Graph instance given data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
-    node_list = data["Graph"]["_NodeList"]
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
     g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
@@ -116,7 +114,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
                 if is_sparse(array):
                     # REVIEW - efficiency - this step convert array to dense
                     # TODO - consider sparse case
-                    array = array.all().toarray()  
+                    array = array.all().toarray()
                 array = torch.from_numpy(array).to(device=device)
                 data[neg][attr] = array
 
@@ -129,6 +127,5 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
 def _dict_depth(d):
     """Return the depth of a dictionary."""
     if isinstance(d, dict):
-        return 1 + (max(map(_dict_depth, d.values()))
-                    if d else 0)
+        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
     return 0
