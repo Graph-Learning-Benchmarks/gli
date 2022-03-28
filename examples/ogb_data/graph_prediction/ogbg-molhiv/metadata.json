@@ -1,43 +1,37 @@
 {
-    "description": "OGBN-molhiv dataset.",
+    "description": "OGBg-molhiv dataset.",
     "data": {
         "Node": {
             "NodeFeature": {
-                "description": "Node features of ogbn-molhiv dataset.",
+                "description": "Node features of ogbg-molhiv dataset.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "ogbn-molhiv.npz",
+                "file": "ogbg-molhiv.npz",
                 "key": "node_feats"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "ogbn-molhiv.npz",
+                "file": "ogbg-molhiv.npz",
                 "key": "edge"
             },
             "EdgeFeature": {
-                "description": "Node features of ogbn-molhiv dataset.",
+                "description": "Node features of ogbg-molhiv dataset.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "ogbn-molhiv.npz",
+                "file": "ogbg-molhiv.npz",
                 "key": "edge_feats"
             }
         },
         "Graph": {
-            "_NodeMatrix": {
-                "file": "ogbn-molhiv.npz",
+            "_NodeList": {
+                "file": "ogbg-molhiv.npz",
                 "type": "int",
                 "format": "SparseTensor",
-                "key": "node_matrix"
-            },
-            "_EdgeMatrix": {
-                "file": "ogbn-molhiv.npz",
-                "type": "int",
-                "format": "SparseTensor",
-                "key": "edge_matrix"
+                "key": "node_list"
             },
             "GraphLabel": {
-                "file": "ogbn-molhiv.npz",
+                "file": "ogbg-molhiv.npz",
                 "type": "int",
                 "format": "Tensor",
                 "key": "graph_class"
