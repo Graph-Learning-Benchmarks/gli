@@ -5,6 +5,7 @@ instance should be initialized given by a metadata.json.
 """
 import json
 import os
+from platform import node
 
 import dgl
 import torch
@@ -47,7 +48,7 @@ def get_single_graph(data, device="cpu"):
         g.ndata[attr] = array
 
     for attr, array in data["Edge"].items():
-        g.edges[attr] = array
+        g.edata[attr] = array
 
     return g
 
@@ -61,14 +62,15 @@ def get_multi_graph(data, device="cpu"):
     # Extract the whole graph
     g: dgl.DGLGraph = get_single_graph(data, device)
     if edge_list:
+        node_list = node_list.bool()
         assert edge_list.dim() == 2, "_EdgeList should be a matrix."
-        edge_list = edge_list > 0  # boolean tensor
-        for i in len(edge_list):
+        edge_list = edge_list > 0
+        for i in range(len(edge_list)):
             graphs.append(dgl.edge_subgraph(g, edge_list[i]))
     else:
+        node_list = node_list.bool()
         assert node_list.dim() == 2, "_NodeList should be a matrix."
-        node_list = node_list > 0  # boolean tensor
-        for i in len(edge_list):
+        for i in range(len(node_list)):
             graphs.append(dgl.node_subgraph(g, node_list[i]))
 
     return graphs
@@ -92,7 +94,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     assert "_Edge" in metadata["data"]["Edge"]
     assert "_NodeList" in metadata["data"]["Graph"]
 
-    if not is_hetero_graph(metadata):
+    if is_hetero_graph(metadata):
         raise NotImplementedError("Does not support Heterogeneous graph yet.")
 
     data_buffer = {}
@@ -112,7 +114,9 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
                 else:
                     array = raw
                 if is_sparse(array):
-                    array = array.all().toarray()
+                    # REVIEW - efficiency - this step convert array to dense
+                    # TODO - consider sparse case
+                    array = array.all().toarray()  
                 array = torch.from_numpy(array).to(device=device)
                 data[neg][attr] = array
 

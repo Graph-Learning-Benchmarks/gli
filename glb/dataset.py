@@ -66,7 +66,7 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
         def process(self):
             """Add train, val, and test masks to graph."""
             self.graphs = graphs
-            device = graphs[0]
+            device = graphs[0].device
             indices = task.split[self.split]
             indices = torch.from_numpy(indices).to(device)
             indices = torch.squeeze(indices)
