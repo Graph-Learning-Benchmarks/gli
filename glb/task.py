@@ -5,7 +5,7 @@ from typing import List
 
 from glb.utils import load_data
 
-SUPPORT_TASK_TYPES = ["NodeClassification"]
+SUPPORT_TASK_TYPES = ["NodeClassification", "GraphClassification"]
 
 
 class GLBTask:
@@ -18,11 +18,7 @@ class GLBTask:
         self.description = task_dict["description"]
         self.features: List[str] = task_dict["feature"]
         self.target: str = task_dict["target"]
-        self.split = {
-            "train_set": None,
-            "val_set": None,
-            "test_set": None
-        }
+        self.split = {"train_set": None, "val_set": None, "test_set": None}
 
         self._load(task_dict)
 
@@ -40,6 +36,27 @@ class GLBTask:
             # indices can be mask tensor or an index tensor
 
 
+class ClassificationTask(GLBTask):
+    """Classification task."""
+
+    def __init__(self, task_dict, pwd):
+        """Initialize num_classes."""
+        super().__init__(task_dict, pwd)
+        self.num_classes = task_dict["num_classes"]
+
+
+class NodeClassificationTask(ClassificationTask):
+    """Node classification task, alias."""
+
+    pass
+
+
+class GraphClassificationTask(ClassificationTask):
+    """Graph classification task, alias."""
+
+    pass
+
+
 def read_glb_task(task_path: os.PathLike, verbose=True):
     """Initialize and return a Task object given task_path."""
     pwd = os.path.dirname(task_path)
@@ -47,7 +64,11 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
         task_dict = json.load(fptr)
     if verbose:
         print(task_dict["description"])
-    if task_dict["type"] not in SUPPORT_TASK_TYPES:
-        raise NotImplementedError
 
-    return GLBTask(task_dict, pwd)
+    if task_dict["type"] == "NodeClassification":
+        return NodeClassificationTask(task_dict, pwd)
+    elif task_dict["type"] == "GraphClassification":
+        return GraphClassificationTask(task_dict, pwd)
+    else:
+        raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
+                                  f"Supported tasks: {SUPPORT_TASK_TYPES}")
