@@ -190,4 +190,4 @@ different way. For example, `Node/NodeSet1/NodeFeature`.
 ### Supported Task Types
 1. `NodeClassification`
 2. `TimeDependentLinkPrediction`
-3. `GraphPrediction`
+3. `GraphClassification`
