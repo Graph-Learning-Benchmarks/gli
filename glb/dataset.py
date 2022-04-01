@@ -51,6 +51,11 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
     """Initialize and return split GraphClassification Dataset."""
     assert isinstance(graphs, list)
 
+    entries = task.target.split("/")
+    assert len(entries) == 2
+    assert entries[0] == "Graph"
+    _label_name = entries[1]
+
     class GraphClassificationDataset(DGLDataset):
         """Graph Classification Dataset."""
 
@@ -66,7 +71,7 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
         def process(self):
             """Add train, val, and test masks to graph."""
             self.graphs = graphs
-            device = graphs[0].device
+            device = graphs[0]
             indices = task.split[self.split]
             indices = torch.from_numpy(indices).to(device)
             indices = torch.squeeze(indices)
@@ -85,7 +90,7 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
             self.graphs = graphs_in_split
 
         def __getitem__(self, idx):
-            return self.graphs[idx]
+            return self.graphs[idx], getattr(self.graphs[idx], _label_name)
 
         def __len__(self):
             return len(self.graphs)

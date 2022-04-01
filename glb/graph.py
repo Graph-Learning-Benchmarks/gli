@@ -39,6 +39,7 @@ def is_hetero_graph(data):
 def get_single_graph(data, device="cpu"):
     """Initialize and return a single Graph instance given data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
+    node_list = data["Graph"]["_NodeList"]
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
     g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
@@ -46,19 +47,24 @@ def get_single_graph(data, device="cpu"):
         g.ndata[attr] = array
 
     for attr, array in data["Edge"].items():
-        g.edata[attr] = array
+        g.edges[attr] = array
 
     return g
 
 
 def get_multi_graph(data, device="cpu"):
     """Initialize and return a list of Graph instance given data."""
-    node_list = data["Graph"]["_NodeList"]
-    edge_list = data["Graph"].get("_EdgeList", None)
+    node_list = data["Graph"].pop("_NodeList")
+    edge_list = data["Graph"].pop("_EdgeList", None)
     graphs = []
 
     # Extract the whole graph
     g: dgl.DGLGraph = get_single_graph(data, device)
+    for attr, array in data["Node"].items():
+        g.ndata[attr] = array
+    for attr, array in data["Edge"].items():
+        g.edges[attr] = array
+
     if edge_list:
         node_list = node_list.bool()
         assert edge_list.dim() == 2, "_EdgeList should be a matrix."
@@ -70,6 +76,10 @@ def get_multi_graph(data, device="cpu"):
         assert node_list.dim() == 2, "_NodeList should be a matrix."
         for i in range(len(node_list)):
             graphs.append(dgl.node_subgraph(g, node_list[i]))
+
+    for attr in data["Graph"]:
+        for i, graph in enumerate(graphs):
+            setattr(graph, attr, data["Graph"][attr])  # Graph-level features
 
     return graphs
 
@@ -92,7 +102,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     assert "_Edge" in metadata["data"]["Edge"]
     assert "_NodeList" in metadata["data"]["Graph"]
 
-    if is_hetero_graph(metadata):
+    if not is_hetero_graph(metadata):
         raise NotImplementedError("Does not support Heterogeneous graph yet.")
 
     data_buffer = {}
@@ -112,8 +122,6 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
                 else:
                     array = raw
                 if is_sparse(array):
-                    # REVIEW - efficiency - this step convert array to dense
-                    # TODO - consider sparse case
                     array = array.all().toarray()
                 array = torch.from_numpy(array).to(device=device)
                 data[neg][attr] = array
@@ -127,5 +135,6 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
 def _dict_depth(d):
     """Return the depth of a dictionary."""
     if isinstance(d, dict):
-        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
+        return 1 + (max(map(_dict_depth, d.values()))
+                    if d else 0)
     return 0
