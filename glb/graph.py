@@ -39,7 +39,6 @@ def is_hetero_graph(data):
 def get_single_graph(data, device="cpu"):
     """Initialize and return a single Graph instance given data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
-    node_list = data["Graph"]["_NodeList"]
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
     g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
