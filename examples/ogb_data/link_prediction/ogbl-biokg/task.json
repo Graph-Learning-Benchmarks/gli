@@ -1,0 +1,17 @@
+{
+    "description": "The task is to predict new triplets given the training triplets. The evaluation protocol is exactly the same as ogbl-wikikg2, except that here we only consider ranking against entities of the same type. For instance, when corrupting head entities of the protein type, we only consider negative protein entities.",
+    "type": "LinkPrediction",
+    "target": "Edge/EdgeType",
+    "train_set": {
+        "file": "ogbl-biokg_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbl-biokg_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "ogbl-biokg_task.npz",
+        "key": "test"
+    }
+}

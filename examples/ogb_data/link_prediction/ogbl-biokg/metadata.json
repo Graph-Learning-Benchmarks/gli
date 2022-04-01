@@ -1,0 +1,560 @@
+{
+    "description": "An example of heterogeneous dataset.",
+    "citation": "",
+    "data": {
+        "Node": {
+            "disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "disease_id"
+                }
+            },
+            "drug": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug_id"
+                }
+            },
+            "function": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "function_id"
+                }
+            },
+            "protein": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein_id"
+                }
+            },
+            "sideeffect": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "sideeffect_id"
+                }
+            }
+        },
+        "Edge": {
+            "disease-protein": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "disease-protein_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "disease-protein"
+                }
+            },
+            "drug-disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-disease"
+                }
+            },
+            "drug-drug_acquired_metabolic_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_acquired_metabolic_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_acquired_metabolic_disease"
+                }
+            },
+            "drug-drug_bacterial_infectious_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_bacterial_infectious_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_bacterial_infectious_disease"
+                }
+            },
+            "drug-drug_benign_neoplasm": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_benign_neoplasm_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_benign_neoplasm"
+                }
+            },
+            "drug-drug_cancer": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cancer_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cancer"
+                }
+            },
+            "drug-drug_cardiovascular_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cardiovascular_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cardiovascular_system_disease"
+                }
+            },
+            "drug-drug_chromosomal_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_chromosomal_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_chromosomal_disease"
+                }
+            },
+            "drug-drug_cognitive_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cognitive_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cognitive_disorder"
+                }
+            },
+            "drug-drug_cryptorchidism": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cryptorchidism_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_cryptorchidism"
+                }
+            },
+            "drug-drug_developmental_disorder_of_mental_health": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_developmental_disorder_of_mental_health_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_developmental_disorder_of_mental_health"
+                }
+            },
+            "drug-drug_endocrine_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_endocrine_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_endocrine_system_disease"
+                }
+            },
+            "drug-drug_fungal_infectious_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_fungal_infectious_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_fungal_infectious_disease"
+                }
+            },
+            "drug-drug_gastrointestinal_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_gastrointestinal_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_gastrointestinal_system_disease"
+                }
+            },
+            "drug-drug_hematopoietic_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_hematopoietic_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_hematopoietic_system_disease"
+                }
+            },
+            "drug-drug_hematopoietic_system_diseases": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_hematopoietic_system_diseases_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_hematopoietic_system_diseases"
+                }
+            },
+            "drug-drug_hypospadias": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_hypospadias_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_hypospadias"
+                }
+            },
+            "drug-drug_immune_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_immune_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_immune_system_disease"
+                }
+            },
+            "drug-drug_inherited_metabolic_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_inherited_metabolic_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_inherited_metabolic_disorder"
+                }
+            },
+            "drug-drug_integumentary_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_integumentary_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_integumentary_system_disease"
+                }
+            },
+            "drug-drug_irritable_bowel_syndrome": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_irritable_bowel_syndrome_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_irritable_bowel_syndrome"
+                }
+            },
+            "drug-drug_monogenic_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_monogenic_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_monogenic_disease"
+                }
+            },
+            "drug-drug_musculoskeletal_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_musculoskeletal_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_musculoskeletal_system_disease"
+                }
+            },
+            "drug-drug_nervous_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_nervous_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_nervous_system_disease"
+                }
+            },
+            "drug-drug_orofacial_cleft": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_orofacial_cleft_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_orofacial_cleft"
+                }
+            },
+            "drug-drug_parasitic_infectious_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_parasitic_infectious_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_parasitic_infectious_disease"
+                }
+            },
+            "drug-drug_personality_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_personality_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_personality_disorder"
+                }
+            },
+            "drug-drug_polycystic_ovary_syndrome": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_polycystic_ovary_syndrome_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_polycystic_ovary_syndrome"
+                }
+            },
+            "drug-drug_pre-malignant_neoplasm": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_pre-malignant_neoplasm_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_pre-malignant_neoplasm"
+                }
+            },
+            "drug-drug_psoriatic_arthritis": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_psoriatic_arthritis_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_psoriatic_arthritis"
+                }
+            },
+            "drug-drug_reproductive_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_reproductive_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_reproductive_system_disease"
+                }
+            },
+            "drug-drug_respiratory_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_respiratory_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_respiratory_system_disease"
+                }
+            },
+            "drug-drug_sexual_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_sexual_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_sexual_disorder"
+                }
+            },
+            "drug-drug_sleep_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_sleep_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_sleep_disorder"
+                }
+            },
+            "drug-drug_somatoform_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_somatoform_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_somatoform_disorder"
+                }
+            },
+            "drug-drug_struct_sim": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_struct_sim_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_struct_sim"
+                }
+            },
+            "drug-drug_substance-related_disorder": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_substance-related_disorder_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_substance-related_disorder"
+                }
+            },
+            "drug-drug_thoracic_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_thoracic_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_thoracic_disease"
+                }
+            },
+            "drug-drug_urinary_system_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_urinary_system_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_urinary_system_disease"
+                }
+            },
+            "drug-drug_viral_infectious_disease": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_viral_infectious_disease_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-drug_viral_infectious_disease"
+                }
+            },
+            "drug-protein": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-protein_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-protein"
+                }
+            },
+            "drug-sideeffect": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-sideeffect_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "drug-sideeffect"
+                }
+            },
+            "function-function": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "function-function_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "function-function"
+                }
+            },
+            "protein-function": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-function_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-function"
+                }
+            },
+            "protein-protein_activation": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_activation_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_activation"
+                }
+            },
+            "protein-protein_binding": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_binding_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_binding"
+                }
+            },
+            "protein-protein_catalysis": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_catalysis_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_catalysis"
+                }
+            },
+            "protein-protein_expression": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_expression_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_expression"
+                }
+            },
+            "protein-protein_inhibition": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_inhibition_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_inhibition"
+                }
+            },
+            "protein-protein_ptmod": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_ptmod_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_ptmod"
+                }
+            },
+            "protein-protein_reaction": {
+                "_ID": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_reaction_id"
+                },
+                "_Edge": {
+                    "file": "ogbl-biokg.npz",
+                    "key": "protein-protein_reaction"
+                }
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "example.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "example.npz",
+                "key": "edge_list"
+            }
+        }
+    }
+}
