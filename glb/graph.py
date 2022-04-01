@@ -63,7 +63,7 @@ def get_multi_graph(data, device="cpu"):
     for attr, array in data["Node"].items():
         g.ndata[attr] = array
     for attr, array in data["Edge"].items():
-        g.edges[attr] = array
+        g.edata[attr] = array
 
     if edge_list:
         node_list = node_list.bool()
@@ -102,7 +102,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     assert "_Edge" in metadata["data"]["Edge"]
     assert "_NodeList" in metadata["data"]["Graph"]
 
-    if not is_hetero_graph(metadata):
+    if is_hetero_graph(metadata):
         raise NotImplementedError("Does not support Heterogeneous graph yet.")
 
     data_buffer = {}
