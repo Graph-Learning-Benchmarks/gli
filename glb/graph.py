@@ -47,7 +47,7 @@ def get_single_graph(data, device="cpu"):
         g.ndata[attr] = array
 
     for attr, array in data["Edge"].items():
-        g.edges[attr] = array
+        g.edata[attr] = array
 
     return g
 
