@@ -51,6 +51,11 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
     """Initialize and return split GraphClassification Dataset."""
     assert isinstance(graphs, list)
 
+    entries = task.target.split("/")
+    assert len(entries) == 2
+    assert entries[0] == "Graph"
+    label_name = entries[1]
+
     class GraphClassificationDataset(DGLDataset):
         """Graph Classification Dataset."""
 
@@ -85,7 +90,7 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
             self.graphs = graphs_in_split
 
         def __getitem__(self, idx):
-            return self.graphs[idx]
+            return self.graphs[idx], getattr(self.graphs[idx], label_name)
 
         def __len__(self):
             return len(self.graphs)
