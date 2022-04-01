@@ -65,7 +65,7 @@ def get_multi_graph(data, device="cpu"):
         g.edata[attr] = array
 
     if edge_list:
-        node_list = node_list.bool()
+        edge_list = edge_list.bool()
         assert edge_list.dim() == 2, "_EdgeList should be a matrix."
         edge_list = edge_list > 0
         for i in range(len(edge_list)):
