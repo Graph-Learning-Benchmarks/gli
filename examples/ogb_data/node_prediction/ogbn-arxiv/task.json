@@ -16,15 +16,15 @@
         "attribute": "NodeLabel",
         "num_classes": 40
     },
-    "train_node": {
+    "train_set": {
         "file": "ogbn-arxiv_task.npz",
         "key": "train"
     },
-    "val_node": {
+    "val_set": {
         "file": "ogbn-arxiv_task.npz",
         "key": "val"
     },
-    "test_node": {
+    "test_set": {
         "file": "ogbn-arxiv_task.npz",
         "key": "test"
     }
