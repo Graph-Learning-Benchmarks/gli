@@ -5,22 +5,35 @@ from typing import List
 
 from glb.utils import load_data
 
-SUPPORT_TASK_TYPES = ["NodeClassification", "GraphClassification"]
+SUPPORT_TASK_TYPES = [
+    "NodeClassification", "GraphClassification", "TimeDependentLinkPrediction"
+]
 
 
 class GLBTask:
     """GLB task base class."""
-
     def __init__(self, task_dict, pwd):
         """Initialize GLBTask."""
         self.pwd = pwd
         self.type = task_dict["type"]
         self.description = task_dict["description"]
         self.features: List[str] = task_dict["feature"]
-        self.target: str = task_dict["target"]
+        self.target: str = None
         self.split = {"train_set": None, "val_set": None, "test_set": None}
 
         self._load(task_dict)
+
+    def _load(self, task_dict):
+        pass
+
+
+class ClassificationTask(GLBTask):
+    """Classification task."""
+    def __init__(self, task_dict, pwd):
+        """Initialize num_classes."""
+        self.num_classes = task_dict["num_classes"]
+        self.target = task_dict["target"]
+        super().__init__(task_dict, pwd)
 
     def _load(self, task_dict):
         file_buffer = {}
@@ -36,15 +49,6 @@ class GLBTask:
             # indices can be mask tensor or an index tensor
 
 
-class ClassificationTask(GLBTask):
-    """Classification task."""
-
-    def __init__(self, task_dict, pwd):
-        """Initialize num_classes."""
-        super().__init__(task_dict, pwd)
-        self.num_classes = task_dict["num_classes"]
-
-
 class NodeClassificationTask(ClassificationTask):
     """Node classification task, alias."""
 
@@ -55,6 +59,43 @@ class GraphClassificationTask(ClassificationTask):
     """Graph classification task, alias."""
 
     pass
+
+
+class LinkPredictionTask(GLBTask):
+    """Link prediction task."""
+    def __init__(self, task_dict, pwd):
+        self.target = "Edge/_Edge"
+        super().__init__(task_dict, pwd)
+
+    pass
+
+
+class TimeDependentLinkPredictionTask(LinkPredictionTask):
+    """Time dependent link prediction task."""
+    def __init__(self, task_dict, pwd):
+        self.time = task_dict["time"]
+        self.time_window = {
+            "train_time_window": task_dict["train_time_window"],
+            "valid_time_window": task_dict["valid_time_window"],
+            "test_time_window": task_dict["test_time_window"]
+        }
+        self.valid_neg = task_dict.get("valid_neg", None)
+        self.test_neg = task_dict.get("test_neg", None)
+        super().__init__(task_dict, pwd)
+
+    def _load(self, task_dict):
+        file_buffer = {}
+        for neg_idx in ["valid_neg", "test_neg"]:
+            if getattr(self, neg_idx, None):
+                filename = task_dict[neg_idx]["file"]
+                key = task_dict[neg_idx].get("key")
+                if filename not in file_buffer:
+                    file_buffer[filename] = load_data(
+                        os.path.join(self.pwd, filename))
+                indices = file_buffer[filename][key] if key else \
+                    file_buffer[filename]
+                setattr(self, neg_idx, indices)
+            
 
 
 def read_glb_task(task_path: os.PathLike, verbose=True):
@@ -69,6 +110,8 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
         return NodeClassificationTask(task_dict, pwd)
     elif task_dict["type"] == "GraphClassification":
         return GraphClassificationTask(task_dict, pwd)
+    elif task_dict["type"] == "TimeDependentLinkPrediction":
+        return TimeDependentLinkPredictionTask(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
                                   f"Supported tasks: {SUPPORT_TASK_TYPES}")

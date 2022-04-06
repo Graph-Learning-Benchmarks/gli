@@ -3,8 +3,9 @@ from typing import List
 import torch
 from dgl import DGLGraph
 from dgl.data import DGLDataset
+from dgl.subgraph import edge_subgraph
 
-from glb.task import NodeClassificationTask, GraphClassificationTask
+from glb.task import NodeClassificationTask, GraphClassificationTask, LinkPredictionTask
 
 
 def node_classification_dataset_factory(graph: DGLGraph,
@@ -14,7 +15,6 @@ def node_classification_dataset_factory(graph: DGLGraph,
 
     class NodeClassificationDataset(DGLDataset):
         """Node classification dataset."""
-
         def __init__(self):
             self._g = None
             self.features = task.features
@@ -58,7 +58,6 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
 
     class GraphClassificationDataset(DGLDataset):
         """Graph Classification Dataset."""
-
         def __init__(self, split="train_set"):
             self.graphs = None
             self.features = task.features
@@ -100,3 +99,34 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
         datasets.append(GraphClassificationDataset(split=split))
 
     return datasets
+
+
+def link_prediction_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
+    """Initialize and return a LinkPrediction Dataset."""
+    assert isinstance(graph, DGLGraph)
+
+    class LinkPredictionDataset(DGLDataset):
+        """Link Prediction dataset."""
+        def __init__(self):
+            self._g = None
+            self.features = task.features
+            self.target = task.target
+            super().__init__(name=task.description, force_reload=True)
+
+        def process(self):
+            self._g = graph
+            if task.type == "TimeDependentLinkPrediction":
+                # load train, val, test edges
+                time_entries = task.time.split("/")
+                assert len(time_entries) == 2
+                assert time_entries[0] == "Edge"
+                time_attr = time_entries[-1]
+                etime: torch.Tensor = self._g.edata[time_attr]
+                for split in ["train", "valid", "test"]:
+                    window = task.time_window[f"{split}_time_window"]
+                    self._g.edata[f"{split}_mask"] = torch.logical_and(
+                        etime >= window[0], etime <= window[1])
+                # create train graph - TODO
+                train_g = edge_subgraph(self._g, self._g.edata["train_mask"], relabel_nodes=False)
+            else:
+                raise NotImplementedError

@@ -36,17 +36,22 @@ def is_hetero_graph(data):
         raise RuntimeError("metadata.json has wrong structure.")
 
 
-def get_single_graph(data, device="cpu"):
+def get_single_graph(data, device="cpu", hetero=False):
     """Initialize and return a single Graph instance given data."""
-    edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
-    src_nodes, dst_nodes = edges.T[0], edges.T[1]
+    if hetero:
+        edges = []
+        for edge_group in data["Edge"]:
+           raise NotImplementedError 
+    else:
+        edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
+        src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
-    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
-    for attr, array in data["Node"].items():
-        g.ndata[attr] = array
+        g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
+        for attr, array in data["Node"].items():
+            g.ndata[attr] = array
 
-    for attr, array in data["Edge"].items():
-        g.edata[attr] = array
+        for attr, array in data["Edge"].items():
+            g.edata[attr] = array
 
     return g
 
@@ -101,9 +106,6 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     assert "_Edge" in metadata["data"]["Edge"]
     assert "_NodeList" in metadata["data"]["Graph"]
 
-    if is_hetero_graph(metadata):
-        raise NotImplementedError("Does not support Heterogeneous graph yet.")
-
     data_buffer = {}
     data = {"Node": {}, "Edge": {}, "Graph": {}}
     for neg in ["Node", "Edge", "Graph"]:
@@ -126,7 +128,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
                 data[neg][attr] = array
 
     if is_single_graph(data):
-        return get_single_graph(data, device)
+        return get_single_graph(data, device, hetero=is_hetero_graph(metadata))
     else:
         return get_multi_graph(data, device)
 
