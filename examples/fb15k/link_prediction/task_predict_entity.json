@@ -1,0 +1,15 @@
+{
+    "description": "The task is to predict a valid entity given (head, relation) or (relation, tail) that form a fact triple.",
+    "train_set": {
+        "file": "../fb15k.npz",
+        "key": "TrainEdge_id"
+    },
+    "valid_set": {
+        "file": "../fb15k.npz",
+        "key": "ValidEdge_id"
+    },
+    "test_set": {
+        "file": "../fb15k.npz",
+        "key": "TestEdge_id"
+    }
+}
