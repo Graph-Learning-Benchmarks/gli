@@ -2,20 +2,11 @@
     "description": "The task is to predict the 40 subject areas of arXiv CS papers, e.g., cs.AI, cs.LG, and cs.OS, which are manually determined (i.e., labeled) by the paper\u2019s authors and arXiv moderators. With the volume of scientific publications doubling every 12 years over the past century, it is practically important to automatically classify each publication\u2019s areas and topics. Formally, the task is to predict the primary categories of the arXiv papers, which is formulated as a 40-class classification problem.",
     "type": "NodeClassification",
     "feature": [
-        {
-            "object": "Node",
-            "attribute": "NodeFeature"
-        },
-        {
-            "object": "Node",
-            "attribute": "NodeYear"
-        }
+        "Node/NodeFeature",
+        "Node/NodeYear"
     ],
-    "target": {
-        "object": "Node",
-        "attribute": "NodeLabel",
-        "num_classes": 40
-    },
+    "target": "Node/NodeLabel",
+    "num_classes": 40,
     "train_set": {
         "file": "ogbn-arxiv_task.npz",
         "key": "train"

@@ -2,16 +2,10 @@
     "description": "Node classification on CITESEER dataset. Planetoid split.",
     "type": "NodeClassification",
     "feature": [
-        {
-            "object": "Node",
-            "attribute": "NodeFeature"
-        }
+        "Node/NodeFeature"
     ],
-    "target": {
-        "object": "Node",
-        "attribute": "NodeLabel",
-        "num_classes": 6
-    },
+    "target": "Node/NodeLabel",
+    "num_classes": 6,
     "train_set": {
         "file": "citeseer_task.npz",
         "key": "train"
