@@ -1,5 +1,6 @@
 {
     "description": "The task is to predict a valid relation given (head, tail) that form a fact triple.",
+    "type": "LinkPredictionRelation",
     "train_set": {
         "file": "../fb15k.npz",
         "key": "TrainEdge_id"
