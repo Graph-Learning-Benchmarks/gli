@@ -3,7 +3,7 @@ import json
 import os
 from typing import List
 
-from glb.utils import load_data
+from glb.utils import file_reader
 
 SUPPORT_TASK_TYPES = [
     "NodeClassification", "GraphClassification", "TimeDependentLinkPrediction"
@@ -12,7 +12,7 @@ SUPPORT_TASK_TYPES = [
 
 class GLBTask:
     """GLB task base class."""
-    def __init__(self, task_dict, pwd):
+    def __init__(self, task_dict, pwd, device="cpu"):
         """Initialize GLBTask."""
         self.pwd = pwd
         self.type = task_dict["type"]
@@ -20,6 +20,7 @@ class GLBTask:
         self.features: List[str] = task_dict["feature"]
         self.target: str = None
         self.split = {"train_set": None, "val_set": None, "test_set": None}
+        self.device = device
 
         self._load(task_dict)
 
@@ -40,13 +41,10 @@ class ClassificationTask(GLBTask):
         for dataset_ in self.split:
             filename = task_dict[dataset_]["file"]
             key = task_dict[dataset_].get("key")
-            if filename not in file_buffer:
-                file_buffer[filename] = load_data(
-                    os.path.join(self.pwd, filename))
-            indices = file_buffer[filename][key] if key else \
-                file_buffer[filename]
-            self.split[dataset_] = indices
-            # indices can be mask tensor or an index tensor
+            path = os.path.join(self.pwd, filename)
+            self.split[dataset_] = file_reader.get(path, key, self.device)
+            # can be mask tensor or an index tensor
+        
 
 
 class NodeClassificationTask(ClassificationTask):
@@ -89,11 +87,8 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
             if getattr(self, neg_idx, None):
                 filename = task_dict[neg_idx]["file"]
                 key = task_dict[neg_idx].get("key")
-                if filename not in file_buffer:
-                    file_buffer[filename] = load_data(
-                        os.path.join(self.pwd, filename))
-                indices = file_buffer[filename][key] if key else \
-                    file_buffer[filename]
+                path = os.path.join(self.pwd, filename)
+                indices = file_reader.get(path, key, self.device)
                 setattr(self, neg_idx, indices)
             
 

@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 import scipy.sparse as sp
+import torch
 
 
 def load_data(path: os.PathLike):
@@ -31,3 +32,31 @@ def is_sparse(array):
     if isinstance(array, np.ndarray):
         return array.dtype.kind not in set("buifc")
     raise TypeError
+
+
+class KeyedFileReader():
+    def __init__(self) -> None:
+        self._data_buffer = {}
+    
+    def get(self, path, key=None, device="cpu"):
+        """Return a torch array.
+        
+        TODO:
+            - Check sparsity and return sparse torch array if needed.
+        """
+        if path not in self._data_buffer:
+            raw = load_data(path)
+            self._data_buffer[path] = raw
+        else:
+            raw = self._data_buffer[path]
+        
+        if key:
+            array = raw[key]
+        else:
+            array = raw
+        
+        if is_sparse(array):
+            array = array.all().toarray()
+        return torch.from_numpy(array).to(device=device)
+
+file_reader = KeyedFileReader()
