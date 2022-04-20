@@ -6,7 +6,7 @@
         "Edge/EdgeWeight"
     ],
     "time": "Edge/EdgeYear",
-    "train_time_window": [1963, 2017],
-    "valid_time_window": [2018, 2018],
-    "test_time_window": [2019, 2019]
+    "train_time_window": [1963, 2018],
+    "valid_time_window": [2018, 2019],
+    "test_time_window": [2019, 2020]
 }

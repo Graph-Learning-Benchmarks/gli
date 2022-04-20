@@ -125,8 +125,6 @@ def link_prediction_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
                 for split in ["train", "valid", "test"]:
                     window = task.time_window[f"{split}_time_window"]
                     self._g.edata[f"{split}_mask"] = torch.logical_and(
-                        etime >= window[0], etime <= window[1])
-                # create train graph - TODO
-                train_g = edge_subgraph(self._g, self._g.edata["train_mask"], relabel_nodes=False)
+                        etime >= window[0], etime < window[1])
             else:
                 raise NotImplementedError
