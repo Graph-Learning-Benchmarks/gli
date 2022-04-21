@@ -3,13 +3,14 @@
 Any dataset needs to contain a graph instance. By default, a graph
 instance should be initialized given by a metadata.json.
 """
+from copy import copy
 import json
 import os
 
 import dgl
 import torch
 
-from .utils import load_data, is_sparse
+from .utils import file_reader
 
 
 def is_single_graph(data):
@@ -39,9 +40,7 @@ def is_hetero_graph(data):
 def get_single_graph(data, device="cpu", hetero=False):
     """Initialize and return a single Graph instance given data."""
     if hetero:
-        edges = []
-        for edge_group in data["Edge"]:
-           raise NotImplementedError 
+        g = get_heterograph(data, device=device)
     else:
         edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
         src_nodes, dst_nodes = edges.T[0], edges.T[1]
@@ -97,38 +96,19 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     if verbose:
         print(metadata["description"])
 
+    hetero = is_hetero_graph(metadata)
+
     assert "data" in metadata, "attribute `data` not in metadata.json."
 
     for neg in ["Node", "Edge", "Graph"]:
         assert neg in metadata[
             "data"], f"attribute `{neg}` not in metadata.json"
 
-    assert "_Edge" in metadata["data"]["Edge"]
-    assert "_NodeList" in metadata["data"]["Graph"]
-
-    data_buffer = {}
-    data = {"Node": {}, "Edge": {}, "Graph": {}}
-    for neg in ["Node", "Edge", "Graph"]:
-        for attr, props in metadata["data"][neg].items():
-            if "file" in props:
-                filename = props["file"]
-                if filename not in data_buffer:
-                    raw = load_data(os.path.join(pwd, filename))
-                    data_buffer[filename] = raw
-                else:
-                    raw = data_buffer[filename]
-                if "key" in props:
-                    key = props["key"]
-                    array = raw[key]
-                else:
-                    array = raw
-                if is_sparse(array):
-                    array = array.all().toarray()
-                array = torch.from_numpy(array).to(device=device)
-                data[neg][attr] = array
+    data = copy(metadata["data"])
+    data = dfs_read_file(pwd, data, device=device)
 
     if is_single_graph(data):
-        return get_single_graph(data, device, hetero=is_hetero_graph(metadata))
+        return get_single_graph(data, device, hetero=hetero)
     else:
         return get_multi_graph(data, device)
 
@@ -139,3 +119,18 @@ def _dict_depth(d):
         return 1 + (max(map(_dict_depth, d.values()))
                     if d else 0)
     return 0
+
+
+def dfs_read_file(pwd, d, device="cpu"):
+    if "file" in d:
+        path = os.path.join(pwd, d["file"])
+        array = file_reader.get(path, d.get("key"), device)
+        return array
+    else:
+        for k in d:
+            d[k] = dfs_read_file(pwd, d[k], device=device)
+        return d
+
+
+def get_heterograph(data, device="cpu"):
+    raise NotImplementedError
