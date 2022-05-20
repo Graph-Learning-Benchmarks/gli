@@ -12,6 +12,7 @@ SUPPORT_TASK_TYPES = [
 
 class GLBTask:
     """GLB task base class."""
+
     def __init__(self, task_dict, pwd, device="cpu"):
         """Initialize GLBTask."""
         self.pwd = pwd
@@ -30,6 +31,7 @@ class GLBTask:
 
 class ClassificationTask(GLBTask):
     """Classification task."""
+
     def __init__(self, task_dict, pwd):
         """Initialize num_classes."""
         super().__init__(task_dict, pwd)
@@ -37,14 +39,12 @@ class ClassificationTask(GLBTask):
         self.target = task_dict["target"]
 
     def _load(self, task_dict):
-        file_buffer = {}
         for dataset_ in self.split:
             filename = task_dict[dataset_]["file"]
             key = task_dict[dataset_].get("key")
             path = os.path.join(self.pwd, filename)
             self.split[dataset_] = file_reader.get(path, key, self.device)
             # can be mask tensor or an index tensor
-        
 
 
 class NodeClassificationTask(ClassificationTask):
@@ -61,7 +61,9 @@ class GraphClassificationTask(ClassificationTask):
 
 class LinkPredictionTask(GLBTask):
     """Link prediction task."""
+
     def __init__(self, task_dict, pwd):
+        """Link/Edge prediction."""
         self.target = "Edge/_Edge"
         super().__init__(task_dict, pwd)
 
@@ -70,7 +72,9 @@ class LinkPredictionTask(GLBTask):
 
 class TimeDependentLinkPredictionTask(LinkPredictionTask):
     """Time dependent link prediction task."""
+
     def __init__(self, task_dict, pwd):
+        """Time dependent link prediction task."""
         self.time = task_dict["time"]
         self.time_window = {
             "train_time_window": task_dict["train_time_window"],
@@ -82,7 +86,6 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
         super().__init__(task_dict, pwd)
 
     def _load(self, task_dict):
-        file_buffer = {}
         for neg_idx in ["valid_neg", "test_neg"]:
             if getattr(self, neg_idx, None):
                 filename = task_dict[neg_idx]["file"]
@@ -90,7 +93,6 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
                 path = os.path.join(self.pwd, filename)
                 indices = file_reader.get(path, key, self.device)
                 setattr(self, neg_idx, indices)
-            
 
 
 def read_glb_task(task_path: os.PathLike, verbose=True):

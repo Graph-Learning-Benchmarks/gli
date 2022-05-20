@@ -121,6 +121,7 @@ def _dict_depth(d):
 
 
 def dfs_read_file(pwd, d, device="cpu"):
+    """Read file efficiently."""
     if "file" in d:
         path = os.path.join(pwd, d["file"])
         array = file_reader.get(path, d.get("key"), device)
@@ -132,6 +133,7 @@ def dfs_read_file(pwd, d, device="cpu"):
 
 
 def get_heterograph(data, device="cpu"):
+    """Get heterogeneous graph."""
     node_depth = _dict_depth(data["Node"])
     node_classes = []
     node_features = {}
@@ -170,6 +172,7 @@ def get_heterograph(data, device="cpu"):
 
     g: dgl.DGLGraph = dgl.heterograph(graph_data,
                                       num_nodes_dict=num_nodes_dict)
+    g = g.to(device)
 
     # Add node and edge features
     for node_class, node_feats in node_features.items():

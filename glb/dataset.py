@@ -1,12 +1,11 @@
 """Dataset for GLB."""
 from typing import List
-import numpy as np
 import torch
 from dgl import DGLGraph
 from dgl.data import DGLDataset
-from dgl.subgraph import edge_subgraph
 
-from glb.task import NodeClassificationTask, GraphClassificationTask, LinkPredictionTask
+from glb.task import (NodeClassificationTask, GraphClassificationTask,
+                      LinkPredictionTask)
 
 
 def node_classification_dataset_factory(graph: DGLGraph,
@@ -16,7 +15,9 @@ def node_classification_dataset_factory(graph: DGLGraph,
 
     class NodeClassificationDataset(DGLDataset):
         """Node classification dataset."""
+
         def __init__(self):
+            """Node classification dataset."""
             self._g = None
             self.features = task.features
             self.target = task.target
@@ -59,6 +60,7 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
 
     class GraphClassificationDataset(DGLDataset):
         """Graph Classification Dataset."""
+
         def __init__(self, split="train_set"):
             self.graphs = None
             self.features = task.features
@@ -108,6 +110,7 @@ def link_prediction_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
 
     class LinkPredictionDataset(DGLDataset):
         """Link Prediction dataset."""
+
         def __init__(self):
             self._g = None
             self.features = task.features

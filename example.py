@@ -17,10 +17,11 @@ PATHS = [
 parser = argparse.ArgumentParser()
 parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[0])
 args = parser.parse_args()
-task = args.task
+task_name = args.task
 
 
 def prepare_dataset(metadata_path, task_path):
+    """Prepare dataset."""
     g = glb.graph.read_glb_graph(metadata_path=metadata_path)
     task = glb.task.read_glb_task(task_path=task_path)
     datasets = glb.dataloading.combine_graph_and_task(g, task)
@@ -28,10 +29,13 @@ def prepare_dataset(metadata_path, task_path):
 
 
 def main():
+    """Run main function."""
     path_dict = dict(zip(TASKS, PATHS))
-    g, _, datasets = prepare_dataset(*path_dict[task])
+    g, task, datasets = prepare_dataset(*path_dict[task_name])
     print(g)
+    print(task)
     print(datasets)
+
 
 if __name__ == "__main__":
     main()

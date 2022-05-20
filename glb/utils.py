@@ -37,12 +37,15 @@ def is_sparse(array):
 
 
 class KeyedFileReader():
+    """File reader for npz files."""
+
     def __init__(self) -> None:
+        """File reader for npz files."""
         self._data_buffer = {}
 
     def get(self, path, key=None, device="cpu"):
         """Return a torch array.
-        
+
         TODO:
             - Check sparsity and return sparse torch array if needed.
         """
@@ -72,7 +75,7 @@ def dgl_to_glb(graph: dgl.DGLGraph,
                name: str,
                pdir: os.PathLike = None,
                **kwargs):
-    raise NotImplementedError
+    """Dump a dgl graph into glb format."""
     metadata = {"data": {"Node": {}, "Edge": {}, "Graph": {}}}
     metadata.update(kwargs)
     npz = f"{name}.npz"
@@ -137,8 +140,9 @@ def dgl_to_glb(graph: dgl.DGLGraph,
             }
             data[entry] = torch.stack(graph.edges(edge_type)).T.cpu().numpy()
             # Save edge features
-            for k, v in graph.edata.items(
-            ):  # FIXME - AssertionError: Current HeteroNodeDataView has multiple node types, can not be iterated.
+            for k, v in graph.edata.items():
+                # FIXME - AssertionError: Current HeteroNodeDataView
+                # has multiple node types, can not be iterated.
                 if edge_type in v:
                     entry = f"edge_{edge_type}_{k}"
                     data[entry] = v.cpu().numpy()
@@ -162,4 +166,6 @@ def dgl_to_glb(graph: dgl.DGLGraph,
 
     np.savez_compressed(npz_path, **data)
     with open(metadata_path, "w") as fp:
-        json.dump(metadata, metadata_path)
+        json.dump(metadata, fp)
+
+    raise NotImplementedError
