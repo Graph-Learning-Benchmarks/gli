@@ -13,4 +13,6 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
         return glb.dataset.node_classification_dataset_factory(graph, task)
     elif task.type == "GraphClassification":
         return glb.dataset.graph_classification_dataset_factory(graph, task)
+    elif task.type in ["TimeDependentLinkPrediction", "LinkPrediction"]:
+        return glb.dataset.link_prediction_dataset_factory(graph, task)
     raise NotImplementedError

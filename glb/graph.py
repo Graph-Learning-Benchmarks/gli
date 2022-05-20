@@ -116,8 +116,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
 def _dict_depth(d):
     """Return the depth of a dictionary."""
     if isinstance(d, dict):
-        return 1 + (max(map(_dict_depth, d.values()))
-                    if d else 0)
+        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
     return 0
 
 
@@ -133,4 +132,54 @@ def dfs_read_file(pwd, d, device="cpu"):
 
 
 def get_heterograph(data, device="cpu"):
-    raise NotImplementedError
+    node_depth = _dict_depth(data["Node"])
+    node_classes = []
+    node_features = {}
+    edge_features = {}
+    num_nodes_dict = {}
+    num_nodes = data["Graph"]["_NodeList"].shape[-1]
+    node_to_class = torch.zeros(num_nodes, dtype=torch.int)
+    if node_depth == 1:
+        # Nodes are homogeneous
+        node_classes.append("Node")
+        node_features["Node"] = data["Node"]
+        node_features["Node"].pop("_ID", None)
+        num_nodes_dict["Node"] = num_nodes
+    else:
+        for i, node_class in enumerate(data["Node"]):
+            node_classes.append(node_class)
+            idx = data["Node"][node_class]["_ID"]
+            node_to_class[idx] = i
+            node_features[node_class] = data["Node"][node_class]
+            node_features[node_class].pop("_ID", None)
+            num_nodes_dict[node_class] = len(idx)
+
+    edge_depth = _dict_depth(data["Edge"])
+    assert edge_depth == 2, "Edges of heterograph must be heterogeneous, too."
+
+    graph_data = {}  # triplet to (src_tensor, dst_tensor)
+    for edge_class in data["Edge"]:
+        # Infer triplet
+        edges = data["Edge"][edge_class]["_Edge"]
+        src_class = node_classes[node_to_class[edges[0][0]]]
+        dst_class = node_classes[node_to_class[edges[0][1]]]
+        triplet = (src_class, edge_class, dst_class)
+        graph_data[triplet] = (edges.T[0], edges.T[1])
+        edge_features[edge_class] = data["Edge"][edge_class]
+        edge_features[edge_class].pop("_ID", None)
+
+    g: dgl.DGLGraph = dgl.heterograph(graph_data,
+                                      num_nodes_dict=num_nodes_dict)
+
+    # Add node and edge features
+    for node_class, node_feats in node_features.items():
+        for feat_name, feat_tensor in node_feats.items():
+            if len(g.ntypes) == 1:
+                g.ndata[feat_name] = feat_tensor
+            else:
+                g.ndata[feat_name] = {node_class: feat_tensor}
+    for edge_class, edge_feats in edge_features.items():
+        for feat_name, feat_tensor in edge_feats.items():
+            g.edata[feat_name] = {edge_class: feat_tensor}
+
+    return g

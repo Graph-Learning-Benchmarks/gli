@@ -32,9 +32,9 @@ class ClassificationTask(GLBTask):
     """Classification task."""
     def __init__(self, task_dict, pwd):
         """Initialize num_classes."""
+        super().__init__(task_dict, pwd)
         self.num_classes = task_dict["num_classes"]
         self.target = task_dict["target"]
-        super().__init__(task_dict, pwd)
 
     def _load(self, task_dict):
         file_buffer = {}
