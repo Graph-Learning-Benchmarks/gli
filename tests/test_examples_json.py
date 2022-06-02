@@ -17,7 +17,7 @@ def example_dir_check(path_to_parent):
 
 
 def find_examples_dir():
-    """Recursively find example directories which have no sub directories."""
+    """Recursively find example directories which have metadata json."""
     walk_dir = os.getcwd() + "/examples"
 
     print("walk_dir = " + walk_dir)
