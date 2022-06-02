@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import sys
 sys.path.append('/home/huangjin/GLB-Repo')
 import glb
+from dgl.nn import GraphConv
 
 metadata_path = "/home/huangjin/GLB-Repo/examples/cora/metadata.json"
 task_path = "/home/huangjin/GLB-Repo/examples/cora/task.json"
@@ -12,18 +13,7 @@ g = glb.graph.read_glb_graph(metadata_path=metadata_path)
 task = glb.task.read_glb_task(task_path=task_path)
 
 dataset = glb.dataloading.combine_graph_and_task(g, task)
-
-print(dataset)
-
-# print('Number of categories:', dataset.num_classes)
-
 g = dataset[0]
-print('Node features')
-print(g.ndata)
-print('Edge features')
-print(g.edata)
-
-from dgl.nn import GraphConv
 
 class GCN(nn.Module):
     def __init__(self, in_feats, h_feats, num_classes):
@@ -38,18 +28,18 @@ class GCN(nn.Module):
         return h
 
 # Create the model with given dimensions
-model = GCN(g.ndata['feat'].shape[1], 16, dataset.num_classes)
+model = GCN(g.ndata['NodeFeature'].shape[1], 16, dataset._num_labels)
 
 def train(g, model):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
     best_val_acc = 0
     best_test_acc = 0
 
-    features = g.ndata['feat']
-    labels = g.ndata['label']
-    train_mask = g.ndata['train_mask']
-    val_mask = g.ndata['val_mask']
-    test_mask = g.ndata['test_mask']
+    features = g.ndata['NodeFeature']
+    labels = g.ndata['NodeLabel']
+    train_mask = g.ndata['train_set']
+    val_mask = g.ndata['val_set']
+    test_mask = g.ndata['test_set']
     for e in range(100):
         # Forward
         logits = model(g, features)
@@ -86,5 +76,5 @@ def train(g, model):
 
 # train with gpu
 g = g.to('cuda')
-model = GCN(g.ndata['feat'].shape[1], 16, dataset.num_classes).to('cuda')
+model = GCN(g.ndata['NodeFeature'].shape[1], 16, dataset._num_labels).to('cuda')
 train(g, model)
