@@ -3,13 +3,14 @@
 Any dataset needs to contain a graph instance. By default, a graph
 instance should be initialized given by a metadata.json.
 """
+from copy import copy
 import json
 import os
 
 import dgl
 import torch
 
-from .utils import load_data, is_sparse
+from .utils import file_reader
 
 
 def is_single_graph(data):
@@ -36,17 +37,20 @@ def is_hetero_graph(data):
         raise RuntimeError("metadata.json has wrong structure.")
 
 
-def get_single_graph(data, device="cpu"):
+def get_single_graph(data, device="cpu", hetero=False):
     """Initialize and return a single Graph instance given data."""
-    edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
-    src_nodes, dst_nodes = edges.T[0], edges.T[1]
+    if hetero:
+        g = get_heterograph(data, device=device)
+    else:
+        edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
+        src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
-    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
-    for attr, array in data["Node"].items():
-        g.ndata[attr] = array
+        g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
+        for attr, array in data["Node"].items():
+            g.ndata[attr] = array
 
-    for attr, array in data["Edge"].items():
-        g.edata[attr] = array
+        for attr, array in data["Edge"].items():
+            g.edata[attr] = array
 
     return g
 
@@ -92,41 +96,19 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     if verbose:
         print(metadata["description"])
 
+    hetero = is_hetero_graph(metadata)
+
     assert "data" in metadata, "attribute `data` not in metadata.json."
 
     for neg in ["Node", "Edge", "Graph"]:
         assert neg in metadata[
             "data"], f"attribute `{neg}` not in metadata.json"
 
-    assert "_Edge" in metadata["data"]["Edge"]
-    assert "_NodeList" in metadata["data"]["Graph"]
-
-    if is_hetero_graph(metadata):
-        raise NotImplementedError("Does not support Heterogeneous graph yet.")
-
-    data_buffer = {}
-    data = {"Node": {}, "Edge": {}, "Graph": {}}
-    for neg in ["Node", "Edge", "Graph"]:
-        for attr, props in metadata["data"][neg].items():
-            if "file" in props:
-                filename = props["file"]
-                if filename not in data_buffer:
-                    raw = load_data(os.path.join(pwd, filename))
-                    data_buffer[filename] = raw
-                else:
-                    raw = data_buffer[filename]
-                if "key" in props:
-                    key = props["key"]
-                    array = raw[key]
-                else:
-                    array = raw
-                if is_sparse(array):
-                    array = array.all().toarray()
-                array = torch.from_numpy(array).to(device=device)
-                data[neg][attr] = array
+    data = copy(metadata["data"])
+    data = dfs_read_file(pwd, data, device=device)
 
     if is_single_graph(data):
-        return get_single_graph(data, device)
+        return get_single_graph(data, device, hetero=hetero)
     else:
         return get_multi_graph(data, device)
 
@@ -134,6 +116,73 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
 def _dict_depth(d):
     """Return the depth of a dictionary."""
     if isinstance(d, dict):
-        return 1 + (max(map(_dict_depth, d.values()))
-                    if d else 0)
+        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
     return 0
+
+
+def dfs_read_file(pwd, d, device="cpu"):
+    """Read file efficiently."""
+    if "file" in d:
+        path = os.path.join(pwd, d["file"])
+        array = file_reader.get(path, d.get("key"), device)
+        return array
+    else:
+        for k in d:
+            d[k] = dfs_read_file(pwd, d[k], device=device)
+        return d
+
+
+def get_heterograph(data, device="cpu"):
+    """Get heterogeneous graph."""
+    node_depth = _dict_depth(data["Node"])
+    node_classes = []
+    node_features = {}
+    edge_features = {}
+    num_nodes_dict = {}
+    num_nodes = data["Graph"]["_NodeList"].shape[-1]
+    node_to_class = torch.zeros(num_nodes, dtype=torch.int)
+    if node_depth == 1:
+        # Nodes are homogeneous
+        node_classes.append("Node")
+        node_features["Node"] = data["Node"]
+        node_features["Node"].pop("_ID", None)
+        num_nodes_dict["Node"] = num_nodes
+    else:
+        for i, node_class in enumerate(data["Node"]):
+            node_classes.append(node_class)
+            idx = data["Node"][node_class]["_ID"]
+            node_to_class[idx] = i
+            node_features[node_class] = data["Node"][node_class]
+            node_features[node_class].pop("_ID", None)
+            num_nodes_dict[node_class] = len(idx)
+
+    edge_depth = _dict_depth(data["Edge"])
+    assert edge_depth == 2, "Edges of heterograph must be heterogeneous, too."
+
+    graph_data = {}  # triplet to (src_tensor, dst_tensor)
+    for edge_class in data["Edge"]:
+        # Infer triplet
+        edges = data["Edge"][edge_class]["_Edge"]
+        src_class = node_classes[node_to_class[edges[0][0]]]
+        dst_class = node_classes[node_to_class[edges[0][1]]]
+        triplet = (src_class, edge_class, dst_class)
+        graph_data[triplet] = (edges.T[0], edges.T[1])
+        edge_features[edge_class] = data["Edge"][edge_class]
+        edge_features[edge_class].pop("_ID", None)
+
+    g: dgl.DGLGraph = dgl.heterograph(graph_data,
+                                      num_nodes_dict=num_nodes_dict)
+    g = g.to(device)
+
+    # Add node and edge features
+    for node_class, node_feats in node_features.items():
+        for feat_name, feat_tensor in node_feats.items():
+            if len(g.ntypes) == 1:
+                g.ndata[feat_name] = feat_tensor
+            else:
+                g.ndata[feat_name] = {node_class: feat_tensor}
+    for edge_class, edge_feats in edge_features.items():
+        for feat_name, feat_tensor in edge_feats.items():
+            g.edata[feat_name] = {edge_class: feat_tensor}
+
+    return g
