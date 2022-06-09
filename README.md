@@ -15,49 +15,109 @@ of `metadata.json` for homogeneous graphs have one fewer depth.
 
 ```json
 {
-    "description": "An example of heterogeneous dataset.",
-    "citation": "",
+    "description": "OGBN-MAG dataset.",
     "data": {
         "Node": {
-            "NodeSet1Feature1": {
-                "description": "Float node features of NodeSet1.",
-                "type": "float",
-                "format": "Tensor",
-                "file": "example.npz",
-                "key": "nodeset1_feat1"
+            "PaperNode": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "PaperNode_id"
+                },
+                "PaperFeature": {
+                    "description": "Node features of ogbn-mag dataset.",
+                    "type": "float",
+                    "format": "Tensor",
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_feats"
+                },
+                "PaperLabel": {
+                    "description": "Node labels of ogbn-mag dataset, int ranged from 1 to 40.",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_class"
+                },
+                "PaperYear": {
+                    "description": "Year of the article represented by the Node",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_year"
+                }
             },
-            "NodeSet1Feature2": {
-                "description": "Int node features of NodeSet1.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "example.npz",
-                "key": "nodeset1_feat2"
+            "AuthorNode": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "AuthorNode_id"
+                }
+            },
+            "InstitutionNode": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "InstitutionNode_id"
+                }
+            },
+            "FieldOfStudyNode": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "FieldOfStudyNode_id"
+                }
             }
         },
         "Edge": {
-            "_Edge": {
-                "file": "example.npz",
-                "key": "edge1"
+            "Author_affiliated_with_Institution": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "author_institution_id"
+                },
+                "_Edge": {
+                    "file": "ogbn-mag.npz",
+                    "key": "author_institution_edge"
+                }
             },
-            "EdgeSet1Feature1": {
-                "description": "Edge creation year.",
-                "type": "int",
-                "format": "Tensor",
-                "file": "example.npz",
-                "key": "edgeset1_feat1"
+            "Author_writes_Paper": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "author_paper_id"
+                },
+                "_Edge": {
+                    "file": "ogbn-mag.npz",
+                    "key": "author_paper_edge"
+                }
+            },
+            "Paper_cites_Paper": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_paper_id"
+                },
+                "_Edge": {
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_paper_edge"
+                }
+            },
+            "Paper_has_topic_FieldOfStudy": {
+                "_ID": {
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_FieldOfStudy_id"
+                },
+                "_Edge": {
+                    "file": "ogbn-mag.npz",
+                    "key": "paper_FieldOfStudy_edge"
+                }
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "example.npz",
+                "file": "ogbn-mag.npz",
                 "key": "node_list"
             },
             "_EdgeList": {
-                "file": "example.npz",
+                "file": "ogbn-mag.npz",
                 "key": "edge_list"
             }
         }
-    }
+    },
+    "citation": "@inproceedings{wang2020microsoft,\ntitle={Microsoft academic graph: When experts are not enough},\nauthor={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},\nbooktitle={Quantitative Science Studies},\npages={396--413},\nyear={2020}\n}"
 }
 ```
 
