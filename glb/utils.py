@@ -165,7 +165,7 @@ def dgl_to_glb(graph: dgl.DGLGraph,
     metadata_path = os.path.join(pdir, "metadata.json")
 
     np.savez_compressed(npz_path, **data)
-    with open(metadata_path, "w") as fp:
+    with open(metadata_path, "w", encoding="utf-8") as fp:
         json.dump(metadata, fp)
 
     raise NotImplementedError
