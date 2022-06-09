@@ -4,7 +4,8 @@ import torch
 from dgl import DGLGraph
 from dgl.data import DGLDataset
 
-from glb.task import NodeClassificationTask, GraphClassificationTask
+from glb.task import (NodeClassificationTask, GraphClassificationTask,
+                      LinkPredictionTask)
 
 
 def node_classification_dataset_factory(graph: DGLGraph,
@@ -16,6 +17,7 @@ def node_classification_dataset_factory(graph: DGLGraph,
         """Node classification dataset."""
 
         def __init__(self):
+            """Node classification dataset."""
             self._g = None
             self.features = task.features
             self.target = task.target
@@ -26,7 +28,7 @@ def node_classification_dataset_factory(graph: DGLGraph,
             """Add train, val, and test masks to graph."""
             self._g = graph
             for dataset_, indices_ in task.split.items():
-                indices_ = torch.from_numpy(indices_).to(self._g.device)
+                indices_ = torch.tensor(indices_).to(self._g.device)
                 indices_ = torch.squeeze(indices_)
                 assert indices_.dim() == 1
                 if len(indices_) < self._g.num_nodes():  # index tensor
@@ -73,7 +75,7 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
             self.graphs = graphs
             device = graphs[0].device
             indices = task.split[self.split]
-            indices = torch.from_numpy(indices).to(device)
+            indices = torch.tensor(indices).to(device)
             indices = torch.squeeze(indices)
             assert indices.dim() == 1
             if len(indices) < len(self.graphs):  # index tensor
@@ -100,3 +102,49 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
         datasets.append(GraphClassificationDataset(split=split))
 
     return datasets
+
+
+def link_prediction_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
+    """Initialize and return a LinkPrediction Dataset."""
+    assert isinstance(graph, DGLGraph)
+
+    class LinkPredictionDataset(DGLDataset):
+        """Link Prediction dataset."""
+
+        def __init__(self):
+            self._g = None
+            self.features = task.features
+            self.target = task.target
+            super().__init__(name=task.description, force_reload=True)
+
+        def process(self):
+            self._g = graph
+            if task.type == "TimeDependentLinkPrediction":
+                # load train, val, test edges
+                time_entries = task.time.split("/")
+                assert len(time_entries) == 2
+                assert time_entries[0] == "Edge"
+                time_attr = time_entries[-1]
+                etime = self._g.edata[time_attr]  # tensor / dict of tensor
+                for split in ["train", "valid", "test"]:
+                    window = task.time_window[f"{split}_time_window"]
+                    if isinstance(etime, dict):
+                        self._g.edata[f"{split}_mask"] = {
+                            k: torch.logical_and(v >= window[0], v < window[1])
+                            for k, v in etime.items()
+                        }
+                    else:
+                        self._g.edata[f"{split}_mask"] = torch.logical_and(
+                            etime >= window[0], etime < window[1])
+            else:
+                raise NotImplementedError
+
+        def get_idx_split(self):
+            split_dict = {}
+            for split in ["train", "valid", "test"]:
+                split_dict[split] = torch.masked_select(
+                    torch.arange(self._g.num_edges()),
+                    self._g.edata[f"{split}_mask"])
+            return split_dict
+
+    return LinkPredictionDataset()
