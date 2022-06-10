@@ -17,7 +17,7 @@ python setup.py install
 python3 example.py --task {NodeClassification,TimeDepenedentLinkPrediction,GraphClassification}
 ```
 
-## Example of `metadata.json`
+## Examples of `metadata.json`
 
 ### Homogeneous Graph
 
