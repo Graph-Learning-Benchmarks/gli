@@ -1,8 +1,10 @@
 #!/bin/bash
 
+FILES=$(git ls-files '*.py')
+
 set -Eeuo pipefail
 set -x
 
-pycodestyle glb
-pydocstyle glb
-pylint glb --rcfile .pylintrc
+pycodestyle $FILES
+pydocstyle $FILES
+pylint $FILES --rcfile .pylintrc
