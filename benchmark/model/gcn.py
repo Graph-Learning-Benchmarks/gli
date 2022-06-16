@@ -10,9 +10,9 @@ metadata_path = {
     'citeseer': '../../examples/citeseer/metadata.json',
     'cora': '../../examples/cora/metadata.json',
     'pubmed': '../../examples/pubmed/metadata.json',
-    'ogbn_arxiv': 
+    'ogbn_arxiv':
     '../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json',
-    'ogbn_mag': 
+    'ogbn_mag':
     '../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json'
 }
 task_path = {
@@ -26,14 +26,13 @@ task_path = {
 }
 
 parser = argparse.ArgumentParser(description='gcn benchmarking')
-parser.add_argument('--dataset', type=str, default='cora', help='provided datasets: cora, citeseer, pubmed, ogbn_arxiv, ogbn_mag')
+parser.add_argument('--dataset', type=str, default='cora', \
+    help='provided datasets: cora, citeseer, pubmed, ogbn_arxiv, ogbn_mag')
 args = parser.parse_args()
 
 g = glb.graph.read_glb_graph(metadata_path=metadata_path[args.dataset])
 task = glb.task.read_glb_task(task_path=task_path[args.dataset])
 dataset = glb.dataloading.combine_graph_and_task(g, task)
-g = dataset[0]
-
 
 class GCN(nn.Module):
     def __init__(self, in_feats, h_feats, num_classes):

@@ -65,28 +65,28 @@ def evaluate(model, features, pseudo, labels, mask):
 
 def main(args):
     metadata_path = {
-    'citeseer': '../../examples/citeseer/metadata.json',
-    'cora': '../../examples/cora/metadata.json',
-    'pubmed': '../../examples/pubmed/metadata.json',
-    'ogbn_arxiv': 
-    '../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json',
-    'ogbn_mag': 
-    '../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json'
+        'citeseer': '../../examples/citeseer/metadata.json',
+        'cora': '../../examples/cora/metadata.json',
+        'pubmed': '../../examples/pubmed/metadata.json',
+        'ogbn_arxiv':
+        '../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json',
+        'ogbn_mag':
+        '../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json'
     }
     task_path = {
-    'citeseer': '../../examples/citeseer/task.json',
-    'cora': '../../examples/cora/task.json',
-    'pubmed': '../../examples/pubmed/task.json',
-    'ogbn_arxiv':
-    '../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json',
-    'ogbn_mag':
-    '../../examples/ogb_data/node_prediction/ogbn-mag/task.json'
+        'citeseer': '../../examples/citeseer/task.json',
+        'cora': '../../examples/cora/task.json',
+        'pubmed': '../../examples/pubmed/task.json',
+        'ogbn_arxiv':
+        '../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json',
+        'ogbn_mag':
+        '../../examples/ogb_data/node_prediction/ogbn-mag/task.json'
     }
     # load and preprocess dataset
     g = glb.graph.read_glb_graph(metadata_path=metadata_path[args.dataset])
     task = glb.task.read_glb_task(task_path=task_path[args.dataset])
     dataset = glb.dataloading.combine_graph_and_task(g, task)
-    
+
     if args.gpu < 0:
         cuda = False
     else:
@@ -117,7 +117,8 @@ def main(args):
     g = g.remove_self_loop().add_self_loop()
     n_edges = g.number_of_edges()
     us, vs = g.edges(order='eid')
-    udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / torch.sqrt(g.in_degrees(vs).float())
+    udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
+        torch.sqrt(g.in_degrees(vs).float())
     pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
 
     # create GraphSAGE model
@@ -136,7 +137,8 @@ def main(args):
     loss_fcn = torch.nn.CrossEntropyLoss()
 
     # use optimizer
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, \
+        weight_decay=args.weight_decay)
 
     # initialize graph
     dur = []
