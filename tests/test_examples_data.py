@@ -2,8 +2,8 @@
 import pytest
 import os
 import re
-import json
 import sys
+import glb
 
 
 def example_data_check(path_to_parent):
@@ -46,26 +46,37 @@ def find_examples_dir():
 
 @pytest.mark.parametrize("directory", find_examples_dir())
 def graph_loading_test(directory):
-    """Test if glb.graph.read_glb_graph can be applied successfully"""
+    """Test if glb.graph.read_glb_graph can be applied successfully."""
     sys.path.append(sys.path[0] + "/..")
     print(sys.path)
-    import glb
     metadata_path = directory + "/metadata.json"
     try:
         g = glb.graph.read_glb_graph(metadata_path=metadata_path)
-    except Exception as e:
+    except (AssertionError,
+            AttributeError,
+            ModuleNotFoundError,
+            IndexError,
+            ValueError) as e:
         print(e, metadata_path, "graph loading failed")
         assert False
 
     task_path = directory + "/task.json"
     try:
         task = glb.task.read_glb_task(task_path=task_path)
-    except Exception as e:
+    except (AssertionError,
+            AttributeError,
+            ModuleNotFoundError,
+            IndexError,
+            ValueError) as e:
         print(e, task_path, "task loading failed")
         assert False
 
     try:
         glb.dataloading.combine_graph_and_task(g, task)
-    except Exception as e:
+    except (AssertionError,
+            AttributeError,
+            ModuleNotFoundError,
+            IndexError,
+            ValueError) as e:
         print(e, directory, "combine graph and task loading failed")
         assert False
