@@ -1,31 +1,36 @@
-import sys
 import argparse
 import dgl
 import torch
+import glb
 import torch.nn as nn
 import torch.nn.functional as F
-import glb
 from dgl.nn import GraphConv
-sys.path.append('../..')
+
+metadata_path = {
+    'citeseer': '../../examples/citeseer/metadata.json',
+    'cora': '../../examples/cora/metadata.json',
+    'pubmed': '../../examples/pubmed/metadata.json',
+    'ogbn_arxiv': 
+    '../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json',
+    'ogbn_mag': 
+    '../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json'
+}
+task_path = {
+    'citeseer': '../../examples/citeseer/task.json',
+    'cora': '../../examples/cora/task.json',
+    'pubmed': '../../examples/pubmed/task.json',
+    'ogbn_arxiv':
+    '../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json',
+    'ogbn_mag':
+    '../../examples/ogb_data/node_prediction/ogbn-mag/task.json'
+}
 
 parser = argparse.ArgumentParser(description='gcn benchmarking')
-parser.add_argument('--dataset', type=str, default='cora', help='provided')
-citeseer_metadata_path = "../../examples/citeseer/metadata.json"
-citeseer_task_path = "../../examples/citeseer/task.json"
-cora_metadata_path = "../../examples/cora/metadata.json"
-cora_task_path = "../../examples/cora/task.json"
-pubmed_metadata_path = "../../examples/pubmed/metadata.json"
-pubmed_task_path = "../../examples/pubmed/task.json"
-ogbn_arxiv_metadata_path = \
-    "../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json"
-ogbn_arxiv_task_path = \
-    "../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json"
-ogbn_mag_metadata_path = \
-    "../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json"
-ogbn_mag_task_path = \
-    "../../examples/ogb_data/node_prediction/ogbn-mag/task.json"
-g = glb.graph.read_glb_graph(metadata_path=ogbn_mag_metadata_path)
-task = glb.task.read_glb_task(task_path=ogbn_mag_task_path)
+parser.add_argument('--dataset', type=str, default='cora', help='provided datasets: cora, citeseer, pubmed, ogbn_arxiv, ogbn_mag')
+args = parser.parse_args()
+
+g = glb.graph.read_glb_graph(metadata_path=metadata_path[args.dataset])
+task = glb.task.read_glb_task(task_path=task_path[args.dataset])
 dataset = glb.dataloading.combine_graph_and_task(g, task)
 g = dataset[0]
 
@@ -53,7 +58,7 @@ def train(g, model):
     train_mask = g.ndata['train_set']
     val_mask = g.ndata['val_set']
     test_mask = g.ndata['test_set']
-    for e in range(100):
+    for e in range(10):
         # Forward
         logits = model(g, features)
 
