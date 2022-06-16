@@ -76,7 +76,14 @@ def test_if_has_essential_json(directory):
     metadata.json file exist in all examples.
     """
     violations = None
-    result = check_file_name(os.listdir(directory))
+    files = []
+    for _, _, file in os.walk(directory):
+        if isinstance(file, str):
+            files.append(file)
+        else:
+            for f in file:
+                files.append(f)
+    result = check_file_name(files)
     if result[0] is True:
         pass
     else:
@@ -117,13 +124,21 @@ def check_essential_keys_task_json(dic):
 def test_task_json_content(directory):
     """Check if task json meets requirements."""
     file_list = os.listdir(directory)
+    file_list = []
+    for root, _, file in os.walk(directory):
+        if isinstance(file, str):
+            file.append(os.path.join(root, file))
+            file_list.append(file)
+        else:
+            for f in file:
+                file_list.append(os.path.join(root, f))
     for file in file_list:
         if check_if_task_json(file):
-            with open(directory + "/" + file, encoding="utf8") as json_file:
+            with open(file, encoding="utf8") as json_file:
                 data = json.load(json_file)
                 missing_keys = check_essential_keys_task_json(data)
                 if len(missing_keys) != 0:
-                    print(directory + "/" + file + " misses following keys")
+                    print(file + " misses following keys")
                     print(missing_keys)
                 assert len(missing_keys) == 0
 
@@ -148,12 +163,20 @@ def check_essential_keys_metadata_json(dic):
 def test_metadata_json_content(directory):
     """Check if metadata json meets requirements."""
     file_list = os.listdir(directory)
+    file_list = []
+    for root, _, file in os.walk(directory):
+        if isinstance(file, str):
+            file.append(os.path.join(root, file))
+            file_list.append(file)
+        else:
+            for f in file:
+                file_list.append(file_list.append(os.path.join(root, f)))
     for file in file_list:
         if check_if_metadata_json(file):
             with open(directory + "/" + file, encoding="utf8") as json_file:
                 data = json.load(json_file)
                 missing_keys = check_essential_keys_metadata_json(data)
                 if len(missing_keys) != 0:
-                    print(directory + "/" + file + " misses following keys")
+                    print(file + " misses following keys")
                     print(missing_keys)
                 assert len(missing_keys) == 0
