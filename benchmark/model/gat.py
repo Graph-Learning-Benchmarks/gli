@@ -1,12 +1,13 @@
-from dgl.nn.pytorch import GATConv
+import sys
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import sys
-sys.path.append('../..')
 import glb
-import time
 import numpy as np
+from dgl.nn.pytorch import GATConv
+sys.path.append('../..')
+
 
 class GAT(nn.Module):
     def __init__(self, g, in_dim, hidden_dim, out_dim, num_heads):
@@ -30,8 +31,8 @@ def train(g, model):
     features = g.ndata['NodeFeature']
     labels = g.ndata['NodeLabel']
     train_mask = g.ndata['train_set']
-    val_mask = g.ndata['val_set']
-    test_mask = g.ndata['test_set']
+    # val_mask = g.ndata['val_set']
+    # test_mask = g.ndata['test_set']
 
     # main loop
     dur = []
@@ -60,16 +61,20 @@ cora_metadata_path = "../../examples/cora/metadata.json"
 cora_task_path = "../../examples/cora/task.json"
 pubmed_metadata_path = "../../examples/pubmed/metadata.json"
 pubmed_task_path = "../../examples/pubmed/task.json"
-ogbn_arxiv_metadata_path = "../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json"
-ogbn_arxiv_task_path = "../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json"
-ogbn_mag_metadata_path = "../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json"
-ogbn_mag_task_path = "../../examples/ogb_data/node_prediction/ogbn-mag/task.json"
+ogbn_arxiv_metadata_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json"
+ogbn_arxiv_task_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json"
+ogbn_mag_metadata_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json"
+ogbn_mag_task_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-mag/task.json"
+
 
 g = glb.graph.read_glb_graph(metadata_path=cora_metadata_path)
 task = glb.task.read_glb_task(task_path=cora_task_path)
-
 dataset = glb.dataloading.combine_graph_and_task(g, task)
-g = dataset[0]
+# g = dataset[0]
 
 # create the model, 2 heads, each head has hidden size 8
 

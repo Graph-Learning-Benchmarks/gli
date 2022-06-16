@@ -1,28 +1,34 @@
+import sys
+import argparse
 import dgl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import sys
-sys.path.append('../..')
 import glb
 from dgl.nn import GraphConv
+sys.path.append('../..')
 
+parser = argparse.ArgumentParser(description='gcn benchmarking')
+parser.add_argument('--dataset', type=str, default='cora', help='provided')
 citeseer_metadata_path = "../../examples/citeseer/metadata.json"
 citeseer_task_path = "../../examples/citeseer/task.json"
 cora_metadata_path = "../../examples/cora/metadata.json"
 cora_task_path = "../../examples/cora/task.json"
 pubmed_metadata_path = "../../examples/pubmed/metadata.json"
 pubmed_task_path = "../../examples/pubmed/task.json"
-ogbn_arxiv_metadata_path = "../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json"
-ogbn_arxiv_task_path = "../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json"
-ogbn_mag_metadata_path = "../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json"
-ogbn_mag_task_path = "../../examples/ogb_data/node_prediction/ogbn-mag/task.json"
-
+ogbn_arxiv_metadata_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-arxiv/metadata.json"
+ogbn_arxiv_task_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-arxiv/task.json"
+ogbn_mag_metadata_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-mag/metadata.json"
+ogbn_mag_task_path = \
+    "../../examples/ogb_data/node_prediction/ogbn-mag/task.json"
 g = glb.graph.read_glb_graph(metadata_path=ogbn_mag_metadata_path)
 task = glb.task.read_glb_task(task_path=ogbn_mag_task_path)
-
 dataset = glb.dataloading.combine_graph_and_task(g, task)
 g = dataset[0]
+
 
 class GCN(nn.Module):
     def __init__(self, in_feats, h_feats, num_classes):
@@ -36,8 +42,6 @@ class GCN(nn.Module):
         h = self.conv2(g, h)
         return h
 
-# Create the model with given dimensions
-model = GCN(g.ndata['NodeFeature'].shape[1], 16, dataset._num_labels)
 
 def train(g, model):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
@@ -61,7 +65,7 @@ def train(g, model):
         loss = F.cross_entropy(logits[train_mask], labels[train_mask])
 
         # Compute accuracy on training/validation/test
-        train_acc = (pred[train_mask] == labels[train_mask]).float().mean()
+        # train_acc = (pred[train_mask] == labels[train_mask]).float().mean()
         val_acc = (pred[val_mask] == labels[val_mask]).float().mean()
         test_acc = (pred[test_mask] == labels[test_mask]).float().mean()
 
@@ -76,8 +80,10 @@ def train(g, model):
         optimizer.step()
 
         if e % 5 == 0:
-            print('In epoch {}, loss: {:.3f}, val acc: {:.3f} (best {:.3f}), test acc: {:.3f} (best {:.3f})'.format(
+            print('In epoch {}, loss: {:.3f}, val acc: {:.3f} (best {:.3f}), \
+                test acc: {:.3f} (best {:.3f})'.format(
                 e, loss, val_acc, best_val_acc, test_acc, best_test_acc))
+
 
 # train with cpu
 # model = GCN(g.ndata['NodeFeature'].shape[1], 16, dataset._num_labels)
