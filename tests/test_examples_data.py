@@ -3,7 +3,6 @@ import pytest
 import os
 import re
 import sys
-import glb
 
 
 def example_data_check(path_to_parent):
@@ -50,6 +49,9 @@ def graph_loading_test(directory):
     sys.path.append(sys.path[0] + "/..")
     print(sys.path)
     metadata_path = directory + "/metadata.json"
+    sys.path.append("../GLB-Repo/glb")
+    glb = None
+
     try:
         g = glb.graph.read_glb_graph(metadata_path=metadata_path)
     except (AssertionError,
