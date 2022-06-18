@@ -1,11 +1,13 @@
 """Dataset for GLB."""
-from typing import List
+from typing import Iterable
+import numpy as np
+
 import torch
 from dgl import DGLGraph
 from dgl.data import DGLDataset
 
-from glb.task import (NodeClassificationTask, GraphClassificationTask,
-                      LinkPredictionTask)
+from glb.task import (GraphClassificationTask, LinkPredictionTask,
+                      NodeClassificationTask)
 
 
 def node_classification_dataset_factory(graph: DGLGraph,
@@ -28,7 +30,9 @@ def node_classification_dataset_factory(graph: DGLGraph,
             """Add train, val, and test masks to graph."""
             self._g = graph
             for dataset_, indices_ in task.split.items():
-                indices_ = torch.tensor(indices_).to(self._g.device)
+                assert not indices_.is_sparse
+                indices_ = torch.tensor(indices_.clone().detach()).to(
+                    self._g.device)
                 indices_ = torch.squeeze(indices_)
                 assert indices_.dim() == 1
                 if len(indices_) < self._g.num_nodes():  # index tensor
@@ -45,13 +49,17 @@ def node_classification_dataset_factory(graph: DGLGraph,
         def __len__(self):
             return 1
 
+        @property
+        def num_labels(self):
+            return self._num_labels
+
     return NodeClassificationDataset()
 
 
-def graph_classification_dataset_factory(graphs: List[DGLGraph],
+def graph_classification_dataset_factory(graphs: Iterable[DGLGraph],
                                          task: GraphClassificationTask):
     """Initialize and return split GraphClassification Dataset."""
-    assert isinstance(graphs, list)
+    assert isinstance(graphs, Iterable)
 
     entries = task.target.split("/")
     assert len(entries) == 2
@@ -75,7 +83,11 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
             self.graphs = graphs
             device = graphs[0].device
             indices = task.split[self.split]
-            indices = torch.tensor(indices).to(device)
+            assert not indices.is_sparse
+            if isinstance(indices, np.ndarray):
+                indices = torch.from_numpy(indices).to(device)
+            else:
+                indices = indices.to(device)
             indices = torch.squeeze(indices)
             assert indices.dim() == 1
             if len(indices) < len(self.graphs):  # index tensor
@@ -96,6 +108,10 @@ def graph_classification_dataset_factory(graphs: List[DGLGraph],
 
         def __len__(self):
             return len(self.graphs)
+
+        @property
+        def num_labels(self):
+            return self._num_labels
 
     datasets = []
     for split in task.split:
