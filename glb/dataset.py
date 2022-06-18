@@ -1,5 +1,6 @@
 """Dataset for GLB."""
 from typing import Iterable
+import numpy as np
 
 import torch
 from dgl import DGLGraph
@@ -83,7 +84,10 @@ def graph_classification_dataset_factory(graphs: Iterable[DGLGraph],
             device = graphs[0].device
             indices = task.split[self.split]
             assert not indices.is_sparse
-            indices = torch.tensor(indices.clone().detach()).to(device)
+            if isinstance(indices, np.ndarray):
+                indices = torch.from_numpy(indices).to(device)
+            else:
+                indices = indices.to(device)
             indices = torch.squeeze(indices)
             assert indices.dim() == 1
             if len(indices) < len(self.graphs):  # index tensor

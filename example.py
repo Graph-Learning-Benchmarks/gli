@@ -53,11 +53,6 @@ def prepare_dataset(metadata_path, task_path):
     print(f"Read task specification from {task_path} in {clock.toc():.2f}s.")
     datasets = glb.dataloading.combine_graph_and_task(g, task)
     print(f"Combine graph and task into dataset(s) in {clock.toc():.2f}s.")
-    snapshot = tracemalloc.take_snapshot()
-    stat = snapshot.statistics("lineno")
-    print("Memory usage snapshot (First 10 terms):")
-    for line in stat[:10]:
-        print(line)
     mem = tracemalloc.get_traced_memory()[1]/(1024*1024)
     print(f"Peak memory usage: {mem:.2f}MB.")
     tracemalloc.stop()
