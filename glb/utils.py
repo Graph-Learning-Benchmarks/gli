@@ -23,17 +23,16 @@ def load_data(path: os.PathLike):
     return data
 
 
-def is_sparse(array):
-    """Return true if array is sparse.
+def unwrap_array(array):
+    """Unwrap the array.
 
     This method is to deal with the situation where array is loaded from
     sparse matrix by np.load(), which will wrap array to be a numpy.ndarray.
     """
-    if sp.issparse(array):
-        return True
     if isinstance(array, np.ndarray):
-        return array.dtype.kind not in set("buifc")
-    raise TypeError
+        if array.dtype.kind not in set("buifc"):
+            return array.all()
+    return array
 
 
 class KeyedFileReader():
@@ -63,12 +62,31 @@ class KeyedFileReader():
         if array is None:
             return None
 
-        if is_sparse(array):
-            array = array.all().toarray()
-        return torch.from_numpy(array).to(device=device)
+        assert isinstance(array, np.ndarray)
+
+        array = unwrap_array(array)
+
+        if sp.issparse(array):
+            # Keep the array format to be scipy rather than pytorch
+            return array
+        else:
+            return torch.from_numpy(array).to(device=device)
 
 
 file_reader = KeyedFileReader()
+
+
+def sparse_to_torch(sparse_array):
+    """Transform a sparse scipy array to sparse(coo) torch tensor.
+
+    Note - add csr support.
+    """
+    sparse_array = sp.coo_matrix(sparse_array)
+    i = torch.LongTensor(np.vstack((sparse_array.row, sparse_array.col)))
+    v = torch.FloatTensor(sparse_array.data)
+    shape = sparse_array.shape
+
+    return torch.sparse_coo_tensor(i, v, torch.Size(shape)).to_sparse_csr()
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,

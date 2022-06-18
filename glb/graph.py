@@ -3,11 +3,12 @@
 Any dataset needs to contain a graph instance. By default, a graph
 instance should be initialized given by a metadata.json.
 """
-from copy import copy
 import json
 import os
+from copy import copy
 
 import dgl
+import scipy.sparse as sp
 import torch
 
 from .utils import file_reader
@@ -15,12 +16,11 @@ from .utils import file_reader
 
 def is_single_graph(data):
     """Return true if the glb data contains a single graph."""
-    nodelist = data["Graph"]["_NodeList"]
-    nodelist = torch.squeeze(nodelist)
-    if nodelist.dim() == 1:
+    node_list = data["Graph"]["_NodeList"]
+    if len(node_list.shape) == 1:
         return True
-    elif nodelist.dim() == 2:
-        return nodelist.shape[0] == 1
+    elif len(node_list.shape) == 2:
+        return node_list.shape[0] == 1
     else:
         raise ValueError("_NodeList has more than 2 dimensions.")
 
@@ -68,17 +68,23 @@ def get_multi_graph(data, device="cpu"):
     for attr, array in data["Edge"].items():
         g.edata[attr] = array
 
-    if edge_list:
-        edge_list = edge_list.bool()
-        assert edge_list.dim() == 2, "_EdgeList should be a matrix."
-        edge_list = edge_list > 0
-        for i in range(len(edge_list)):
-            graphs.append(dgl.edge_subgraph(g, edge_list[i]))
-    else:
-        node_list = node_list.bool()
-        assert node_list.dim() == 2, "_NodeList should be a matrix."
-        for i in range(len(node_list)):
-            graphs.append(dgl.node_subgraph(g, node_list[i]))
+    # Decide subgraph types (node/edge-subgraph)
+    subgraph_func = dgl.edge_subgraph if edge_list else dgl.node_subgraph
+    entity_list = edge_list if edge_list else node_list
+
+    # Transform indices into dense boolean tensor
+    assert len(entity_list.shape) == 2, "NodeList/EdgeList should be a matrix."
+    if sp.issparse(entity_list) and not sp.isspmatrix_csr(entity_list):
+        # Only allow csr matrix
+        entity_list = sp.csr_matrix(entity_list)
+    for i in range(entity_list.shape[0]):
+        if isinstance(entity_list, torch.Tensor):  # Dense pytorch tensor
+            subgraph_entities = entity_list[i]
+        elif isinstance(entity_list, sp.csr_matrix):
+            subgraph_entities = entity_list.getrow(i).todense()
+            subgraph_entities = torch.from_numpy(subgraph_entities).squeeze()
+        subgraph_entities = subgraph_entities.bool()
+        graphs.append(subgraph_func(g, subgraph_entities))
 
     for attr in data["Graph"]:
         for i, graph in enumerate(graphs):
