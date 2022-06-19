@@ -1,0 +1,99 @@
+{
+    "description": "NELL-995 dataset.",
+    "data": {
+        "Node": {
+            "NodeName": {
+                "description": "Node (entity) names in NELL-995 dataset, strings.",
+                "type": "string",
+                "format": "Tensor",
+                "file": "NELL-995.npz",
+                "key": "node_name"
+            }
+        },
+        "Edge": {
+            "TrainEdge": {
+                "_ID": {
+                    "file": "NELL-995.npz",
+                    "key": "TrainEdge_id"
+                },
+                "_Edge": {
+                    "file": "NELL-995.npz",
+                    "key": "edge"
+                },
+                "EdgeClass": {
+                    "description": "Relation (edge) id of the Edge in the NELL-995 dataset.",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "NELL-995.npz",
+                    "key": "edge_class"
+                },
+                "EdgeName": {
+                    "description": "Relation (edge) name of the Edge in the NELL-995 dataset.",
+                    "type": "string",
+                    "format": "Tensor",
+                    "file": "NELL-995.npz",
+                    "key": "edge_name"
+                }
+            },
+            "ValidEdge": {
+                "_ID": {
+                    "file": "NELL-995.npz",
+                    "key": "ValidEdge_id"
+                },
+                "_Edge": {
+                    "file": "NELL-995.npz",
+                    "key": "edge"
+                },
+                "EdgeClass": {
+                    "description": "Relation id of the Edge in the NELL-995 dataset.",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "NELL-995.npz",
+                    "key": "edge_class"
+                },
+                "EdgeName": {
+                    "description": "Relation name of the Edge in the NELL-995 dataset.",
+                    "type": "string",
+                    "format": "Tensor",
+                    "file": "NELL-995.npz",
+                    "key": "edge_name"
+                }
+            },
+            "TestEdge": {
+                "_ID": {
+                    "file": "NELL-995.npz",
+                    "key": "TestEdge_id"
+                },
+                "_Edge": {
+                    "file": "NELL-995.npz",
+                    "key": "edge"
+                },
+                "EdgeClass": {
+                    "description": "Relation id of the Edge in the NELL-995 dataset.",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "NELL-995.npz",
+                    "key": "edge_class"
+                },
+                "EdgeName": {
+                    "description": "Relation name of the Edge in the NELL-995 dataset.",
+                    "type": "string",
+                    "format": "Tensor",
+                    "file": "NELL-995.npz",
+                    "key": "edge_name"
+                }
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "NELL-995.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "NELL-995.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@article{xiong2017deeppath,\ntitle={Deeppath: A reinforcement learning method for knowledge graph reasoning},\nauthor={Xiong, Wenhan and Hoang, Thien and Wang, William Yang},\njournal={arXiv preprint arXiv:1707.06690},\nyear={2017}\n}"
+}
