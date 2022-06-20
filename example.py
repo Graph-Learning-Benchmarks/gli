@@ -16,6 +16,7 @@ PATHS = [("examples/cora/metadata.json", "examples/cora/task.json"),
 
 class Timer:
     """Tic-Toc timer."""
+
     def __init__(self):
         """Initialize tic by current time."""
         self._tic = time.time()
