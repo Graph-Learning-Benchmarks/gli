@@ -47,7 +47,7 @@ clock = Timer()
 
 
 def edge_density(g):
-    """"""
+    """Compute the edge density."""
     nx_g = dgl.to_networkx(g)
     edge_den = nx.density(nx_g)
 
@@ -55,6 +55,7 @@ def edge_density(g):
 
 
 def avg_degree(g):
+    """Compute the average degree."""
     nx_g = dgl.to_networkx(g)
     degree = nx_g.degree()
     degree_list = []
@@ -66,6 +67,7 @@ def avg_degree(g):
 
 
 def avg_cluster_coefficient(g):
+    """Compute the average clustering coefficient."""
     nx_g = dgl.to_networkx(g)
     # to Digraph
     nx_g = nx.DiGraph(nx_g)
@@ -77,6 +79,7 @@ def avg_cluster_coefficient(g):
 
 
 def diameter(g):
+    """Compute the diameters (need to be connected)."""
     nx_g = dgl.to_networkx(g)
     nx_g = nx.Graph(nx_g)
     if nx.is_connected(nx_g):
@@ -86,17 +89,20 @@ def diameter(g):
 
 
 def avg_shortest_path(g):
+    """Compute the average shortest path (need to be connected)."""
     # nx_g = dgl.to_networkx(g)
     return nx.average_shortest_path_length(g)
 
 
 def edge_reciprocity(g):
+    """Compute the edge reciprocity (need to be connected)."""
     nx_g = dgl.to_networkx(g)
 
     return nx.reciprocity(nx_g)
 
 
 def gini_array(array):
+    """Compute the gini index of a given array."""
     array += np.finfo(np.float32).eps
     array = np.sort(array)
     n = array.shape[0]
@@ -106,12 +112,14 @@ def gini_array(array):
 
 
 def gini_degree(g):
+    """Compute the gini index of the degree sequence."""
     nx_g = dgl.to_networkx(g)
     degree_sequence = [d for n, d in nx_g.degree()]
     return gini_array(degree_sequence)
 
 
 # def gini_coreness(g):
+
 
 def prepare_dataset(metadata_path, task_path):
     """Prepare dataset."""
@@ -146,7 +154,6 @@ def main():
         # print(f"diameter: {glb.metric.diameter(g)}")
         # print(f"edge reciprocity: {glb.metric.edge_reciprocity(g)}")
         print(f"gini degree: {gini_degree(g):.6f}")
-
 
 
 if __name__ == "__main__":
