@@ -46,6 +46,7 @@ def get_single_graph(data, device="cpu", hetero=False):
         src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
         g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
+        # FiXME - check array type before assigning
         for attr, array in data["Node"].items():
             g.ndata[attr] = array
 
@@ -63,6 +64,7 @@ def get_multi_graph(data, device="cpu"):
 
     # Extract the whole graph
     g: dgl.DGLGraph = get_single_graph(data, device)
+    # FiXME - check array type before assigning
     for attr, array in data["Node"].items():
         g.ndata[attr] = array
     for attr, array in data["Edge"].items():
