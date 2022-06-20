@@ -33,7 +33,7 @@ class Timer:
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[2])
+parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[0])
 args = parser.parse_args()
 task_name = args.task
 clock = Timer()
