@@ -76,7 +76,7 @@ class KeyedFileReader():
 file_reader = KeyedFileReader()
 
 
-def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=True, device="cpu"):
+def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
     """Transform a sparse scipy array to sparse(coo) torch tensor.
 
     Note - add csr support.

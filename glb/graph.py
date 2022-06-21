@@ -40,7 +40,7 @@ def is_hetero_graph(data):
 def _to_tensor(x, device="cpu"):
     """Wrap x into a tensor."""
     if not torch.is_tensor(x) and sp.issparse(x):
-        x = sparse_to_torch(x, to_dense=True, device=device)
+        x = sparse_to_torch(x, to_dense=False, device=device)
     return x
 
 
