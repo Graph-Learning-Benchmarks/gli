@@ -37,7 +37,6 @@ def unwrap_array(array):
 
 class KeyedFileReader():
     """File reader for npz files."""
-
     def __init__(self) -> None:
         """File reader for npz files."""
         self._data_buffer = {}
@@ -76,17 +75,23 @@ class KeyedFileReader():
 file_reader = KeyedFileReader()
 
 
-def sparse_to_torch(sparse_array):
+def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=True, device="cpu"):
     """Transform a sparse scipy array to sparse(coo) torch tensor.
 
     Note - add csr support.
     """
-    sparse_array = sp.coo_matrix(sparse_array)
-    i = torch.LongTensor(np.vstack((sparse_array.row, sparse_array.col)))
-    v = torch.FloatTensor(sparse_array.data)
-    shape = sparse_array.shape
+    if to_dense:
+        array = sparse_array.toarray()
+        return torch.from_numpy(array).to(device)
 
-    return torch.sparse_coo_tensor(i, v, torch.Size(shape)).to_sparse_csr()
+    else:
+        sparse_array = sp.coo_matrix(sparse_array)
+        i = torch.LongTensor(np.vstack((sparse_array.row, sparse_array.col)))
+        v = torch.FloatTensor(sparse_array.data)
+        shape = sparse_array.shape
+
+        return torch.sparse_coo_tensor(i, v, torch.Size(shape),
+                                       device=device).to_sparse_csr()
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,
