@@ -37,6 +37,7 @@ def unwrap_array(array):
 
 class KeyedFileReader():
     """File reader for npz files."""
+
     def __init__(self) -> None:
         """File reader for npz files."""
         self._data_buffer = {}
