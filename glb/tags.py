@@ -57,7 +57,8 @@ def edge_density(g):
 def avg_degree(g):
     """Compute the average degree."""
     nx_g = dgl.to_networkx(g)
-    degree = nx_g.degree()
+
+    degree = nx_g.in_degree()
     degree_list = []
     for _, d in degree:
         degree_list.append(d)
@@ -98,17 +99,15 @@ def edge_reciprocity(g):
     """Compute the edge reciprocity (need to be connected)."""
     nx_g = dgl.to_networkx(g)
 
-    return nx.reciprocity(nx_g)
+    return nx.overall_reciprocity(nx_g)
 
 
 def gini_array(array):
     """Compute the gini index of a given array."""
-    array += np.finfo(np.float32).eps
     array = np.sort(array)
-    n = array.shape[0]
-    index = np.arange(1, n + 1)
-
-    return np.sum((2 * index - n - 1) * array) / (n * np.sum(array))
+    index = np.arange(1, array.shape[0] + 1)
+    return np.sum((2 * index - array.shape[0] - 1) * array) / \
+                 (array.shape[0] * np.sum(array))
 
 
 def gini_degree(g):
@@ -118,7 +117,43 @@ def gini_degree(g):
     return gini_array(degree_sequence)
 
 
-# def gini_coreness(g):
+def gini_coreness(g):
+    """Compute the gini index of the coreness sequence."""
+    nx_g = dgl.to_networkx(g)
+    # convert the MultiDiGraph to Digraph
+    nx_g = nx.DiGraph(nx_g)
+    core_sequence = list(nx.core_number(nx_g).values())
+    return gini_array(core_sequence)
+
+
+def degeneracy(g):
+    """Compute the Degeneracy."""
+    nx_g = dgl.to_networkx(g)
+    # convert the MultiDiGraph to Digraph
+    nx_g = nx.DiGraph(nx_g)
+    return max(nx.core_number(nx_g).values())
+
+
+def degree_assortativity(g):
+    """Compute the degree assortativity coefficient."""
+    nx_g = dgl.to_networkx(g)
+    return nx.degree_assortativity_coefficient(nx_g)
+
+
+def check_direct(g):
+    """Check the graph is directed or not."""
+    # to examine whether all the edges are bi-directed
+    # print("dgl edge number: ", g.edges()[0].size(dim=0))
+    nx_g = dgl.to_networkx(g)
+    node_num = nx_g.number_of_nodes()
+    count = 0
+    for i in range(node_num):
+        for _, neighbors in nx_g.edges(i):
+            if (neighbors, i) in nx_g.edges(neighbors):
+                # print("bi-directed edges exist")
+                count += 1
+    # print("number of indirected edges: ", count)
+    return g.edges()[0].size(dim=0) != count
 
 
 def prepare_dataset(metadata_path, task_path):
@@ -147,13 +182,17 @@ def main():
         print(g)
         print(task)
         print(datasets)
-        print(f"edge density: {edge_density(g):.6f}")
-        print(f"average degree: {avg_degree(g):.6f}")
-        print(f"average local clustering coefficient: "
+        print(f"Directed: {check_direct(g)}")
+        print(f"Edge Density: {edge_density(g):.6f}")
+        print(f"Average degree: {avg_degree(g):.6f}")
+        print(f"Average Local Clustering Coefficient: "
               f"{avg_cluster_coefficient(g):.6f}")
-        # print(f"diameter: {glb.metric.diameter(g)}")
-        # print(f"edge reciprocity: {glb.metric.edge_reciprocity(g)}")
-        print(f"gini degree: {gini_degree(g):.6f}")
+        print(f"Diameter: {diameter(g)}")
+        print(f"Edge Reciprocity: {edge_reciprocity(g)}")
+        print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
+        print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
+        print(f"Degeneracy: {degeneracy(g)}")
+        print(f"Degree Assortativity: {degree_assortativity(g)}")
 
 
 if __name__ == "__main__":
