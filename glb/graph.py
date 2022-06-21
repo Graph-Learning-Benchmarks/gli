@@ -11,7 +11,7 @@ import dgl
 import scipy.sparse as sp
 import torch
 
-from .utils import file_reader
+from .utils import file_reader, sparse_to_torch
 
 
 def is_single_graph(data):
@@ -37,6 +37,13 @@ def is_hetero_graph(data):
         raise RuntimeError("metadata.json has wrong structure.")
 
 
+def _to_tensor(x, device="cpu"):
+    """Wrap x into a tensor."""
+    if not torch.is_tensor(x) and sp.issparse(x):
+        x = sparse_to_torch(x, to_dense=False, device=device)
+    return x
+
+
 def get_single_graph(data, device="cpu", hetero=False):
     """Initialize and return a single Graph instance given data."""
     if hetero:
@@ -46,11 +53,12 @@ def get_single_graph(data, device="cpu", hetero=False):
         src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
         g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
+
         for attr, array in data["Node"].items():
-            g.ndata[attr] = array
+            g.ndata[attr] = _to_tensor(array)
 
         for attr, array in data["Edge"].items():
-            g.edata[attr] = array
+            g.edata[attr] = _to_tensor(array)
 
     return g
 
@@ -63,10 +71,12 @@ def get_multi_graph(data, device="cpu"):
 
     # Extract the whole graph
     g: dgl.DGLGraph = get_single_graph(data, device)
+
+    # Check array type before assigning
     for attr, array in data["Node"].items():
-        g.ndata[attr] = array
+        g.ndata[attr] = _to_tensor(array)
     for attr, array in data["Edge"].items():
-        g.edata[attr] = array
+        g.edata[attr] = _to_tensor(array)
 
     # Decide subgraph types (node/edge-subgraph)
     subgraph_func = dgl.edge_subgraph if edge_list else dgl.node_subgraph
