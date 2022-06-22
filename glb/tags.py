@@ -103,7 +103,7 @@ def edge_reciprocity(g):
 
 
 def relative_largest_cc(g):
-    """Compute the relative size of the largest connected component."""
+    """Compute relative size of the largest connected component."""
     # will disregard the edge direction!
     nx_g = dgl.to_networkx(g)
     nx_g = nx.Graph(nx_g)
@@ -113,8 +113,7 @@ def relative_largest_cc(g):
 
 
 def relative_largest_scc(g):
-    """Compute the relative size of the
-    largest strongly connected component."""
+    """Compute relative size of the largest strongly connected component."""
     # consider directed network only
     nx_g = dgl.to_networkx(g)
     lcc = sorted(nx.strongly_connected_components(nx_g), key=len, reverse=True)
