@@ -37,6 +37,8 @@ Statistics:
 + Task type: `LinkPredictionRelation`
     - Predict the relation edge given a pair of head and tail entities.
 
+## Preprocessing
+The data files and task config file in GLB format are transformed from the [OpenKE](https://github.com/thunlp/OpenKE) implementation.
 
 ### Requirements
 

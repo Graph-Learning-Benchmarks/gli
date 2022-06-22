@@ -11,77 +11,23 @@
             }
         },
         "Edge": {
-            "TrainEdge": {
-                "_ID": {
-                    "file": "FB13.npz",
-                    "key": "TrainEdge_id"
-                },
-                "_Edge": {
-                    "file": "FB13.npz",
-                    "key": "edge"
-                },
-                "EdgeClass": {
-                    "description": "Relation (edge) id of the Edge in the FB13 dataset.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "FB13.npz",
-                    "key": "edge_class"
-                },
-                "EdgeName": {
-                    "description": "Relation (edge) name of the Edge in the FB13 dataset.",
-                    "type": "string",
-                    "format": "Tensor",
-                    "file": "FB13.npz",
-                    "key": "edge_name"
-                }
+            "_Edge": {
+                "file": "FB13.npz",
+                "key": "edge"
             },
-            "ValidEdge": {
-                "_ID": {
-                    "file": "FB13.npz",
-                    "key": "ValidEdge_id"
-                },
-                "_Edge": {
-                    "file": "FB13.npz",
-                    "key": "edge"
-                },
-                "EdgeClass": {
-                    "description": "Relation id of the Edge in the FB13 dataset.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "FB13.npz",
-                    "key": "edge_class"
-                },
-                "EdgeName": {
-                    "description": "Relation name of the Edge in the FB13 dataset.",
-                    "type": "string",
-                    "format": "Tensor",
-                    "file": "FB13.npz",
-                    "key": "edge_name"
-                }
+            "EdgeClass": {
+                "description": "Relation (edge) id of the Edge in the FB13 dataset.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "FB13.npz",
+                "key": "edge_class"
             },
-            "TestEdge": {
-                "_ID": {
-                    "file": "FB13.npz",
-                    "key": "TestEdge_id"
-                },
-                "_Edge": {
-                    "file": "FB13.npz",
-                    "key": "edge"
-                },
-                "EdgeClass": {
-                    "description": "Relation id of the Edge in the FB13 dataset.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "FB13.npz",
-                    "key": "edge_class"
-                },
-                "EdgeName": {
-                    "description": "Relation name of the Edge in the FB13 dataset.",
-                    "type": "string",
-                    "format": "Tensor",
-                    "file": "FB13.npz",
-                    "key": "edge_name"
-                }
+            "EdgeName": {
+                "description": "Relation (edge) name of the Edge in the FB13 dataset.",
+                "type": "string",
+                "format": "Tensor",
+                "file": "FB13.npz",
+                "key": "edge_name"
             }
         },
         "Graph": {
