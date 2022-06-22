@@ -1,49 +1,9 @@
-"""Tagging network datasets."""
+"""Tagging graph datasets."""
 import dgl
 import argparse
 import networkx as nx
 import numpy as np
-import time
 import glb
-import tracemalloc
-
-TASKS = [
-    "NodeClassification", "TimeDepenedentLinkPrediction", "GraphClassification"
-]
-PATHS = [
-    ("../examples/cora/metadata.json", "../examples/cora/task.json"),
-    ("../examples/ogb_data/link_prediction/ogbl-collab/metadata.json",
-     "../examples/ogb_data/link_prediction/ogbl-collab/task_runtime_sampling"
-     ".json"),
-    ("../examples/ogb_data/graph_prediction/ogbg-molhiv/metadata.json",
-     "../examples/ogb_data/graph_prediction/ogbg-molhiv/task.json")
-]
-
-
-class Timer:
-    """Tic-Toc timer."""
-
-    def __init__(self):
-        """Initialize tic by current time."""
-        self._tic = time.time()
-
-    def tic(self):
-        """Reset tic."""
-        self._tic = time.time()
-        return self._tic
-
-    def toc(self):
-        """Return time elaspe between tic and toc, and reset tic."""
-        last_tic = self._tic
-        self._tic = time.time()
-        return self._tic - last_tic
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[2])
-args = parser.parse_args()
-task_name = args.task
-clock = Timer()
 
 
 def edge_density(g):
@@ -181,45 +141,42 @@ def check_direct(g):
 
 def prepare_dataset(metadata_path, task_path):
     """Prepare dataset."""
-    clock.tic()
-    tracemalloc.start()
     g = glb.graph.read_glb_graph(metadata_path=metadata_path)
-    print(f"Read graph data from {metadata_path} in {clock.toc():.2f}s.")
     task = glb.task.read_glb_task(task_path=task_path)
-    print(f"Read task specification from {task_path} in {clock.toc():.2f}s.")
     datasets = glb.dataloading.combine_graph_and_task(g, task)
-    print(f"Combine graph and task into dataset(s) in {clock.toc():.2f}s.")
-    mem = tracemalloc.get_traced_memory()[1] / (1024 * 1024)
-    print(f"Peak memory usage: {mem:.2f}MB.")
-    tracemalloc.stop()
     return g, task, datasets
 
 
 def main():
     """Run main function."""
-    path_dict = dict(zip(TASKS, PATHS))
-    g, task, datasets = prepare_dataset(*path_dict[task_name])
-    if isinstance(g, list):
-        print(f"Dataset contains {len(g)} graphs.")
-    else:
-        print(g)
-        print(task)
-        print(datasets)
-        print(f"Directed: {check_direct(g)}")
-        print(f"Edge Density: {edge_density(g):.6f}")
-        print(f"Average Degree: {avg_degree(g):.6f}")
-        print(f"Relative Size of Largest Connected Component: "
-              f"{relative_largest_cc(g):.6f}")
-        print(f"Relative Size of Largest Strongly Connected "
-              f"Component: {relative_largest_cc(g):.6f}")
-        print(f"Average Clustering Coefficient: "
-              f"{avg_cluster_coefficient(g):.6f}")
-        print(f"Diameter: {diameter(g)}")
-        print(f"Edge Reciprocity: {edge_reciprocity(g)}")
-        print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
-        print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
-        print(f"Degeneracy: {degeneracy(g)}")
-        print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
+    # parsing the input command
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--metadata", type=str)
+    parser.add_argument("--task", type=str)
+    args = parser.parse_args()
+    metadata_name, path_name = args.metadata, args.task
+    # read in the graph dataset
+    g, task, datasets = prepare_dataset(metadata_name, path_name)
+    # print input graph, task, and dataset information
+    print(g)
+    print(task)
+    print(datasets)
+    # print graph tags
+    print(f"Directed: {check_direct(g)}")
+    print(f"Edge Density: {edge_density(g):.6f}")
+    print(f"Average Degree: {avg_degree(g):.6f}")
+    print(f"Relative Size of Largest Connected Component: "
+          f"{relative_largest_cc(g):.6f}")
+    print(f"Relative Size of Largest Strongly Connected "
+          f"Component: {relative_largest_cc(g):.6f}")
+    print(f"Average Clustering Coefficient: "
+          f"{avg_cluster_coefficient(g):.6f}")
+    print(f"Diameter: {diameter(g)}")
+    print(f"Edge Reciprocity: {edge_reciprocity(g)}")
+    print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
+    print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
+    print(f"Degeneracy: {degeneracy(g)}")
+    print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
 
 
 if __name__ == "__main__":
