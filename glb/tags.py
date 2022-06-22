@@ -10,32 +10,26 @@ def edge_density(g):
     """Compute the edge density."""
     nx_g = dgl.to_networkx(g)
     edge_den = nx.density(nx_g)
-
     return edge_den
 
 
 def avg_degree(g):
     """Compute the average degree."""
     nx_g = dgl.to_networkx(g)
-
     degree = nx_g.in_degree()
     degree_list = []
     for _, d in degree:
         degree_list.append(d)
     av_degree = sum(degree_list) / len(degree_list)
-
     return av_degree
 
 
 def avg_cluster_coefficient(g):
     """Compute the average clustering coefficient."""
     nx_g = dgl.to_networkx(g)
-    # to Digraph
+    # transform from MultiDigraph to Digraph
     nx_g = nx.DiGraph(nx_g)
     av_local_clustering_coeff = nx.average_clustering(nx_g)
-    # av_local_clustering_coeff = sum(local_clustering_coefficient.values())
-    # / len(local_clustering_coefficient)
-
     return av_local_clustering_coeff
 
 
@@ -45,26 +39,36 @@ def diameter(g):
     nx_g = nx.Graph(nx_g)
     if nx.is_connected(nx_g):
         return nx.diameter(nx_g)
-    # else:
-    #     return max(max(j.values()) for (i, j) in nx.shortest_path_length(g))
+    else:
+        # if the graph is not connected, we report the diameter in the LCC
+        cc = sorted(nx.connected_components(nx_g), key=len, reverse=True)
+        lcc = nx_g.subgraph(cc[0])
+        return nx.diameter(lcc)
 
 
 def avg_shortest_path(g):
-    """Compute the average shortest path (need to be connected)."""
-    # nx_g = dgl.to_networkx(g)
-    return nx.average_shortest_path_length(g)
+    """Compute the average shortest path."""
+    nx_g = dgl.to_networkx(g)
+    if nx.is_strongly_connected(nx_g):
+        return nx.average_shortest_path_length(nx_g)
+    else:
+        # if the graph is not strongly connected,
+        # we report the avg shortest path in the LSCC
+        cc = sorted(nx.strongly_connected_components(nx_g),
+                    key=len, reverse=True)
+        lcc = nx_g.subgraph(cc[0])
+        return nx.average_shortest_path_length(lcc)
 
 
 def edge_reciprocity(g):
-    """Compute the edge reciprocity (need to be connected)."""
+    """Compute the edge reciprocity."""
     nx_g = dgl.to_networkx(g)
-
     return nx.overall_reciprocity(nx_g)
 
 
 def relative_largest_cc(g):
     """Compute relative size of the largest connected component."""
-    # will disregard the edge direction!
+    # will disregard the edge direction
     nx_g = dgl.to_networkx(g)
     nx_g = nx.Graph(nx_g)
     lcc = sorted(nx.connected_components(nx_g), key=len, reverse=True)
@@ -82,7 +86,7 @@ def relative_largest_scc(g):
 
 
 def gini_array(array):
-    """Compute the gini index of a given array."""
+    """Compute the Gini Index of a given array."""
     array = np.sort(array)
     index = np.arange(1, array.shape[0] + 1)
     return np.sum((2 * index - array.shape[0] - 1) * array) / \
@@ -171,7 +175,10 @@ def main():
           f"Component: {relative_largest_cc(g):.6f}")
     print(f"Average Clustering Coefficient: "
           f"{avg_cluster_coefficient(g):.6f}")
-    print(f"Diameter: {diameter(g)}")
+    # Cora: 19
+    # print(f"Diameter: {diameter(g)}")
+    # Cora: 6.310999
+    # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
     print(f"Edge Reciprocity: {edge_reciprocity(g)}")
     print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
     print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
