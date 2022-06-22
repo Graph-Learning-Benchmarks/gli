@@ -102,6 +102,26 @@ def edge_reciprocity(g):
     return nx.overall_reciprocity(nx_g)
 
 
+def relative_largest_cc(g):
+    """Compute the relative size of the largest connected component."""
+    # will disregard the edge direction!
+    nx_g = dgl.to_networkx(g)
+    nx_g = nx.Graph(nx_g)
+    lcc = sorted(nx.connected_components(nx_g), key=len, reverse=True)
+    lcc_size = nx.number_of_nodes(nx_g.subgraph(lcc[0]))
+    return lcc_size / nx.number_of_nodes(nx_g)
+
+
+def relative_largest_scc(g):
+    """Compute the relative size of the
+    largest strongly connected component."""
+    # consider directed network only
+    nx_g = dgl.to_networkx(g)
+    lcc = sorted(nx.strongly_connected_components(nx_g), key=len, reverse=True)
+    lcc_size = nx.number_of_nodes(nx_g.subgraph(lcc[0]))
+    return lcc_size / nx.number_of_nodes(nx_g)
+
+
 def gini_array(array):
     """Compute the gini index of a given array."""
     array = np.sort(array)
@@ -184,15 +204,19 @@ def main():
         print(datasets)
         print(f"Directed: {check_direct(g)}")
         print(f"Edge Density: {edge_density(g):.6f}")
-        print(f"Average degree: {avg_degree(g):.6f}")
-        print(f"Average Local Clustering Coefficient: "
+        print(f"Average Degree: {avg_degree(g):.6f}")
+        print(f"Relative Size of Largest Connected Component: "
+              f"{relative_largest_cc(g):.6f}")
+        print(f"Relative Size of Largest Strongly Connected "
+              f"Component: {relative_largest_cc(g):.6f}")
+        print(f"Average Clustering Coefficient: "
               f"{avg_cluster_coefficient(g):.6f}")
         print(f"Diameter: {diameter(g)}")
         print(f"Edge Reciprocity: {edge_reciprocity(g)}")
         print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
         print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
         print(f"Degeneracy: {degeneracy(g)}")
-        print(f"Degree Assortativity: {degree_assortativity(g)}")
+        print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
 
 
 if __name__ == "__main__":
