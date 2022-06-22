@@ -141,6 +141,8 @@ def gini_coreness(g):
     nx_g = dgl.to_networkx(g)
     # convert the MultiDiGraph to Digraph
     nx_g = nx.DiGraph(nx_g)
+    # remove potential self-loops
+    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
     core_sequence = list(nx.core_number(nx_g).values())
     return gini_array(core_sequence)
 
@@ -150,6 +152,8 @@ def degeneracy(g):
     nx_g = dgl.to_networkx(g)
     # convert the MultiDiGraph to Digraph
     nx_g = nx.DiGraph(nx_g)
+    # remove potential self-loops
+    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
     return max(nx.core_number(nx_g).values())
 
 
