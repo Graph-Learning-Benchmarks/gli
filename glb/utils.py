@@ -92,7 +92,7 @@ def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
         shape = sparse_array.shape
 
         return torch.sparse_coo_tensor(i, v, torch.Size(shape),
-                                       device=device).to_sparse_csr()
+                                       device=device)
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,
