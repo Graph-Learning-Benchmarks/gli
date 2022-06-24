@@ -47,19 +47,23 @@ def _to_tensor(x, device="cpu"):
 def get_single_graph(data, device="cpu", hetero=False):
     """Initialize and return a single Graph instance given data."""
     if hetero:
-        g = get_heterograph(data, device=device)
+        g = get_heterograph(data)
     else:
-        edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
-        src_nodes, dst_nodes = edges.T[0], edges.T[1]
+        g = get_homograph(data)
 
-        g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device=device)
+    return g.to(device=device)
 
-        for attr, array in data["Node"].items():
-            g.ndata[attr] = _to_tensor(array)
+def get_homograph(data):
+    edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
+    src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
-        for attr, array in data["Edge"].items():
-            g.edata[attr] = _to_tensor(array)
+    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device="cpu")
 
+    for attr, array in data["Node"].items():
+        g.ndata[attr] = _to_tensor(array)
+
+    for attr, array in data["Edge"].items():
+        g.edata[attr] = _to_tensor(array)
     return g
 
 
@@ -70,7 +74,7 @@ def get_multi_graph(data, device="cpu"):
     graphs = []
 
     # Extract the whole graph
-    g: dgl.DGLGraph = get_single_graph(data, device)
+    g: dgl.DGLGraph = get_single_graph(data)
 
     # Check array type before assigning
     for attr, array in data["Node"].items():
@@ -94,7 +98,7 @@ def get_multi_graph(data, device="cpu"):
             subgraph_entities = entity_list.getrow(i).todense()
             subgraph_entities = torch.from_numpy(subgraph_entities).squeeze()
         subgraph_entities = subgraph_entities.bool()
-        graphs.append(subgraph_func(g, subgraph_entities))
+        graphs.append(subgraph_func(g, subgraph_entities).to(device=device))
 
     for attr in data["Graph"]:
         for i, graph in enumerate(graphs):
@@ -121,7 +125,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
             "data"], f"attribute `{neg}` not in metadata.json"
 
     data = copy(metadata["data"])
-    data = dfs_read_file(pwd, data, device=device)
+    data = dfs_read_file(pwd, data, device="cpu")
 
     if is_single_graph(data):
         return get_single_graph(data, device, hetero=hetero)
@@ -148,7 +152,7 @@ def dfs_read_file(pwd, d, device="cpu"):
         return d
 
 
-def get_heterograph(data, device="cpu"):
+def get_heterograph(data):
     """Get heterogeneous graph."""
     node_depth = _dict_depth(data["Node"])
     node_classes = []
@@ -188,7 +192,6 @@ def get_heterograph(data, device="cpu"):
 
     g: dgl.DGLGraph = dgl.heterograph(graph_data,
                                       num_nodes_dict=num_nodes_dict)
-    g = g.to(device)
 
     # Add node and edge features
     for node_class, node_feats in node_features.items():

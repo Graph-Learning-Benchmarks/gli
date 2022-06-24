@@ -35,7 +35,7 @@ def node_classification_dataset_factory(graph: DGLGraph,
                 indices_ = torch.squeeze(indices_)
                 assert indices_.dim() == 1
                 if len(indices_) < self._g.num_nodes():  # index tensor
-                    mask = torch.zeros(self._g.num_nodes())
+                    mask = torch.zeros(self._g.num_nodes(), device=self._g.device)
                     mask[indices_] = 1
                 else:
                     mask = indices_
