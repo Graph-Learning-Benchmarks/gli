@@ -45,7 +45,8 @@ def prepare_dataset(metadata_path, task_path):
     """Prepare dataset."""
     clock.tic()
     tracemalloc.start()
-    g = glb.graph.read_glb_graph(metadata_path=metadata_path, device=args.device)
+    g = glb.graph.read_glb_graph(metadata_path=metadata_path,
+                                 device=args.device)
     print(f"Read graph data from {metadata_path} in {clock.toc():.2f}s.")
     task = glb.task.read_glb_task(task_path=task_path)
     print(f"Read task specification from {task_path} in {clock.toc():.2f}s.")
@@ -66,7 +67,7 @@ def main():
         print(g[0].device)
     else:
         print(g.device)
-    
+
     print(task)
     print(datasets)
 

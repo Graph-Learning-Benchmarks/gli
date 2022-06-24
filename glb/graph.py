@@ -53,7 +53,9 @@ def get_single_graph(data, device="cpu", hetero=False):
 
     return g.to(device=device)
 
+
 def get_homograph(data):
+    """Get a homogeneous graph from data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
