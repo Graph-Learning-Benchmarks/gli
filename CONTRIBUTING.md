@@ -154,7 +154,7 @@ The information about a graph learning task (e.g., the train/test splits or the 
 We predefine multiple task types.
 
 - `NodeClassification`
-	- Description: this task requires the model to perform classification on each node.
+	- Description: This task requires the model to perform classification on each node.
 	- The list of required keys in the task configuration file:
 		- `description`: task description.
 		- `type`: task type (in this case, `NodeClassification`)
@@ -165,11 +165,25 @@ We predefine multiple task types.
 		- `val_set`: the validation node IDs
 		- `test_set`: the test node IDs
 - `GraphClassification`
-	- TBA
+	- Description: This task requires the model to perform classification on each graph.
+    - The list of required keys in task configuration file:
+		- `description`: task description.
+		- `type`: task type (in this case, `GraphClassification`)
+		- `feature`: the attribute(s) used as feature in this task
+		- `target`: the graph attribute used as prediction target in this task
+		- `num_classes`: the number of classes
+		- `train_set`: the training graph IDs
+		- `val_set`: the validation graph IDs
+		- `test_set`: the test graph IDs
 - `TimeDependentLinkPrediction`
-	- TBA
-
-<!-- #TODO: complete this section. -->
+	- Description: This task requires the model to perform link prediction on a graph. The dataset is splitted according to time.
+        - `description`: task description.
+		- `type`: task type (in this case, `TimeDependentLinkPrediction`)
+		- `feature`: the attribute(s) used as feature in this task
+		- `time`: the time attribute that indicates edge formation order in this task
+		- `train_time_window`: the time window in which edges are used to train
+		- `val_time_window`: the time window in which edges are used to validate
+		- `test_time_window`: the time window in which edges are used to test
 
 ### Example
 
