@@ -4,6 +4,7 @@ import argparse
 import networkx as nx
 import numpy as np
 import glb
+import powerlaw
 
 
 def edge_density(g):
@@ -152,6 +153,25 @@ def edge_homogeneity(g):
     return count / edge_num
 
 
+def power_law_expo(g):
+    """Fit the Power-Law Distribution on degree sequence."""
+    nx_g = dgl.to_networkx(g)
+    degree_sequence = [d for n, d in nx_g.degree()]
+    degree_sequence = np.sort(degree_sequence)
+    fit = powerlaw.Fit(degree_sequence, verbose=False)
+    return fit.power_law.alpha
+
+
+def pareto_expo(g):
+    """Get the Pareto Exponent."""
+    nx_g = dgl.to_networkx(g)
+    degree_sequence = [d for n, d in nx_g.degree()]
+    degree_sequence = np.sort(degree_sequence)
+    dmin = np.min(degree_sequence)
+    alpha = len(degree_sequence) / np.sum(np.log(degree_sequence / dmin))
+    return alpha
+
+
 def prepare_dataset(metadata_path, task_path):
     """Prepare dataset."""
     g = glb.graph.read_glb_graph(metadata_path=metadata_path)
@@ -194,6 +214,8 @@ def main():
     print(f"Degeneracy: {degeneracy(g)}")
     print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
     print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
+    print(f"Power Law Exponent: {power_law_expo(g):.6f}")
+    print(f"Pareto Exponent: {pareto_expo(g):.6f}")
 
 
 if __name__ == "__main__":
