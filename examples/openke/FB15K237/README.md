@@ -1,12 +1,12 @@
-# FB15K
+# FB15K237
 
 ## Dataset Description
 
-The FB15k dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+The FB15K237 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
 
 Statistics:
-- Nodes: 14951
-- Edges: 483142
+- Nodes: 14541
+- Edges: 310116
 
 #### Citation
 
@@ -31,12 +31,44 @@ Statistics:
 ```
 
 ## Available Tasks
+
 ### Knowledge Graph Completion
-+ Task type: `LinkPredictionEntity`
+
++ Task type: `EntityLinkPrediction`
     - Predict the tail (head) entity given a pair of relation and head (tail).
-+ Task type: `LinkPredictionRelation`
++ Task type: `RelationLinkPrediction`
     - Predict the relation edge given a pair of head and tail entities.
 
+#### Citation
+
+##### Link Prediction Task
+
+```
+@article{padia2019knowledge,
+    title={Knowledge graph fact prediction via knowledge-enriched tensor factorization},
+    author={Padia, Ankur and Kalpakis, Konstantinos and Ferraro, Francis and Finin, Tim},
+    journal={Journal of Web Semantics},
+    volume={59},
+    pages={100497},
+    year={2019},
+    publisher={Elsevier}
+}
+```
+
+##### Train, Validation, Test Split
+
+```
+@inproceedings{han2018openke,
+    title={OpenKE: An Open Toolkit for Knowledge Embedding},
+    author={Han, Xu and Cao, Shulin and Lv Xin and Lin, Yankai and Liu, Zhiyuan and Sun, Maosong  and Li, Juanzi},
+    booktitle={Proceedings of EMNLP},
+    year={2018}
+}
+```
+
+## Preprocessing
+
+The data files and task config file in GLB format are transformed from the [OpenKE](https://github.com/thunlp/OpenKE) implementation.
 
 ### Requirements
 
