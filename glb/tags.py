@@ -4,6 +4,7 @@ import argparse
 import networkx as nx
 import numpy as np
 import glb
+import powerlaw
 
 
 def edge_density(g):
@@ -129,18 +130,46 @@ def degree_assortativity(g):
 
 def check_direct(g):
     """Check the graph is directed or not."""
-    # to examine whether all the edges are bi-directed
-    # print("dgl edge number: ", g.edges()[0].size(dim=0))
+    # to examine whether all the edges are bi-directed edges
     nx_g = dgl.to_networkx(g)
     node_num = nx_g.number_of_nodes()
     count = 0
     for i in range(node_num):
         for _, neighbors in nx_g.edges(i):
             if (neighbors, i) in nx_g.edges(neighbors):
-                # print("bi-directed edges exist")
                 count += 1
-    # print("number of indirected edges: ", count)
     return g.edges()[0].size(dim=0) != count
+
+
+def edge_homogeneity(g):
+    """Compute the edge homogeneity."""
+    # proportion of the edges that connect nodes with the same class label
+    edge_num = g.edges()[0].shape[0]
+    count = 0
+    for i in range(edge_num):
+        if g.ndata["NodeLabel"][g.edges()[0][i]] == \
+                g.ndata["NodeLabel"][g.edges()[1][i]]:
+            count += 1
+    return count / edge_num
+
+
+def power_law_expo(g):
+    """Fit the Power-Law Distribution on degree sequence."""
+    nx_g = dgl.to_networkx(g)
+    degree_sequence = [d for n, d in nx_g.degree()]
+    degree_sequence = np.sort(degree_sequence)
+    fit = powerlaw.Fit(degree_sequence, verbose=False)
+    return fit.power_law.alpha
+
+
+def pareto_expo(g):
+    """Get the Pareto Exponent."""
+    nx_g = dgl.to_networkx(g)
+    degree_sequence = [d for n, d in nx_g.degree()]
+    degree_sequence = np.sort(degree_sequence)
+    dmin = np.min(degree_sequence)
+    alpha = len(degree_sequence) / np.sum(np.log(degree_sequence / dmin))
+    return alpha
 
 
 def prepare_dataset(metadata_path, task_path):
@@ -184,6 +213,9 @@ def main():
     print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
     print(f"Degeneracy: {degeneracy(g)}")
     print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
+    print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
+    print(f"Power Law Exponent: {power_law_expo(g):.6f}")
+    print(f"Pareto Exponent: {pareto_expo(g):.6f}")
 
 
 if __name__ == "__main__":
