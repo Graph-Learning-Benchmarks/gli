@@ -16,14 +16,14 @@
                 "key": "edge"
             },
             "EdgeClass": {
-                "description": "Relation (edge) id of the Edge in the FB13 dataset.",
+                "description": "Relation type-id of the Edge in the FB13 dataset.",
                 "type": "int",
                 "format": "Tensor",
                 "file": "FB13.npz",
                 "key": "edge_class"
             },
             "EdgeName": {
-                "description": "Relation (edge) name of the Edge in the FB13 dataset.",
+                "description": "Relation name of the Edge in the FB13 dataset.",
                 "type": "string",
                 "format": "Tensor",
                 "file": "FB13.npz",

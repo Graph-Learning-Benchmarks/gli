@@ -11,77 +11,23 @@
             }
         },
         "Edge": {
-            "TrainEdge": {
-                "_ID": {
-                    "file": "YAGO3-10.npz",
-                    "key": "TrainEdge_id"
-                },
-                "_Edge": {
-                    "file": "YAGO3-10.npz",
-                    "key": "edge"
-                },
-                "EdgeClass": {
-                    "description": "Relation (edge) id of the Edge in the YAGO3-10 dataset.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "YAGO3-10.npz",
-                    "key": "edge_class"
-                },
-                "EdgeName": {
-                    "description": "Relation (edge) name of the Edge in the YAGO3-10 dataset.",
-                    "type": "string",
-                    "format": "Tensor",
-                    "file": "YAGO3-10.npz",
-                    "key": "edge_name"
-                }
+            "_Edge": {
+                "file": "YAGO3-10.npz",
+                "key": "edge"
             },
-            "ValidEdge": {
-                "_ID": {
-                    "file": "YAGO3-10.npz",
-                    "key": "ValidEdge_id"
-                },
-                "_Edge": {
-                    "file": "YAGO3-10.npz",
-                    "key": "edge"
-                },
-                "EdgeClass": {
-                    "description": "Relation id of the Edge in the YAGO3-10 dataset.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "YAGO3-10.npz",
-                    "key": "edge_class"
-                },
-                "EdgeName": {
-                    "description": "Relation name of the Edge in the YAGO3-10 dataset.",
-                    "type": "string",
-                    "format": "Tensor",
-                    "file": "YAGO3-10.npz",
-                    "key": "edge_name"
-                }
+            "EdgeClass": {
+                "description": "Relation type-id of the Edge in the YAGO3-10 dataset.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "YAGO3-10.npz",
+                "key": "edge_class"
             },
-            "TestEdge": {
-                "_ID": {
-                    "file": "YAGO3-10.npz",
-                    "key": "TestEdge_id"
-                },
-                "_Edge": {
-                    "file": "YAGO3-10.npz",
-                    "key": "edge"
-                },
-                "EdgeClass": {
-                    "description": "Relation id of the Edge in the YAGO3-10 dataset.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "YAGO3-10.npz",
-                    "key": "edge_class"
-                },
-                "EdgeName": {
-                    "description": "Relation name of the Edge in the YAGO3-10 dataset.",
-                    "type": "string",
-                    "format": "Tensor",
-                    "file": "YAGO3-10.npz",
-                    "key": "edge_name"
-                }
+            "EdgeName": {
+                "description": "Relation name of the Edge in the YAGO3-10 dataset.",
+                "type": "string",
+                "format": "Tensor",
+                "file": "YAGO3-10.npz",
+                "key": "edge_name"
             }
         },
         "Graph": {
