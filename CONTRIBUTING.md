@@ -10,10 +10,9 @@
     - [GLB Data Format](#glb-data-format)
         - [Overview](#overview)
         - [Description](#description)
-        - [Example](#example)
     - [GLB Task Format](#glb-task-format)
         - [Overview](#overview-1)
-        - [Example](#example-1)
+        - [Example](#example)
     - [Helper Functions](#helper-functions)
     - [Dataset Class Converter](#dataset-class-converter)
 - [Submission and Review System](#submission-and-review-system)
@@ -76,7 +75,7 @@ We predefine 3 **objects**: *Node*, *Edge*, and *Graph* in our framework. Each o
 	- No required attribute.
 - Edge
 	- 1 required attribute _Edge
-		- `_Edge` is a `DenseTensor` in shape `(2, n_edges)`
+		- `_Edge` is a `DenseTensor` in shape `(n_edges, 2)`
 - Graph - A graph dataset may contain multiple disconnected graphs.
 	- 1 required attribute `_NodeList`
 		- `_NodeList` is a 0/1-valued `SparseTensor` or `DenseTensor` in shape `(n_graph, n_node)`
@@ -145,7 +144,7 @@ A complete example of a homogeneous graph's `metadata.json` is given below.
 }
 ```
 
-#### Heterogeneous Graph 
+#### Heterogeneous Graph
 
 Heterogeneous graph has multiple kinds of nodes and edges. For a heterograph, `Node` and `Edge` are dictionaries that map node/edge group name to its attributes. In addition to the required attributes that homogeneous graph needs, metadata of a heterogeneous graph requires these attributes:
 
