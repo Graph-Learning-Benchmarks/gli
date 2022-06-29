@@ -1,11 +1,14 @@
 """Utility functions."""
 import json
 import os
+import subprocess
 
+import dgl
 import numpy as np
 import scipy.sparse as sp
 import torch
-import dgl
+
+from glb import ROOT_PATH
 
 
 def load_data(path: os.PathLike):
@@ -91,8 +94,7 @@ def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
         v = torch.FloatTensor(sparse_array.data)
         shape = sparse_array.shape
 
-        return torch.sparse_coo_tensor(i, v, torch.Size(shape),
-                                       device=device)
+        return torch.sparse_coo_tensor(i, v, torch.Size(shape), device=device)
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,
@@ -193,3 +195,35 @@ def dgl_to_glb(graph: dgl.DGLGraph,
         json.dump(metadata, fp)
 
     raise NotImplementedError
+
+
+def download_data(dataset, filename):
+    """Download a (npz) file of a dataset.
+
+    Raise error if file not exists in remote repository.
+    """
+    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    file_path = os.path.join(data_dir, filename)
+    if os.path.exists(file_path):
+        print(f"{file_path} already exists.")
+        return
+    if os.path.isdir(data_dir):
+        url_file = os.path.join(data_dir, "urls.json")
+    else:
+        raise FileNotFoundError(f"cannot find dataset {dataset}.")
+    if os.path.exists(url_file):
+        with open(url_file, "r", encoding="utf-8") as fp:
+            url_dict = json.load(fp)
+    else:
+        raise FileNotFoundError(f"cannot find url files of {dataset}.")
+
+    if filename in url_dict:
+        _download(url_dict[filename], file_path)
+
+
+def _download(url, out):
+    """Download url to out by running a wget subprocess.
+
+    Note - This function may generate a lot of unhelpful message.
+    """
+    subprocess.run(["wget", "-O", out, url], check=True)
