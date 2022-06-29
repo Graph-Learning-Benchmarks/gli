@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-The WN18 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+WordNet is a large lexical database of English. Nouns, verbs, adjectives and adverbs are grouped into sets of cognitive synonyms (synsets), each expressing a distinct concept. The WN18 dataset is a subset of WordNet. It has a total of 151,442 triplets with 40,943 entities and 18 unique relationships.
 
 Statistics:
 - Nodes: 40943

@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-The FB15K237 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+The FB15K237 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 310,116 triplets with 14,541 entities and 237 unique relationships.
 
 Statistics:
 - Nodes: 14541

@@ -1,8 +1,8 @@
-# FB15K
+# WN18RR
 
 ## Dataset Description
 
-The FB15K dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+WN18RR is a link prediction dataset created from WN18, which is a subset of WordNet (a large lexical database of English). It has a total of 93,003 triplets with 40,943 entities and 18 unique relationships.
 
 Statistics:
 - Nodes: 40943

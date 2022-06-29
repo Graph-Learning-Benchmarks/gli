@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-The YAGO3-10 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+The YAGO3-10 dataset is a subset of YAGO3 that only contains entities with at least 10 relations. It is a large semantic knowledge base, derived from Wikipedia, WordNet, WikiData, GeoNames, and other data sources It has a total of 1,089,040 triplets with 123,182 entities and 37 unique relationships.
 
 Statistics:
 - Nodes: 123182

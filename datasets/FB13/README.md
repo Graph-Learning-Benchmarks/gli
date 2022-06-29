@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-The FB13 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+The FB13 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 345,873 triplets with 75,043 entities and 12 unique relationships.
 
 Statistics:
 - Nodes: 75043
