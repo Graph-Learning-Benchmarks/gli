@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-The NELL-995 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+The NELL-995 dataset is a subset of the NELL dataset which captures two types of knowledge: (1) knowledge about which noun phrases refer to which specified semantic categories, such as cities, companies, and sports teams, and (2) knowledge about which pairs of noun phrases satisfy which specified semantic relations, such as hasOfficesIn(organization, location). It has a total of 154,213 triplets with 75,492 entities and 200 unique relationships.
 
 Statistics:
 - Nodes: 75492

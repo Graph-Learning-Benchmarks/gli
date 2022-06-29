@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-The WN11 dataset contains knowledge base relation triples and textual mentions of Freebase entity pairs. It has a total of 592,213 triplets with 14,951 entities and 1,345 unique relationships.
+WordNet is a large lexical database of English. Nouns, verbs, adjectives and adverbs are grouped into sets of cognitive synonyms (synsets), each expressing a distinct concept. The WN11 dataset is a subset of WordNet. It has a total of 125,734 triplets with 38,588 entities and 11 unique relationships.
 
 Statistics:
 - Nodes: 38588
