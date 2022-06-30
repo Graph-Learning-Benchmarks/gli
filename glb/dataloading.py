@@ -65,7 +65,7 @@ def get_glb_graph(dataset: str, device="cpu", verbose=True):
 
 
 def get_glb_task(dataset: str, task: str, verbose=True):
-    """Get a know GLB task of a given dataset.
+    """Get a known GLB task of a given dataset.
 
     Args:
         dataset (str): Name of dataset.
@@ -73,7 +73,7 @@ def get_glb_task(dataset: str, task: str, verbose=True):
         verbose (bool, optional): Defaults to True.
 
     Returns:
-        GLBTask: Task object that represents the predefined task.
+        GLBTask: Predefined GLB task.
     """
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
     task_path = os.path.join(data_dir, f"{task}.json")
