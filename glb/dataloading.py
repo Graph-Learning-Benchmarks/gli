@@ -23,6 +23,23 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
     raise NotImplementedError
 
 
+def get_glb_dataset(dataset: str, task: str, device="cpu", verbose=True):
+    """Get a known GLB dataset of a given task.
+
+    Args:
+        dataset (str): Name of dataset.
+        task (str): Name of task file.
+        device (str, optional): Returned dataset's device. Defaults to "cpu".
+        verbose (bool, optional): Defaults to True.
+
+    Returns:
+        Dataset: a iterable dataset of a given task.
+    """
+    g = get_glb_graph(dataset, device=device, verbose=verbose)
+    t = get_glb_task(dataset, task, verbose=verbose)
+    return combine_graph_and_task(g, t)
+
+
 def get_glb_graph(dataset: str, device="cpu", verbose=True):
     """Get a known GLB graph.
 
