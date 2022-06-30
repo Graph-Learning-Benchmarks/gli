@@ -2,8 +2,7 @@
 
 ## Dataset Description
 
-Chameleon and squirrel are two page-page networks on specific topics in
-Wikipedia (Rozemberczki et al., 2019). In those datasets, nodes represent web pages and edges are mutual links between pages. And node features correspond to several informative nouns in the Wikipedia pages. The nodes are classified into five categories.
+Chameleon and squirrel are two page-page networks on specific topics in Wikipedia (Rozemberczki et al., 2019). In those datasets, nodes represent web pages and edges are mutual links between pages. And node features correspond to several informative nouns in the Wikipedia pages. The nodes are classified into five categories.
 
 Statistics:
 - Nodes: 5201

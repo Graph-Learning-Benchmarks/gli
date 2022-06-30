@@ -1,5 +1,5 @@
 {
-    "description": "Node classification on Chameleon dataset. Wikipedia network split.",
+    "description": "Node classification on Chameleon dataset. The split is introduced in the paper \"Multi-scale Attributed Node Embedding\", while the classification categories are introduced in the paper \"Geom-GCN: Geometric Graph Convolutional Networks\".",
     "type": "NodeClassification",
     "feature": [
         "Node/NodeFeature"
