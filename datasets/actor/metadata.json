@@ -1,0 +1,38 @@
+{
+    "description": "Actor dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Actor dataset, 1/0-valued vectors.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "actor.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Actor dataset, int ranged from 0 to 4.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "actor.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "actor.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "actor.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "actor.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@inproceedings{tang2009social,\ntitle={Social influence analysis in large-scale networks},\nauthor={Tang, Jie and Sun, Jimeng and Wang, Chi and Yang, Zi},\nbooktitle={Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and mining},\npages={807--816},\nyear={2009}\n}"
+}
