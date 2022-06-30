@@ -46,11 +46,7 @@ class KeyedFileReader():
         self._data_buffer = {}
 
     def get(self, path, key=None, device="cpu"):
-        """Return a torch array.
-
-        TODO:
-            - Check sparsity and return sparse torch array if needed.
-        """
+        """Return a torch array."""
         if path not in self._data_buffer:
             raw = load_data(path)
             self._data_buffer[path] = raw
@@ -197,16 +193,15 @@ def dgl_to_glb(graph: dgl.DGLGraph,
     raise NotImplementedError
 
 
-def download_data(dataset, filename):
-    """Download a (npz) file of a dataset.
+def download_data(dataset: str, verbose=False):
+    """Download depenedent data of a configuration (metadata/task) file.
 
-    Raise error if file not exists in remote repository.
+    Args:
+        dataset (str): Name of dataset.
+        filename (str): Name of configuration file. e.g., `metadata.json`.
+        verbose (bool, optional): Defaults to False.
     """
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
-    file_path = os.path.join(data_dir, filename)
-    if os.path.exists(file_path):
-        print(f"{file_path} already exists.")
-        return
     if os.path.isdir(data_dir):
         url_file = os.path.join(data_dir, "urls.json")
     else:
@@ -216,14 +211,22 @@ def download_data(dataset, filename):
             url_dict = json.load(fp)
     else:
         raise FileNotFoundError(f"cannot find url files of {dataset}.")
+    for data_file_name, url in url_dict.items():
+        data_file_path = os.path.join(data_dir, data_file_name)
+        if os.path.exists(data_file_path):
+            if verbose:
+                print(f"{data_file_path} already exists.")
+            continue
+        else:
+            _download(url, data_file_path, verbose=verbose)
 
-    if filename in url_dict:
-        _download(url_dict[filename], file_path)
 
-
-def _download(url, out):
+def _download(url, out, verbose=False):
     """Download url to out by running a wget subprocess.
 
     Note - This function may generate a lot of unhelpful message.
     """
-    subprocess.run(["wget", "-O", out, url], check=True)
+    if verbose:
+        subprocess.run(["wget", "-O", out, url], check=True)
+    else:
+        subprocess.run(["wget", "-q", "-O", out, url], check=True)
