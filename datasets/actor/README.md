@@ -12,7 +12,13 @@ Statistics:
 #### Citation
 
 ```
-@inproceedings{tang2009social,\ntitle={Social influence analysis in large-scale networks},\nauthor={Tang, Jie and Sun, Jimeng and Wang, Chi and Yang, Zi},\nbooktitle={Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and mining},\npages={807--816},\nyear={2009}\n}
+@inproceedings{tang2009social,
+  title={Social influence analysis in large-scale networks},
+  author={Tang, Jie and Sun, Jimeng and Wang, Chi and Yang, Zi},
+  booktitle={Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and mining},
+  pages={807--816},
+  year={2009}
+  }
 ```
 ## Available Tasks
 
