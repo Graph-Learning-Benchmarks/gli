@@ -1,0 +1,38 @@
+{
+    "description": "Chameleon dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Chameleon dataset, 1/0-valued vectors.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "chameleon.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Chameleon dataset, int ranged from 0 to 4.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "chameleon.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "chameleon.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "chameleon.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "chameleon.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@article{rozemberczki2021multi,\ntitle={Multi-scale attributed node embedding},\nauthor={Rozemberczki, Benedek and Allen, Carl and Sarkar, Rik},\njournal={Journal of Complex Networks},\nvolume={9},\nnumber={2},\npages={cnab014},\nyear={2021},\npublisher={Oxford University Press}\n}"
+}
