@@ -1,11 +1,14 @@
 """Utility functions."""
 import json
 import os
+import subprocess
 
+import dgl
 import numpy as np
 import scipy.sparse as sp
 import torch
-import dgl
+
+from glb import ROOT_PATH
 
 
 def load_data(path: os.PathLike):
@@ -43,11 +46,7 @@ class KeyedFileReader():
         self._data_buffer = {}
 
     def get(self, path, key=None, device="cpu"):
-        """Return a torch array.
-
-        TODO:
-            - Check sparsity and return sparse torch array if needed.
-        """
+        """Return a torch array."""
         if path not in self._data_buffer:
             raw = load_data(path)
             self._data_buffer[path] = raw
@@ -91,8 +90,7 @@ def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
         v = torch.FloatTensor(sparse_array.data)
         shape = sparse_array.shape
 
-        return torch.sparse_coo_tensor(i, v, torch.Size(shape),
-                                       device=device)
+        return torch.sparse_coo_tensor(i, v, torch.Size(shape), device=device)
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,
@@ -193,3 +191,42 @@ def dgl_to_glb(graph: dgl.DGLGraph,
         json.dump(metadata, fp)
 
     raise NotImplementedError
+
+
+def download_data(dataset: str, verbose=False):
+    """Download depenedent data of a configuration (metadata/task) file.
+
+    Args:
+        dataset (str): Name of dataset.
+        filename (str): Name of configuration file. e.g., `metadata.json`.
+        verbose (bool, optional): Defaults to False.
+    """
+    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    if os.path.isdir(data_dir):
+        url_file = os.path.join(data_dir, "urls.json")
+    else:
+        raise FileNotFoundError(f"cannot find dataset {dataset}.")
+    if os.path.exists(url_file):
+        with open(url_file, "r", encoding="utf-8") as fp:
+            url_dict = json.load(fp)
+    else:
+        raise FileNotFoundError(f"cannot find url files of {dataset}.")
+    for data_file_name, url in url_dict.items():
+        data_file_path = os.path.join(data_dir, data_file_name)
+        if os.path.exists(data_file_path):
+            if verbose:
+                print(f"{data_file_path} already exists.")
+            continue
+        else:
+            _download(url, data_file_path, verbose=verbose)
+
+
+def _download(url, out, verbose=False):
+    """Download url to out by running a wget subprocess.
+
+    Note - This function may generate a lot of unhelpful message.
+    """
+    if verbose:
+        subprocess.run(["wget", "-O", out, url], check=True)
+    else:
+        subprocess.run(["wget", "-q", "-O", out, url], check=True)

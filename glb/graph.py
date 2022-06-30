@@ -14,7 +14,33 @@ import torch
 from .utils import file_reader, sparse_to_torch
 
 
-def is_single_graph(data):
+def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
+    """Initialize and return a Graph instance given metadata.json."""
+    pwd = os.path.dirname(metadata_path)
+    with open(metadata_path, "r", encoding="utf-8") as fptr:
+        metadata = json.load(fptr)
+
+    if verbose:
+        print(metadata["description"])
+
+    hetero = _is_hetero_graph(metadata)
+
+    assert "data" in metadata, "attribute `data` not in metadata.json."
+
+    for neg in ["Node", "Edge", "Graph"]:
+        assert neg in metadata[
+            "data"], f"attribute `{neg}` not in metadata.json"
+
+    data = copy(metadata["data"])
+    data = _dfs_read_file(pwd, data, device="cpu")
+
+    if _is_single_graph(data):
+        return _get_single_graph(data, device, hetero=hetero)
+    else:
+        return _get_multi_graph(data, device)
+
+
+def _is_single_graph(data):
     """Return true if the glb data contains a single graph."""
     node_list = data["Graph"]["_NodeList"]
     if len(node_list.shape) == 1:
@@ -25,7 +51,7 @@ def is_single_graph(data):
         raise ValueError("_NodeList has more than 2 dimensions.")
 
 
-def is_hetero_graph(data):
+def _is_hetero_graph(data):
     """Return true if the glb data contains heterogeneous graph."""
     depth = _dict_depth(data)
     # Heterogeneous graph has one more depth than a homogeneous one.
@@ -44,39 +70,24 @@ def _to_tensor(x, device="cpu"):
     return x
 
 
-def get_single_graph(data, device="cpu", hetero=False):
+def _get_single_graph(data, device="cpu", hetero=False):
     """Initialize and return a single Graph instance given data."""
     if hetero:
-        g = get_heterograph(data)
+        g = _get_heterograph(data)
     else:
-        g = get_homograph(data)
+        g = _get_homograph(data)
 
     return g.to(device=device)
 
 
-def get_homograph(data):
-    """Get a homogeneous graph from data."""
-    edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
-    src_nodes, dst_nodes = edges.T[0], edges.T[1]
-
-    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device="cpu")
-
-    for attr, array in data["Node"].items():
-        g.ndata[attr] = _to_tensor(array)
-
-    for attr, array in data["Edge"].items():
-        g.edata[attr] = _to_tensor(array)
-    return g
-
-
-def get_multi_graph(data, device="cpu"):
+def _get_multi_graph(data, device="cpu"):
     """Initialize and return a list of Graph instance given data."""
     node_list = data["Graph"].pop("_NodeList")
     edge_list = data["Graph"].pop("_EdgeList", None)
     graphs = []
 
     # Extract the whole graph
-    g: dgl.DGLGraph = get_single_graph(data)
+    g: dgl.DGLGraph = _get_single_graph(data)
 
     # Check array type before assigning
     for attr, array in data["Node"].items():
@@ -109,52 +120,22 @@ def get_multi_graph(data, device="cpu"):
     return graphs
 
 
-def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
-    """Initialize and return a Graph instance given metadata.json."""
-    pwd = os.path.dirname(metadata_path)
-    with open(metadata_path, "r", encoding="utf-8") as fptr:
-        metadata = json.load(fptr)
+def _get_homograph(data):
+    """Get a homogeneous graph from data."""
+    edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
+    src_nodes, dst_nodes = edges.T[0], edges.T[1]
 
-    if verbose:
-        print(metadata["description"])
+    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device="cpu")
 
-    hetero = is_hetero_graph(metadata)
+    for attr, array in data["Node"].items():
+        g.ndata[attr] = _to_tensor(array)
 
-    assert "data" in metadata, "attribute `data` not in metadata.json."
-
-    for neg in ["Node", "Edge", "Graph"]:
-        assert neg in metadata[
-            "data"], f"attribute `{neg}` not in metadata.json"
-
-    data = copy(metadata["data"])
-    data = dfs_read_file(pwd, data, device="cpu")
-
-    if is_single_graph(data):
-        return get_single_graph(data, device, hetero=hetero)
-    else:
-        return get_multi_graph(data, device)
+    for attr, array in data["Edge"].items():
+        g.edata[attr] = _to_tensor(array)
+    return g
 
 
-def _dict_depth(d):
-    """Return the depth of a dictionary."""
-    if isinstance(d, dict):
-        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
-    return 0
-
-
-def dfs_read_file(pwd, d, device="cpu"):
-    """Read file efficiently."""
-    if "file" in d:
-        path = os.path.join(pwd, d["file"])
-        array = file_reader.get(path, d.get("key"), device)
-        return array
-    else:
-        for k in d:
-            d[k] = dfs_read_file(pwd, d[k], device=device)
-        return d
-
-
-def get_heterograph(data):
+def _get_heterograph(data):
     """Get heterogeneous graph."""
     node_depth = _dict_depth(data["Node"])
     node_classes = []
@@ -207,3 +188,22 @@ def get_heterograph(data):
             g.edata[feat_name] = {edge_class: feat_tensor}
 
     return g
+
+
+def _dict_depth(d):
+    """Return the depth of a dictionary."""
+    if isinstance(d, dict):
+        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
+    return 0
+
+
+def _dfs_read_file(pwd, d, device="cpu"):
+    """Read file efficiently."""
+    if "file" in d:
+        path = os.path.join(pwd, d["file"])
+        array = file_reader.get(path, d.get("key"), device)
+        return array
+    else:
+        for k in d:
+            d[k] = _dfs_read_file(pwd, d[k], device=device)
+        return d
