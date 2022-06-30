@@ -174,8 +174,8 @@ def pareto_expo(g):
 
 def prepare_dataset(metadata_path, task_path):
     """Prepare dataset."""
-    g = glb.graph.read_glb_graph(metadata_path=metadata_path)
-    task = glb.task.read_glb_task(task_path=task_path)
+    g = glb.dataloading.get_glb_graph(metadata_path)
+    task = glb.dataloading.get_glb_task(dataset=metadata_path, task=task_path)
     datasets = glb.dataloading.combine_graph_and_task(g, task)
     return g, task, datasets
 
@@ -204,9 +204,7 @@ def main():
           f"Component: {relative_largest_cc(g):.6f}")
     print(f"Average Clustering Coefficient: "
           f"{avg_cluster_coefficient(g):.6f}")
-    # Cora: 19
     # print(f"Diameter: {diameter(g)}")
-    # Cora: 6.310999
     # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
     print(f"Edge Reciprocity: {edge_reciprocity(g)}")
     print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
