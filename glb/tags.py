@@ -172,24 +172,25 @@ def pareto_expo(g):
     return alpha
 
 
-def prepare_dataset(metadata_path, task_path):
-    """Prepare dataset."""
-    g = glb.graph.read_glb_graph(metadata_path=metadata_path)
-    task = glb.task.read_glb_task(task_path=task_path)
-    datasets = glb.dataloading.combine_graph_and_task(g, task)
-    return g, task, datasets
+def prepare_dataset(dataset, task):
+    """Prepare datasets."""
+    glb_graph = glb.dataloading.get_glb_graph(dataset)
+    glb_task = glb.dataloading.get_glb_task(dataset, task)
+    glb_graph_task = glb.dataloading.combine_graph_and_task(
+        glb_graph, glb_task)
+    return glb_graph, glb_task, glb_graph_task
 
 
 def main():
     """Run main function."""
     # parsing the input command
     parser = argparse.ArgumentParser()
-    parser.add_argument("--metadata", type=str)
+    parser.add_argument("--dataset", type=str)
     parser.add_argument("--task", type=str)
     args = parser.parse_args()
-    metadata_name, path_name = args.metadata, args.task
+    dataset_name, task_name = args.dataset, args.task
     # read in the graph dataset
-    g, task, datasets = prepare_dataset(metadata_name, path_name)
+    g, task, datasets = prepare_dataset(dataset_name, task_name)
     # print input graph, task, and dataset information
     print(g)
     print(task)
@@ -204,9 +205,7 @@ def main():
           f"Component: {relative_largest_cc(g):.6f}")
     print(f"Average Clustering Coefficient: "
           f"{avg_cluster_coefficient(g):.6f}")
-    # Cora: 19
     # print(f"Diameter: {diameter(g)}")
-    # Cora: 6.310999
     # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
     print(f"Edge Reciprocity: {edge_reciprocity(g)}")
     print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
