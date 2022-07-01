@@ -176,7 +176,8 @@ def prepare_dataset(dataset, task):
     """Prepare datasets."""
     glb_graph = glb.dataloading.get_glb_graph(dataset)
     glb_task = glb.dataloading.get_glb_task(dataset, task)
-    glb_graph_task = glb.dataloading.combine_graph_and_task(glb_graph, glb_task)
+    glb_graph_task = glb.dataloading.combine_graph_and_task(
+        glb_graph, glb_task)
     return glb_graph, glb_task, glb_graph_task
 
 
