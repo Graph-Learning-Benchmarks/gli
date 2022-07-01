@@ -1,0 +1,38 @@
+{
+    "description": "Cornell dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Cornell dataset, 1/0-valued vectors.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "cornell.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Cornell dataset, int ranged from 0 to 4.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "cornell.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "cornell.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "cornell.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "cornell.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@article{garcia2016using,\ntitle={Using fuzzy logic to leverage HTML markup for web page representation},\nauthor={Garcia-Plaza, Alberto P and Fresno, Victor and Unanue, Raquel Martinez and Zubiaga, Arkaitz},\njournal={IEEE Transactions on Fuzzy Systems},\nvolume={25},\nnumber={4},\npages={919--933},\nyear={2016},\npublisher={IEEE}\n}"
+}
