@@ -172,24 +172,24 @@ def pareto_expo(g):
     return alpha
 
 
-def prepare_dataset(metadata_path, task_path):
-    """Prepare dataset."""
-    g = glb.dataloading.get_glb_graph(metadata_path)
-    task = glb.dataloading.get_glb_task(dataset=metadata_path, task=task_path)
-    datasets = glb.dataloading.combine_graph_and_task(g, task)
-    return g, task, datasets
+def prepare_dataset(dataset, task):
+    """Prepare datasets."""
+    glb_graph = glb.dataloading.get_glb_graph(dataset)
+    glb_task = glb.dataloading.get_glb_task(dataset, task)
+    glb_graph_task = glb.dataloading.combine_graph_and_task(glb_graph, glb_task)
+    return glb_graph, glb_task, glb_graph_task
 
 
 def main():
     """Run main function."""
     # parsing the input command
     parser = argparse.ArgumentParser()
-    parser.add_argument("--metadata", type=str)
+    parser.add_argument("--dataset", type=str)
     parser.add_argument("--task", type=str)
     args = parser.parse_args()
-    metadata_name, path_name = args.metadata, args.task
+    dataset_name, task_name = args.dataset, args.task
     # read in the graph dataset
-    g, task, datasets = prepare_dataset(metadata_name, path_name)
+    g, task, datasets = prepare_dataset(dataset_name, task_name)
     # print input graph, task, and dataset information
     print(g)
     print(task)
