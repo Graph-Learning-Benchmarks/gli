@@ -1,0 +1,38 @@
+{
+    "description": "Squirrel dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Squirrel dataset, 1/0-valued vectors.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "squirrel.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Squirrel dataset, int ranged from 0 to 4.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "squirrel.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "squirrel.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "squirrel.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "squirrel.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@article{rozemberczki2021multi,\ntitle={Multi-scale attributed node embedding},\nauthor={Rozemberczki, Benedek and Allen, Carl and Sarkar, Rik},\njournal={Journal of Complex Networks},\nvolume={9},\nnumber={2},\npages={cnab014},\nyear={2021},\npublisher={Oxford University Press}\n}"
+}
