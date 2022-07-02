@@ -41,12 +41,12 @@ class GLBTask:
             num_samples = task_dict["num_samples"]
             seed = task_dict.get("seed", None)
 
-            self._set_random_split(train_ratio, val_ratio, test_ratio, 
+            self._set_random_split(train_ratio, val_ratio, test_ratio,
                                    num_samples, seed)
 
         self._load(task_dict)
 
-    def _set_random_split(self, train_ratio, val_ratio, test_ratio, 
+    def _set_random_split(self, train_ratio, val_ratio, test_ratio,
                           num_samples, seed=None):
         # back up random state to avoid cross influence
         state = random.getstate()
