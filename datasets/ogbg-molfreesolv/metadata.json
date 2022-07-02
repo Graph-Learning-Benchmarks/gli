@@ -1,0 +1,40 @@
+{
+    "description": "ogbg-molfreesolv dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbg-molfreesolv.npz",
+                "key": "node_feats"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "ogbg-molfreesolv.npz",
+                "key": "edge"
+            },
+            "EdgeFeature" :{
+                "description": "Numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of edge features and i-th row represents the feature of i-th edge. This can be None if no input edge features are available.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbg-molfreesolv.npz",
+                "key": "edge_feats"
+        }
+        },
+       "Graph": {
+            "_NodeList": {
+                "file": "ogbg-molfreesolv.npz",
+                "key": "node_list"
+            }
+        },
+        "GraphLabel": {
+            "file": "ogbg-molhiv.npz",
+            "type": "int",
+            "format": "Tensor",
+            "key": "graph_class"
+        }
+    },
+    "citation": "@inproceedings{\nauthor={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},\ntitle={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},\nyear={2020},\nbooktitle={ICLR}}"
+}
