@@ -1,7 +1,11 @@
 """Task for GLB."""
 import json
+import math
 import os
+import random
 from typing import List
+
+import torch
 
 from glb.utils import file_reader
 
@@ -21,10 +25,54 @@ class GLBTask:
         self.features: List[str] = task_dict["feature"]
         self.target: str = None
         self.num_folds = 1
+        self.random_split = False
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
 
+        if "train_set" not in task_dict:  # use random split
+            self.random_split = True
+
+            assert "train_ratio" in task_dict
+            train_ratio = task_dict["train_ratio"]
+            val_ratio = task_dict["val_ratio"]
+            test_ratio = task_dict["test_ratio"]
+            assert train_ratio + val_ratio + test_ratio <= 1
+
+            num_samples = task_dict["num_samples"]
+            seed = task_dict.get("seed", None)
+
+            self._set_random_split(train_ratio, val_ratio, test_ratio, 
+                                   num_samples, seed)
+
         self._load(task_dict)
+
+    def _set_random_split(self, train_ratio, val_ratio, test_ratio, 
+                          num_samples, seed=None):
+        # back up random state to avoid cross influence
+        state = random.getstate()
+        if seed is not None:
+            random.seed(seed)
+
+        indices = list(range(num_samples))
+        random.shuffle(indices)
+        train_boundary = math.floor(train_ratio * num_samples)
+        val_boundary = math.floor((train_ratio + val_ratio) * num_samples)
+        train_set = indices[:train_boundary]
+        val_set = indices[train_boundary:val_boundary]
+        test_set = indices[-math.ceil(test_ratio * num_samples):]
+
+        # check that test set and train-val set have no overlap
+        train_val_set = train_set + val_set
+        assert len(set(train_val_set).intersection(set(test_set))) == 0
+
+        self.split = {
+            "train_set": torch.LongTensor(train_set).to(device=self.device),
+            "val_set": torch.LongTensor(val_set).to(device=self.device),
+            "test_set": torch.LongTensor(test_set).to(device=self.device)
+        }
+
+        # recover random state to avoid cross influence
+        random.setstate(state)
 
     def _load(self, task_dict):
         pass
@@ -42,6 +90,11 @@ class ClassificationTask(GLBTask):
     def _load(self, task_dict):
         self.num_folds = task_dict.get("num_folds", 1)
         assert self.num_folds >= 1
+
+        if self.random_split:  # use random split; pass loading
+            assert self.num_folds == 1
+            return
+
         for dataset_ in self.split:
             filename = task_dict[dataset_]["file"]
             key = task_dict[dataset_].get("key")
