@@ -20,6 +20,7 @@ class GLBTask:
         self.description = task_dict["description"]
         self.features: List[str] = task_dict["feature"]
         self.target: str = None
+        self.num_folds = 1
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
 
@@ -39,12 +40,23 @@ class ClassificationTask(GLBTask):
         self.target = task_dict["target"]
 
     def _load(self, task_dict):
+        self.num_folds = task_dict.get("num_folds", 1)
+        assert self.num_folds >= 1
         for dataset_ in self.split:
             filename = task_dict[dataset_]["file"]
             key = task_dict[dataset_].get("key")
             path = os.path.join(self.pwd, filename)
-            self.split[dataset_] = file_reader.get(path, key, self.device)
-            # can be mask tensor or an index tensor
+            if self.num_folds > 1:
+                self.split[dataset_] = []
+                for fold in range(self.num_folds):
+                    assert key[-4:] == "FOLD", "split key not ending with FOLD"
+                    this_fold_key = f"{key[:-4]}{fold}"
+                    self.split[dataset_].append(
+                        file_reader.get(path, this_fold_key, self.device))
+                    # can be a list of mask tensors or index tensors
+            else:
+                self.split[dataset_] = file_reader.get(path, key, self.device)
+                # can be a mask tensor or an index tensor
 
 
 class NodeClassificationTask(ClassificationTask):
