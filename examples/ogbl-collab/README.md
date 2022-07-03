@@ -25,7 +25,7 @@ Statistics:
 
 ## Available Tasks
 
-### Planetoid
+### OGB
 
 - Task type: `TimeDependentLinkPrediction`
 
