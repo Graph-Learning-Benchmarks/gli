@@ -1,9 +1,9 @@
 # Ogbg-molfreesolv
 ## Data Description
 
-*Ogbg-molfreesolv contains molecule graphs adopted from the MoleculeNet. The molecule graphs are converted from SMIE strings using RDKit. Each graph represents a molecule, where nodes are atoms, and edges are chemical bonds. Input node features are 9-dimensional, containing atomic number and chirality, as well as other additional atom features such as formal charge and whether the atom is in the ring or not.
+*Ogbg-molfreesolv* contains molecule graphs adopted from the MoleculeNet. The molecule graphs are converted from SMIE strings using RDKit. Each graph represents a molecule, where nodes are atoms, and edges are chemical bonds. Input node features are 9-dimensional, containing atomic number and chirality, as well as other additional atom features such as formal charge and whether the atom is in the ring or not.
 
-Statistics:
+### Statistics
 1. Nodes: 5600
 2. Edges: 642
 
