@@ -30,7 +30,7 @@
             }
         },
         "GraphLabel": {
-            "file": "ogbg-molhiv.npz",
+            "file": "ogbg-molfreesolv.npz",
             "type": "int",
             "format": "Tensor",
             "key": "graph_class"
