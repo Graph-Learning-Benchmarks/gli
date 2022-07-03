@@ -12,10 +12,12 @@ Statistics:
 #### Citation
 
 ```
-@article{hu2022stanford,
-  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
-  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
-  year={2021}
+@inproceedings{
+  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
+  title={Moleculenet: a benchmark for molecular machine learning},
+  booktitle={Chemical Science},
+  year={2018},
+  pages={513–530}
 }
 ```
 
@@ -29,12 +31,10 @@ Statistics:
 #### Citation
 
 ```
-@inproceedings{
-  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
-  title={Moleculenet: a benchmark for molecular machine learning},
-  booktitle={Chemical Science},
-  year={2018},
-  pages={513–530}
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
 }
 ```
 
