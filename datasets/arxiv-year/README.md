@@ -53,8 +53,8 @@ The data file in GLB format is transformed from the [CUAI](https://github.com/CU
 The preprocessing code requires the following packages.
 
 ```
+dataset==1.5.2
 numpy==1.22.3
 scipy==1.7.3
 torch==1.11.0
-torch_geometric==2.0.4
 ```
