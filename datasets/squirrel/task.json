@@ -1,0 +1,22 @@
+{
+    "description": "Node classification on Squirrel dataset. The split is introduced in the paper \"Multi-scale Attributed Node Embedding\", while the classification categories are introduced in the paper \"Geom-GCN: Geometric Graph Convolutional Networks\".",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": "Node/NodeLabel",
+    "num_classes": 5,
+    "num_folds": 10,
+    "train_set": {
+        "file": "squirrel_task.npz",
+        "key": "train_FOLD"
+    },
+    "val_set": {
+        "file": "squirrel_task.npz",
+        "key": "val_FOLD"
+    },
+    "test_set": {
+        "file": "squirrel_task.npz",
+        "key": "test_FOLD"
+    }
+}

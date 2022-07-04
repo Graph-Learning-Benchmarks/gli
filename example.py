@@ -7,14 +7,11 @@ import tracemalloc
 TASKS = [
     "NodeClassification", "TimeDepenedentLinkPrediction", "GraphClassification"
 ]
-PATHS = [
-    ("examples/cora/metadata.json", "examples/cora/task.json"),
-    ("examples/ogb_data/link_prediction/ogbl-collab/metadata.json",
-     "examples/ogb_data/link_prediction/ogbl-collab/task_runtime_sampling.json"
-     ),
-    ("examples/ogb_data/graph_prediction/ogbg-molhiv/metadata.json",
-     "examples/ogb_data/graph_prediction/ogbg-molhiv/task.json")
-]
+PATHS = [("examples/cora/metadata.json", "examples/cora/task.json"),
+         ("examples/ogbl-collab/metadata.json",
+          "examples/ogbl-collab/task_runtime_sampling.json"),
+         ("examples/ogbg-molhiv/metadata.json",
+          "examples/ogbg-molhiv/task.json")]
 
 
 class Timer:
@@ -37,7 +34,8 @@ class Timer:
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[2])
+parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[0])
+parser.add_argument("--device", type=str, default="cpu")
 args = parser.parse_args()
 task_name = args.task
 clock = Timer()
@@ -47,13 +45,14 @@ def prepare_dataset(metadata_path, task_path):
     """Prepare dataset."""
     clock.tic()
     tracemalloc.start()
-    g = glb.graph.read_glb_graph(metadata_path=metadata_path)
+    g = glb.graph.read_glb_graph(metadata_path=metadata_path,
+                                 device=args.device)
     print(f"Read graph data from {metadata_path} in {clock.toc():.2f}s.")
     task = glb.task.read_glb_task(task_path=task_path)
     print(f"Read task specification from {task_path} in {clock.toc():.2f}s.")
     datasets = glb.dataloading.combine_graph_and_task(g, task)
     print(f"Combine graph and task into dataset(s) in {clock.toc():.2f}s.")
-    mem = tracemalloc.get_traced_memory()[1]/(1024*1024)
+    mem = tracemalloc.get_traced_memory()[1] / (1024 * 1024)
     print(f"Peak memory usage: {mem:.2f}MB.")
     tracemalloc.stop()
     return g, task, datasets
@@ -65,8 +64,10 @@ def main():
     g, task, datasets = prepare_dataset(*path_dict[task_name])
     if isinstance(g, list):
         print(f"Dataset contains {len(g)} graphs.")
+        print(g[0].device)
     else:
-        print(g)
+        print(g.device)
+
     print(task)
     print(datasets)
 

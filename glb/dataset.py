@@ -31,12 +31,12 @@ def node_classification_dataset_factory(graph: DGLGraph,
             self._g = graph
             for dataset_, indices_ in task.split.items():
                 assert not indices_.is_sparse
-                indices_ = torch.tensor(indices_.clone().detach()).to(
-                    self._g.device)
+                indices_ = indices_.to(self._g.device)
                 indices_ = torch.squeeze(indices_)
                 assert indices_.dim() == 1
                 if len(indices_) < self._g.num_nodes():  # index tensor
-                    mask = torch.zeros(self._g.num_nodes())
+                    mask = torch.zeros(self._g.num_nodes(),
+                                       device=self._g.device)
                     mask[indices_] = 1
                 else:
                     mask = indices_
