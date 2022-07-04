@@ -1,0 +1,13 @@
+{
+    "description": "Node classification on arXiv-year dataset.",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": "Node/NodeLabel",
+    "num_classes": 5,
+    "train_ratio": 0.5,
+    "val_ratio": 0.25,
+    "test_ratio": 0.25,
+    "num_samples": 169343
+}
