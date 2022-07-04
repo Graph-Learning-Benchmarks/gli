@@ -14,25 +14,6 @@ Statistics:
 #### Citation
 
 ```
-@article{wang2020microsoft,
-  title={Microsoft academic graph: When experts are not enough},
-  author={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},
-  journal={Quantitative Science Studies},
-  pages={396--413},
-  year={2020}
-}
-```
-
-## Available Tasks
-
-### Planetoid
-
-- Task type: `TimeDependentLinkPrediction`
-
-
-#### Citation
-
-```
 @inproceedings{wang2020microsoft,
     title={Microsoft academic graph: When experts are not enough},
     author={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},
@@ -42,9 +23,26 @@ Statistics:
 }
 ```
 
+## Available Tasks
+
+### OGB
+
+- Task type: `TimeDependentLinkPrediction`
+
+
+#### Citation
+
+```
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
+}
+```
+
 ## Preprocessing
 
-The data files and task config file in GLB format are transformed from the OGB implementation. 
+Data file(s) is transformed from [OGB](https://ogb.stanford.edu/). Check ogbl-collab.ipynb for preprocessing.
 
 
 ### Requirements
