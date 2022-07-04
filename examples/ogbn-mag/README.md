@@ -42,7 +42,7 @@ Statistics:
 
 ## Preprocessing
 
-Data file(s) is transformed from [OGB](https://ogb.stanford.edu/). Check ogbg-mag.ipynb for preprocessing.
+Data file(s) is transformed from [OGB](https://ogb.stanford.edu/). Check ogbn-mag.ipynb for preprocessing.
 
 ### Requirements
 
