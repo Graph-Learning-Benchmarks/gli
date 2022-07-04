@@ -36,5 +36,5 @@
             "key": "graph_class"
         }
     },
-    "citation": "@inproceedings{\nauthor={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},\ntitle={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},\nyear={2020},\nbooktitle={ICLR}}"
+    "citation": "@inproceedings{Wu2018Stanford,\ntitle={Moleculenet: a benchmark for molecular machine learning},\nauthor={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},\nbooktitle={Chemical Science},\npages={513=520},\nyear={2018}\n}"
 }
