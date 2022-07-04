@@ -40,7 +40,7 @@ Statistics:
 
 ## Preprocessing
 
-Data file(s) is transformed from OGB, Check ogbg-molhiv.ipynb for preprocessing.
+Data file(s) is transformed from [OGB](https://ogb.stanford.edu/). Check ogbg-molhiv.ipynb for preprocessing.
 
 ### Requirements
 
