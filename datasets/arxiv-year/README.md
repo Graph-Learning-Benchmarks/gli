@@ -8,8 +8,13 @@ Statistics:
 - Edges: 1166243
 - Number of Classes: 5
 
+<a name="myfootnote1">[1]</a>: Kuansan Wang, Zhihong Shen, Chiyuan Huang, Chieh-Han Wu, Yuxiao Dong, and Anshul Kanakia. Microsoft academic graph: When experts are not enough. Quantitative Science Studies, 1(1):396–413, 2020.
+
+<a name="myfootnote2">[2]</a>: Hu, Weihua, Matthias Fey, Marinka Zitnik, Yuxiao Dong, Hongyu Ren, Bowen Liu, Michele Catasta, and Jure Leskovec. "Open graph benchmark: Datasets for machine learning on graphs." Advances in neural information processing systems 33 (2020): 22118-22133.
+
+<a name="myfootnote3">[3]</a>: Lim, Derek, Felix Hohne, Xiuyu Li, Sijia Linda Huang, Vaishnavi Gupta, Omkar Bhalerao, and Ser Nam Lim. "Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods." Advances in Neural Information Processing Systems 34 (2021): 20887-20902.
 #### Citation
-- Original Source<a name="myfootnote1">[1]</a>: Kuansan Wang, Zhihong Shen, Chiyuan Huang, Chieh-Han Wu, Yuxiao Dong, and Anshul Kanakia. Microsoft academic graph: When experts are not enough. Quantitative Science Studies, 1(1):396–413, 2020.
+- Original Source
   ```
   @article{10.1162/qss_a_00021,
     author = {Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},
@@ -26,19 +31,8 @@ Statistics:
     eprint = {https://direct.mit.edu/qss/article-pdf/1/1/396/1760880/qss\_a\_00021.pdf},
   }
   ```
-- Previou Version<a name="myfootnote2">[2]</a>: Hu, Weihua, Matthias Fey, Marinka Zitnik, Yuxiao Dong, Hongyu Ren, Bowen Liu, Michele Catasta, and Jure Leskovec. "Open graph benchmark: Datasets for machine learning on graphs." Advances in neural information processing systems 33 (2020): 22118-22133.
-  ```
-  @article{hu2020open,
-    title={Open graph benchmark: Datasets for machine learning on graphs},
-    author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
-    journal={Advances in neural information processing systems},
-    volume={33},
-    pages={22118--22133},
-    year={2020}
-  }
-  ```
 
-- Current Version<a name="myfootnote3">[3]</a>: [3] Lim, Derek, Felix Hohne, Xiuyu Li, Sijia Linda Huang, Vaishnavi Gupta, Omkar Bhalerao, and Ser Nam Lim. "Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods." Advances in Neural Information Processing Systems 34 (2021): 20887-20902.
+- Current Version
 
   ```
   @article{lim2021large,
@@ -50,6 +44,19 @@ Statistics:
     year={2021}
   
   ```
+
+- Previou Version
+  ```
+  @article{hu2020open,
+    title={Open graph benchmark: Datasets for machine learning on graphs},
+    author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+    journal={Advances in neural information processing systems},
+    volume={33},
+    pages={22118--22133},
+    year={2020}
+  }
+  ```
+
 
 
 ## Available Tasks
