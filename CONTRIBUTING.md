@@ -289,7 +289,7 @@ We predefine multiple task types.
         - `val ratio` (optional): the ratio of validation set size in `num_sampels`
 		- `test_ratio` (optional): the ratio of test set size in `num_sampels`
 		- `num_samples` (optional): total number of samples
-    - There could be three types of split. 
+    - There could be three types of data split. 
       - Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
       - Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_folds`.
       - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
@@ -308,10 +308,9 @@ We predefine multiple task types.
         - `val ratio` (optional): the ratio of validation set size in `num_sampels`
 		- `test_ratio` (optional): the ratio of test set size in `num_sampels`
 		- `num_samples` (optional): total number of samples
-    - There could be three types of split. 
-      - Fixed split: There is only one way of spliting the samples given. Task configuration file will specify `train_set`, `val_set` and `test_set`.
-      - Fixed multi-split: There are multiple ways of spliting the samples given. Task configuration file will specify `train_set`, `val_set`, `test_set` and `num_folds`.
-      - Random split: There is no way of spliting the samples given. Task configuration file will specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
+    - There could be two types of data split (fixed multi-split not supported). 
+      - Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
+      - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 - `TimeDependentLinkPrediction`
 	- Description: This task requires the model to perform link prediction on a graph. The dataset is splitted according to time.
         - `description`: task description.
