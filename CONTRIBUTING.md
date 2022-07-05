@@ -2,23 +2,33 @@
 
 <!-- MarkdownTOC levels="1,2,3" autolink="true" -->
 
+- [Table of Contents](#table-of-contents)
 - [Data Standardization](#data-standardization)
-    - [Design Objectives](#design-objectives)
-        - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
-        - [Objects with attribute scheme](#objects-with-attribute-scheme)
-        - [Efficient storage](#efficient-storage)
-    - [GLB Data Format](#glb-data-format)
-        - [Overview](#overview)
-        - [Description](#description)
-    - [GLB Task Format](#glb-task-format)
-        - [Overview](#overview-1)
-        - [Example](#example)
-    - [Helper Functions](#helper-functions)
-    - [Dataset Class Converter](#dataset-class-converter)
+  - [Design Objectives](#design-objectives)
+    - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
+    - [Objects with attribute scheme](#objects-with-attribute-scheme)
+    - [Efficient storage](#efficient-storage)
+  - [GLB Data Format](#glb-data-format)
+    - [Overview](#overview)
+    - [Description](#description)
+      - [Objects](#objects)
+      - [Properties (of an attribute)](#properties-of-an-attribute)
+      - [Example (Homogeneous Graph)](#example-homogeneous-graph)
+      - [Heterogeneous Graph](#heterogeneous-graph)
+      - [Example (Heterogeneous Graph)](#example-heterogeneous-graph)
+  - [GLB Task Format](#glb-task-format)
+    - [Overview](#overview-1)
+    - [Example](#example)
+  - [Helper Functions](#helper-functions)
+  - [Dataset Class Converter](#dataset-class-converter)
 - [Submission and Review System](#submission-and-review-system)
-    - [Dataset Submission](#dataset-submission)
-        - [Auto Tests](#auto-tests)
-    - [Dataset Review](#dataset-review)
+  - [Dataset Submission](#dataset-submission)
+    - [Auto Tests](#auto-tests)
+      - [Data loading tests](#data-loading-tests)
+      - [JSON format tests](#json-format-tests)
+      - [Data integrity tests](#data-integrity-tests)
+      - [Task specific tests](#task-specific-tests)
+  - [Dataset Review](#dataset-review)
 
 <!-- /MarkdownTOC -->
 
@@ -281,9 +291,18 @@ We predefine multiple task types.
 		- `feature`: the node attribute used as node feature in this task
 		- `target`: the node attribute used as prediction target in this task
 		- `num_classes`: the number of classes
-		- `train_set`: the training node IDs
-		- `val_set`: the validation node IDs
-		- `test_set`: the test node IDs
+		- `train_set` (optional): the training node IDs
+		- `val_set` (optional): the validation node IDs
+		- `test_set` (optional): the test node IDs
+		- `num_folds` (optional): the number of multi-split folds
+		- `train_ratio` (optional): the ratio of train set size in `num_sampels`
+        - `val ratio` (optional): the ratio of validation set size in `num_sampels`
+		- `test_ratio` (optional): the ratio of test set size in `num_sampels`
+		- `num_samples` (optional): total number of samples
+    - There could be three types of split. 
+      - Fixed split: There is only one way of spliting the samples given. Task configuration file will specify `train_set`, `val_set` and `test_set`.
+      - Fixed multi-split: There are multiple ways of spliting the samples given. Task configuration file will specify `train_set`, `val_set`, `test_set` and `num_folds`.
+      - Random split: There is no way of spliting the samples given. Task configuration file will specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 - `GraphClassification`
 	- Description: This task requires the model to perform classification on each graph.
     - The list of required keys in task configuration file:
