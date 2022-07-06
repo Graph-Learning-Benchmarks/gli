@@ -1,0 +1,8 @@
+numpy>=1.19.5
+scipy>=1.5.4
+torch>=1.10.2
+dgl-cu102>=0.6.1  # dgl with cuda enabled
+pydocstyle
+pycodestyle
+pylint
+pytest

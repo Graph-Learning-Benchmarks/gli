@@ -24,22 +24,35 @@ def node_classification_dataset_factory(graph: DGLGraph,
             self.features = task.features
             self.target = task.target
             self._num_labels = task.num_classes
+            self.num_folds = task.num_folds
             super().__init__(name=task.description, force_reload=True)
 
         def process(self):
             """Add train, val, and test masks to graph."""
             self._g = graph
-            for dataset_, indices_ in task.split.items():
-                assert not indices_.is_sparse
-                indices_ = indices_.to(self._g.device)
-                indices_ = torch.squeeze(indices_)
-                assert indices_.dim() == 1
-                if len(indices_) < self._g.num_nodes():  # index tensor
-                    mask = torch.zeros(self._g.num_nodes(),
-                                       device=self._g.device)
-                    mask[indices_] = 1
+            for dataset_, indices_list_ in task.split.items():
+                mask_list = []
+                for fold in range(self.num_folds):
+                    if self.num_folds == 1:
+                        indices_ = indices_list_
+                    else:
+                        indices_ = indices_list_[fold]
+
+                    assert not indices_.is_sparse
+                    indices_ = indices_.to(self._g.device)
+                    indices_ = torch.squeeze(indices_)
+                    assert indices_.dim() == 1
+                    if len(indices_) < self._g.num_nodes():  # index tensor
+                        mask = torch.zeros(self._g.num_nodes(),
+                                           device=self._g.device)
+                        mask[indices_] = 1
+                    else:
+                        mask = indices_
+                    mask_list.append(mask)
+                if self.num_folds == 1:
+                    mask = mask_list[0]
                 else:
-                    mask = indices_
+                    mask = torch.stack(mask_list, dim=1)
                 self._g.ndata[dataset_] = mask.bool()
 
         def __getitem__(self, idx):
@@ -75,6 +88,10 @@ def graph_classification_dataset_factory(graphs: Iterable[DGLGraph],
             self.target = task.target
             self._num_labels = task.num_classes
             self.split = split
+
+            if task.num_folds > 1:
+                raise NotImplementedError(
+                    "GraphClassificationDataset does not support multi-split.")
 
             super().__init__(name=task.description, force_reload=True)
 
