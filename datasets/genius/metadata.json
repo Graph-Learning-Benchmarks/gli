@@ -1,0 +1,38 @@
+{
+    "description": "genius dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of genius dataset.",
+                "type": "float32",
+                "format": "Tensor",
+                "file": "genius.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of genius dataset, 1/0-valued vectors.",
+                "type": "int64",
+                "format": "Tensor",
+                "file": "genius.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "genius.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "genius.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "genius.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@article{lim2021large,\ntitle={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},\nauthor={Lim, Derek and Hohne, Felix and Li, Xiuyu and Huang, Sijia Linda and Gupta, Vaishnavi and Bhalerao, Omkar and Lim, Ser Nam},\njournal={Advances in Neural Information Processing Systems},\nvolume={34},\npages={20887--20902},\nyear={2021}\n}"
+}
