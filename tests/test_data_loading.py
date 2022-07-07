@@ -29,12 +29,13 @@ def test_graph_loading(directory):
     dataset = os.path.basename(directory)
     task_list = []
     for file in os.listdir(directory):
-        if fnmatch.fnmatch(file, 'task*.json'):
-            f = open(directory + "/" + file)
-            task_dict = json.load(f)
-            if "Link" in task_dict["type"]:
-                f.close()
-                return
+        if fnmatch.fnmatch(file, "task*.json"):
+            with open(directory + "/" + file,  encoding="utf-8") as f:
+                task_dict = json.load(f)
+                if "Link" in task_dict["type"]:
+                    # avoid link prediction for now
+                    f.close()
+                    return
             print(os.path.splitext(file)[0])
             task_list.append(os.path.splitext(file)[0])
     try:
