@@ -274,52 +274,71 @@ The information about a graph learning task (e.g., the train/test splits or the 
 We predefine multiple task types.
 
 - `NodeClassification`
-	- Description: This task requires the model to perform classification on each node.
-	- The list of required keys in the task configuration file:
-		- `description`: task description.
-		- `type`: task type (in this case, `NodeClassification`)
-		- `feature`: the node attribute used as node feature in this task
-		- `target`: the node attribute used as prediction target in this task
-		- `num_classes`: the number of classes
-		- `train_set` (optional): the training node IDs
-		- `val_set` (optional): the validation node IDs
-		- `test_set` (optional): the test node IDs
-		- `num_folds` (optional): the number of multi-split folds
-		- `train_ratio` (optional): the ratio of train set size in `num_sampels`
-        - `val ratio` (optional): the ratio of validation set size in `num_sampels`
-		- `test_ratio` (optional): the ratio of test set size in `num_sampels`
-		- `num_samples` (optional): total number of samples
-    - There could be three types of data split. 
-      - Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
-      - Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_folds`.
-      - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
+    + Description: This task requires the model to perform classification on each node.
+    + The list of required keys in the task configuration file:
+        * `description`: task description.
+        * `type`: task type (in this case, `NodeClassification`).
+        * `feature`: the node attribute used as node feature in this task.
+        * `target`: the node attribute used as prediction target in this task.
+        * `num_classes`: the number of classes.
+        * `train_set` (optional): the training node IDs.
+        * `val_set` (optional): the validation node IDs.
+        * `test_set` (optional): the test node IDs.
+        * `num_folds` (optional): the number of multi-split folds.
+        * `train_ratio` (optional): the ratio of train set size in `num_sampels`.
+        * `val ratio` (optional): the ratio of validation set size in `num_sampels`.
+        * `test_ratio` (optional): the ratio of test set size in `num_sampels`.
+        * `num_samples` (optional): total number of samples.
+    + There could be three types of data split. 
+        * Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
+        * Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_folds`.
+        * Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 - `GraphClassification`
-	- Description: This task requires the model to perform classification on each graph.
-    - The list of required keys in task configuration file:
-		- `description`: task description.
-		- `type`: task type (in this case, `GraphClassification`)
-		- `feature`: the attribute(s) used as feature in this task
-		- `target`: the graph attribute used as prediction target in this task
-		- `train_set` (optional): the training node IDs
-		- `val_set` (optional): the validation node IDs
-		- `test_set` (optional): the test node IDs
-		- `num_folds` (optional): the number of multi-split folds
-		- `train_ratio` (optional): the ratio of train set size in `num_sampels`
-        - `val ratio` (optional): the ratio of validation set size in `num_sampels`
-		- `test_ratio` (optional): the ratio of test set size in `num_sampels`
-		- `num_samples` (optional): total number of samples
-    - There could be two types of data split (fixed multi-split not supported). 
-      - Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
-      - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
+    + Description: This task requires the model to perform classification on each graph.
+    + The list of required keys in task configuration file:
+        * `description`: task description.
+        * `type`: task type (in this case, `GraphClassification`).
+        * `feature`: the attribute(s) used as feature in this task.
+        * `target`: the graph attribute used as prediction target in this task.
+        * `train_set` (optional): the training node IDs.
+        * `val_set` (optional): the validation node IDs.
+        * `test_set` (optional): the test node IDs.
+        * `num_folds` (optional): the number of multi-split folds.
+        * `train_ratio` (optional): the ratio of train set size in `num_sampels`.
+        * `val ratio` (optional): the ratio of validation set size in `num_sampels`.
+        * `test_ratio` (optional): the ratio of test set size in `num_sampels`.
+        * `num_samples` (optional): total number of samples.
+    + There could be two types of data split (fixed multi-split not supported). 
+        * Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
+        * Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 - `TimeDependentLinkPrediction`
-	- Description: This task requires the model to perform link prediction on a graph. The dataset is splitted according to time.
-        - `description`: task description.
-		- `type`: task type (in this case, `TimeDependentLinkPrediction`)
-		- `feature`: the attribute(s) used as feature in this task
-		- `time`: the time attribute that indicates edge formation order in this task
-		- `train_time_window`: the time window in which edges are used to train
-		- `val_time_window`: the time window in which edges are used to validate
-		- `test_time_window`: the time window in which edges are used to test
+    + Description: This task requires the model to perform link prediction on a graph. The dataset is splitted according to time.
+    + The list of required keys in task configuration file:
+        * `description`: task description.
+        * `type`: task type (in this case, `TimeDependentLinkPrediction`).
+        * `feature`: the attribute(s) used as feature in this task.
+        * `time`: the time attribute that indicates edge formation order in this task.
+        * `train_time_window`: the time window in which edges are used to train.
+        * `val_time_window`: the time window in which edges are used to validate.
+        * `test_time_window`: the time window in which edges are used to test.
+- `EntityLinkPrediction`
+    + Description: This task requires the model to predict the tail or head node for a triplet in the graph. Triplets are identified by `Edge_id` which correspond to a unique (head_node, relation_id, tail_node).
+    + The list of required keys in task configuration file:
+        * `description`: task description.
+        * `type`: task type (in this case, `EntityLinkPrediction`).
+        * `feature`: the attribute(s) used as feature in this task.
+        * `train_triplet_set`: the training edge IDs.
+        * `val_triplet_set`: the validation edge IDs.
+        * `test_triplet_set`: the test edge IDs.
+- `RelationLinkPrediction`
+    + Description: This task requires the model to predict the relation type-id for a triplet in the graph. Triplets are identified by `Edge_id` which correspond to a unique (head_node, relation_id, tail_node).
+    + The list of required keys in task configuration file:
+        * `description`: task description.
+        * `type`: task type (in this case, `RelationLinkPrediction`).
+        * `feature`: the attribute(s) used as feature in this task.
+        * `train_triplet_set`: the training edge IDs.
+        * `val_triplet_set`: the validation edge IDs.
+        * `test_triplet_set`: the test edge IDs.
 
 ### Example
 

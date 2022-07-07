@@ -37,14 +37,30 @@ def avg_cluster_coefficient(g):
 def diameter(g):
     """Compute the diameters (need to be connected)."""
     nx_g = dgl.to_networkx(g)
-    nx_g = nx.Graph(nx_g)
-    if nx.is_connected(nx_g):
+    # nx_g = nx.Graph(nx_g)
+    if nx.is_strongly_connected(nx_g):
         return nx.diameter(nx_g)
     else:
-        # if the graph is not connected, we report the diameter in the LCC
-        cc = sorted(nx.connected_components(nx_g), key=len, reverse=True)
+        # if the graph is not strongly connected,
+        # we report the diameter in the LSCC
+        cc = sorted(nx.strongly_connected_components(nx_g), key=len,
+                    reverse=True)
         lcc = nx_g.subgraph(cc[0])
         return nx.diameter(lcc)
+
+
+def pseudo_diameter(g):
+    """Compute a lower bound on the diameter."""
+    nx_g = dgl.to_networkx(g)
+    if nx.is_strongly_connected(nx_g):
+        return nx.algorithms.approximation.diameter(nx_g)
+    else:
+        # if the graph is not strongly connected,
+        # we report the diameter in the LCC
+        cc = sorted(nx.strongly_connected_components(nx_g), key=len,
+                    reverse=True)
+        lcc = nx_g.subgraph(cc[0])
+        return nx.algorithms.approximation.diameter(lcc)
 
 
 def avg_shortest_path(g):
@@ -90,8 +106,8 @@ def gini_array(array):
     """Compute the Gini Index of a given array."""
     array = np.sort(array)
     index = np.arange(1, array.shape[0] + 1)
-    return np.sum((2 * index - array.shape[0] - 1) * array) / \
-                 (array.shape[0] * np.sum(array))
+    return np.sum((2 * index - array.shape[0] - 1)
+                  * array) / (array.shape[0] * np.sum(array))
 
 
 def gini_degree(g):
@@ -132,24 +148,22 @@ def check_direct(g):
     """Check the graph is directed or not."""
     # to examine whether all the edges are bi-directed edges
     nx_g = dgl.to_networkx(g)
-    node_num = nx_g.number_of_nodes()
-    count = 0
-    for i in range(node_num):
-        for _, neighbors in nx_g.edges(i):
-            if (neighbors, i) in nx_g.edges(neighbors):
-                count += 1
-    return g.edges()[0].size(dim=0) != count
+    for e in nx_g.edges():
+        if (e[1], e[0]) not in nx_g.edges():
+            return True
+    return False
 
 
 def edge_homogeneity(g):
     """Compute the edge homogeneity."""
     # proportion of the edges that connect nodes with the same class label
-    edge_num = g.edges()[0].shape[0]
     count = 0
-    for i in range(edge_num):
-        if g.ndata["NodeLabel"][g.edges()[0][i]] == \
-                g.ndata["NodeLabel"][g.edges()[1][i]]:
+    nx_g = dgl.to_networkx(g, node_attrs=["NodeLabel"])
+    edge_num = nx_g.number_of_edges()
+    for e in nx_g.edges(data=True):
+        if nx_g.nodes[e[0]]["NodeLabel"] == nx_g.nodes[e[1]]["NodeLabel"]:
             count += 1
+
     return count / edge_num
 
 
@@ -165,6 +179,10 @@ def power_law_expo(g):
 def pareto_expo(g):
     """Get the Pareto Exponent."""
     nx_g = dgl.to_networkx(g)
+    # remove nodes that have 0 degree
+    remove_nodes = [node for node, degree in
+                    dict(nx_g.degree()).items() if degree == 0]
+    nx_g.remove_nodes_from(remove_nodes)
     degree_sequence = [d for n, d in nx_g.degree()]
     degree_sequence = np.sort(degree_sequence)
     dmin = np.min(degree_sequence)
@@ -195,19 +213,19 @@ def main():
     print(g)
     print(task)
     print(datasets)
-    # print graph tags
     print(f"Directed: {check_direct(g)}")
     print(f"Edge Density: {edge_density(g):.6f}")
     print(f"Average Degree: {avg_degree(g):.6f}")
+    # print(f"Diameter: {diameter(g)}")
+    print(f"Pseudo Diameter: {pseudo_diameter(g)}")
+    # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
     print(f"Relative Size of Largest Connected Component: "
           f"{relative_largest_cc(g):.6f}")
     print(f"Relative Size of Largest Strongly Connected "
           f"Component: {relative_largest_cc(g):.6f}")
     print(f"Average Clustering Coefficient: "
           f"{avg_cluster_coefficient(g):.6f}")
-    # print(f"Diameter: {diameter(g)}")
-    # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
-    print(f"Edge Reciprocity: {edge_reciprocity(g)}")
+    print(f"Edge Reciprocity: {edge_reciprocity(g):.6f}")
     print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
     print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
     print(f"Degeneracy: {degeneracy(g)}")
