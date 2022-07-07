@@ -106,7 +106,6 @@ def gini_array(array):
     """Compute the Gini Index of a given array."""
     array = np.sort(array)
     index = np.arange(1, array.shape[0] + 1)
-
     return np.sum((2 * index - array.shape[0] - 1)
                   * array) / (array.shape[0] * np.sum(array))
 
