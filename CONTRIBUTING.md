@@ -320,6 +320,22 @@ We predefine multiple task types.
 		- `train_time_window`: the time window in which edges are used to train
 		- `val_time_window`: the time window in which edges are used to validate
 		- `test_time_window`: the time window in which edges are used to test
+- `EntityLinkPrediction`
+	- Description: This task requires the model to predict the tail or head node for a triplet in the graph. Triplets are identified by `Edge_id` which correspond to a unique (head_node, relation_id, tail_node).
+        - `description`: task description.
+		- `type`: task type (in this case, `EntityLinkPrediction`)
+		- `feature`: the attribute(s) used as feature in this task
+        - `train_triplet_set`: the training edge IDs
+		- `valid_triplet_set` (optional): the validation edge IDs
+		- `test_triplet_set` (optional): the test edge IDs
+- `RelationLinkPrediction`
+	- Description: This task requires the model to predict the relation type-id for a triplet in the graph. Triplets are identified by `Edge_id` which correspond to a unique (head_node, relation_id, tail_node).
+        - `description`: task description.
+		- `type`: task type (in this case, `RelationLinkPrediction`)
+		- `feature`: the attribute(s) used as feature in this task
+        - `train_triplet_set`: the training edge IDs
+		- `valid_triplet_set` (optional): the validation edge IDs
+		- `test_triplet_set` (optional): the test edge IDs
 
 ### Example
 
