@@ -33,7 +33,6 @@ def test_graph_loading(directory):
             with open(directory + "/" + file,  encoding="utf-8") as f:
                 task_dict = json.load(f)
                 if "Link" in task_dict["type"]:
-                    # avoid link prediction for now
                     f.close()
                     return
             print(os.path.splitext(file)[0])
