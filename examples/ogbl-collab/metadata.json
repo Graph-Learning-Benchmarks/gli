@@ -11,39 +11,23 @@
             }
         },
         "Edge": {
-            "PositiveEdge": {
-                "_ID": {
-                    "file": "ogbl-collab.npz",
-                    "key": "PositiveEdge_id"
-                },
-                "_Edge": {
-                    "file": "ogbl-collab.npz",
-                    "key": "edge"
-                },
-                "EdgeWeight": {
-                    "description": "Number of co-authored papers published in that year",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "ogbl-collab.npz",
-                    "key": "edge_weight"
-                },
-                "EdgeYear": {
-                    "description": "Year of the collaboration represented by the Edge",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "ogbl-collab.npz",
-                    "key": "edge_year"
-                }
+            "_Edge": {
+                "file": "ogbl-collab.npz",
+                "key": "edge"
             },
-            "NegativeEdge": {
-                "_ID": {
-                    "file": "ogbl-collab.npz",
-                    "key": "NegativeEdge_id"
-                },
-                "_Edge": {
-                    "file": "ogbl-collab.npz",
-                    "key": "neg_edge"
-                }
+            "EdgeWeight": {
+                "description": "Number of co-authored papers published in that year",
+                "type": "int",
+                "format": "Tensor",
+                "file": "ogbl-collab.npz",
+                "key": "edge_weight"
+            },
+            "EdgeYear": {
+                "description": "Year of the collaboration represented by the Edge",
+                "type": "int",
+                "format": "Tensor",
+                "file": "ogbl-collab.npz",
+                "key": "edge_year"
             }
         },
         "Graph": {
