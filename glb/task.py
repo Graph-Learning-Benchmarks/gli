@@ -29,7 +29,9 @@ class GLBTask:
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
 
-        if "train_set" not in task_dict and "train_time_window" not in task_dict:  # use random split
+        if "train_set" not in task_dict and \
+                "train_time_window" not in task_dict:
+            # use random split
             self.random_split = True
 
             assert "train_ratio" in task_dict
