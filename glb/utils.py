@@ -2,6 +2,7 @@
 import json
 import os
 import subprocess
+from warnings import warn
 
 import dgl
 import numpy as np
@@ -32,9 +33,12 @@ def unwrap_array(array):
     This method is to deal with the situation where array is loaded from
     sparse matrix by np.load(), which will wrap array to be a numpy.ndarray.
     """
-    if isinstance(array, np.ndarray):
-        if array.dtype.kind not in set("buifc"):
-            return array.all()
+    try:
+        if isinstance(array, np.ndarray):
+            if array.dtype.kind not in set("buifc"):
+                return array.all()
+    except TypeError:
+        return None
     return array
 
 
@@ -64,6 +68,11 @@ class KeyedFileReader():
         assert isinstance(array, np.ndarray)
 
         array = unwrap_array(array)
+
+        if array is None:
+            file_key_entry = path + ":" + key if key else path
+            warn(f"Skip reading {file_key_entry} because it is non-numeric.")
+            return None
 
         if sp.issparse(array):
             # Keep the array format to be scipy rather than pytorch

@@ -2,23 +2,33 @@
 
 <!-- MarkdownTOC levels="1,2,3" autolink="true" -->
 
+- [Table of Contents](#table-of-contents)
 - [Data Standardization](#data-standardization)
-    - [Design Objectives](#design-objectives)
-        - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
-        - [Objects with attribute scheme](#objects-with-attribute-scheme)
-        - [Efficient storage](#efficient-storage)
-    - [GLB Data Format](#glb-data-format)
-        - [Overview](#overview)
-        - [Description](#description)
-    - [GLB Task Format](#glb-task-format)
-        - [Overview](#overview-1)
-        - [Example](#example)
-    - [Helper Functions](#helper-functions)
-    - [Dataset Class Converter](#dataset-class-converter)
+  - [Design Objectives](#design-objectives)
+    - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
+    - [Objects with attribute scheme](#objects-with-attribute-scheme)
+    - [Efficient storage](#efficient-storage)
+  - [GLB Data Format](#glb-data-format)
+    - [Overview](#overview)
+    - [Description](#description)
+      - [Objects](#objects)
+      - [Properties (of an attribute)](#properties-of-an-attribute)
+      - [Example (Homogeneous Graph)](#example-homogeneous-graph)
+      - [Heterogeneous Graph](#heterogeneous-graph)
+      - [Example (Heterogeneous Graph)](#example-heterogeneous-graph)
+  - [GLB Task Format](#glb-task-format)
+    - [Overview](#overview-1)
+    - [Example](#example)
+  - [Helper Functions](#helper-functions)
+  - [Dataset Class Converter](#dataset-class-converter)
 - [Submission and Review System](#submission-and-review-system)
-    - [Dataset Submission](#dataset-submission)
-        - [Auto Tests](#auto-tests)
-    - [Dataset Review](#dataset-review)
+  - [Dataset Submission](#dataset-submission)
+    - [Auto Tests](#auto-tests)
+      - [Data loading tests](#data-loading-tests)
+      - [JSON format tests](#json-format-tests)
+      - [Data integrity tests](#data-integrity-tests)
+      - [Task specific tests](#task-specific-tests)
+  - [Dataset Review](#dataset-review)
 
 <!-- /MarkdownTOC -->
 
@@ -321,6 +331,8 @@ We predefine multiple task types.
         * `train_time_window`: the time window in which edges are used to train.
         * `val_time_window`: the time window in which edges are used to validate.
         * `test_time_window`: the time window in which edges are used to test.
+        * `valid_neg` (optional): the negative samples of edges to validate.
+        * `test_neg` (optional): the negative samples of edges to test.
 - `EntityLinkPrediction`
     + Description: This task requires the model to predict the tail or head node for a triplet in the graph. Triplets are identified by `Edge_id` which correspond to a unique (head_node, relation_id, tail_node).
     + The list of required keys in task configuration file:
