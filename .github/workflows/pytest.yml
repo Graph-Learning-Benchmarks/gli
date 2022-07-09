@@ -31,4 +31,7 @@ jobs:
           done
     - name: Test with pytest
       run: |
-        # pytest tests/
+        for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+            dataset=$(echo $files | sed -r 's/datasets\/(\w+)\/.*/\1/')
+            pytest -q --dataset="$dataset" tests/test_data_loading.py 
+        done
