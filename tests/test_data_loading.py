@@ -7,7 +7,7 @@ import glb
 
 def test_graph_loading(dataset):
     """Test if glb.graph.get_glb_graph can be applied successfully."""
-    directory = os.getcwd() + "/" + dataset
+    directory = os.getcwd() + "/datasets/" + dataset
     task_list = []
     for file in os.listdir(directory):
         if fnmatch.fnmatch(file, "task*.json"):
