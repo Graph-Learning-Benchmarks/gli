@@ -1,4 +1,8 @@
+"""Conftest to enable parameter into test."""
+
+
 def pytest_addoption(parser):
+    """Adopt parameter."""
     parser.addoption(
         "--dataset",
         action="append",
@@ -8,5 +12,6 @@ def pytest_addoption(parser):
 
 
 def pytest_generate_tests(metafunc):
+    """Generate tests."""
     if "dataset" in metafunc.fixturenames:
         metafunc.parametrize("dataset", metafunc.config.getoption("dataset"))

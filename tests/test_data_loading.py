@@ -20,19 +20,31 @@ def test_graph_loading(dataset):
             task_list.append(os.path.splitext(file)[0])
     try:
         _ = glb.dataloading.get_glb_graph(dataset)
-    except Exception as e:
+    except (AssertionError,
+            AttributeError,
+            ModuleNotFoundError,
+            IndexError,
+            ValueError) as e:
         print(e, dataset, "graph loading failed")
         assert False
 
     for task in task_list:
         try:
             _ = glb.dataloading.get_glb_task(dataset, task)
-        except Exception as e:
+        except (AssertionError,
+                AttributeError,
+                ModuleNotFoundError,
+                IndexError,
+                ValueError) as e:
             print(e, dataset, task, "task loading failed")
             assert False
 
         try:
             glb.dataloading.get_glb_dataset(dataset, task)
-        except Exception as e:
+        except (AssertionError,
+                AttributeError,
+                ModuleNotFoundError,
+                IndexError,
+                ValueError) as e:
             print(e, dataset, "combine graph and task loading failed")
             assert False
