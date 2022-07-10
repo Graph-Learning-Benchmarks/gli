@@ -9,20 +9,25 @@ import powerlaw
 
 def edge_density(g):
     """Compute the edge density."""
+    # depends on direct/indirect
     nx_g = dgl.to_networkx(g)
     edge_den = nx.density(nx_g)
-    return edge_den
+    if check_direct(g):
+        return edge_den
+    else:
+        return 2 * edge_den
 
 
 def avg_degree(g):
     """Compute the average degree."""
+    # depends on direct/indirect
     nx_g = dgl.to_networkx(g)
-    degree = nx_g.in_degree()
-    degree_list = []
-    for _, d in degree:
-        degree_list.append(d)
-    av_degree = sum(degree_list) / len(degree_list)
-    return av_degree
+    edge_num = nx.number_of_edges(nx_g)
+    node_num = nx.number_of_nodes(nx_g)
+    if check_direct(g):
+        return edge_num / node_num
+    else:
+        return 2 * edge_num / node_num
 
 
 def avg_cluster_coefficient(g):
@@ -117,25 +122,25 @@ def gini_degree(g):
     return gini_array(degree_sequence)
 
 
-def gini_coreness(g):
+def core_number_related(g):
+    """Compute 2 tags related to coreness."""
+    nx_g = dgl.to_networkx(g)
+    # convert the MultiDiGraph to Digraph
+    nx_g = nx.DiGraph(nx_g)
+    # remove potential self-loops
+    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
+    core_list = list(nx.core_number(nx_g).values())
+    return gini_coreness(core_list), degeneracy(core_list)
+
+
+def gini_coreness(nx_core_list):
     """Compute the gini index of the coreness sequence."""
-    nx_g = dgl.to_networkx(g)
-    # convert the MultiDiGraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
-    # remove potential self-loops
-    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
-    core_sequence = list(nx.core_number(nx_g).values())
-    return gini_array(core_sequence)
+    return gini_array(nx_core_list)
 
 
-def degeneracy(g):
+def degeneracy(nx_core_list):
     """Compute the Degeneracy."""
-    nx_g = dgl.to_networkx(g)
-    # convert the MultiDiGraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
-    # remove potential self-loops
-    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
-    return max(nx.core_number(nx_g).values())
+    return max(nx_core_list)
 
 
 def degree_assortativity(g):
@@ -190,6 +195,15 @@ def pareto_expo(g):
     return alpha
 
 
+def transitivity(g):
+    """Compute the transitivity of the graph."""
+    # only work for in-directed graphs
+    # will disregard the edge direction
+    nx_g = dgl.to_networkx(g)
+    nx_g = nx.Graph(nx_g)
+    return nx.transitivity(nx_g)
+
+
 def prepare_dataset(dataset, task):
     """Prepare datasets."""
     glb_graph = glb.dataloading.get_glb_graph(dataset)
@@ -227,12 +241,15 @@ def main():
           f"{avg_cluster_coefficient(g):.6f}")
     print(f"Edge Reciprocity: {edge_reciprocity(g):.6f}")
     print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
-    print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
-    print(f"Degeneracy: {degeneracy(g)}")
+    # Related to coreness
+    gini_core, degen_core = core_number_related(g)
+    print(f"Gini Coefficient of Coreness: {gini_core:.6f}")
+    print(f"Degeneracy: {degen_core}")
     print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
     print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
     print(f"Power Law Exponent: {power_law_expo(g):.6f}")
     print(f"Pareto Exponent: {pareto_expo(g):.6f}")
+    print(f"Transitivity: {transitivity(g):.6f}")
 
 
 if __name__ == "__main__":
