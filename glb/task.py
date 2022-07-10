@@ -29,7 +29,9 @@ class GLBTask:
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
 
-        if "train_set" not in task_dict:  # use random split
+        if "train_set" not in task_dict and \
+                "train_time_window" not in task_dict:
+            # use random split
             self.random_split = True
 
             assert "train_ratio" in task_dict
@@ -130,6 +132,9 @@ class LinkPredictionTask(GLBTask):
     def __init__(self, task_dict, pwd):
         """Link/Edge prediction."""
         self.target = "Edge/_Edge"
+        self.valid_neg = task_dict.get("valid_neg", None)
+        self.test_neg = task_dict.get("test_neg", None)
+        self.sample_runtime = self.valid_neg is not None
         super().__init__(task_dict, pwd)
 
     pass
@@ -146,8 +151,6 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
             "valid_time_window": task_dict["valid_time_window"],
             "test_time_window": task_dict["test_time_window"]
         }
-        self.valid_neg = task_dict.get("valid_neg", None)
-        self.test_neg = task_dict.get("test_neg", None)
         super().__init__(task_dict, pwd)
 
     def _load(self, task_dict):
