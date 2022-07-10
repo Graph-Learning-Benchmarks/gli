@@ -122,25 +122,25 @@ def gini_degree(g):
     return gini_array(degree_sequence)
 
 
-def gini_coreness(g):
+def core_number_related(g):
+    """Compute 2 tags related to coreness."""
+    nx_g = dgl.to_networkx(g)
+    # convert the MultiDiGraph to Digraph
+    nx_g = nx.DiGraph(nx_g)
+    # remove potential self-loops
+    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
+    core_list = list(nx.core_number(nx_g).values())
+    return gini_coreness(core_list), degeneracy(core_list)
+
+
+def gini_coreness(nx_core_list):
     """Compute the gini index of the coreness sequence."""
-    nx_g = dgl.to_networkx(g)
-    # convert the MultiDiGraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
-    # remove potential self-loops
-    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
-    core_sequence = list(nx.core_number(nx_g).values())
-    return gini_array(core_sequence)
+    return gini_array(nx_core_list)
 
 
-def degeneracy(g):
+def degeneracy(nx_core_list):
     """Compute the Degeneracy."""
-    nx_g = dgl.to_networkx(g)
-    # convert the MultiDiGraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
-    # remove potential self-loops
-    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
-    return max(nx.core_number(nx_g).values())
+    return max(nx_core_list)
 
 
 def degree_assortativity(g):
@@ -197,7 +197,10 @@ def pareto_expo(g):
 
 def transitivity(g):
     """Compute the transitivity of the graph."""
+    # only work for in-directed graphs
+    # will disregard the edge direction
     nx_g = dgl.to_networkx(g)
+    nx_g = nx.Graph(nx_g)
     return nx.transitivity(nx_g)
 
 
@@ -238,8 +241,10 @@ def main():
           f"{avg_cluster_coefficient(g):.6f}")
     print(f"Edge Reciprocity: {edge_reciprocity(g):.6f}")
     print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
-    print(f"Gini Coefficient of Coreness: {gini_coreness(g):.6f}")
-    print(f"Degeneracy: {degeneracy(g)}")
+    # Related to coreness
+    gini_core, degen_core = core_number_related(g)
+    print(f"Gini Coefficient of Coreness: {gini_core:.6f}")
+    print(f"Degeneracy: {degen_core}")
     print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
     print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
     print(f"Power Law Exponent: {power_law_expo(g):.6f}")
