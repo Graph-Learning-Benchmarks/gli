@@ -18,15 +18,15 @@ Statistics:
 ```
 
 ## Available Tasks
-### Task type
-`GraphClassification`
+### [OGB](https://ogb.stanford.edu/)
+- Task type: `GraphClassification`
 
 #### Citation
 ``` 
-@inproceedings{Hu2020Stanford
-  author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
+@inproceedings{Hu2020Stanford,
   title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
   year={2020},
+  author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
   booktitle={ICLR}
 }
 ```
