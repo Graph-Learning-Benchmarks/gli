@@ -9,20 +9,25 @@ import powerlaw
 
 def edge_density(g):
     """Compute the edge density."""
+    # depends on direct/indirect
     nx_g = dgl.to_networkx(g)
     edge_den = nx.density(nx_g)
-    return edge_den
+    if check_direct(g):
+        return edge_den
+    else:
+        return 2 * edge_den
 
 
 def avg_degree(g):
     """Compute the average degree."""
+    # depends on direct/indirect
     nx_g = dgl.to_networkx(g)
-    degree = nx_g.in_degree()
-    degree_list = []
-    for _, d in degree:
-        degree_list.append(d)
-    av_degree = sum(degree_list) / len(degree_list)
-    return av_degree
+    edge_num = nx.number_of_edges(nx_g)
+    node_num = nx.number_of_nodes(nx_g)
+    if check_direct(g):
+        return edge_num / node_num
+    else:
+        return 2 * edge_num / node_num
 
 
 def avg_cluster_coefficient(g):
@@ -190,6 +195,12 @@ def pareto_expo(g):
     return alpha
 
 
+def transitivity(g):
+    """Compute the transitivity of the graph."""
+    nx_g = dgl.to_networkx(g)
+    return nx.transitivity(nx_g)
+
+
 def prepare_dataset(dataset, task):
     """Prepare datasets."""
     glb_graph = glb.dataloading.get_glb_graph(dataset)
@@ -233,6 +244,7 @@ def main():
     print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
     print(f"Power Law Exponent: {power_law_expo(g):.6f}")
     print(f"Pareto Exponent: {pareto_expo(g):.6f}")
+    print(f"Transitivity: {transitivity(g):.6f}")
 
 
 if __name__ == "__main__":
