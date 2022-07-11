@@ -23,7 +23,8 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     if verbose:
         print(metadata["description"])
 
-    hetero = _is_hetero_graph(metadata)
+    assert _is_hetero_graph(metadata) == metadata[
+        "is_heterogeneous"], "is_heterogeneous attribute is inconsistent"
 
     assert "data" in metadata, "attribute `data` not in metadata.json."
 
