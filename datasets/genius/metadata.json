@@ -34,5 +34,6 @@
             }
         }
     },
-    "citation": "@article{lim2021large,\ntitle={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},\nauthor={Lim, Derek and Hohne, Felix and Li, Xiuyu and Huang, Sijia Linda and Gupta, Vaishnavi and Bhalerao, Omkar and Lim, Ser Nam},\njournal={Advances in Neural Information Processing Systems},\nvolume={34},\npages={20887--20902},\nyear={2021}\n}"
+    "citation": "@article{lim2021large,\ntitle={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},\nauthor={Lim, Derek and Hohne, Felix and Li, Xiuyu and Huang, Sijia Linda and Gupta, Vaishnavi and Bhalerao, Omkar and Lim, Ser Nam},\njournal={Advances in Neural Information Processing Systems},\nvolume={34},\npages={20887--20902},\nyear={2021}\n}",
+    "is_heterogeneous": false
 }
