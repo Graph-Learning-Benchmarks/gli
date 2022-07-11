@@ -2,23 +2,33 @@
 
 <!-- MarkdownTOC levels="1,2,3" autolink="true" -->
 
+- [Table of Contents](#table-of-contents)
 - [Data Standardization](#data-standardization)
-    - [Design Objectives](#design-objectives)
-        - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
-        - [Objects with attribute scheme](#objects-with-attribute-scheme)
-        - [Efficient storage](#efficient-storage)
-    - [GLB Data Format](#glb-data-format)
-        - [Overview](#overview)
-        - [Description](#description)
-    - [GLB Task Format](#glb-task-format)
-        - [Overview](#overview-1)
-        - [Example](#example)
-    - [Helper Functions](#helper-functions)
-    - [Dataset Class Converter](#dataset-class-converter)
+  - [Design Objectives](#design-objectives)
+    - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
+    - [Objects with attribute scheme](#objects-with-attribute-scheme)
+    - [Efficient storage](#efficient-storage)
+  - [GLB Data Format](#glb-data-format)
+    - [Overview](#overview)
+    - [Description](#description)
+      - [Objects](#objects)
+      - [Properties (of an attribute)](#properties-of-an-attribute)
+      - [Example (Homogeneous Graph)](#example-homogeneous-graph)
+      - [Heterogeneous Graph](#heterogeneous-graph)
+      - [Example (Heterogeneous Graph)](#example-heterogeneous-graph)
+  - [GLB Task Format](#glb-task-format)
+    - [Overview](#overview-1)
+    - [Example](#example)
+  - [Helper Functions](#helper-functions)
+  - [Dataset Class Converter](#dataset-class-converter)
 - [Submission and Review System](#submission-and-review-system)
-    - [Dataset Submission](#dataset-submission)
-        - [Auto Tests](#auto-tests)
-    - [Dataset Review](#dataset-review)
+  - [Dataset Submission](#dataset-submission)
+    - [Auto Tests](#auto-tests)
+      - [Data loading tests](#data-loading-tests)
+      - [JSON format tests](#json-format-tests)
+      - [Data integrity tests](#data-integrity-tests)
+      - [Task specific tests](#task-specific-tests)
+  - [Dataset Review](#dataset-review)
 
 <!-- /MarkdownTOC -->
 
@@ -140,7 +150,8 @@ A complete example of a homogeneous graph's `metadata.json` is given below.
             }
         }
     },
-    "citation": "@inproceedings{yang2016revisiting,\ntitle={Revisiting semi-supervised learning with graph embeddings},\nauthor={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},\nbooktitle={International conference on machine learning},\npages={40--48},\nyear={2016},\norganization={PMLR}\n}"
+    "citation": "@inproceedings{yang2016revisiting,\ntitle={Revisiting semi-supervised learning with graph embeddings},\nauthor={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},\nbooktitle={International conference on machine learning},\npages={40--48},\nyear={2016},\norganization={PMLR}\n}",
+    "is_heterogeneous": false
 }
 ```
 
@@ -261,7 +272,8 @@ A complete example of a heterogeneous graph's `metadata.json` is given below.
             }
         }
     },
-    "citation": "@inproceedings{wang2020microsoft,\ntitle={Microsoft academic graph: When experts are not enough},\nauthor={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},\nbooktitle={Quantitative Science Studies},\npages={396--413},\nyear={2020}\n}"
+    "citation": "@inproceedings{wang2020microsoft,\ntitle={Microsoft academic graph: When experts are not enough},\nauthor={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},\nbooktitle={Quantitative Science Studies},\npages={396--413},\nyear={2020}\n}",
+    "is_heterogeneous": true
 }
 ```
 
