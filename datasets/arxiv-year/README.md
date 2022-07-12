@@ -42,7 +42,7 @@ Statistics:
     volume={34},
     pages={20887--20902},
     year={2021}
-  
+  }
   ```
 
 - Previou Version
