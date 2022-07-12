@@ -36,5 +36,6 @@ The data files and task config file in GLB format are transformed from the OGB i
 
 ### Requirements
 The preprocessing code requires the following package.
-
-> ogb >= 1.3.2
+```
+ogb >= 1.3.2
+```
