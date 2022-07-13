@@ -2,13 +2,14 @@
 import json
 import os
 import subprocess
+import warnings
 
 import dgl
 import numpy as np
 import scipy.sparse as sp
 import torch
 
-from glb import ROOT_PATH
+from glb import ROOT_PATH, WARNING_DENSE_SIZE
 
 
 def load_data(path: os.PathLike):
@@ -230,3 +231,24 @@ def _download(url, out, verbose=False):
         subprocess.run(["wget", "-O", out, url], check=True)
     else:
         subprocess.run(["wget", "-q", "-O", out, url], check=True)
+
+
+def sparse_to_dense_safe(array: torch.Tensor):
+    """Convert a sparse tensor to dense.
+
+    Throw user warning if the dense array size is larger than 1 G.
+
+    Args:
+        array (torch.Tensor): Input tensor.
+
+    Returns:
+        torch.Tensor: Dense tensor.
+    """
+    if array.is_sparse:
+        array = array.to_dense()
+        array_size = array.element_size() * array.nelement()
+        if array_size > WARNING_DENSE_SIZE:
+            warnings.warn(
+                f"Trying to convert a large sparse tensor to a dense tensor. "
+                f"The dense tensor occupies {array_size} bytes.")
+    return array
