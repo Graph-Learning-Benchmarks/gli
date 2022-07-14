@@ -24,7 +24,7 @@ def node_classification_dataset_factory(graph: DGLGraph,
             self.features = task.features
             self.target = task.target
             self._num_labels = task.num_classes
-            self.num_folds = task.num_folds
+            self.num_splits = task.num_splits
             super().__init__(name=task.description, force_reload=True)
 
         def process(self):
@@ -32,8 +32,8 @@ def node_classification_dataset_factory(graph: DGLGraph,
             self._g = graph
             for dataset_, indices_list_ in task.split.items():
                 mask_list = []
-                for fold in range(self.num_folds):
-                    if self.num_folds == 1:
+                for fold in range(self.num_splits):
+                    if self.num_splits == 1:
                         indices_ = indices_list_
                     else:
                         indices_ = indices_list_[fold]
@@ -49,7 +49,7 @@ def node_classification_dataset_factory(graph: DGLGraph,
                     else:
                         mask = indices_
                     mask_list.append(mask)
-                if self.num_folds == 1:
+                if self.num_splits == 1:
                     mask = mask_list[0]
                 else:
                     mask = torch.stack(mask_list, dim=1)
@@ -89,7 +89,7 @@ def graph_classification_dataset_factory(graphs: Iterable[DGLGraph],
             self._num_labels = task.num_classes
             self.split = split
 
-            if task.num_folds > 1:
+            if task.num_splits > 1:
                 raise NotImplementedError(
                     "GraphClassificationDataset does not support multi-split.")
 
