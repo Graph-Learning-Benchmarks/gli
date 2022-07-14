@@ -126,6 +126,7 @@ class RegressionTask(GLBTask):
     """Regression task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
+        """Initialize target."""
         super().__init__(task_dict, pwd, device)
         self.target = task_dict["target"]
 

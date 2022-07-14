@@ -56,15 +56,18 @@ class NodeDataset(DGLDataset):
             self._g.ndata[dataset_.replace("set", "mask")] = mask.bool()
 
     def __getitem__(self, idx):
+        """Single graph dataset only has 1 element."""
         assert idx == 0, "This dataset has only one graph"
         return self._g
 
     def __len__(self):
+        """Single graph dataset only has 1 element."""
         return 1
 
 
 class NodeClassificationDataset(NodeDataset):
     """Node classification dataset."""
+
     def __init__(self, graph: GLBGraph, task: NodeClassificationTask):
         """Initialize a node classification dataset with a graph and a task.
 
@@ -78,6 +81,7 @@ class NodeClassificationDataset(NodeDataset):
 
 class NodeRegressionDataset(NodeDataset):
     """Node regression dataset."""
+
     def __init__(self, graph: GLBGraph, task: NodeRegressionTask):
         """Initialize a node regression dataset with a graph and a task.
 
@@ -90,6 +94,7 @@ class NodeRegressionDataset(NodeDataset):
 
 def node_dataset_factory(graph: GLBGraph, task: GLBTask):
     """Initialize and return a NodeDataset.
+
     Args:
         graph (GLBGraph): A GLB Graph
         task (GLBTask): GLB task config
@@ -170,25 +175,29 @@ class GraphDataset(DGLDataset):
         self.graphs = graphs_in_split
 
     def __getitem__(self, idx):
+        """Get a pair of graph and label."""
         return self.graphs[idx], getattr(self.graphs[idx], self.label_name)
 
     def __len__(self):
+        """Magic method."""
         return len(self.graphs)
 
 
 class GraphClassificationDataset(GraphDataset):
     """Graph classification dataset."""
+
     def __init__(self,
                  graphs: Iterable[GLBGraph],
                  task: GraphClassificationTask,
                  split="train_set"):
-        super().__init__(graphs, task, split)
         """Initialize a graph classification dataset."""
+        super().__init__(graphs, task, split)
         self.num_labels = task.num_classes
 
 
 class GraphRegressionDataset(GraphDataset):
     """Graph regression dataset."""
+
     def __init__(self,
                  graphs: Iterable[GLBGraph],
                  task: GraphRegressionTask,
