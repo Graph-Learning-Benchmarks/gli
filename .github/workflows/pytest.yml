@@ -35,7 +35,7 @@ jobs:
         then
           dataset_list=()
           for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-              dataset=$(echo $files | sed -r 's/datasets\/(\w+)\/.*/\1/')
+              dataset=$(echo $file | sed -r 's/datasets\/(\w+)\/.*/\1/')
               if ["$dataset" == '']; then break; fi
               echo $dataset
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
@@ -50,7 +50,7 @@ jobs:
     #     if ${{ github.event_name == 'workflow_dispatch' }}
     #     then
     #       for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-    #           dataset=$(echo $files | sed -r 's/datasets\/(\w+)\/.*/\1/')
+    #           dataset=$(echo $file | sed -r 's/datasets\/(\w+)\/.*/\1/')
     #           if ["$dataset" == '']; then break; fi
     #           pytest -q --dataset="$dataset" tests/test_data_loading.py 
     #       done
