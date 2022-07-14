@@ -6,7 +6,7 @@
     ],
     "target": "Node/NodeLabel",
     "num_classes": 5,
-    "num_folds": 10,
+    "num_splits": 10,
     "train_set": {
         "file": "chameleon_task.npz",
         "key": "train_FOLD"
