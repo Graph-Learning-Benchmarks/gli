@@ -1,4 +1,4 @@
-# GLB-Repo
+# GLB-Index
 
 [![Pycodestyle](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/actions/workflows/pycodestyle.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/actions/workflows/pycodestyle.yml)
 [![Pydocstyle](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/actions/workflows/pydocstyle.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/actions/workflows/pydocstyle.yml)
@@ -25,6 +25,56 @@ A homogeneous graph contains the same type of nodes and the same type of edges.
 Therefore, it can be considered as a special case of heterogeneous graph.
 Compared with the data format of a heterogeneous graph, the structure
 of `metadata.json` for homogeneous graphs have one fewer depth.
+
+```json
+{
+    "description": "CORA dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Cora dataset, 1/0-valued vectors.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "cora.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Cora dataset, int ranged from 1 to 7.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "cora.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "cora.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "cora.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "cora.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@inproceedings{yang2016revisiting,\ntitle={Revisiting semi-supervised learning with graph embeddings},\nauthor={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},\nbooktitle={International conference on machine learning},\npages={40--48},\nyear={2016},\norganization={PMLR}\n}",
+    "is_heterogeneous": false
+}
+```
+
+### Heterogeneous Graph
+
+A heterogeneous graph contains multiple kinds of nodes and edges. And we store
+the attributes of different kinds of nodes and edges separately. Since the
+features of different nodes and edges are stored separately, we need to assign
+indices for each node and edge. Therefore, we require a `_ID` field to store
+the indexing array in heterogeneous nodes and/or edges.
 
 ```json
 {
@@ -130,101 +180,8 @@ of `metadata.json` for homogeneous graphs have one fewer depth.
             }
         }
     },
-    "citation": "@inproceedings{wang2020microsoft,\ntitle={Microsoft academic graph: When experts are not enough},\nauthor={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},\nbooktitle={Quantitative Science Studies},\npages={396--413},\nyear={2020}\n}"
-}
-```
-
-### Heterogeneous Graph
-
-A heterogeneous graph contains multiple kinds of nodes and edges. And we store
-the attributes of different kinds of nodes and edges separately. Since the
-features of different nodes and edges are stored separately, we need to assign
-indices for each node and edge. Therefore, we require a `_ID` field to store
-the indexing array in heterogeneous nodes and/or edges.
-
-```json
-{
-    "description": "An example of heterogeneous dataset.",
-    "citation": "",
-    "data": {
-        "Node": {
-            "NodeSet1": {
-                "_ID": {
-                    "file": "example.npz",
-                    "key": "nodeset1_id"
-                },
-                "NodeSet1Feature1": {
-                    "description": "Float node features of NodeSet1.",
-                    "type": "float",
-                    "format": "Tensor",
-                    "file": "example.npz",
-                    "key": "nodeset1_feat1"
-                },
-                "NodeSet1Feature2": {
-                    "description": "Int node features of NodeSet1.",
-                    "type": "int",
-                    "format": "SparseTensor",
-                    "file": "example.npz",
-                    "key": "nodeset1_feat2"
-                }
-            },
-            "NodeSet2": {
-                "_ID": {
-                    "file": "example.npz",
-                    "key": "nodeset2_id"
-                },
-                "NodeSet2Feature1": {},
-                "NodeSet2Feature2": {},
-                "NodeSet2Feature3": {}
-            },
-            "NodeSet3": {
-                "_ID": {
-                    "file": "example.npz",
-                    "key": "nodeset3_id"
-                },
-                "NodeSet3Feature1": {}
-            }
-        },
-        "Edge": {
-            "EdgeSet1": {
-                "_ID": {
-                    "file": "example.npz",
-                    "key": "edgeset1_id"
-                },
-                "_Edge": {
-                    "file": "example.npz",
-                    "key": "edge1"
-                },
-                "EdgeSet1Feature1": {
-                    "description": "Edge creation year.",
-                    "type": "int",
-                    "format": "Tensor",
-                    "file": "example.npz",
-                    "key": "edgeset1_feat1"
-                }
-            },
-            "EdgeSet2": {
-                "_ID": {},
-                "_Edge": {},
-                "EdgeSet2Feature1": {},
-                "EdgeSet2Feature2": {}
-            },
-            "EdgeSet3": {
-                "_ID": {},
-                "_Edge": {}
-            }
-        },
-        "Graph": {
-            "_NodeList": {
-                "file": "example.npz",
-                "key": "node_list"
-            },
-            "_EdgeList": {
-                "file": "example.npz",
-                "key": "edge_list"
-            }
-        }
-    }
+    "citation": "@inproceedings{wang2020microsoft,\ntitle={Microsoft academic graph: When experts are not enough},\nauthor={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},\nbooktitle={Quantitative Science Studies},\npages={396--413},\nyear={2020}\n}",
+    "is_heterogeneous": true
 }
 ```
 

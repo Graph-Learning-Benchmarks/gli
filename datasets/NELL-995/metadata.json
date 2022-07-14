@@ -41,5 +41,6 @@
             }
         }
     },
-    "citation": "@article{xiong2017deeppath,\ntitle={Deeppath: A reinforcement learning method for knowledge graph reasoning},\nauthor={Xiong, Wenhan and Hoang, Thien and Wang, William Yang},\njournal={arXiv preprint arXiv:1707.06690},\nyear={2017}\n}"
+    "citation": "@article{xiong2017deeppath,\ntitle={Deeppath: A reinforcement learning method for knowledge graph reasoning},\nauthor={Xiong, Wenhan and Hoang, Thien and Wang, William Yang},\njournal={arXiv preprint arXiv:1707.06690},\nyear={2017}\n}",
+    "is_heterogeneous": false
 }

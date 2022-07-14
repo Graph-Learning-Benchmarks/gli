@@ -102,7 +102,9 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     if verbose:
         print(metadata["description"])
 
-    hetero = _is_hetero_graph(metadata)
+    assert _is_hetero_graph(metadata) == metadata[
+        "is_heterogeneous"], "is_heterogeneous attribute is inconsistent"
+    hetero = metadata["is_heterogeneous"]
 
     assert "data" in metadata, "attribute `data` not in metadata.json."
 
@@ -283,11 +285,24 @@ def _dict_depth(d):
 
 def _dfs_read_file(pwd, d, device="cpu"):
     """Read file efficiently."""
+    data = _dfs_read_file_helper(pwd, d, device)
+    return data
+
+
+def _dfs_read_file_helper(pwd, d, device="cpu"):
+    """Read file recursively (helper of `_dfs_read_file`)."""
     if "file" in d:
         path = os.path.join(pwd, d["file"])
         array = file_reader.get(path, d.get("key"), device)
         return array
-    else:
-        for k in d:
-            d[k] = _dfs_read_file(pwd, d[k], device=device)
-        return d
+
+    empty_keys = []
+    for k in d:
+        entry = _dfs_read_file_helper(pwd, d[k], device=device)
+        if entry is None:
+            empty_keys.append(k)
+        else:
+            d[k] = entry
+    for k in empty_keys:
+        d.pop(k)
+    return d

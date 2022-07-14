@@ -8,11 +8,11 @@
     "time": "Edge/EdgeYear",
     "valid_neg": {
         "file": "ogbl-collab_task_prestore_neg.npz",
-        "key": "val"
+        "key": "val_neg"
     },
     "test_neg": {
         "file": "ogbl-collab_task_prestore_neg.npz",
-        "key": "test"
+        "key": "test_neg"
     },
     "train_time_window": [1963, 2018],
     "valid_time_window": [2018, 2019],

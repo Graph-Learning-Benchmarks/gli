@@ -41,5 +41,6 @@
             }
         }
     },
-    "citation": "@inproceedings{dettmers2018convolutional,\ntitle={Convolutional 2d knowledge graph embeddings},\nauthor={Dettmers, Tim and Minervini, Pasquale and Stenetorp, Pontus and Riedel, Sebastian},\nbooktitle={Proceedings of the AAAI Conference on Artificial Intelligence},\nvolume={32},\nnumber={1},\nyear={2018}\n}"
+    "citation": "@inproceedings{dettmers2018convolutional,\ntitle={Convolutional 2d knowledge graph embeddings},\nauthor={Dettmers, Tim and Minervini, Pasquale and Stenetorp, Pontus and Riedel, Sebastian},\nbooktitle={Proceedings of the AAAI Conference on Artificial Intelligence},\nvolume={32},\nnumber={1},\nyear={2018}\n}",
+    "is_heterogeneous": false
 }

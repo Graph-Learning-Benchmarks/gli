@@ -148,6 +148,7 @@ def link_prediction_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
             self._g = None
             self.features = task.features
             self.target = task.target
+            self.sample_runtime = task.sample_runtime
             super().__init__(name=task.description, force_reload=True)
 
         def process(self):
