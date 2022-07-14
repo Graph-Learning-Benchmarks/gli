@@ -52,6 +52,6 @@ jobs:
           cd datasets
           for dataset in $(ls); do
               if ["$dataset" == '']; then continue; fi
-              pytest -q --dataset="$dataset" tests/test_data_loading.py 
+              pytest -q --dataset="$dataset" ../tests/test_data_loading.py 
           done
         fi
