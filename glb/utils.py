@@ -71,7 +71,9 @@ class KeyedFileReader():
 
         if array is None:
             file_key_entry = path + ":" + key if key else path
-            warnings.warn(f"Skip reading {file_key_entry} because it is non-numeric.")
+            warnings.warn(
+                f"Skip reading {file_key_entry} because it is non-numeric."
+            )
             return None
 
         if sp.issparse(array):
