@@ -1,0 +1,21 @@
+{
+    "description": "Node classification on PUBMED dataset. Planetoid split.",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": "Node/NodeLabel",
+    "num_classes": 6,
+    "train_set": {
+        "file": "pubmed_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "pubmed_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "pubmed_task.npz",
+        "key": "test"
+    }
+}
