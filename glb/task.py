@@ -10,11 +10,8 @@ import torch
 from glb.utils import file_reader
 
 SUPPORT_TASK_TYPES = [
-    "NodeClassification",
-    "NodeRegression",
-    "GraphClassification",
-    "GraphRegression",
-    "TimeDependentLinkPrediction"
+    "NodeClassification", "NodeRegression", "GraphClassification",
+    "GraphRegression", "TimeDependentLinkPrediction"
 ]
 
 
@@ -28,7 +25,7 @@ class GLBTask:
         self.description = task_dict["description"]
         self.features: List[str] = task_dict["feature"]
         self.target: str = None
-        self.num_folds = 1
+        self.num_splits = 1
         self.random_split = False
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
@@ -88,20 +85,20 @@ class GLBTask:
         pass
 
     def _load_split(self, task_dict):
-        self.num_folds = task_dict.get("num_folds", 1)
-        assert self.num_folds >= 1
+        self.num_splits = task_dict.get("num_splits", 1)
+        assert self.num_splits >= 1
 
         if self.random_split:  # use random split; pass loading
-            assert self.num_folds == 1
+            assert self.num_splits == 1
             return
 
         for dataset_ in self.split:
             filename = task_dict[dataset_]["file"]
             key = task_dict[dataset_].get("key")
             path = os.path.join(self.pwd, filename)
-            if self.num_folds > 1:
+            if self.num_splits > 1:
                 self.split[dataset_] = []
-                for fold in range(self.num_folds):
+                for fold in range(self.num_splits):
                     assert key[-4:] == "FOLD", "split key not ending with FOLD"
                     this_fold_key = f"{key[:-4]}{fold}"
                     self.split[dataset_].append(

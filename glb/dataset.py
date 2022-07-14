@@ -24,7 +24,7 @@ class NodeDataset(DGLDataset):
         self._g = graph
         self.features = task.features
         self.target = task.target
-        self.num_folds = task.num_folds
+        self.num_splits = task.num_splits
         self.task = task
         super().__init__(name=task.description, force_reload=True)
 
@@ -32,8 +32,8 @@ class NodeDataset(DGLDataset):
         """Add train, val, and test masks to graph."""
         for dataset_, indices_list_ in self.task.split.items():
             mask_list = []
-            for fold in range(self.num_folds):
-                if self.num_folds == 1:
+            for fold in range(self.num_splits):
+                if self.num_splits == 1:
                     indices_ = indices_list_
                 else:
                     indices_ = indices_list_[fold]
@@ -49,7 +49,7 @@ class NodeDataset(DGLDataset):
                 else:
                     mask = indices_
                 mask_list.append(mask)
-            if self.num_folds == 1:
+            if self.num_splits == 1:
                 mask = mask_list[0]
             else:
                 mask = torch.stack(mask_list, dim=1)
@@ -134,7 +134,7 @@ class GraphDataset(DGLDataset):
         self.label_name = None
         self.task = task
 
-        if task.num_folds > 1:
+        if task.num_splits > 1:
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
 
