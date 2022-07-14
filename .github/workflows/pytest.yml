@@ -34,10 +34,11 @@ jobs:
         if ${{ github.event_name == 'pull_request' }}
         then
           dataset_list=()
-          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-              dataset=$(echo $file | grep "datasets" | sed -r 's/datasets\/(\w+)\/.*/\1/')
-              if [ -z "$dataset" ]; then break; fi
+          for path in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+              echo $path
+              dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/(\w+)\/.*/\1/')
               echo "current dataset is $dataset"
+              if [ -z "$dataset" ]; then break; fi
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
                 # pytest -q --dataset="$dataset" tests/test_data_loading.py
                 dataset_list+=($dataset)              
