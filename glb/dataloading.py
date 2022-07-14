@@ -2,18 +2,27 @@
 import os
 from typing import List, Union
 
-from dgl import DGLGraph
-
 import glb.dataset
 from glb import ROOT_PATH
-from glb.graph import read_glb_graph
+from glb.graph import read_glb_graph, GLBGraph
 from glb.task import GLBTask, read_glb_task
 from glb.utils import download_data
 
 
-def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
+def combine_graph_and_task(graph: Union[GLBGraph, List[GLBGraph]],
                            task: GLBTask):
-    """Return a dataset given graph and task."""
+    """Combine graph and task to get a GLB dataset.
+
+    Args:
+        graph (Union[GLBGraph, List[GLBGraph]]): Graph(s) to construct dataset.
+        task (GLBTask): GLB task config
+
+    Raises:
+        NotImplementedError: Unknown task type
+
+    Returns:
+        DGLDataset
+    """
     if task.type in ("NodeClassification", "NodeRegression"):
         return glb.dataset.node_dataset_factory(graph, task)
     elif task.type == ("GraphClassification", "GraphRegression"):
