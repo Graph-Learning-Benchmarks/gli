@@ -1,6 +1,15 @@
-"""GAT train."""
+"""
+Train for node classification dataset.
+
+References:
+https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/train.py
+"""
+
 import argparse
 import time
+import os
+import fnmatch
+import json
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -28,6 +37,20 @@ def evaluate(model, features, labels, mask):
         return accuracy(logits, labels)
 
 
+def check_multiple_split(dataset):
+    """Chceck whether the dataset has multiple splits."""
+    dataset_directory = os.path.dirname(os.path.dirname(os.getcwd())) \
+        + "/datasets/" + dataset
+    for file in os.listdir(dataset_directory):
+        if fnmatch.fnmatch(file, "task*.json"):
+            with open(dataset_directory + "/" + file,  encoding="utf-8") as f:
+                task_dict = json.load(f)
+                if "num_splits" in task_dict and task_dict["num_splits"] > 1:
+                    return 1
+                else:
+                    return 0
+
+
 def main(args):
     """Load dataset and train the model."""
     # load and preprocess dataset
@@ -43,9 +66,15 @@ def main(args):
     g = data[0]
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
-    train_mask = g.ndata["train_set"]
-    val_mask = g.ndata["val_set"]
-    test_mask = g.ndata["test_set"]
+    train_mask = g.ndata["train_mask"]
+    val_mask = g.ndata["val_mask"]
+    test_mask = g.ndata["test_mask"]
+
+    # for multi-split dataset, choose 0-th split for now
+    if check_multiple_split(args.dataset):
+        train_mask = train_mask[:, 0]
+        val_mask = val_mask[:, 0]
+        test_mask = test_mask[:, 0]
 
     in_feats = features.shape[1]
     n_classes = data.num_labels
@@ -103,6 +132,7 @@ def main(args):
             t0 = time.time()
         # forward
         logits = model(features)
+
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()

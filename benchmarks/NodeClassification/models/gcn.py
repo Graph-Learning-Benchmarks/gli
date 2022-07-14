@@ -1,4 +1,10 @@
-"""GCN model in GLB."""
+"""
+GCN model in GLB.
+
+References:
+https://github.com/dmlc/dgl/tree/master/examples/pytorch/gcn
+"""
+
 from torch import nn
 from dgl.nn.pytorch import GraphConv
 

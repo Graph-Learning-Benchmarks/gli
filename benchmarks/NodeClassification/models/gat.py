@@ -1,4 +1,10 @@
-"""GAT model in GLB."""
+"""
+GAT model in GLB.
+
+References:
+https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/gat.py
+"""
+
 from torch import nn
 from dgl.nn import GATConv
 
