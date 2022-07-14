@@ -1,0 +1,39 @@
+{
+    "description": "CORA dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Cora dataset, 1/0-valued vectors.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "cora.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Cora dataset, int ranged from 1 to 7.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "cora.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "cora.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "cora.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "cora.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@inproceedings{yang2016revisiting,\ntitle={Revisiting semi-supervised learning with graph embeddings},\nauthor={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},\nbooktitle={International conference on machine learning},\npages={40--48},\nyear={2016},\norganization={PMLR}\n}",
+    "is_heterogeneous": false
+}
