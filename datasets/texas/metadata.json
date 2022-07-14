@@ -34,5 +34,6 @@
             }
         }
     },
-    "citation": "@article{garcia2016using,\ntitle={Using fuzzy logic to leverage HTML markup for web page representation},\nauthor={Garcia-Plaza, Alberto P and Fresno, Victor and Unanue, Raquel Martinez and Zubiaga, Arkaitz},\njournal={IEEE Transactions on Fuzzy Systems},\nvolume={25},\nnumber={4},\npages={919--933},\nyear={2016},\npublisher={IEEE}\n}"
+    "citation": "@article{garcia2016using,\ntitle={Using fuzzy logic to leverage HTML markup for web page representation},\nauthor={Garcia-Plaza, Alberto P and Fresno, Victor and Unanue, Raquel Martinez and Zubiaga, Arkaitz},\njournal={IEEE Transactions on Fuzzy Systems},\nvolume={25},\nnumber={4},\npages={919--933},\nyear={2016},\npublisher={IEEE}\n}",
+    "is_heterogeneous": false
 }

@@ -11,7 +11,86 @@ import dgl
 import scipy.sparse as sp
 import torch
 
-from .utils import file_reader, sparse_to_torch
+from .utils import file_reader, sparse_to_torch, sparse_to_dense_safe
+
+
+class GLBGraph(dgl.DGLGraph):
+    """Base class of GLB graph."""
+
+    def node_to_dense(self, feat=None, node_group=None):
+        """Convert node data to dense inplace.
+
+        If both arguments are not provided, node_to_dense() will try to convert
+        all node features to dense. (This only works for homograph.)
+
+        Args:
+            feat (str, optional): feature name. Defaults to None.
+            node_group (str, optional): node group for heterograph. Defaults to
+                None.
+
+        Raises:
+            NotImplementedError: If the graph is heterogeneous, feat and
+                node_group cannot be None.
+        """
+        if self.is_homogeneous:
+            if feat:
+                self.ndata[feat] = sparse_to_dense_safe(self.ndata[feat])
+            else:
+                for k in self.ndata:
+                    self.ndata[k] = sparse_to_dense_safe(self.ndata[k])
+        else:
+            if feat:
+                assert node_group is not None
+                self.ndata[feat][node_group] = sparse_to_dense_safe(
+                    self.ndata[feat][node_group])
+            else:
+                raise NotImplementedError(
+                    "Both feat and node_group should be provided for"
+                    " heterograph."
+                )
+
+    def edge_to_dense(self, feat=None, edge_group=None):
+        """Convert edge data to dense inplace.
+
+        If both arguments are not provided, edge_to_dense() will try to convert
+        all edge features to dense. (This only works for homograph.)
+
+        Args:
+            feat (str, optional): feature name. Defaults to None.
+            edge_group (str, optional): edge group for heterograph. Defaults to
+                None.
+
+        Raises:
+            NotImplementedError: If the graph is heterogeneous, feat and
+                edge_group cannot be None.
+        """
+        if self.is_homogeneous:
+            if feat:
+                self.edata[feat] = sparse_to_dense_safe(self.edata[feat])
+            else:
+                for k in self.edata:
+                    self.edata[k] = sparse_to_dense_safe(self.edata[k])
+        else:
+            if feat:
+                assert edge_group is not None
+                self.ndata[feat][edge_group] = sparse_to_dense_safe(
+                    self.ndata[feat][edge_group])
+            else:
+                raise NotImplementedError(
+                    "Both feat and edge_group should be provided for"
+                    " heterograph."
+                )
+
+    def to_dense(self):
+        """Convert both edge data and node data to dense inplace.
+
+        This function only works for homograph.
+        """
+        if self.is_homogeneous:
+            self.node_to_dense()
+            self.edge_to_dense()
+        else:
+            raise NotImplementedError("to_dense only works for homograph.")
 
 
 def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
@@ -23,7 +102,9 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     if verbose:
         print(metadata["description"])
 
-    hetero = _is_hetero_graph(metadata)
+    assert _is_hetero_graph(metadata) == metadata[
+        "is_heterogeneous"], "is_heterogeneous attribute is inconsistent"
+    hetero = metadata["is_heterogeneous"]
 
     assert "data" in metadata, "attribute `data` not in metadata.json."
 
@@ -77,6 +158,9 @@ def _get_single_graph(data, device="cpu", hetero=False):
     else:
         g = _get_homograph(data)
 
+    # REVIEW - Explicit class casting may lead to undefined behavior
+    g.__class__ = GLBGraph
+
     return g.to(device=device)
 
 
@@ -111,7 +195,9 @@ def _get_multi_graph(data, device="cpu"):
             subgraph_entities = entity_list.getrow(i).todense()
             subgraph_entities = torch.from_numpy(subgraph_entities).squeeze()
         subgraph_entities = subgraph_entities.bool()
-        graphs.append(subgraph_func(g, subgraph_entities).to(device=device))
+        subgraph = subgraph_func(g, subgraph_entities).to(device=device)
+        subgraph.__class__ = GLBGraph
+        graphs.append(subgraph)
 
     for attr in data["Graph"]:
         for i, graph in enumerate(graphs):

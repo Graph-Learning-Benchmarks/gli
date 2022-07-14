@@ -53,7 +53,7 @@ def node_classification_dataset_factory(graph: DGLGraph,
                     mask = mask_list[0]
                 else:
                     mask = torch.stack(mask_list, dim=1)
-                self._g.ndata[dataset_] = mask.bool()
+                self._g.ndata[dataset_.replace("set", "mask")] = mask.bool()
 
         def __getitem__(self, idx):
             assert idx == 0, "This dataset has only one graph"

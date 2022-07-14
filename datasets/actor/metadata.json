@@ -34,5 +34,6 @@
             }
         }
     },
-    "citation": "@inproceedings{tang2009social,\ntitle={Social influence analysis in large-scale networks},\nauthor={Tang, Jie and Sun, Jimeng and Wang, Chi and Yang, Zi},\nbooktitle={Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and mining},\npages={807--816},\nyear={2009}\n}"
+    "citation": "@inproceedings{tang2009social,\ntitle={Social influence analysis in large-scale networks},\nauthor={Tang, Jie and Sun, Jimeng and Wang, Chi and Yang, Zi},\nbooktitle={Proceedings of the 15th ACM SIGKDD international conference on Knowledge discovery and mining},\npages={807--816},\nyear={2009}\n}",
+    "is_heterogeneous": false
 }
