@@ -204,7 +204,7 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
         super().__init__(name=task.description, force_reload=True)
 
     def process(self):
-        """Load train, val, test edges"""
+        """Load train, val, test edges."""
         time_entries = self.task.time.split("/")
         assert len(time_entries) == 2
         assert time_entries[0] == "Edge"
