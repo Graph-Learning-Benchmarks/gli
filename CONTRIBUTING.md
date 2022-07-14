@@ -1,34 +1,33 @@
 # Table of Contents
 
-<!-- MarkdownTOC levels="1,2,3" autolink="true" -->
+<!-- MarkdownTOC levels="1,2,3,4" autolink="true" -->
 
-- [Table of Contents](#table-of-contents)
 - [Data Standardization](#data-standardization)
-  - [Design Objectives](#design-objectives)
-    - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
-    - [Objects with attribute scheme](#objects-with-attribute-scheme)
-    - [Efficient storage](#efficient-storage)
-  - [GLB Data Format](#glb-data-format)
-    - [Overview](#overview)
-    - [Description](#description)
-      - [Objects](#objects)
-      - [Properties (of an attribute)](#properties-of-an-attribute)
-      - [Example (Homogeneous Graph)](#example-homogeneous-graph)
-      - [Heterogeneous Graph](#heterogeneous-graph)
-      - [Example (Heterogeneous Graph)](#example-heterogeneous-graph)
-  - [GLB Task Format](#glb-task-format)
-    - [Overview](#overview-1)
-    - [Example](#example)
-  - [Helper Functions](#helper-functions)
-  - [Dataset Class Converter](#dataset-class-converter)
+    - [Design Objectives](#design-objectives)
+        - [Explicit separation of data storage and task configuration](#explicit-separation-of-data-storage-and-task-configuration)
+        - [Objects with attribute scheme](#objects-with-attribute-scheme)
+        - [Efficient storage](#efficient-storage)
+    - [GLB Data Format](#glb-data-format)
+        - [Overview](#overview)
+        - [Description](#description)
+            - [Objects](#objects)
+            - [Properties \(of an attribute\)](#properties-of-an-attribute)
+            - [Example \(Homogeneous Graph\)](#example-homogeneous-graph)
+            - [Heterogeneous Graph](#heterogeneous-graph)
+            - [Example \(Heterogeneous Graph\)](#example-heterogeneous-graph)
+    - [GLB Task Format](#glb-task-format)
+        - [Overview](#overview-1)
+        - [Example](#example)
+    - [Helper Functions](#helper-functions)
+    - [Dataset Class Converter](#dataset-class-converter)
 - [Submission and Review System](#submission-and-review-system)
-  - [Dataset Submission](#dataset-submission)
-    - [Auto Tests](#auto-tests)
-      - [Data loading tests](#data-loading-tests)
-      - [JSON format tests](#json-format-tests)
-      - [Data integrity tests](#data-integrity-tests)
-      - [Task specific tests](#task-specific-tests)
-  - [Dataset Review](#dataset-review)
+    - [Dataset Submission](#dataset-submission)
+        - [Auto Tests](#auto-tests)
+            - [Data loading tests](#data-loading-tests)
+            - [JSON format tests](#json-format-tests)
+            - [Data integrity tests](#data-integrity-tests)
+            - [Task specific tests](#task-specific-tests)
+    - [Dataset Review](#dataset-review)
 
 <!-- /MarkdownTOC -->
 
@@ -296,14 +295,14 @@ We predefine multiple task types.
         * `train_set` (optional): the training node IDs.
         * `val_set` (optional): the validation node IDs.
         * `test_set` (optional): the test node IDs.
-        * `num_folds` (optional): the number of multi-split folds.
+        * `num_splits` (optional): the number of data splits.
         * `train_ratio` (optional): the ratio of train set size in `num_sampels`.
         * `val ratio` (optional): the ratio of validation set size in `num_sampels`.
         * `test_ratio` (optional): the ratio of test set size in `num_sampels`.
         * `num_samples` (optional): total number of samples.
     + There could be three types of data split. 
-        * Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
-        * Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_folds`.
+        * Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_splits` should be set to 1 or omitted.
+        * Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_splits`.
         * Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 - `GraphClassification`
     + Description: This task requires the model to perform classification on each graph.
@@ -315,13 +314,13 @@ We predefine multiple task types.
         * `train_set` (optional): the training node IDs.
         * `val_set` (optional): the validation node IDs.
         * `test_set` (optional): the test node IDs.
-        * `num_folds` (optional): the number of multi-split folds.
+        * `num_splits` (optional): the number of data splits.
         * `train_ratio` (optional): the ratio of train set size in `num_sampels`.
         * `val ratio` (optional): the ratio of validation set size in `num_sampels`.
         * `test_ratio` (optional): the ratio of test set size in `num_sampels`.
         * `num_samples` (optional): total number of samples.
     + There could be two types of data split (fixed multi-split not supported). 
-        * Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_folds` should be set to 1 or omitted.
+        * Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_splits` should be set to 1 or omitted.
         * Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 - `TimeDependentLinkPrediction`
     + Description: This task requires the model to perform link prediction on a graph. The dataset is splitted according to time.
