@@ -38,7 +38,7 @@ jobs:
               echo $path
               dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/(\w+)\/.*/\1/')
               echo "current dataset is $dataset"
-              if [ -z "$dataset" ]; then break; fi
+              if [ -z "$dataset" ]; then continue; fi
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
                 # pytest -q --dataset="$dataset" tests/test_data_loading.py
                 dataset_list+=($dataset)              
