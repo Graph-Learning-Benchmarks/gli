@@ -41,5 +41,6 @@
             }
         }
     },
-    "citation": "@article{bordes2013translating,\ntitle={Translating embeddings for modeling multi-relational data},\nauthor={Bordes, Antoine and Usunier, Nicolas and Garcia-Duran, Alberto and Weston, Jason and Yakhnenko, Oksana},\njournal={Advances in neural information processing systems},\nvolume={26},\nyear={2013}\n}"
+    "citation": "@article{bordes2013translating,\ntitle={Translating embeddings for modeling multi-relational data},\nauthor={Bordes, Antoine and Usunier, Nicolas and Garcia-Duran, Alberto and Weston, Jason and Yakhnenko, Oksana},\njournal={Advances in neural information processing systems},\nvolume={26},\nyear={2013}\n}",
+    "is_heterogeneous": false
 }

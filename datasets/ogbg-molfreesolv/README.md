@@ -9,25 +9,24 @@ Statistics:
 
 #### Citation
 ```
-@inproceedings{
-  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
+@inproceedings{Wu2018Stanford,
   title={Moleculenet: a benchmark for molecular machine learning},
+  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
   booktitle={Chemical Science},
   year={2018},
-  pages={513–530}
+  pages={513-530}
 }
 ```
 
 ## Available Tasks
-### OGB
-
+### [OGB](https://ogb.stanford.edu/)
 - Task type:  `GraphRegression`
 
 #### Citation
 ``` 
-@inproceedings{
-  author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
+@inproceedings{Hu2020Stanford,
   title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
+  author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
   year={2020},
   booktitle={ICLR}
 }
@@ -38,7 +37,6 @@ The data files and task config file in GLB format are transformed from the OGB i
 
 ### Requirements
 The preprocessing code requires the following package.
-
 ```
 ogb >= 1.3.2
 ```

@@ -34,5 +34,6 @@
             }
         }
     },
-    "citation": "@article{rozemberczki2021multi,\ntitle={Multi-scale attributed node embedding},\nauthor={Rozemberczki, Benedek and Allen, Carl and Sarkar, Rik},\njournal={Journal of Complex Networks},\nvolume={9},\nnumber={2},\npages={cnab014},\nyear={2021},\npublisher={Oxford University Press}\n}"
+    "citation": "@article{rozemberczki2021multi,\ntitle={Multi-scale attributed node embedding},\nauthor={Rozemberczki, Benedek and Allen, Carl and Sarkar, Rik},\njournal={Journal of Complex Networks},\nvolume={9},\nnumber={2},\npages={cnab014},\nyear={2021},\npublisher={Oxford University Press}\n}",
+    "is_heterogeneous": false
 }
