@@ -49,9 +49,9 @@ jobs:
       run: |
         if ${{ github.event_name == 'workflow_dispatch' }}
         then
-          cd datasets
-          for dataset in $(ls); do
-              if ["$dataset" == '']; then continue; fi
-              pytest -q --dataset="$dataset" ../tests/test_data_loading.py 
+          for dataset in $(ls ./datasets); do
+              echo "current dataset is $dataset"
+              if [ -z "$dataset" ]; then continue; fi
+              pytest -q --dataset="$dataset" tests/test_data_loading.py 
           done
         fi

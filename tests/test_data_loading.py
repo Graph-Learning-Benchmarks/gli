@@ -3,6 +3,7 @@ import os
 import fnmatch
 import json
 import glb
+from glb.task import SUPPORT_TASK_TYPES
 
 
 def test_graph_loading(dataset):
@@ -13,7 +14,7 @@ def test_graph_loading(dataset):
         if fnmatch.fnmatch(file, "task*.json"):
             with open(directory + "/" + file,  encoding="utf-8") as f:
                 task_dict = json.load(f)
-                if "Link" in task_dict["type"]:
+                if task_dict["type"] not in SUPPORT_TASK_TYPES:
                     f.close()
                     return
             print(os.path.splitext(file)[0])
