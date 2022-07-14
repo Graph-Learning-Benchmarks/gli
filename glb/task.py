@@ -10,7 +10,11 @@ import torch
 from glb.utils import file_reader
 
 SUPPORT_TASK_TYPES = [
-    "NodeClassification", "GraphClassification", "TimeDependentLinkPrediction"
+    "NodeClassification",
+    "NodeRegression",
+    "GraphClassification",
+    "GraphRegression",
+    "TimeDependentLinkPrediction"
 ]
 
 
@@ -48,8 +52,12 @@ class GLBTask:
 
         self._load(task_dict)
 
-    def _set_random_split(self, train_ratio, val_ratio, test_ratio,
-                          num_samples, seed=None):
+    def _set_random_split(self,
+                          train_ratio,
+                          val_ratio,
+                          test_ratio,
+                          num_samples,
+                          seed=None):
         # back up random state to avoid cross influence
         state = random.getstate()
         if seed is not None:
@@ -79,17 +87,7 @@ class GLBTask:
     def _load(self, task_dict):
         pass
 
-
-class ClassificationTask(GLBTask):
-    """Classification task."""
-
-    def __init__(self, task_dict, pwd):
-        """Initialize num_classes."""
-        super().__init__(task_dict, pwd)
-        self.num_classes = task_dict["num_classes"]
-        self.target = task_dict["target"]
-
-    def _load(self, task_dict):
+    def _load_split(self, task_dict):
         self.num_folds = task_dict.get("num_folds", 1)
         assert self.num_folds >= 1
 
@@ -114,6 +112,30 @@ class ClassificationTask(GLBTask):
                 # can be a mask tensor or an index tensor
 
 
+class ClassificationTask(GLBTask):
+    """Classification task."""
+
+    def __init__(self, task_dict, pwd, device="cpu"):
+        """Initialize num_classes."""
+        super().__init__(task_dict, pwd, device)
+        self.num_classes = task_dict["num_classes"]
+        self.target = task_dict["target"]
+
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
+
+class RegressionTask(GLBTask):
+    """Regression task."""
+
+    def __init__(self, task_dict, pwd, device="cpu"):
+        super().__init__(task_dict, pwd, device)
+        self.target = task_dict["target"]
+
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
+
 class NodeClassificationTask(ClassificationTask):
     """Node classification task, alias."""
 
@@ -122,6 +144,18 @@ class NodeClassificationTask(ClassificationTask):
 
 class GraphClassificationTask(ClassificationTask):
     """Graph classification task, alias."""
+
+    pass
+
+
+class NodeRegressionTask(RegressionTask):
+    """Node regression task, alias."""
+
+    pass
+
+
+class GraphRegressionTask(RegressionTask):
+    """Graph regression task, alias."""
 
     pass
 

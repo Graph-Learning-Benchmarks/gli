@@ -6,133 +6,171 @@ import torch
 from dgl import DGLGraph
 from dgl.data import DGLDataset
 
-from glb.task import (GraphClassificationTask, LinkPredictionTask,
-                      NodeClassificationTask)
+from glb.task import (GLBTask, GraphClassificationTask, GraphRegressionTask,
+                      LinkPredictionTask, NodeClassificationTask,
+                      NodeRegressionTask)
 
 
-def node_classification_dataset_factory(graph: DGLGraph,
-                                        task: NodeClassificationTask):
+class NodeDataset(DGLDataset):
+    """Node level dataset."""
+
+    def __init__(self, graph: DGLGraph, task: NodeClassificationTask):
+        """Node classification dataset."""
+        self._g = graph
+        self.features = task.features
+        self.target = task.target
+        self.num_folds = task.num_folds
+        self.task = task
+        super().__init__(name=task.description, force_reload=True)
+
+    def process(self):
+        """Add train, val, and test masks to graph."""
+        for dataset_, indices_list_ in self.task.split.items():
+            mask_list = []
+            for fold in range(self.num_folds):
+                if self.num_folds == 1:
+                    indices_ = indices_list_
+                else:
+                    indices_ = indices_list_[fold]
+
+                assert not indices_.is_sparse
+                indices_ = indices_.to(self._g.device)
+                indices_ = torch.squeeze(indices_)
+                assert indices_.dim() == 1
+                if len(indices_) < self._g.num_nodes():  # index tensor
+                    mask = torch.zeros(self._g.num_nodes(),
+                                       device=self._g.device)
+                    mask[indices_] = 1
+                else:
+                    mask = indices_
+                mask_list.append(mask)
+            if self.num_folds == 1:
+                mask = mask_list[0]
+            else:
+                mask = torch.stack(mask_list, dim=1)
+            self._g.ndata[dataset_.replace("set", "mask")] = mask.bool()
+
+    def __getitem__(self, idx):
+        assert idx == 0, "This dataset has only one graph"
+        return self._g
+
+    def __len__(self):
+        return 1
+
+
+class NodeClassificationDataset(NodeDataset):
+
+    def __init__(self, graph: DGLGraph, task: NodeClassificationTask):
+        super().__init__(graph, task)
+        self.num_labels = task.num_classes
+
+
+class NodeRegressionDataset(NodeDataset):
+
+    def __init__(self, graph: DGLGraph, task: NodeRegressionTask):
+        super().__init__(graph, task)
+
+
+def node_dataset_factory(graph: DGLGraph, task: GLBTask):
     """Initialize and return a NodeClassification Dataset."""
     assert isinstance(graph, DGLGraph)
+    if isinstance(task, NodeRegressionTask):
+        return NodeRegressionDataset(graph, task)
+    elif isinstance(task, NodeClassificationTask):
+        return NodeClassificationDataset(graph, task)
+    else:
+        raise TypeError(f"Unknown task type {type(task)}")
 
-    class NodeClassificationDataset(DGLDataset):
-        """Node classification dataset."""
 
-        def __init__(self):
-            """Node classification dataset."""
-            self._g = None
-            self.features = task.features
-            self.target = task.target
-            self._num_labels = task.num_classes
-            self.num_folds = task.num_folds
-            super().__init__(name=task.description, force_reload=True)
+class GraphDataset(DGLDataset):
+    """Graph Dataset."""
 
-        def process(self):
-            """Add train, val, and test masks to graph."""
-            self._g = graph
-            for dataset_, indices_list_ in task.split.items():
-                mask_list = []
-                for fold in range(self.num_folds):
-                    if self.num_folds == 1:
-                        indices_ = indices_list_
-                    else:
-                        indices_ = indices_list_[fold]
+    def __init__(self,
+                 graphs: Iterable[DGLGraph],
+                 task: GraphRegressionTask,
+                 split="train_set"):
+        self.graphs = graphs
+        self.features = task.features
+        self.target = task.target
+        self.split = split
+        self.label_name = None
+        self.task = task
 
-                    assert not indices_.is_sparse
-                    indices_ = indices_.to(self._g.device)
-                    indices_ = torch.squeeze(indices_)
-                    assert indices_.dim() == 1
-                    if len(indices_) < self._g.num_nodes():  # index tensor
-                        mask = torch.zeros(self._g.num_nodes(),
-                                           device=self._g.device)
-                        mask[indices_] = 1
-                    else:
-                        mask = indices_
-                    mask_list.append(mask)
-                if self.num_folds == 1:
-                    mask = mask_list[0]
-                else:
-                    mask = torch.stack(mask_list, dim=1)
-                self._g.ndata[dataset_.replace("set", "mask")] = mask.bool()
+        if task.num_folds > 1:
+            raise NotImplementedError(
+                "GraphDataset does not support multi-split.")
 
-        def __getitem__(self, idx):
-            assert idx == 0, "This dataset has only one graph"
-            return self._g
+        super().__init__(name=task.description, force_reload=True)
 
-        def __len__(self):
-            return 1
+    def process(self):
+        """Add train, val, and test masks to graph."""
+        entries = self.task.target.split("/")
+        assert len(entries) == 2
+        assert entries[0] == "Graph"
+        self.label_name = entries[1]
 
-        @property
-        def num_labels(self):
-            return self._num_labels
+        device = self.graphs[0].device
+        indices = self.task.split[self.split]
+        assert not indices.is_sparse
+        if isinstance(indices, np.ndarray):
+            indices = torch.from_numpy(indices).to(device)
+        else:
+            indices = indices.to(device)
+        indices = torch.squeeze(indices)
+        assert indices.dim() == 1
+        if len(indices) < len(self.graphs):  # index tensor
+            mask = torch.zeros(len(self.graphs))
+            mask[indices] = 1
+        else:
+            mask = indices
 
-    return NodeClassificationDataset()
+        graphs_in_split = []
+        for is_in_split, g in zip(mask, self.graphs):
+            if is_in_split:
+                graphs_in_split.append(g)
+
+        self.graphs = graphs_in_split
+
+    def __getitem__(self, idx):
+        return self.graphs[idx], getattr(self.graphs[idx], self.label_name)
+
+    def __len__(self):
+        return len(self.graphs)
+
+
+class GraphClassificationDataset(GraphDataset):
+
+    def __init__(self,
+                 graphs: Iterable[DGLGraph],
+                 task: GraphClassificationTask,
+                 split="train_set"):
+        super().__init__(graphs, task, split)
+        self.num_labels = task.num_classes
+
+
+class GraphRegressionDataset(GraphDataset):
+
+    def __init__(self,
+                 graphs: Iterable[DGLGraph],
+                 task: GraphRegressionTask,
+                 split="train_set"):
+        super().__init__(graphs, task, split)
 
 
 def graph_classification_dataset_factory(graphs: Iterable[DGLGraph],
-                                         task: GraphClassificationTask):
+                                         task: GLBTask):
     """Initialize and return split GraphClassification Dataset."""
     assert isinstance(graphs, Iterable)
 
-    entries = task.target.split("/")
-    assert len(entries) == 2
-    assert entries[0] == "Graph"
-    label_name = entries[1]
-
-    class GraphClassificationDataset(DGLDataset):
-        """Graph Classification Dataset."""
-
-        def __init__(self, split="train_set"):
-            self.graphs = None
-            self.features = task.features
-            self.target = task.target
-            self._num_labels = task.num_classes
-            self.split = split
-
-            if task.num_folds > 1:
-                raise NotImplementedError(
-                    "GraphClassificationDataset does not support multi-split.")
-
-            super().__init__(name=task.description, force_reload=True)
-
-        def process(self):
-            """Add train, val, and test masks to graph."""
-            self.graphs = graphs
-            device = graphs[0].device
-            indices = task.split[self.split]
-            assert not indices.is_sparse
-            if isinstance(indices, np.ndarray):
-                indices = torch.from_numpy(indices).to(device)
-            else:
-                indices = indices.to(device)
-            indices = torch.squeeze(indices)
-            assert indices.dim() == 1
-            if len(indices) < len(self.graphs):  # index tensor
-                mask = torch.zeros(len(self.graphs))
-                mask[indices] = 1
-            else:
-                mask = indices
-
-            graphs_in_split = []
-            for is_in_split, g in zip(mask, self.graphs):
-                if is_in_split:
-                    graphs_in_split.append(g)
-
-            self.graphs = graphs_in_split
-
-        def __getitem__(self, idx):
-            return self.graphs[idx], getattr(self.graphs[idx], label_name)
-
-        def __len__(self):
-            return len(self.graphs)
-
-        @property
-        def num_labels(self):
-            return self._num_labels
-
     datasets = []
     for split in task.split:
-        datasets.append(GraphClassificationDataset(split=split))
+        if isinstance(task, GraphClassificationTask):
+            datasets.append(
+                GraphClassificationDataset(graphs, task, split=split))
+        elif isinstance(task, GraphRegressionTask):
+            datasets.append(GraphRegressionDataset(graphs, task, split=split))
+        else:
+            raise TypeError(f"Unknown task type {type(task)}.")
 
     return datasets
 
