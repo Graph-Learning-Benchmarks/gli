@@ -209,6 +209,10 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
         return GraphClassificationTask(task_dict, pwd)
     elif task_dict["type"] == "TimeDependentLinkPrediction":
         return TimeDependentLinkPredictionTask(task_dict, pwd)
+    elif task_dict["type"] == "NodeRegression":
+        return NodeRegressionTask(task_dict, pwd)
+    elif task_dict["type"] == "GraphRegression":
+        return GraphRegressionTask(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
                                   f"Supported tasks: {SUPPORT_TASK_TYPES}")
