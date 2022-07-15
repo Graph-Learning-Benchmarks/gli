@@ -1,7 +1,7 @@
 # BABLc1
 
 ## Dataset Description
-BALBc1 is a dataset of VesselGraph, it is a large, spatial and strucutred graph of whole-brain vessels, where bifurcation points are nodes, and blood vessels are edges.
+BALBc1 is a dataset of VesselGraph, it is a large, spatial and strucutred graph of whole-brain vessels, where bifurcation points are nodes, and blood vessels are edges. Node data include the node id, xyz coordinates and a flag indicating whether the bifurcation point is at sample border. Edge data include properties regarding the radius and length of the blood vessel.
 
 Statistics:
 - nodes 3,538,495
