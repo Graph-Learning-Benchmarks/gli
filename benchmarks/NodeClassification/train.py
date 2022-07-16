@@ -76,12 +76,12 @@ def main(args):
         train_mask = train_mask[:, 0]
         val_mask = val_mask[:, 0]
         test_mask = test_mask[:, 0]
-    
+
     # When labels contains -1, modify masks
     if min(labels) < 0:
-        train_mask = train_mask*(labels>=0)
-        val_mask = val_mask*(labels>=0)
-        test_mask = test_mask*(labels>=0)
+        train_mask = train_mask * (labels >= 0)
+        val_mask = val_mask * (labels >= 0)
+        test_mask = test_mask * (labels >= 0)
 
     in_feats = features.shape[1]
     n_classes = data.num_labels
@@ -139,7 +139,7 @@ def main(args):
             t0 = time.time()
         # forward
         logits = model(features)
-        
+
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()
