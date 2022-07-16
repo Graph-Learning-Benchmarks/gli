@@ -64,6 +64,7 @@ def main(args):
     data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
     g = data[0]
+    g.to_dense()
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
     train_mask = g.ndata["train_mask"]
@@ -75,6 +76,12 @@ def main(args):
         train_mask = train_mask[:, 0]
         val_mask = val_mask[:, 0]
         test_mask = test_mask[:, 0]
+    
+    # When labels contains -1, modify masks
+    if min(labels) < 0:
+        train_mask = train_mask*(labels>=0)
+        val_mask = val_mask*(labels>=0)
+        test_mask = test_mask*(labels>=0)
 
     in_feats = features.shape[1]
     n_classes = data.num_labels
@@ -132,7 +139,7 @@ def main(args):
             t0 = time.time()
         # forward
         logits = model(features)
-
+        
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()
@@ -166,8 +173,7 @@ if __name__ == "__main__":
                                                   classification")
     parser.add_argument("--model", type=str, default="GCN")
     parser.add_argument("--dataset", type=str, default="cora",
-                        help="provided datasets: cora, citeseer, pubmed, \
-                            ogbn_arxiv, ogbn_mag")
+                        help="dataset to be trained")
     parser.add_argument("--task", type=str,
                         default="NodeClassification",
                         help="task for NodeClassification")
