@@ -72,8 +72,7 @@ class KeyedFileReader():
         if array is None:
             file_key_entry = path + ":" + key if key else path
             warnings.warn(
-                f"Skip reading {file_key_entry} because it is non-numeric."
-            )
+                f"Skip reading {file_key_entry} because it is non-numeric.")
             return None
 
         if sp.issparse(array):
@@ -102,10 +101,13 @@ def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
         v = torch.FloatTensor(sparse_array.data)
         shape = sparse_array.shape
 
-        coo_tensor = torch.sparse_coo_tensor(i, v, torch.Size(shape), device=device)
+        coo_tensor = torch.sparse_coo_tensor(i,
+                                             v,
+                                             torch.Size(shape),
+                                             device=device)
         if sparse_type == "coo":
             return coo_tensor
-        elif sparse_type == "csr":  
+        elif sparse_type == "csr":
             # REVIEW - Test efficiency of transforming to csr from coo
             return coo_tensor.to_sparse_csr()
         else:
