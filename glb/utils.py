@@ -72,8 +72,7 @@ class KeyedFileReader():
         if array is None:
             file_key_entry = path + ":" + key if key else path
             warnings.warn(
-                f"Skip reading {file_key_entry} because it is non-numeric."
-            )
+                f"Skip reading {file_key_entry} because it is non-numeric.")
             return None
 
         if sp.issparse(array):
@@ -86,12 +85,14 @@ class KeyedFileReader():
 file_reader = KeyedFileReader()
 
 
-def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
+def sparse_to_torch(sparse_array: sp.spmatrix,
+                    convert_to_dense=False,
+                    device="cpu"):
     """Transform a sparse scipy array to sparse(coo) torch tensor.
 
     Note - add csr support.
     """
-    if to_dense:
+    if convert_to_dense:
         array = sparse_array.toarray()
         return torch.from_numpy(array).to(device)
 
@@ -243,7 +244,7 @@ def _download(url, out, verbose=False):
         subprocess.run(["wget", "-q", "-O", out, url], check=True)
 
 
-def sparse_to_dense_safe(array: torch.Tensor):
+def _sparse_to_dense_safe(array: torch.Tensor):
     """Convert a sparse tensor to dense.
 
     Throw user warning if the dense array size is larger than 1 G.
@@ -264,113 +265,78 @@ def sparse_to_dense_safe(array: torch.Tensor):
     return array
 
 
-def edge_to_dense(graph: dgl.DGLGraph, feat=None, edge_group=None):
-        """Convert edge data to dense inplace.
-
-        If both arguments are not provided, edge_to_dense() will try to convert
-        all edge features to dense. (This only works for homograph.)
-
-        Args:
-            graph (dgl.DGLGraph): graph whose edges will be converted to dense.
-            feat (str, optional): feature name. Defaults to None.
-            edge_group (str, optional): edge group for heterograph. Defaults to
-                None.
-
-        Raises:
-            NotImplementedError: If the graph is heterogeneous, feat and
-                edge_group cannot be None.
-        """
-        if graph.is_homogeneous:
-            if feat:
-                graph.edata[feat] = sparse_to_dense_safe(graph.edata[feat])
-            else:
-                for k in graph.edata:
-                    graph.edata[k] = sparse_to_dense_safe(graph.edata[k])
-        else:
-            if feat:
-                assert edge_group is not None
-                graph.ndata[feat][edge_group] = sparse_to_dense_safe(
-                    graph.ndata[feat][edge_group])
-            else:
-                raise NotImplementedError(
-                    "Both feat and edge_group should be provided for"
-                    " heterograph."
-                )
-
-
 def _to_dense(graph: dgl.DGLGraph, feat=None, group=None, is_node=True):
     graph_data = graph.ndata if is_node else graph.edata
 
     if graph.is_homogeneous:
         if feat:
-            graph_data[feat] = sparse_to_dense_safe(graph_data[feat])
+            graph_data[feat] = _sparse_to_dense_safe(graph_data[feat])
         else:
             for k in graph_data:
-                graph_data[k] = sparse_to_dense_safe(graph_data[k])
+                graph_data[k] = _sparse_to_dense_safe(graph_data[k])
     else:
         if feat:
             assert group is not None
-            graph.ndata[feat][group] = sparse_to_dense_safe(
+            graph.ndata[feat][group] = _sparse_to_dense_safe(
                 graph.ndata[feat][group])
         else:
             raise NotImplementedError(
                 "Both feat and group should be provided for"
-                " heterograph."
-            )
-    
+                " heterograph.")
+
     return graph
 
 
 def edge_to_dense(graph: dgl.DGLGraph, feat=None, edge_group=None):
-        """Convert edge data to dense.
+    """Convert edge data to dense.
 
-        If both arguments are not provided, edge_to_dense() will try to convert
-        all edge features to dense. (This only works for homograph.)
+    If both arguments are not provided, edge_to_dense() will try to convert
+    all edge features to dense. (This only works for homograph.)
 
-        Args:
-            graph (dgl.DGLGraph): graph whose edges will be converted to dense.
-            feat (str, optional): feature name. Defaults to None.
-            edge_group (str, optional): edge group for heterograph. Defaults to
-                None.
+    Args:
+        graph (dgl.DGLGraph): graph whose edges will be converted to dense.
+        feat (str, optional): feature name. Defaults to None.
+        edge_group (str, optional): edge group for heterograph. Defaults to
+            None.
 
-        Raises:
-            NotImplementedError: If the graph is heterogeneous, feat and
-                edge_group cannot be None.
-        """
-        return _to_dense(graph, feat, edge_group, is_node=False)
+    Raises:
+        NotImplementedError: If the graph is heterogeneous, feat and
+            edge_group cannot be None.
+    """
+    return _to_dense(graph, feat, edge_group, is_node=False)
 
 
 def node_to_dense(graph: dgl.DGLGraph, feat=None, node_group=None):
-        """Convert node data to dense.
+    """Convert node data to dense.
 
-        If both arguments are not provided, node_to_dense() will try to convert
-        all node features to dense. (This only works for homograph.)
+    If both arguments are not provided, node_to_dense() will try to convert
+    all node features to dense. (This only works for homograph.)
 
-        Args:
-            graph (dgl.DGLGraph): graph whose nodes will be converted to dense.
-            feat (str, optional): feature name. Defaults to None.
-            node_group (str, optional): node group for heterograph. Defaults to
-                None.
+    Args:
+        graph (dgl.DGLGraph): graph whose nodes will be converted to dense.
+        feat (str, optional): feature name. Defaults to None.
+        node_group (str, optional): node group for heterograph. Defaults to
+            None.
 
-        Raises:
-            NotImplementedError: If the graph is heterogeneous, feat and
-                node_group cannot be None.
-        """
-        return _to_dense(graph, feat, node_group, is_node=True)
+    Raises:
+        NotImplementedError: If the graph is heterogeneous, feat and
+            node_group cannot be None.
+    """
+    return _to_dense(graph, feat, node_group, is_node=True)
 
 
 def to_dense(graph: dgl.DGLGraph):
-        """Convert data to dense.
+    """Convert data to dense.
 
-        This function only works for homograph.
+    This function only works for homograph.
 
-        Args:
-            graph (dgl.DGLGraph): graph whose data will be converted to dense.
+    Args:
+        graph (dgl.DGLGraph): graph whose data will be converted to dense.
 
-        Raises:
-            NotImplementedError: If the graph is heterogeneous.
-        """
-        if graph.is_homogeneous:
-            return node_to_dense(edge_to_dense(graph))
-        else:
-            raise NotImplementedError("to_dense only works for homograph.")
+    Raises:
+        NotImplementedError: If the graph is heterogeneous.
+    """
+    if graph.is_homogeneous:
+        return node_to_dense(edge_to_dense(graph))
+    else:
+        raise NotImplementedError("to_dense only works for homograph.")

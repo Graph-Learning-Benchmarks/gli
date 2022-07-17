@@ -11,7 +11,7 @@ import dgl
 import scipy.sparse as sp
 import torch
 
-from .utils import file_reader, sparse_to_torch, sparse_to_dense_safe
+from .utils import file_reader, sparse_to_torch
 
 
 def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
@@ -68,7 +68,7 @@ def _is_hetero_graph(data):
 def _to_tensor(x, device="cpu"):
     """Wrap x into a tensor."""
     if not torch.is_tensor(x) and sp.issparse(x):
-        x = sparse_to_torch(x, to_dense=False, device=device)
+        x = sparse_to_torch(x, convert_to_dense=False, device=device)
     return x
 
 
