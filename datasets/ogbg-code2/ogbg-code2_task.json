@@ -1,0 +1,23 @@
+{
+    "description": "The task is to predict the sub-tokens forming the method name, given the Python method body represented by AST and its node features.",
+    "type": "CodeSummarization",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": [
+        "Graph/GraphLabel",
+        "Graph/GraphName"
+    ],
+    "train_set": {
+        "file": "ogbg-code2_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbg-code2_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "ogbg-code2_task.npz",
+        "key": "test"
+    }
+}
