@@ -45,7 +45,7 @@ def unwrap_array(array):
 class KeyedFileReader():
     """File reader for npz files."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """File reader for npz files."""
         self._data_buffer = {}
 
@@ -78,7 +78,10 @@ class KeyedFileReader():
 
         if sp.issparse(array):
             # Keep the array format to be scipy rather than pytorch
-            return array
+            # because we may need row indexing later.
+            if array.getformat() in ("coo", "csr"):
+                return array
+            raise TypeError("Sparse tensor should be COO or CSR type.")
         else:
             return torch.from_numpy(array).to(device=device)
 
@@ -87,21 +90,26 @@ file_reader = KeyedFileReader()
 
 
 def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
-    """Transform a sparse scipy array to sparse(coo) torch tensor.
-
-    Note - add csr support.
-    """
+    """Transform a sparse scipy array to sparse(coo) torch tensor."""
     if to_dense:
         array = sparse_array.toarray()
         return torch.from_numpy(array).to(device)
 
     else:
+        sparse_type = sparse_array.getformat()
         sparse_array = sp.coo_matrix(sparse_array)
         i = torch.LongTensor(np.vstack((sparse_array.row, sparse_array.col)))
         v = torch.FloatTensor(sparse_array.data)
         shape = sparse_array.shape
 
-        return torch.sparse_coo_tensor(i, v, torch.Size(shape), device=device)
+        coo_tensor = torch.sparse_coo_tensor(i, v, torch.Size(shape), device=device)
+        if sparse_type == "coo":
+            return coo_tensor
+        elif sparse_type == "csr":  
+            # REVIEW - Test efficiency of transforming to csr from coo
+            return coo_tensor.to_sparse_csr()
+        else:
+            raise TypeError(f"Unsupported sparse type {sparse_type}")
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,
