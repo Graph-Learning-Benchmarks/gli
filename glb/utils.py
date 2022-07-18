@@ -45,7 +45,7 @@ def unwrap_array(array):
 class KeyedFileReader():
     """File reader for npz files."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         """File reader for npz files."""
         self._data_buffer = {}
 
@@ -72,13 +72,15 @@ class KeyedFileReader():
         if array is None:
             file_key_entry = path + ":" + key if key else path
             warnings.warn(
-                f"Skip reading {file_key_entry} because it is non-numeric."
-            )
+                f"Skip reading {file_key_entry} because it is non-numeric.")
             return None
 
         if sp.issparse(array):
             # Keep the array format to be scipy rather than pytorch
-            return array
+            # because we may need row indexing later.
+            if array.getformat() in ("coo", "csr"):
+                return array
+            raise TypeError("Sparse tensor should be COO or CSR type.")
         else:
             return torch.from_numpy(array).to(device=device)
 
@@ -86,22 +88,40 @@ class KeyedFileReader():
 file_reader = KeyedFileReader()
 
 
-def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
-    """Transform a sparse scipy array to sparse(coo) torch tensor.
-
-    Note - add csr support.
-    """
-    if to_dense:
+def sparse_to_torch(sparse_array: sp.spmatrix,
+                    convert_to_dense=False,
+                    device="cpu"):
+    """Transform a sparse scipy array to sparse(coo) torch tensor."""
+    if convert_to_dense:
         array = sparse_array.toarray()
         return torch.from_numpy(array).to(device)
 
     else:
-        sparse_array = sp.coo_matrix(sparse_array)
-        i = torch.LongTensor(np.vstack((sparse_array.row, sparse_array.col)))
-        v = torch.FloatTensor(sparse_array.data)
+        sparse_type = sparse_array.getformat()
         shape = sparse_array.shape
+        if sparse_type == "coo":
+            i = torch.LongTensor(
+                np.vstack((sparse_array.row, sparse_array.col)))
+            v = torch.FloatTensor(sparse_array.data)
 
-        return torch.sparse_coo_tensor(i, v, torch.Size(shape), device=device)
+            coo_tensor = torch.sparse_coo_tensor(i,
+                                                 v,
+                                                 torch.Size(shape),
+                                                 device=device)
+            return coo_tensor
+        elif sparse_type == "csr":
+            sparse_array: sp.csr_matrix
+            crow_indices = sparse_array.indptr
+            col_indices = sparse_array.indices
+            values = sparse_array.data
+            csr_tensor = torch.sparse_csr_tensor(crow_indices,
+                                                 col_indices,
+                                                 values,
+                                                 size=torch.Size(shape),
+                                                 device=device)
+            return csr_tensor
+        else:
+            raise TypeError(f"Unsupported sparse type {sparse_type}")
 
 
 def dgl_to_glb(graph: dgl.DGLGraph,
@@ -243,7 +263,7 @@ def _download(url, out, verbose=False):
         subprocess.run(["wget", "-q", "-O", out, url], check=True)
 
 
-def sparse_to_dense_safe(array: torch.Tensor):
+def _sparse_to_dense_safe(array: torch.Tensor):
     """Convert a sparse tensor to dense.
 
     Throw user warning if the dense array size is larger than 1 G.
@@ -262,3 +282,80 @@ def sparse_to_dense_safe(array: torch.Tensor):
                 f"Trying to convert a large sparse tensor to a dense tensor. "
                 f"The dense tensor occupies {array_size} bytes.")
     return array
+
+
+def _to_dense(graph: dgl.DGLGraph, feat=None, group=None, is_node=True):
+    graph_data = graph.ndata if is_node else graph.edata
+
+    if graph.is_homogeneous:
+        if feat:
+            graph_data[feat] = _sparse_to_dense_safe(graph_data[feat])
+        else:
+            for k in graph_data:
+                graph_data[k] = _sparse_to_dense_safe(graph_data[k])
+    else:
+        if feat:
+            assert group is not None
+            graph.ndata[feat][group] = _sparse_to_dense_safe(
+                graph.ndata[feat][group])
+        else:
+            raise NotImplementedError(
+                "Both feat and group should be provided for"
+                " heterograph.")
+
+    return graph
+
+
+def edge_to_dense(graph: dgl.DGLGraph, feat=None, edge_group=None):
+    """Convert edge data to dense.
+
+    If both arguments are not provided, edge_to_dense() will try to convert
+    all edge features to dense. (This only works for homograph.)
+
+    Args:
+        graph (dgl.DGLGraph): graph whose edges will be converted to dense.
+        feat (str, optional): feature name. Defaults to None.
+        edge_group (str, optional): edge group for heterograph. Defaults to
+            None.
+
+    Raises:
+        NotImplementedError: If the graph is heterogeneous, feat and
+            edge_group cannot be None.
+    """
+    return _to_dense(graph, feat, edge_group, is_node=False)
+
+
+def node_to_dense(graph: dgl.DGLGraph, feat=None, node_group=None):
+    """Convert node data to dense.
+
+    If both arguments are not provided, node_to_dense() will try to convert
+    all node features to dense. (This only works for homograph.)
+
+    Args:
+        graph (dgl.DGLGraph): graph whose nodes will be converted to dense.
+        feat (str, optional): feature name. Defaults to None.
+        node_group (str, optional): node group for heterograph. Defaults to
+            None.
+
+    Raises:
+        NotImplementedError: If the graph is heterogeneous, feat and
+            node_group cannot be None.
+    """
+    return _to_dense(graph, feat, node_group, is_node=True)
+
+
+def to_dense(graph: dgl.DGLGraph):
+    """Convert data to dense.
+
+    This function only works for homograph.
+
+    Args:
+        graph (dgl.DGLGraph): graph whose data will be converted to dense.
+
+    Raises:
+        NotImplementedError: If the graph is heterogeneous.
+    """
+    if graph.is_homogeneous:
+        return node_to_dense(edge_to_dense(graph))
+    else:
+        raise NotImplementedError("to_dense only works for homograph.")
