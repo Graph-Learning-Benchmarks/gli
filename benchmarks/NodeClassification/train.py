@@ -11,13 +11,12 @@ import os
 import fnmatch
 import json
 import torch
-import torch.nn.functional as F
 import numpy as np
 import dgl
 import glb
 
-from models.gcn import GCN
-from models.gat import GAT
+from utils import generate_model
+from glb.utils import to_dense
 
 
 def accuracy(logits, labels):
@@ -27,11 +26,14 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(model, features, labels, mask):
+def evaluate(args, model, features, labels, mask, pseudo):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
-        logits = model(features)
+        if args.model == "MoNet":
+            logits = model(features, pseudo)
+        else:
+            logits = model(features)
         logits = logits[mask]
         labels = labels[mask]
         return accuracy(logits, labels)
@@ -64,7 +66,12 @@ def main(args):
     data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
     g = data[0]
-    g.to_dense()
+    if args.to_dense:
+        g = to_dense(g)
+    # add self loop
+    if args.self_loop:
+        g = dgl.remove_self_loop(g)
+        g = dgl.add_self_loop(g)
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
     train_mask = g.ndata["train_mask"]
@@ -86,6 +93,12 @@ def main(args):
     in_feats = features.shape[1]
     n_classes = data.num_labels
     n_edges = g.number_of_edges()
+
+    # calculate normalization factor (MoNet)
+    us, vs = g.edges(order='eid')
+    udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / torch.sqrt(g.in_degrees(vs).float())
+    pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
+
     print(f"""----Data statistics------'
       #Edges {n_edges}
       #Classes {n_classes}
@@ -93,32 +106,9 @@ def main(args):
       #Val samples {val_mask.int().sum().item()}
       #Test samples {test_mask.int().sum().item()}""")
 
-    # add self loop
-    if args.self_loop:
-        g = dgl.remove_self_loop(g)
-        g = dgl.add_self_loop(g)
+
     # create model
-    if args.model == "GCN":
-        model = GCN(g,
-                    in_feats,
-                    args.num_hidden,
-                    n_classes,
-                    args.num_layers,
-                    F.relu,
-                    args.in_drop)
-    elif args.model == "GAT":
-        heads = ([args.num_heads] * (args.num_layers-1)) + [args.num_out_heads]
-        model = GAT(g,
-                    args.num_layers,
-                    in_feats,
-                    args.num_hidden,
-                    n_classes,
-                    heads,
-                    F.elu,
-                    args.in_drop,
-                    args.attn_drop,
-                    args.negative_slope,
-                    args.residual)
+    model = generate_model(args, g, in_feats, n_classes)
 
     print(model)
     if cuda:
@@ -138,7 +128,10 @@ def main(args):
                 torch.cuda.synchronize()
             t0 = time.time()
         # forward
-        logits = model(features)
+        if args.model == "MoNet":
+            logits = model(features, pseudo)
+        else:
+            logits = model(features)
 
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
@@ -156,7 +149,7 @@ def main(args):
         if args.fastmode:
             val_acc = accuracy(logits[val_mask], labels[val_mask])
         else:
-            val_acc = evaluate(model, features, labels, val_mask)
+            val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
 
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
@@ -164,7 +157,7 @@ def main(args):
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
     print()
-    acc = evaluate(model, features, labels, test_mask)
+    acc = evaluate(args, model, features, labels, test_mask, pseudo)
     print(f"Test Accuracy {acc:.4f}")
 
 
@@ -203,8 +196,18 @@ if __name__ == "__main__":
                         help="the negative slope of leaky relu")
     parser.add_argument("--fastmode", action="store_true", default=False,
                         help="skip re-evaluate the validation set")
+    parser.add_argument("--pseudo-dim", type=int, default=2,
+                        help="Pseudo coordinate dimensions in GMMConv,\
+                              2 for cora and 3 for pubmed")
+    parser.add_argument("--num-kernels", type=int, default=3,
+                        help="Number of kernels in GMMConv layer")
     parser.add_argument("--self-loop", action="store_true",
                         help="graph self-loop (default=False)")
+    parser.add_argument("--to-dense", action="store_true",
+                        help="whether change the model into dense \
+                              (default=False)")
+    parser.add_argument("--aggregator-type", type=str, default="gcn",
+                        help="Aggregator type: mean/gcn/pool/lstm")
     Args = parser.parse_args()
     print(Args)
 
