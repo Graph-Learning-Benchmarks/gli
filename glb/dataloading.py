@@ -13,13 +13,24 @@ from glb.utils import download_data
 
 def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
                            task: GLBTask):
-    """Return a dataset given graph and task."""
-    if task.type == "NodeClassification":
-        return glb.dataset.node_classification_dataset_factory(graph, task)
-    elif task.type == "GraphClassification":
-        return glb.dataset.graph_classification_dataset_factory(graph, task)
-    elif task.type in ["TimeDependentLinkPrediction", "LinkPrediction"]:
-        return glb.dataset.link_prediction_dataset_factory(graph, task)
+    """Combine graph and task to get a GLB dataset.
+
+    Args:
+        graph (Union[DGLGraph, List[DGLGraph]]): Graph(s) to construct dataset.
+        task (GLBTask): GLB task config
+
+    Raises:
+        NotImplementedError: Unknown task type
+
+    Returns:
+        DGLDataset
+    """
+    if task.type in ("NodeClassification", "NodeRegression"):
+        return glb.dataset.node_dataset_factory(graph, task)
+    elif task.type == ("GraphClassification", "GraphRegression"):
+        return glb.dataset.graph_dataset_factory(graph, task)
+    elif task.type in ("TimeDependentLinkPrediction", ):
+        return glb.dataset.edge_dataset_factory(graph, task)
     raise NotImplementedError
 
 
