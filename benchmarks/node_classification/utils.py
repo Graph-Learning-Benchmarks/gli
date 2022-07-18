@@ -3,11 +3,11 @@ import torch.nn.functional as F
 from models.gcn import GCN
 from models.gat import GAT
 from models.monet import MoNet
-from models.GraphSAGE import GraphSAGE
+from models.graph_sage import GraphSAGE
+
 
 def generate_model(args, g, in_feats, n_classes):
     """Generate required model."""
-
     # create model
     if args.model == "GCN":
         model = GCN(g,

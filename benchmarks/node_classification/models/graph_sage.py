@@ -5,11 +5,13 @@ References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/graphsage/train_full.py
 """
 
-import torch.nn as nn
+from torch import nn
 from dgl.nn.pytorch.conv import SAGEConv
 
 
 class GraphSAGE(nn.Module):
+    """GraphSAGE model."""
+
     def __init__(self,
                  g,
                  in_feats,
@@ -19,7 +21,8 @@ class GraphSAGE(nn.Module):
                  activation,
                  dropout,
                  aggregator_type):
-        super(GraphSAGE, self).__init__()
+        """Initiate model."""
+        super().__init__()
         self.g = g
         self.layers = nn.ModuleList()
         self.dropout = nn.Dropout(dropout)
@@ -31,13 +34,14 @@ class GraphSAGE(nn.Module):
         for _ in range(n_layers - 1):
             self.layers.append(SAGEConv(n_hidden, n_hidden, aggregator_type))
         # output layer
-        self.layers.append(SAGEConv(n_hidden, n_classes, aggregator_type)) # activation None
+        self.layers.append(SAGEConv(n_hidden, n_classes, aggregator_type))
 
     def forward(self, inputs):
+        """Forward."""
         h = self.dropout(inputs)
-        for l, layer in enumerate(self.layers):
+        for length, layer in enumerate(self.layers):
             h = layer(self.g, h)
-            if l != len(self.layers) - 1:
+            if length != len(self.layers) - 1:
                 h = self.activation(h)
                 h = self.dropout(h)
         return h

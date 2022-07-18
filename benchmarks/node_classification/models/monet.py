@@ -5,11 +5,13 @@ References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/monet/citation.py
 """
 
-import torch.nn as nn
+from torch import nn
 from dgl.nn.pytorch.conv import GMMConv
 
 
 class MoNet(nn.Module):
+    """Monet model."""
+
     def __init__(self,
                  g,
                  in_feats,
@@ -19,7 +21,8 @@ class MoNet(nn.Module):
                  dim,
                  n_kernels,
                  dropout):
-        super(MoNet, self).__init__()
+        """Initiate model."""
+        super().__init__()
         self.g = g
         self.layers = nn.ModuleList()
         self.pseudo_proj = nn.ModuleList()
@@ -43,6 +46,7 @@ class MoNet(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, feat, pseudo):
+        """Forward."""
         h = feat
         for i in range(len(self.layers)):
             if i != 0:

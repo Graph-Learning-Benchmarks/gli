@@ -95,8 +95,9 @@ def main(args):
     n_edges = g.number_of_edges()
 
     # calculate normalization factor (MoNet)
-    us, vs = g.edges(order='eid')
-    udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / torch.sqrt(g.in_degrees(vs).float())
+    us, vs = g.edges(order="eid")
+    udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
+        torch.sqrt(g.in_degrees(vs).float())
     pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
 
     print(f"""----Data statistics------'
@@ -105,7 +106,6 @@ def main(args):
       #Train samples {train_mask.int().sum().item()}
       #Val samples {val_mask.int().sum().item()}
       #Test samples {test_mask.int().sum().item()}""")
-
 
     # create model
     model = generate_model(args, g, in_feats, n_classes)
