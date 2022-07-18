@@ -96,20 +96,28 @@ def sparse_to_torch(sparse_array: sp.spmatrix, to_dense=False, device="cpu"):
 
     else:
         sparse_type = sparse_array.getformat()
-        sparse_array = sp.coo_matrix(sparse_array)
-        i = torch.LongTensor(np.vstack((sparse_array.row, sparse_array.col)))
-        v = torch.FloatTensor(sparse_array.data)
         shape = sparse_array.shape
-
-        coo_tensor = torch.sparse_coo_tensor(i,
-                                             v,
-                                             torch.Size(shape),
-                                             device=device)
         if sparse_type == "coo":
+            i = torch.LongTensor(
+                np.vstack((sparse_array.row, sparse_array.col)))
+            v = torch.FloatTensor(sparse_array.data)
+
+            coo_tensor = torch.sparse_coo_tensor(i,
+                                                 v,
+                                                 torch.Size(shape),
+                                                 device=device)
             return coo_tensor
         elif sparse_type == "csr":
-            # REVIEW - Test efficiency of transforming to csr from coo
-            return coo_tensor.to_sparse_csr()
+            sparse_array: sp.csr_matrix
+            crow_indices = sparse_array.indptr
+            col_indices = sparse_array.indices
+            values = sparse_array.data
+            csr_tensor = torch.sparse_csr_tensor(crow_indices,
+                                                 col_indices,
+                                                 values,
+                                                 size=torch.Size(shape),
+                                                 device=device)
+            return csr_tensor
         else:
             raise TypeError(f"Unsupported sparse type {sparse_type}")
 
