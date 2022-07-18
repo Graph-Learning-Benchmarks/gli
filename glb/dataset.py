@@ -4,21 +4,21 @@ import numpy as np
 
 import torch
 from dgl.data import DGLDataset
+from dgl import DGLGraph
 
 from glb.task import (GLBTask, GraphClassificationTask, GraphRegressionTask,
                       LinkPredictionTask, NodeClassificationTask,
                       NodeRegressionTask, TimeDependentLinkPredictionTask)
-from glb.graph import GLBGraph
 
 
 class NodeDataset(DGLDataset):
     """Node level dataset."""
 
-    def __init__(self, graph: GLBGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLBTask):
         """Initialize a NodeDataset with a graph and a task.
 
         Args:
-            graph (GLBGraph): A GLB graph.
+            graph (DGLGraph): A DGL graph.
             task (GLBTask): Node level GLB task config.
         """
         self._g = graph
@@ -68,11 +68,11 @@ class NodeDataset(DGLDataset):
 class NodeClassificationDataset(NodeDataset):
     """Node classification dataset."""
 
-    def __init__(self, graph: GLBGraph, task: NodeClassificationTask):
+    def __init__(self, graph: DGLGraph, task: NodeClassificationTask):
         """Initialize a node classification dataset with a graph and a task.
 
         Args:
-            graph (GLBGraph): A GLB graph
+            graph (DGLGraph): A DGL graph
             task (NodeClassificationTask): Node classification task config.
         """
         super().__init__(graph, task)
@@ -82,11 +82,11 @@ class NodeClassificationDataset(NodeDataset):
 class NodeRegressionDataset(NodeDataset):
     """Node regression dataset."""
 
-    def __init__(self, graph: GLBGraph, task: NodeRegressionTask):
+    def __init__(self, graph: DGLGraph, task: NodeRegressionTask):
         """Initialize a node regression dataset with a graph and a task.
 
         Args:
-            graph (GLBGraph): A GLB graph
+            graph (DGLGraph): A DGL graph
             task (NodeRegressionTask): Node regression task config.
         """
         super().__init__(graph, task)
@@ -96,13 +96,13 @@ class GraphDataset(DGLDataset):
     """Graph Dataset."""
 
     def __init__(self,
-                 graphs: Iterable[GLBGraph],
+                 graphs: Iterable[DGLGraph],
                  task: GLBTask,
                  split="train_set"):
         """Initialize a graph level dataset.
 
         Args:
-            graphs (Iterable[GLBGraph]): A list of GLB graphs
+            graphs (Iterable[DGLGraph]): A list of GLB graphs
             task (GLBTask): GLB task config
             split (str, optional): One of "train_set", "test_set", and
                 "val_set". Defaults to "train_set".
@@ -165,7 +165,7 @@ class GraphClassificationDataset(GraphDataset):
     """Graph classification dataset."""
 
     def __init__(self,
-                 graphs: Iterable[GLBGraph],
+                 graphs: Iterable[DGLGraph],
                  task: GraphClassificationTask,
                  split="train_set"):
         """Initialize a graph classification dataset."""
@@ -177,7 +177,7 @@ class GraphRegressionDataset(GraphDataset):
     """Graph regression dataset."""
 
     def __init__(self,
-                 graphs: Iterable[GLBGraph],
+                 graphs: Iterable[DGLGraph],
                  task: GraphRegressionTask,
                  split="train_set"):
         """Initialize a graph regression dataset."""
@@ -187,11 +187,11 @@ class GraphRegressionDataset(GraphDataset):
 class TimeDependentLinkPredictionDataset(DGLDataset):
     """Link Prediction dataset."""
 
-    def __init__(self, graph: GLBGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLBTask):
         """Initialize a edge level dataset.
 
         Args:
-            graph (GLBGraph): A GLB graph
+            graph (DGLGraph): A DGL graph
             task (GLBTask): GLB task config
 
         Raises:
@@ -244,11 +244,11 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
         return 1
 
 
-def node_dataset_factory(graph: GLBGraph, task: GLBTask):
+def node_dataset_factory(graph: DGLGraph, task: GLBTask):
     """Initialize and return a NodeDataset.
 
     Args:
-        graph (GLBGraph): A GLB Graph
+        graph (DGLGraph): A DGL graph
         task (GLBTask): GLB task config
 
     Raises:
@@ -257,7 +257,7 @@ def node_dataset_factory(graph: GLBGraph, task: GLBTask):
     Returns:
         NodeDataset: Node level dataset
     """
-    assert isinstance(graph, GLBGraph)
+    assert isinstance(graph, DGLGraph)
     if isinstance(task, NodeRegressionTask):
         return NodeRegressionDataset(graph, task)
     elif isinstance(task, NodeClassificationTask):
@@ -266,9 +266,9 @@ def node_dataset_factory(graph: GLBGraph, task: GLBTask):
         raise TypeError(f"Unknown task type {type(task)}")
 
 
-def edge_dataset_factory(graph: GLBGraph, task: LinkPredictionTask):
+def edge_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
     """Initialize and return a LinkPrediction Dataset."""
-    assert isinstance(graph, GLBGraph)
+    assert isinstance(graph, DGLGraph)
 
     if isinstance(task, TimeDependentLinkPredictionTask):
         return TimeDependentLinkPredictionDataset(graph, task)
@@ -276,11 +276,11 @@ def edge_dataset_factory(graph: GLBGraph, task: LinkPredictionTask):
         raise TypeError(f"Unknown task type {type(task)}.")
 
 
-def graph_dataset_factory(graphs: Iterable[GLBGraph], task: GLBTask):
+def graph_dataset_factory(graphs: Iterable[DGLGraph], task: GLBTask):
     """Initialize and return split GraphDataset.
 
     Args:
-        graphs (Iterable[GLBGraph]): A list of GLB graphs.
+        graphs (Iterable[DGLGraph]): A list of GLB graphs.
         task (GLBTask): GLB task config
 
     Raises:
