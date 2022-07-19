@@ -6,8 +6,10 @@ import glb
 from glb.task import SUPPORT_TASK_TYPES
 
 
-def test_graph_loading(dataset):
-    """Test if glb.graph.get_glb_graph can be applied successfully."""
+def test_data_loading(dataset):
+    """Test if get_glb_graph and get_glb_task can be applied
+       successfully.
+    """
     directory = os.getcwd() + "/datasets/" + dataset
     task_list = []
     for file in os.listdir(directory):
