@@ -23,7 +23,7 @@
                 "key": "edge_feats"
         }
         },
-       "Graph": {
+        "Graph": {
             "_NodeList": {
                 "file": "ogbg-molfreesolv.npz",
                 "key": "node_list"
