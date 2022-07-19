@@ -1,4 +1,4 @@
-"""Common functions for testing"""
+"""Common functions for testing."""
 import os
 
 CURRENT_SUPPORT_TASKS = [
@@ -8,6 +8,7 @@ CURRENT_SUPPORT_TASKS = [
     "EntityLinkPrediction",
     "RelationLinkPrediction",
 ]
+
 
 def example_dir_check(path_to_parent):
     """Check if a directory has metadata.json.
@@ -19,9 +20,10 @@ def example_dir_check(path_to_parent):
             return True
     return False
 
+
 def find_examples_dir():
     """Recursively find example directories which have metadata json."""
-    walk_dir = os.getcwd() + "/examples"
+    walk_dir = os.getcwd() + "/datasets"
 
     print("walk_dir = " + walk_dir)
 

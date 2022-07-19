@@ -4,6 +4,7 @@ import os
 import re
 from utils import find_examples_dir
 
+
 def check_if_task_json(file):
     """Check if it is task.json file and correctly named."""
     task_exp = re.compile(r".*task.*")
@@ -19,6 +20,7 @@ def check_if_metadata_json(file):
         return True
     return False
 
+
 def check_if_urls_json(file):
     """Check if it is metadata.json and correctly named."""
     urls_exp = re.compile(r".*urls.*")
@@ -27,14 +29,19 @@ def check_if_urls_json(file):
         return True
     return False
 
+
 def check_if_readme(file):
     """Check if it is README.md and correctly named."""
     if file == "README.md":
         return True
     return False
 
+
 def check_file_name(files):
-    """Check if correctly named task json, metadata json urls json, and README exist."""
+    """Check if essential files exist.
+
+    Correctly named task json, metadata json urls json, and README exist.
+    """
     task_json_flag = False
     metadata_json_flag = False
     urls_jason_flag = False
@@ -63,6 +70,7 @@ def check_file_name(files):
         return False, "needs README"
 
     return True, "essential files included"
+
 
 @pytest.mark.parametrize("directory", find_examples_dir())
 def test_if_has_essential_files(directory):
