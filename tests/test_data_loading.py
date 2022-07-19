@@ -8,9 +8,9 @@ from glb.task import SUPPORT_TASK_TYPES
 
 def test_data_loading(dataset):
     """Test data loading for a given dataset.
-       
-       Test if get_glb_graph, get_glb_task, and get_glb_dataset
-       can be applied successfully.
+
+    Test if get_glb_graph, get_glb_task, and get_glb_dataset
+    can be applied successfully.
     """
     directory = os.getcwd() + "/datasets/" + dataset
     task_list = []
