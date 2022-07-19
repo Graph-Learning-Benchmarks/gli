@@ -274,7 +274,7 @@ def _sparse_to_dense_safe(array: torch.Tensor):
     Returns:
         torch.Tensor: Dense tensor.
     """
-    if array.is_sparse:
+    if array.is_sparse or array.is_sparse_csr:
         array = array.to_dense()
         array_size = array.element_size() * array.nelement()
         if array_size > WARNING_DENSE_SIZE:
