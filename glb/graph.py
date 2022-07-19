@@ -11,6 +11,7 @@ import dgl
 import scipy.sparse as sp
 import torch
 import numpy as np
+from tqdm import tqdm
 
 from .utils import file_reader, sparse_to_torch
 
@@ -104,13 +105,14 @@ def _get_multi_graph(data, device="cpu"):
         graph_edge_matrix = _get_graph_edge_matrix(node_list, edges)
         edge_list = graph_edge_matrix >= 2
 
-    for i in range(edge_list.shape[0]):
+    edge_list = edge_list.tolil()
+
+    for i in tqdm(range(edge_list.shape[0]), desc="Processing graphs"):
         if isinstance(edge_list, torch.Tensor):
             subgraph_edges = edge_list[i]
-        elif isinstance(edge_list, sp.csr_matrix):
-            subgraph_edges = edge_list.getrow(i).todense()
-            subgraph_edges = torch.from_numpy(subgraph_edges).squeeze()
-        subgraph_edges = subgraph_edges.bool()
+            subgraph_edges = subgraph_edges.bool()
+        elif isinstance(edge_list, sp.lil_matrix):
+            subgraph_edges = edge_list.rows[i]
         subgraph = dgl.edge_subgraph(g, subgraph_edges).to(device)
         graphs.append(subgraph)
 
