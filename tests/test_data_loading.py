@@ -1,0 +1,53 @@
+"""Automated test for data files in examples/."""
+import os
+import fnmatch
+import json
+import glb
+from glb.task import SUPPORT_TASK_TYPES
+
+
+def test_data_loading(dataset):
+    """Test if get_glb_graph and get_glb_task can be applied
+       successfully.
+    """
+    directory = os.getcwd() + "/datasets/" + dataset
+    task_list = []
+    for file in os.listdir(directory):
+        if fnmatch.fnmatch(file, "task*.json"):
+            with open(directory + "/" + file,  encoding="utf-8") as f:
+                task_dict = json.load(f)
+                if task_dict["type"] not in SUPPORT_TASK_TYPES:
+                    f.close()
+                    return
+            print(os.path.splitext(file)[0])
+            task_list.append(os.path.splitext(file)[0])
+    try:
+        _ = glb.dataloading.get_glb_graph(dataset)
+    except (AssertionError,
+            AttributeError,
+            ModuleNotFoundError,
+            IndexError,
+            ValueError) as e:
+        print(e, dataset, "graph loading failed")
+        assert False
+
+    for task in task_list:
+        try:
+            _ = glb.dataloading.get_glb_task(dataset, task)
+        except (AssertionError,
+                AttributeError,
+                ModuleNotFoundError,
+                IndexError,
+                ValueError) as e:
+            print(e, dataset, task, "task loading failed")
+            assert False
+
+        try:
+            glb.dataloading.get_glb_dataset(dataset, task)
+        except (AssertionError,
+                AttributeError,
+                ModuleNotFoundError,
+                IndexError,
+                ValueError) as e:
+            print(e, dataset, "combine graph and task loading failed")
+            assert False
