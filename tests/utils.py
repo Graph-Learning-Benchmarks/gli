@@ -24,7 +24,7 @@ def dataset_dir_check(path_to_parent):
 
 def find_datasets_dir():
     """Recursively find dataset directories which have metadata json."""
-    walk_dir = os.getcwd() + "/datasets"
+    walk_dir = os.getcwd() + "/examples"
 
     print("walk_dir = " + walk_dir)
 
@@ -68,3 +68,22 @@ def check_if_readme(file):
     if file == "README.md":
         return True
     return False
+
+
+def _dict_depth(d):
+    """Return the depth of a dictionary."""
+    if isinstance(d, dict):
+        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
+    return 0
+
+
+def _is_hetero_graph(data):
+    """Return true if the glb data contains heterogeneous graph."""
+    depth = _dict_depth(data)
+    # Heterogeneous graph has one more depth than a homogeneous one.
+    if depth == 5:
+        return True
+    elif depth == 4:
+        return False
+    else:
+        raise RuntimeError("metadata.json has wrong structure.")

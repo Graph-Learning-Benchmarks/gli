@@ -2,8 +2,7 @@
 import pytest
 import os
 import json
-from utils import find_datasets_dir, check_if_metadata_json
-import glb
+from utils import find_datasets_dir, check_if_metadata_json, _is_hetero_graph
 
 
 def check_essential_keys_metadata_json(dic):
@@ -22,7 +21,7 @@ def check_essential_keys_metadata_json(dic):
             if dic["data"].get(first_key, None) is None:
                 missing_keys.append("data: " + first_key)
 
-        if glb.graph._is_hetero_graph(dic):
+        if _is_hetero_graph(dic):
             # missing_keys += \
             #    check_essential_keys_metadata_json_heterogeneous(dic)
             # assert dic["is_heterogeneous"] is True
