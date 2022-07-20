@@ -80,7 +80,11 @@ class KeyedFileReader():
             # because we may need row indexing later.
             if array.getformat() in ("coo", "csr"):
                 return array
-            raise TypeError("Sparse tensor should be COO or CSR type.")
+            else:
+                try:
+                    return sp.coo_matrix(array)
+                except Exception as e:
+                    raise TypeError from e
         else:
             return torch.from_numpy(array).to(device=device)
 
@@ -274,7 +278,7 @@ def _sparse_to_dense_safe(array: torch.Tensor):
     Returns:
         torch.Tensor: Dense tensor.
     """
-    if array.is_sparse:
+    if array.is_sparse or array.is_sparse_csr:
         array = array.to_dense()
         array_size = array.element_size() * array.nelement()
         if array_size > WARNING_DENSE_SIZE:

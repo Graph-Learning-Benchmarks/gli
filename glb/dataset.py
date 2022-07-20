@@ -38,7 +38,7 @@ class NodeDataset(DGLDataset):
                 else:
                     indices_ = indices_list_[fold]
 
-                assert not indices_.is_sparse
+                assert not (indices_.is_sparse or indices_.is_sparse_csr)
                 indices_ = indices_.to(self._g.device)
                 indices_ = torch.squeeze(indices_)
                 assert indices_.dim() == 1
@@ -132,7 +132,7 @@ class GraphDataset(DGLDataset):
 
         device = self.graphs[0].device
         indices = self.task.split[self.split]
-        assert not indices.is_sparse
+        assert not (indices.is_sparse or indices.is_sparse_csr)
         if isinstance(indices, np.ndarray):
             indices = torch.from_numpy(indices).to(device)
         else:
