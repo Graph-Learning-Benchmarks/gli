@@ -129,7 +129,9 @@ def _get_homograph(data):
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
     num_nodes = data["Graph"]["_NodeList"].shape[-1]
 
-    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), num_nodes=num_nodes, device="cpu")
+    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes),
+                                num_nodes=num_nodes,
+                                device="cpu")
 
     for attr, array in data["Node"].items():
         g.ndata[attr] = _to_tensor(array)
