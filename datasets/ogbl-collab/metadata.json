@@ -1,0 +1,46 @@
+{
+    "description": "OGBL-COLLAB dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of ogbl-collab dataset.",
+                "type": "float",
+                "format": "Tensor",
+                "file": "ogbl-collab.npz",
+                "key": "node_feats"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "ogbl-collab.npz",
+                "key": "edge"
+            },
+            "EdgeWeight": {
+                "description": "Number of co-authored papers published in that year",
+                "type": "int",
+                "format": "Tensor",
+                "file": "ogbl-collab.npz",
+                "key": "edge_weight"
+            },
+            "EdgeYear": {
+                "description": "Year of the collaboration represented by the Edge",
+                "type": "int",
+                "format": "Tensor",
+                "file": "ogbl-collab.npz",
+                "key": "edge_year"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "ogbl-collab.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "ogbl-collab.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@inproceedings{wang2020microsoft,\ntitle={Microsoft academic graph: When experts are not enough},\nauthor={Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},\nbooktitle={Quantitative Science Studies},\npages={396--413},\nyear={2020}\n}",
+    "is_heterogeneous": false
+}

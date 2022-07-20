@@ -1,0 +1,22 @@
+{
+    "description": "The ogbn-mag dataset is a heterogeneous network composed of a subset of the Microsoft Academic Graph (MAG) [1]. It contains four types of entities\u2014papers (736,389 nodes), authors (1,134,649 nodes), institutions (8,740 nodes), and fields of study (59,965 nodes)\u2014as well as four types of directed relations connecting two types of entities\u2014an author is \u201caffiliated with\u201d an institution, an author \u201cwrites\u201d a paper, a paper \u201ccites\u201d a paper, and a paper \u201chas a topic of\u201d a field of study. Similar to ogbn-mag, each paper is associated with a 128-dimensional word2vec feature vector, and all the other types of entities are not associated with input node features.",
+    "type": "NodeClassification",
+    "feature": [
+        "PaperNode/PaperNodeFeature",
+        "PaperNode/PaperYear"
+    ],
+    "target": "PaperNode/PaperLabel",
+    "num_classes": 349,
+    "train_set": {
+        "file": "ogbn-mag_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbn-mag_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "ogbn-mag_task.npz",
+        "key": "test"
+    }
+}
