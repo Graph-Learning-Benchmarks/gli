@@ -21,19 +21,19 @@
                 "format": "SparseTensor",
                 "file": "ogbg-molfreesolv.npz",
                 "key": "edge_feats"
-            }
+        }
         },
         "Graph": {
             "_NodeList": {
                 "file": "ogbg-molfreesolv.npz",
                 "key": "node_list"
+            },
+            "GraphLabel": {
+                "file": "ogbg-molfreesolv.npz",
+                "type": "int",
+                "format": "Tensor",
+                "key": "graph_class"
             }
-        },
-        "GraphLabel": {
-            "file": "ogbg-molfreesolv.npz",
-            "type": "int",
-            "format": "Tensor",
-            "key": "graph_class"
         }
     },
     "citation": "@inproceedings{Wu2018Stanford,\ntitle={Moleculenet: a benchmark for molecular machine learning},\nauthor={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},\nbooktitle={Chemical Science},\npages={513=520},\nyear={2018}\n}",
