@@ -1,40 +1,7 @@
 """Automated test for required files in datasets/."""
 import pytest
 import os
-import re
-from utils import find_examples_dir
-
-
-def check_if_task_json(file):
-    """Check if it is task.json file and correctly named."""
-    task_exp = re.compile(r".*task.*")
-    json_exp = re.compile(r"\B.*\.json$")
-    if task_exp.search(file) and json_exp.search(file):
-        return True
-    return False
-
-
-def check_if_metadata_json(file):
-    """Check if it is metadata.json and correctly named."""
-    if file == "metadata.json":
-        return True
-    return False
-
-
-def check_if_urls_json(file):
-    """Check if it is metadata.json and correctly named."""
-    urls_exp = re.compile(r".*urls.*")
-    json_exp = re.compile(r"\B.*\.json$")
-    if urls_exp.search(file) and json_exp.search(file):
-        return True
-    return False
-
-
-def check_if_readme(file):
-    """Check if it is README.md and correctly named."""
-    if file == "README.md":
-        return True
-    return False
+from utils import find_datasets_dir, check_if_metadata_json, check_if_urls_json, check_if_task_json, check_if_readme
 
 
 def check_file_name(files):
@@ -72,7 +39,7 @@ def check_file_name(files):
     return True, "essential files included"
 
 
-@pytest.mark.parametrize("directory", find_examples_dir())
+@pytest.mark.parametrize("directory", find_datasets_dir())
 def test_if_has_essential_files(directory):
     """Check for essential json files.
 
