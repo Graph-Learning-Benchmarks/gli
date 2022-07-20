@@ -23,7 +23,8 @@ def check_essential_keys_metadata_json(dic):
                 missing_keys.append("data: " + first_key)
 
         if glb.graph._is_hetero_graph(dic):
-            # missing_keys += check_essential_keys_metadata_json_heterogeneous(dic)
+            # missing_keys += \
+            #    check_essential_keys_metadata_json_heterogeneous(dic)
             # assert dic["is_heterogeneous"] is True
             pass
         else:
@@ -42,7 +43,7 @@ def check_essential_keys_metadata_json_homogeneous(dic):
                         "file",
                         "key",
                         ]:
-            if dic["data"]["Node"][key].get(sub_key, None) == None:
+            if dic["data"]["Node"][key].get(sub_key, None) is None:
                 missing_keys.append("data: Node: " + key + ": " + sub_key)
 
     for sup_key in ["Edge", "Graph"]:
@@ -50,15 +51,15 @@ def check_essential_keys_metadata_json_homogeneous(dic):
             for sub_key in ["file",
                             "key",
                             ]:
-                if dic["data"][sup_key][key].get(sub_key, None) == None:
-                    missing_keys.append("data: " + sup_key + ": " + key + ": " + sub_key)
+                if dic["data"][sup_key][key].get(sub_key, None) is None:
+                    missing_keys.append("data: " + sup_key + ": " +
+                                        key + ": " + sub_key)
 
     return missing_keys
 
 
 def check_essential_keys_metadata_json_heterogeneous(dic):
     """Check if heterogeneous meta json has all essential keys."""
-    """Check if homogeneous meta json has all essential keys."""
     missing_keys = []
     for key in dic["data"]["Node"].keys():
         for sub_key in ["description",
@@ -67,7 +68,7 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
                         "file",
                         "key",
                         ]:
-            if dic["data"]["Node"][key].get(sub_key, None) == None:
+            if dic["data"]["Node"][key].get(sub_key, None) is None:
                 missing_keys.append("data: Node: " + key + ": " + sub_key)
 
     for sup_key in ["Edge", "Graph"]:
@@ -75,8 +76,9 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
             for sub_key in ["file",
                             "key",
                             ]:
-                if dic["data"][sup_key][key].get(sub_key, None) == None:
-                    missing_keys.append("data: " + sup_key + ": " + key + ": " + sub_key)
+                if dic["data"][sup_key][key].get(sub_key, None) is None:
+                    missing_keys.append("data: " + sup_key + ": " +
+                                        key + ": " + sub_key)
 
     return missing_keys
 
