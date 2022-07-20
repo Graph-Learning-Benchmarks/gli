@@ -10,7 +10,6 @@ Statistics:
 
 <a name="myfootnote1">[1]</a>: Lim, Derek, Felix Hohne, Xiuyu Li, Sijia Linda Huang, Vaishnavi Gupta, Omkar Bhalerao, and Ser Nam Lim. "Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods." Advances in Neural Information Processing Systems 34 (2021): 20887-20902.
 
-
 #### Citation
 - Original Source
   ```
