@@ -10,6 +10,8 @@ from copy import copy
 import dgl
 import scipy.sparse as sp
 import torch
+import numpy as np
+from tqdm import tqdm
 
 from .utils import file_reader, sparse_to_torch
 
@@ -97,23 +99,21 @@ def _get_multi_graph(data, device="cpu"):
     for attr, array in data["Edge"].items():
         g.edata[attr] = _to_tensor(array)
 
-    # Decide subgraph types (node/edge-subgraph)
-    subgraph_func = dgl.edge_subgraph if edge_list else dgl.node_subgraph
-    entity_list = edge_list if edge_list else node_list
+    if edge_list is None:
+        # Infer edge_list from node_list
+        edges = torch.stack(g.edges()).T
+        graph_edge_matrix = _get_graph_edge_matrix(node_list, edges)
+        edge_list = graph_edge_matrix >= 2
 
-    # Transform indices into dense boolean tensor
-    assert len(entity_list.shape) == 2, "NodeList/EdgeList should be a matrix."
-    if sp.issparse(entity_list) and not sp.isspmatrix_csr(entity_list):
-        # Only allow csr matrix
-        entity_list = sp.csr_matrix(entity_list)
-    for i in range(entity_list.shape[0]):
-        if isinstance(entity_list, torch.Tensor):  # Dense pytorch tensor
-            subgraph_entities = entity_list[i]
-        elif isinstance(entity_list, sp.csr_matrix):
-            subgraph_entities = entity_list.getrow(i).todense()
-            subgraph_entities = torch.from_numpy(subgraph_entities).squeeze()
-        subgraph_entities = subgraph_entities.bool()
-        subgraph = subgraph_func(g, subgraph_entities).to(device=device)
+    edge_list = edge_list.tolil()
+
+    for i in tqdm(range(edge_list.shape[0]), desc="Processing graphs"):
+        if isinstance(edge_list, torch.Tensor):
+            subgraph_edges = edge_list[i]
+            subgraph_edges = subgraph_edges.bool()
+        elif isinstance(edge_list, sp.lil_matrix):
+            subgraph_edges = edge_list.rows[i]
+        subgraph = dgl.edge_subgraph(g, subgraph_edges).to(device)
         graphs.append(subgraph)
 
     for attr in data["Graph"]:
@@ -223,3 +223,24 @@ def _dfs_read_file_helper(pwd, d, device="cpu"):
     for k in empty_keys:
         d.pop(k)
     return d
+
+
+def _get_graph_edge_matrix(graph_node_matrix: sp.spmatrix,
+                           edges: torch.Tensor):
+    """Get graph edge csr matrix."""
+    if isinstance(graph_node_matrix, torch.Tensor):
+        graph_node_matrix = graph_node_matrix.numpy()
+    graph_node_matrix = graph_node_matrix.astype(np.int8)
+    n_nodes = graph_node_matrix.shape[1]
+    n_edges = edges.shape[0]
+    edge_id = torch.arange(0, edges.shape[0])  # (n_edge,)
+    indices = torch.stack(
+        (edges, edge_id.repeat(2, 1).T),
+        dim=2)  # (2 [nodes in a edge], n_edge, 2 [repeat edge_id])
+    i = torch.cat((indices[:, 0, :], indices[:, 1, :]), dim=0)
+    data = np.ones(i.shape[0])
+    node_edge_matrix = sp.coo_matrix((data, i.T),
+                                     shape=(n_nodes, n_edges),
+                                     dtype=np.int8)
+    graph_edge_matrix = graph_node_matrix @ node_edge_matrix
+    return graph_edge_matrix
