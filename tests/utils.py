@@ -30,12 +30,12 @@ def find_datasets_dir():
 
     print("walk_dir (absolute) = " + os.path.abspath(walk_dir))
 
-    example_dir_list = []
+    dataset_dir_list = []
     for root, subdirs, _ in os.walk(walk_dir):
         for subdir in subdirs:
             if dataset_dir_check(root + "/" + subdir):
-                example_dir_list.append(root + "/" + subdir)
-    return example_dir_list
+                dataset_dir_list.append(root + "/" + subdir)
+    return dataset_dir_list
 
 
 def check_if_task_json(file):
@@ -68,3 +68,22 @@ def check_if_readme(file):
     if file == "README.md":
         return True
     return False
+
+
+def _dict_depth(d):
+    """Return the depth of a dictionary."""
+    if isinstance(d, dict):
+        return 1 + (max(map(_dict_depth, d.values())) if d else 0)
+    return 0
+
+
+def _is_hetero_graph(data):
+    """Return true if the glb data contains heterogeneous graph."""
+    depth = _dict_depth(data)
+    # Heterogeneous graph has one more depth than a homogeneous one.
+    if depth == 5:
+        return True
+    elif depth == 4:
+        return False
+    else:
+        raise RuntimeError("metadata.json has wrong structure.")
