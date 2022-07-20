@@ -1,7 +1,9 @@
 """Automated test for required files in datasets/."""
 import pytest
 import os
-from utils import find_datasets_dir, check_if_metadata_json, check_if_urls_json, check_if_task_json, check_if_readme
+from utils import \
+    find_datasets_dir, check_if_metadata_json, \
+    check_if_urls_json, check_if_task_json, check_if_readme
 
 
 def check_file_name(files):
