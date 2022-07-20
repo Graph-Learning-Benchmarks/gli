@@ -5,7 +5,7 @@ import json
 from utils import find_datasets_dir, check_if_metadata_json
 import glb
 
-ß
+
 def check_essential_keys_metadata_json(dic):
     """Check if metadata json has all essential keys."""
     missing_keys = []
