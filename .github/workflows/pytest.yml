@@ -35,7 +35,7 @@ jobs:
         then
           dataset_list=()
           for path in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-              dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/(\w+)\/.*/\1/')
+              dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/([a-zA-Z0-9-_]+)\/.*/\1/')
               if [ -z "$dataset" ]; then continue; fi
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
                 echo "current dataset is $dataset"
