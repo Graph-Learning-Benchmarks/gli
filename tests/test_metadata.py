@@ -23,8 +23,9 @@ def check_essential_keys_metadata_json(dic):
                 missing_keys.append("data: " + first_key)
 
         if glb.graph._is_hetero_graph(dic):
-            missing_keys += check_essential_keys_metadata_json_heterogeneous(dic)
-            assert dic["is_heterogeneous"] is True
+            # missing_keys += check_essential_keys_metadata_json_heterogeneous(dic)
+            # assert dic["is_heterogeneous"] is True
+            pass
         else:
             missing_keys += check_essential_keys_metadata_json_homogeneous(dic)
             assert dic["is_heterogeneous"] is False
