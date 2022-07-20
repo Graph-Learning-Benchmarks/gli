@@ -3,7 +3,7 @@ import os
 import fnmatch
 import json
 import glb
-from glb.task import SUPPORT_TASK_TYPES
+from glb.task import SUPPORTED_TASK_TYPES
 
 
 def test_data_loading(dataset):
@@ -18,7 +18,7 @@ def test_data_loading(dataset):
         if fnmatch.fnmatch(file, "task*.json"):
             with open(directory + "/" + file,  encoding="utf-8") as f:
                 task_dict = json.load(f)
-                if task_dict["type"] not in SUPPORT_TASK_TYPES:
+                if task_dict["type"] not in SUPPORTED_TASK_TYPES:
                     f.close()
                     return
             print(os.path.splitext(file)[0])
