@@ -12,6 +12,11 @@ def test_data_loading(dataset):
     Test if get_glb_graph, get_glb_task, and get_glb_dataset
     can be applied successfully.
     """
+    # temporary skipping all large datasets
+    large_dataset_to_skip = ["wiki", "ogbg-code2"]
+    if dataset in large_dataset_to_skip:
+        return
+
     directory = os.getcwd() + "/datasets/" + dataset
     task_list = []
     for file in os.listdir(directory):
