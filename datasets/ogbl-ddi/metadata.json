@@ -1,0 +1,37 @@
+{
+    "description": "ogbl-ddi dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbl-ddi.npz",
+                "key": "node_feats"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "ogbl-ddi.npz",
+                "key": "edge"
+            },
+            "ID" :{
+                "description": "ID of the edges",
+                "file": "ogbl-ddi.npz",
+                "key": "edge_id"
+            }
+        },
+       "Graph": {
+            "_NodeList": {
+                "file": "ogbl-ddi.npz",
+                "key": "node_list"
+             },
+            "_EdgeList": {
+                "file": "ogbl-ddi.npz",
+                "key": "edge_list"
+        }
+        }
+    },
+    "citation": "@inproceedings{Wu2018Stanford,\ntitle={Moleculenet: a benchmark for molecular machine learning},\nauthor={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},\nbooktitle={Chemical Science},\npages={513=520},\nyear={2018}\n}",
+    "is_heterogeneous": false
+}
