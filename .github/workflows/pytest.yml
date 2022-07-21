@@ -9,9 +9,11 @@ jobs:
       matrix:
         python-version: ["3.8"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -19,6 +21,37 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install -e .
-    - name: Test with pytest
+    - name: Get changed files using defaults
+      id: changed-files
+      uses: tj-actions/changed-files@v23.1
+    - name: List all changed files
       run: |
-        pytest tests/
+          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+            echo "$file was chasnged"
+          done
+    - name: Test with pytest, if triggered by PR
+      run: |
+        if ${{ github.event_name == 'pull_request' }}
+        then
+          dataset_list=()
+          for path in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+              dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/([_a-zA-Z0-9-]+)\/.*/\1/')
+              if [ -z "$dataset" ]; then continue; fi
+              if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
+                echo "current dataset is $dataset"
+                pytest -q --dataset="$dataset" tests/test_data_loading.py
+                dataset_list+=($dataset)
+                echo "datasets list is ${dataset_list[*]}"        
+              fi
+          done
+        fi
+    - name: Test all datasets with pytest, if triggered by workflow_dispatch
+      run: |
+        if ${{ github.event_name == 'workflow_dispatch' }}
+        then
+          for dataset in $(ls ./datasets); do
+              echo "current dataset is $dataset"
+              if [ -z "$dataset" ]; then continue; fi
+              pytest -q --dataset="$dataset" tests/test_data_loading.py 
+          done
+        fi
