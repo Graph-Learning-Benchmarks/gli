@@ -26,7 +26,7 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(args, model, features, labels, mask, pseudo):
+def evaluate(args, model, features, labels, mask, pseudo=None):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
@@ -95,10 +95,11 @@ def main(args):
     n_edges = g.number_of_edges()
 
     # calculate normalization factor (MoNet)
-    us, vs = g.edges(order="eid")
-    udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
-        torch.sqrt(g.in_degrees(vs).float())
-    pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
+    if args.model == "MoNet":
+        us, vs = g.edges(order="eid")
+        udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
+            torch.sqrt(g.in_degrees(vs).float())
+        pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
 
     print(f"""----Data statistics------'
       #Edges {n_edges}
@@ -148,8 +149,10 @@ def main(args):
 
         if args.fastmode:
             val_acc = accuracy(logits[val_mask], labels[val_mask])
-        else:
+        elif args.model == "MoNet":
             val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
+        else:
+            val_acc = evaluate(args, model, features, labels, val_mask)
 
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
@@ -157,19 +160,24 @@ def main(args):
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
     print()
-    acc = evaluate(args, model, features, labels, test_mask, pseudo)
+    if args.model == "MoNet":
+        acc = evaluate(args, model, features, labels, test_mask, pseudo)
+    else:
+        acc = evaluate(args, model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="train for node\
                                                   classification")
-    parser.add_argument("--model", type=str, default="GCN")
+    parser.add_argument("--model", type=str, default="GCN",
+                        help="model to be used. GCN, GAT, MoNet,\
+                              GraphSAGE, MLP for now")
     parser.add_argument("--dataset", type=str, default="cora",
                         help="dataset to be trained")
     parser.add_argument("--task", type=str,
                         default="NodeClassification",
-                        help="task for NodeClassification")
+                        help="task name for NodeClassification,")
     parser.add_argument("--gpu", type=int, default=-1,
                         help="which GPU to use. Set -1 to use CPU.")
     parser.add_argument("--epochs", type=int, default=200,

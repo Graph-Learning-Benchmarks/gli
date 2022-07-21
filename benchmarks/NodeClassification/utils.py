@@ -4,6 +4,7 @@ from models.gcn import GCN
 from models.gat import GAT
 from models.monet import MoNet
 from models.graph_sage import GraphSAGE
+from models.mlp import MLP
 
 
 def generate_model(args, g, in_feats, n_classes):
@@ -48,4 +49,11 @@ def generate_model(args, g, in_feats, n_classes):
                           F.relu,
                           args.in_drop,
                           args.aggregator_type)
+    elif args.model == "MLP":
+        model = MLP(in_feats,
+                    args.num_hidden,
+                    n_classes,
+                    args.num_layers,
+                    F.relu,
+                    args.in_drop)
     return model
