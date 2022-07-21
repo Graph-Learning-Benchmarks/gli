@@ -3,6 +3,8 @@ import dgl
 import argparse
 import networkx as nx
 import numpy as np
+import torch
+
 import glb
 import powerlaw
 
@@ -153,10 +155,11 @@ def check_direct(g):
     """Check the graph is directed or not."""
     # to examine whether all the edges are bi-directed edges
     nx_g = dgl.to_networkx(g)
-    for e in nx_g.edges():
-        if (e[1], e[0]) not in nx_g.edges():
-            return True
-    return False
+    # remove self-loop before edge computation
+    nx_g.remove_edges_from(list(nx.selfloop_edges(nx_g)))
+    n_all_edge = nx_g.number_of_edges()
+    n_un_edge = nx_g.to_undirected().number_of_edges()
+    return n_all_edge != 2 * n_un_edge
 
 
 def edge_homogeneity(g):
@@ -213,6 +216,83 @@ def prepare_dataset(dataset, task):
     return glb_graph, glb_task, glb_graph_task
 
 
+def dict_to_tensor(feature_dict, tensor_size):
+    """Transform dict of tensor to 2-D tensor."""
+    out_tensor = torch.zeros(size=tensor_size)
+    for v in feature_dict:
+        out_tensor[v] = feature_dict[v]
+    return out_tensor
+
+
+def matrix_row_norm(feature_matrix):
+    """Normalize the node feature tensor."""
+    return feature_matrix / torch.linalg.norm(feature_matrix, axis=1)[:, None]
+
+
+def get_feature_label(g):
+    """Compute the feature homogeneity."""
+    # convert sparse tensor to dense tensor
+    g.ndata["NodeFeature"] = g.ndata["NodeFeature"].to_dense()
+    # get attribute size
+    feature_size = g.ndata["NodeFeature"].size()
+    label_size = g.ndata["NodeLabel"].size()
+    nx_g = dgl.to_networkx(g, node_attrs=["NodeFeature", "NodeLabel"])
+    # get attribute dictionary
+    feature_dict = nx.get_node_attributes(nx_g, "NodeFeature")
+    label_dict = nx.get_node_attributes(nx_g, "NodeLabel")
+    # get feature matrix and label matrix
+    feature_matrix = dict_to_tensor(feature_dict, feature_size)
+    normed_feature_matrix = matrix_row_norm(feature_matrix)
+    label_matrix = dict_to_tensor(label_dict, label_size)
+    return normed_feature_matrix, label_matrix
+
+
+def sum_angular_distance_matrix_nan(x, y):
+    """Compute summation of angular distance."""
+    inner_prod = x.matmul(y.T)
+    inner_prod = torch.clip(inner_prod, -1.0, 1.0)
+    angular_dist = 1.0 - torch.arccos(inner_prod) / torch.pi
+    angular_dist[torch.where(torch.isnan(angular_dist))] = 1.0
+    return torch.sum(angular_dist)
+
+
+def feature_homogeneity(g):
+    """Compute feature homogeneity."""
+    normed_feature_matrix, label_matrix = get_feature_label(g)
+    # get a sorted list of all labels
+    # convert labels to integer
+    label_list = [int(x) for x in list(set(label_matrix.tolist()))]
+    all_labels = sorted(label_list)
+    label_num = len(all_labels)
+    sum_matrix = torch.zeros((label_num, label_num))
+    count_matrix = torch.zeros((label_num, label_num))
+
+    # find relationship between each pair of labels
+    for label_idx, i in enumerate(all_labels):
+        idx_i = torch.where(label_matrix == i)[0]
+        vec_i = normed_feature_matrix[idx_i, :]
+        for j in all_labels[label_idx:]:
+            idx_j = torch.where(label_matrix == j)[0]
+            vec_j = normed_feature_matrix[idx_j, :]
+            the_sum = sum_angular_distance_matrix_nan(vec_i, vec_j)
+            # the total number of pairs
+            the_count = len(idx_j) * len(idx_i)
+            if i == j:
+                the_sum -= float(len(idx_j))
+                the_sum /= 2.0
+                the_count -= float(len(idx_j))
+                the_count /= 2
+            sum_matrix[i, j] = the_sum
+            count_matrix[i, j] = the_count
+    out_avg = torch.sum(sum_matrix[torch.triu_indices(
+        sum_matrix.shape[0], sum_matrix.shape[0])]) / (
+                  torch.sum(count_matrix[torch.triu_indices(
+                      count_matrix.shape[0], sum_matrix.shape[0])]))
+    in_avg = torch.sum(torch.diag(
+        sum_matrix)) / torch.sum(torch.diag(count_matrix))
+    return in_avg, out_avg
+
+
 def main():
     """Run main function."""
     # parsing the input command
@@ -250,6 +330,10 @@ def main():
     print(f"Power Law Exponent: {power_law_expo(g):.6f}")
     print(f"Pareto Exponent: {pareto_expo(g):.6f}")
     print(f"Transitivity: {transitivity(g):.6f}")
+    in_avg, out_avg = feature_homogeneity(g)
+    print(f"Average In-Feature Angular Distance: {in_avg:.6f}")
+    print(f"Average Out-Feature Angular Distance: {out_avg:.6f}")
+    print(f"Feature Angular SNR: {in_avg / out_avg:.6f}")
 
 
 if __name__ == "__main__":
