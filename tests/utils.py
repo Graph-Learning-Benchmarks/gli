@@ -2,13 +2,42 @@
 import os
 import re
 
-CURRENT_SUPPORT_TASKS = [
-    "NodeClassification",
-    "GraphClassification",
-    "TimeDependentLinkPrediction",
-    "EntityLinkPrediction",
-    "RelationLinkPrediction",
-]
+
+SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
+    "NodeClassification": ["description",
+                           "type",
+                           "feature",
+                           "target",
+                           "num_classes",
+                           ],
+    "GraphClassification": ["description",
+                            "type",
+                            "feature",
+                            "target",
+                            ],
+    "TimeDependentLinkPrediction": ["description",
+                                    "type",
+                                    "feature",
+                                    "time",
+                                    "train_time_window",
+                                    "valid_time_window",
+                                    "test_time_window",
+                                    ],
+    "EntityLinkPrediction": ["description",
+                             "type",
+                             "feature",
+                             "train_triplet_set",
+                             "valid_triplet_set",
+                             "test_triplet_set",
+                             ],
+    "RelationLinkPrediction": ["description",
+                               "type",
+                               "feature",
+                               "train_triplet_set",
+                               "valid_triplet_set",
+                               "test_triplet_set",
+                               ],
+}
 
 
 def dataset_dir_check(path_to_parent):
