@@ -86,12 +86,12 @@ def _get_single_graph(data, device="cpu", hetero=False):
 
 def _get_multi_graph(data, device="cpu"):
     """Initialize and return a list of Graph instance given data."""
+    # Extract the whole graph
+    g: dgl.DGLGraph = _get_single_graph(data)
+
     node_list = data["Graph"].pop("_NodeList")
     edge_list = data["Graph"].pop("_EdgeList", None)
     graphs = []
-
-    # Extract the whole graph
-    g: dgl.DGLGraph = _get_single_graph(data)
 
     # Check array type before assigning
     for attr, array in data["Node"].items():
