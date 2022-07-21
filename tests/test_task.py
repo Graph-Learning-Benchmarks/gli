@@ -2,7 +2,8 @@
 import pytest
 import os
 import json
-from utils import find_datasets_dir, check_if_task_json, SUPPORTED_TASK_REQUIRED_KEYS_HASH
+from utils import find_datasets_dir, check_if_task_json, \
+    SUPPORTED_TASK_REQUIRED_KEYS_HASH
 
 
 def check_essential_keys_task_json(dic):
