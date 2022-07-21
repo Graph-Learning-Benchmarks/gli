@@ -24,7 +24,7 @@ def dataset_dir_check(path_to_parent):
 
 def find_datasets_dir():
     """Recursively find dataset directories which have metadata json."""
-    walk_dir = os.getcwd() + "/examples"
+    walk_dir = os.getcwd() + "/datasets"
 
     print("walk_dir = " + walk_dir)
 
