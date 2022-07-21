@@ -22,10 +22,9 @@ def check_essential_keys_metadata_json(dic):
                 missing_keys.append("data: " + first_key)
 
         if _is_hetero_graph(dic):
-            # missing_keys += \
-            #    check_essential_keys_metadata_json_heterogeneous(dic)
-            # assert dic["is_heterogeneous"] is True
-            pass
+            missing_keys += \
+                check_essential_keys_metadata_json_heterogeneous(dic)
+            assert dic["is_heterogeneous"] is True
         else:
             missing_keys += check_essential_keys_metadata_json_homogeneous(dic)
             assert dic["is_heterogeneous"] is False
@@ -61,24 +60,43 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
     """Check if heterogeneous meta json has all essential keys."""
     missing_keys = []
     for key in dic["data"]["Node"].keys():
-        for sub_key in ["description",
-                        "type",
-                        "format",
-                        "file",
-                        "key",
+        if dic["data"]["Node"][key].get("_ID", None) is None:
+            missing_keys.append("data: Node: " + key + ": " + ": _ID")
+
+        for sub_key in dic["data"]["Node"][key]:
+            if dic["data"]["Node"][key]["_ID"].get("file", None) is None:
+                missing_keys.append("data: Node: " + key + ": " +
+                                    sub_key + ": _ID: file")
+
+            if dic["data"]["Node"][key]["_ID"].get("key", None) is None:
+                missing_keys.append("data: Node: " + key + ": " +
+                                    sub_key + ": _ID: key")
+                for sub_sub_key in ["description",
+                                    "type",
+                                    "format",
+                                    "file",
+                                    "key",
+                                    ]:
+                    if dic["data"]["Node"][key][sub_key].get(sub_sub_key,
+                                                             None) is None:
+                        missing_keys.append("data: Node: " +
+                                            key + ": " + sub_key +
+                                            ": " + sub_sub_key)
+
+    for key in dic["data"]["Edge"].keys():
+        for sub_key in ["_ID",
+                        "_Edge",
                         ]:
-            if dic["data"]["Node"][key].get(sub_key, None) is None:
-                missing_keys.append("data: Node: " + key + ": " + sub_key)
-
-    for sup_key in ["Edge", "Graph"]:
-        for key in dic["data"][sup_key].keys():
-            for sub_key in ["file",
-                            "key",
-                            ]:
-                if dic["data"][sup_key][key].get(sub_key, None) is None:
-                    missing_keys.append("data: " + sup_key + ": " +
-                                        key + ": " + sub_key)
-
+            if dic["data"]["Edge"][key].get(sub_key, None) is None:
+                missing_keys.append("data: Edge: " + key + ": " + sub_key)
+            else:
+                for sub_sub_key in ["file",
+                                    "key",
+                                    ]:
+                    if dic["data"]["Edge"][key][sub_key].get(sub_sub_key,
+                                                             None) is None:
+                        missing_keys.append("data: Edge: " + key + ": " +
+                                            sub_key + ": " + sub_sub_key)
     return missing_keys
 
 
@@ -100,6 +118,6 @@ def test_metadata_json_content(directory):
                 metadata = json.load(json_file)
                 missing_keys = check_essential_keys_metadata_json(metadata)
                 if len(missing_keys) != 0:
-                    print(file + " misses following keys")
+                    print(directory + "/" + file + " misses following keys")
                     print(missing_keys)
                 assert len(missing_keys) == 0
