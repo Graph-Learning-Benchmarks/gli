@@ -80,7 +80,11 @@ class KeyedFileReader():
             # because we may need row indexing later.
             if array.getformat() in ("coo", "csr"):
                 return array
-            raise TypeError("Sparse tensor should be COO or CSR type.")
+            else:
+                try:
+                    return sp.coo_matrix(array)
+                except Exception as e:
+                    raise TypeError from e
         else:
             return torch.from_numpy(array).to(device=device)
 

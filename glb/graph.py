@@ -10,6 +10,8 @@ from copy import copy
 import dgl
 import scipy.sparse as sp
 import torch
+import numpy as np
+from tqdm import tqdm
 
 from .utils import file_reader, sparse_to_torch
 
@@ -84,12 +86,12 @@ def _get_single_graph(data, device="cpu", hetero=False):
 
 def _get_multi_graph(data, device="cpu"):
     """Initialize and return a list of Graph instance given data."""
+    # Extract the whole graph
+    g: dgl.DGLGraph = _get_single_graph(data)
+
     node_list = data["Graph"].pop("_NodeList")
     edge_list = data["Graph"].pop("_EdgeList", None)
     graphs = []
-
-    # Extract the whole graph
-    g: dgl.DGLGraph = _get_single_graph(data)
 
     # Check array type before assigning
     for attr, array in data["Node"].items():
@@ -97,23 +99,21 @@ def _get_multi_graph(data, device="cpu"):
     for attr, array in data["Edge"].items():
         g.edata[attr] = _to_tensor(array)
 
-    # Decide subgraph types (node/edge-subgraph)
-    subgraph_func = dgl.edge_subgraph if edge_list else dgl.node_subgraph
-    entity_list = edge_list if edge_list else node_list
+    if edge_list is None:
+        # Infer edge_list from node_list
+        edges = torch.stack(g.edges()).T
+        graph_edge_matrix = _get_graph_edge_matrix(node_list, edges)
+        edge_list = graph_edge_matrix >= 2
 
-    # Transform indices into dense boolean tensor
-    assert len(entity_list.shape) == 2, "NodeList/EdgeList should be a matrix."
-    if sp.issparse(entity_list) and not sp.isspmatrix_csr(entity_list):
-        # Only allow csr matrix
-        entity_list = sp.csr_matrix(entity_list)
-    for i in range(entity_list.shape[0]):
-        if isinstance(entity_list, torch.Tensor):  # Dense pytorch tensor
-            subgraph_entities = entity_list[i]
-        elif isinstance(entity_list, sp.csr_matrix):
-            subgraph_entities = entity_list.getrow(i).todense()
-            subgraph_entities = torch.from_numpy(subgraph_entities).squeeze()
-        subgraph_entities = subgraph_entities.bool()
-        subgraph = subgraph_func(g, subgraph_entities).to(device=device)
+    edge_list = edge_list.tolil()
+
+    for i in tqdm(range(edge_list.shape[0]), desc="Processing graphs"):
+        if isinstance(edge_list, torch.Tensor):
+            subgraph_edges = edge_list[i]
+            subgraph_edges = subgraph_edges.bool()
+        elif isinstance(edge_list, sp.lil_matrix):
+            subgraph_edges = edge_list.rows[i]
+        subgraph = dgl.edge_subgraph(g, subgraph_edges).to(device)
         graphs.append(subgraph)
 
     for attr in data["Graph"]:
@@ -127,8 +127,11 @@ def _get_homograph(data):
     """Get a homogeneous graph from data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
+    num_nodes = data["Graph"]["_NodeList"].shape[-1]
 
-    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes), device="cpu")
+    g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes),
+                                num_nodes=num_nodes,
+                                device="cpu")
 
     for attr, array in data["Node"].items():
         g.ndata[attr] = _to_tensor(array)
@@ -147,19 +150,22 @@ def _get_heterograph(data):
     num_nodes_dict = {}
     num_nodes = data["Graph"]["_NodeList"].shape[-1]
     node_to_class = torch.zeros(num_nodes, dtype=torch.int)
+    node_map = torch.zeros(num_nodes, dtype=torch.int)
     if node_depth == 1:
         # Nodes are homogeneous
         node_classes.append("Node")
         node_features["Node"] = data["Node"]
-        node_features["Node"].pop("_ID", None)
+        # node_features["Node"].pop("_ID", None)
         num_nodes_dict["Node"] = num_nodes
+        node_map = torch.arange(num_nodes, dtype=torch.int)
     else:
         for i, node_class in enumerate(data["Node"]):
             node_classes.append(node_class)
             idx = data["Node"][node_class]["_ID"]
             node_to_class[idx] = i
+            node_map[idx] = torch.arange(len(idx), dtype=torch.int)
             node_features[node_class] = data["Node"][node_class]
-            node_features[node_class].pop("_ID", None)
+            # node_features[node_class].pop("_ID", None)
             num_nodes_dict[node_class] = len(idx)
 
     edge_depth = _dict_depth(data["Edge"])
@@ -172,9 +178,10 @@ def _get_heterograph(data):
         src_class = node_classes[node_to_class[edges[0][0]]]
         dst_class = node_classes[node_to_class[edges[0][1]]]
         triplet = (src_class, edge_class, dst_class)
+        edges = node_map[edges]
         graph_data[triplet] = (edges.T[0], edges.T[1])
         edge_features[edge_class] = data["Edge"][edge_class]
-        edge_features[edge_class].pop("_ID", None)
+        # edge_features[edge_class].pop("_ID", None)
 
     g: dgl.DGLGraph = dgl.heterograph(graph_data,
                                       num_nodes_dict=num_nodes_dict)
@@ -223,3 +230,24 @@ def _dfs_read_file_helper(pwd, d, device="cpu"):
     for k in empty_keys:
         d.pop(k)
     return d
+
+
+def _get_graph_edge_matrix(graph_node_matrix: sp.spmatrix,
+                           edges: torch.Tensor):
+    """Get graph edge csr matrix."""
+    if isinstance(graph_node_matrix, torch.Tensor):
+        graph_node_matrix = graph_node_matrix.numpy()
+    graph_node_matrix = graph_node_matrix.astype(np.int8)
+    n_nodes = graph_node_matrix.shape[1]
+    n_edges = edges.shape[0]
+    edge_id = torch.arange(0, edges.shape[0])  # (n_edge,)
+    indices = torch.stack(
+        (edges, edge_id.repeat(2, 1).T),
+        dim=2)  # (2 [nodes in a edge], n_edge, 2 [repeat edge_id])
+    i = torch.cat((indices[:, 0, :], indices[:, 1, :]), dim=0)
+    data = np.ones(i.shape[0])
+    node_edge_matrix = sp.coo_matrix((data, i.T),
+                                     shape=(n_nodes, n_edges),
+                                     dtype=np.int8)
+    graph_edge_matrix = graph_node_matrix @ node_edge_matrix
+    return graph_edge_matrix

@@ -3,20 +3,27 @@ import os
 import fnmatch
 import json
 import glb
-from glb.task import SUPPORT_TASK_TYPES
+from glb.task import SUPPORTED_TASK_TYPES
 
 
 def test_data_loading(dataset):
-    """Test if get_glb_graph and get_glb_task can be applied
-       successfully.
+    """Test data loading for a given dataset.
+
+    Test if get_glb_graph, get_glb_task, and get_glb_dataset
+    can be applied successfully.
     """
+    # temporary skipping all large datasets
+    large_dataset_to_skip = ["wiki", "ogbg-code2"]
+    if dataset in large_dataset_to_skip:
+        return
+
     directory = os.getcwd() + "/datasets/" + dataset
     task_list = []
     for file in os.listdir(directory):
         if fnmatch.fnmatch(file, "task*.json"):
             with open(directory + "/" + file,  encoding="utf-8") as f:
                 task_dict = json.load(f)
-                if task_dict["type"] not in SUPPORT_TASK_TYPES:
+                if task_dict["type"] not in SUPPORTED_TASK_TYPES:
                     f.close()
                     return
             print(os.path.splitext(file)[0])

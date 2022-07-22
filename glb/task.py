@@ -9,7 +9,7 @@ import torch
 
 from glb.utils import file_reader
 
-SUPPORT_TASK_TYPES = [
+SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",
     "GraphRegression", "TimeDependentLinkPrediction"
 ]
@@ -215,4 +215,4 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
         return GraphRegressionTask(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
-                                  f"Supported tasks: {SUPPORT_TASK_TYPES}")
+                                  f"Supported tasks: {SUPPORTED_TASK_TYPES}")
