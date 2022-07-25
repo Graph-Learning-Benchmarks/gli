@@ -1,11 +1,12 @@
 {
     "description": "The task is to predict a valid relation given (head, tail) that form a fact triple.",
     "type": "RelationLinkPrediction",
+    "feature": null,
     "train_triplet_set": {
         "file": "FB13.npz",
         "key": "TrainEdge_id"
     },
-    "valid_triplet_set": {
+    "val_triplet_set": {
         "file": "FB13.npz",
         "key": "ValidEdge_id"
     },
