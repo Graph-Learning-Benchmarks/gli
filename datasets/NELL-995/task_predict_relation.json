@@ -1,6 +1,7 @@
 {
     "description": "The task is to predict a valid relation given (head, tail) that form a fact triple.",
     "type": "RelationLinkPrediction",
+    "feature": null,
     "train_triplet_set": {
         "file": "NELL-995.npz",
         "key": "TrainEdge_id"
