@@ -3,9 +3,10 @@ Train for node classification dataset.
 
 References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/train.py
+https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 """
 
-import argparse
+
 import time
 import os
 import fnmatch
@@ -14,8 +15,12 @@ import torch
 import numpy as np
 import dgl
 import glb
-
-from utils import generate_model
+from config import (
+    CFG,
+    load_cfg,
+    set_out_dir,
+)
+from utils import generate_model, parse_args, Models_need_to_be_densed
 from glb.utils import to_dense
 
 
@@ -26,11 +31,11 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(args, model, features, labels, mask, pseudo=None):
+def evaluate(cfg, model, features, labels, mask, pseudo=None):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
-        if args.model == "MoNet":
+        if cfg.model.name == "MoNet":
             logits = model(features, pseudo)
         else:
             logits = model(features)
@@ -53,23 +58,23 @@ def check_multiple_split(dataset):
                     return 0
 
 
-def main(args):
+def main(cfg):
     """Load dataset and train the model."""
     # load and preprocess dataset
-    if args.gpu < 0:
+    if cfg.train.gpu < 0:
         device = "cpu"
         cuda = False
     else:
-        device = args.gpu
+        device = cfg.train.gpu
         cuda = True
 
-    data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
+    data = glb.dataloading.get_glb_dataset(cfg.dataset.name, cfg.dataset.task,
                                            device=device)
     g = data[0]
-    if args.to_dense:
+    if cfg.dataset.to_dense or cfg.model.name in Models_need_to_be_densed:
         g = to_dense(g)
     # add self loop
-    if args.self_loop:
+    if cfg.dataset.self_loop:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
     features = g.ndata["NodeFeature"]
@@ -79,7 +84,7 @@ def main(args):
     test_mask = g.ndata["test_mask"]
 
     # for multi-split dataset, choose 0-th split for now
-    if check_multiple_split(args.dataset):
+    if check_multiple_split(cfg.dataset.name):
         train_mask = train_mask[:, 0]
         val_mask = val_mask[:, 0]
         test_mask = test_mask[:, 0]
@@ -95,7 +100,7 @@ def main(args):
     n_edges = g.number_of_edges()
 
     # calculate normalization factor (MoNet)
-    if args.model == "MoNet":
+    if cfg.model.name == "MoNet":
         us, vs = g.edges(order="eid")
         udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
             torch.sqrt(g.in_degrees(vs).float())
@@ -109,7 +114,7 @@ def main(args):
       #Test samples {test_mask.int().sum().item()}""")
 
     # create model
-    model = generate_model(args, g, in_feats, n_classes)
+    model = generate_model(cfg, g, in_feats, n_classes)
 
     print(model)
     if cuda:
@@ -118,18 +123,19 @@ def main(args):
 
     # use optimizer
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        model.parameters(), lr=cfg.optim.lr,
+        weight_decay=cfg.optim.weight_decay)
 
     # initialize graph
     dur = []
-    for epoch in range(args.epochs):
+    for epoch in range(cfg.train.epochs):
         model.train()
         if epoch >= 3:
             if cuda:
                 torch.cuda.synchronize()
             t0 = time.time()
         # forward
-        if args.model == "MoNet":
+        if cfg.model.name == "MoNet":
             logits = model(features, pseudo)
         else:
             logits = model(features)
@@ -147,12 +153,12 @@ def main(args):
 
         train_acc = accuracy(logits[train_mask], labels[train_mask])
 
-        if args.fastmode:
+        if cfg.train.fastmode:
             val_acc = accuracy(logits[val_mask], labels[val_mask])
-        elif args.model == "MoNet":
-            val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
+        elif cfg.model.name == "MoNet":
+            val_acc = evaluate(cfg, model, features, labels, val_mask, pseudo)
         else:
-            val_acc = evaluate(args, model, features, labels, val_mask)
+            val_acc = evaluate(cfg, model, features, labels, val_mask)
 
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
@@ -160,63 +166,24 @@ def main(args):
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
     print()
-    if args.model == "MoNet":
-        acc = evaluate(args, model, features, labels, test_mask, pseudo)
+    if cfg.model.name == "MoNet":
+        acc = evaluate(cfg, model, features, labels, test_mask, pseudo)
     else:
-        acc = evaluate(args, model, features, labels, test_mask)
+        acc = evaluate(cfg, model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="train for node\
-                                                  classification")
-    parser.add_argument("--model", type=str, default="GCN",
-                        help="model to be used. GCN, GAT, MoNet,\
-                              GraphSAGE, MLP for now")
-    parser.add_argument("--dataset", type=str, default="cora",
-                        help="dataset to be trained")
-    parser.add_argument("--task", type=str,
-                        default="NodeClassification",
-                        help="task name for NodeClassification,")
-    parser.add_argument("--gpu", type=int, default=-1,
-                        help="which GPU to use. Set -1 to use CPU.")
-    parser.add_argument("--epochs", type=int, default=200,
-                        help="number of training epochs")
-    parser.add_argument("--num-heads", type=int, default=8,
-                        help="number of hidden attention heads")
-    parser.add_argument("--num-out-heads", type=int, default=1,
-                        help="number of output attention heads")
-    parser.add_argument("--num-layers", type=int, default=2,
-                        help="number of hidden layers")
-    parser.add_argument("--num-hidden", type=int, default=8,
-                        help="number of hidden units")
-    parser.add_argument("--residual", action="store_true", default=False,
-                        help="use residual connection")
-    parser.add_argument("--in-drop", type=float, default=.6,
-                        help="input feature dropout")
-    parser.add_argument("--attn-drop", type=float, default=.6,
-                        help="attention dropout")
-    parser.add_argument("--lr", type=float, default=0.005,
-                        help="learning rate")
-    parser.add_argument("--weight-decay", type=float, default=5e-4,
-                        help="weight decay")
-    parser.add_argument("--negative-slope", type=float, default=0.2,
-                        help="the negative slope of leaky relu")
-    parser.add_argument("--fastmode", action="store_true", default=False,
-                        help="skip re-evaluate the validation set")
-    parser.add_argument("--pseudo-dim", type=int, default=2,
-                        help="Pseudo coordinate dimensions in GMMConv,\
-                              2 for cora and 3 for pubmed")
-    parser.add_argument("--num-kernels", type=int, default=3,
-                        help="Number of kernels in GMMConv layer")
-    parser.add_argument("--self-loop", action="store_true",
-                        help="graph self-loop (default=False)")
-    parser.add_argument("--to-dense", action="store_true",
-                        help="whether change the model into dense \
-                              (default=False)")
-    parser.add_argument("--aggregator-type", type=str, default="gcn",
-                        help="Aggregator type: mean/gcn/pool/lstm")
-    Args = parser.parse_args()
+    # Load cmd line args
+    Args = parse_args()
     print(Args)
-
-    main(Args)
+    # Load config file
+    load_cfg(CFG, Args)
+    set_out_dir(CFG.out_dir, Args.cfg_file)
+    print(CFG)
+    CFG.dataset.name = Args.dataset
+    CFG.model.name = Args.model
+    CFG.dataset.task = Args.task
+    CFG.train.gpu = Args.gpu
+    CFG.train.epochs = Args.epochs
+    main(CFG)

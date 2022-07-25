@@ -1,0 +1,23 @@
+out_dir: results
+dataset:
+  self_loop: 1
+  to_dense: 1
+model:
+  loss_fun: cross_entropy
+  num_layers: 2
+  num_hidden: 8
+  num_heads: 8
+  num_out_heads: 2
+  residual: False
+  dropout: .6
+  Negative_slope: .2
+  pseudo_dim: 2
+  num_kernels: 3
+  aggregator_type: gcn
+train:
+  fastmode: False
+optim:
+  optimizer: adam
+  lr: .005
+  max_epoch: 2000
+  weight_decay: 5e-4
