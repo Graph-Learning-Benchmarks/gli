@@ -6,7 +6,7 @@
         "file": "NELL-995.npz",
         "key": "TrainEdge_id"
     },
-    "valid_triplet_set": {
+    "val_triplet_set": {
         "file": "NELL-995.npz",
         "key": "ValidEdge_id"
     },

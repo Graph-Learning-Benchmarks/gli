@@ -6,7 +6,7 @@
         "file": "YAGO3-10.npz",
         "key": "TrainEdge_id"
     },
-    "valid_triplet_set": {
+    "val_triplet_set": {
         "file": "YAGO3-10.npz",
         "key": "ValidEdge_id"
     },

@@ -6,7 +6,7 @@
         "file": "WN18.npz",
         "key": "TrainEdge_id"
     },
-    "valid_triplet_set": {
+    "val_triplet_set": {
         "file": "WN18.npz",
         "key": "ValidEdge_id"
     },
