@@ -211,7 +211,7 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
         assert time_entries[0] == "Edge"
         time_attr = time_entries[-1]
         etime = self._g.edata[time_attr]  # tensor / dict of tensor
-        for split in ["train", "valid", "test"]:
+        for split in ["train", "val", "test"]:
             window = self.task.time_window[f"{split}_time_window"]
             if isinstance(etime, dict):
                 self._g.edata[f"{split}_mask"] = {
@@ -229,7 +229,7 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
             Dict: split_dict
         """
         split_dict = {}
-        for split in ["train", "valid", "test"]:
+        for split in ["train", "val", "test"]:
             split_dict[split] = torch.masked_select(
                 torch.arange(self._g.num_edges()),
                 self._g.edata[f"{split}_mask"])
