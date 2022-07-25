@@ -7,6 +7,6 @@
     ],
     "time": "Edge/EdgeYear",
     "train_time_window": [1963, 2018],
-    "valid_time_window": [2018, 2019],
+    "val_time_window": [2018, 2019],
     "test_time_window": [2019, 2020]
 }
