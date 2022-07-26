@@ -11,7 +11,7 @@ from glb.utils import file_reader
 
 SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",
-    "GraphRegression", "TimeDependentLinkPrediction"
+    "GraphRegression", "TimeDependentLinkPrediction", "LinkPrediction"
 ]
 
 
@@ -203,16 +203,9 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
     if verbose:
         print(task_dict["description"])
 
-    if task_dict["type"] == "NodeClassification":
-        return NodeClassificationTask(task_dict, pwd)
-    elif task_dict["type"] == "GraphClassification":
-        return GraphClassificationTask(task_dict, pwd)
-    elif task_dict["type"] == "TimeDependentLinkPrediction":
-        return TimeDependentLinkPredictionTask(task_dict, pwd)
-    elif task_dict["type"] == "NodeRegression":
-        return NodeRegressionTask(task_dict, pwd)
-    elif task_dict["type"] == "GraphRegression":
-        return GraphRegressionTask(task_dict, pwd)
+    if task_dict["type"] in SUPPORTED_TASK_TYPES:
+        # Call class constructers by Python eval() method
+        return eval(task_dict["type"]+"Task")(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
                                   f"Supported tasks: {SUPPORTED_TASK_TYPES}")
