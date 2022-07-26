@@ -11,7 +11,17 @@ from glb.task import (GLBTask, GraphClassificationTask, GraphRegressionTask,
                       NodeRegressionTask, TimeDependentLinkPredictionTask)
 
 
-class NodeDataset(DGLDataset):
+class GLBDataset(DGLDataset):
+
+    def __init__(self, task: GLBTask):
+        self.features = task.features
+        self.target = task.target
+        self.num_splits = task.num_splits
+        self.split = task.split
+
+        super().__init__(name=task.description, force_reload=True)
+
+class NodeDataset(GLBDataset):
     """Node level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
@@ -22,15 +32,11 @@ class NodeDataset(DGLDataset):
             task (GLBTask): Node level GLB task config.
         """
         self._g = graph
-        self.features = task.features
-        self.target = task.target
-        self.num_splits = task.num_splits
-        self.task = task
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(task)
 
     def process(self):
         """Add train, val, and test masks to graph."""
-        for dataset_, indices_list_ in self.task.split.items():
+        for dataset_, indices_list_ in self.split.items():
             mask_list = []
             for fold in range(self.num_splits):
                 if self.num_splits == 1:
@@ -92,13 +98,13 @@ class NodeRegressionDataset(NodeDataset):
         super().__init__(graph, task)
 
 
-class GraphDataset(DGLDataset):
+class GraphDataset(GLBDataset):
     """Graph Dataset."""
 
     def __init__(self,
                  graphs: Iterable[DGLGraph],
                  task: GLBTask,
-                 split="train_set"):
+                 split_set="train_set"):
         """Initialize a graph level dataset.
 
         Args:
@@ -111,27 +117,24 @@ class GraphDataset(DGLDataset):
             NotImplementedError: GraphDataset does not support multi-split.
         """
         self.graphs = graphs
-        self.features = task.features
-        self.target = task.target
-        self.split = split
         self.label_name = None
-        self.task = task
+        self.split_set = split_set
 
         if task.num_splits > 1:
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
 
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(task)
 
     def process(self):
         """Add train, val, and test masks to graph."""
-        entries = self.task.target.split("/")
+        entries = self.target.split("/")
         assert len(entries) == 2
         assert entries[0] == "Graph"
         self.label_name = entries[1]
 
         device = self.graphs[0].device
-        indices = self.task.split[self.split]
+        indices = self.split[self.split_set]
         assert not (indices.is_sparse or indices.is_sparse_csr)
         if isinstance(indices, np.ndarray):
             indices = torch.from_numpy(indices).to(device)
@@ -184,8 +187,8 @@ class GraphRegressionDataset(GraphDataset):
         super().__init__(graphs, task, split)
 
 
-class TimeDependentLinkPredictionDataset(DGLDataset):
-    """Link Prediction dataset."""
+class EdgeDataset(GLBDataset):
+    """Edge level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
         """Initialize a edge level dataset.
@@ -198,29 +201,40 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
             NotImplementedError: GraphDataset does not support multi-split.
         """
         self._g = graph
-        self.features = task.features
-        self.target = task.target
         self.sample_runtime = task.sample_runtime
-        self.task = task
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(task)
+
+class TimeDependentLinkPredictionDataset(EdgeDataset):
+    """Link Prediction dataset."""
+
+    def __init__(self, graph: DGLGraph, task: GLBTask):
+        """Initialize a edge level dataset.
+
+        Args:
+            graph (DGLGraph): A DGL graph
+            task (GLBTask): GLB task config
+
+        Raises:
+            NotImplementedError: GraphDataset does not support multi-split.
+        """
+        self.time = task.time
+        self.time_window = task.time_window
+        super().__init__(graph, task)
 
     def process(self):
         """Load train, val, test edges."""
-        time_entries = self.task.time.split("/")
+        time_entries = self.time.split("/")
         assert len(time_entries) == 2
         assert time_entries[0] == "Edge"
         time_attr = time_entries[-1]
-        etime = self._g.edata[time_attr]  # tensor / dict of tensor
+        etime = self._g.edata[time_attr].squeeze()
         for split in ["train", "val", "test"]:
-            window = self.task.time_window[f"{split}_time_window"]
-            if isinstance(etime, dict):
-                self._g.edata[f"{split}_mask"] = {
-                    k: torch.logical_and(v >= window[0], v < window[1])
-                    for k, v in etime.items()
-                }
-            else:
-                self._g.edata[f"{split}_mask"] = torch.logical_and(
-                    etime >= window[0], etime < window[1])
+            window = self.time_window[f"{split}_time_window"]
+            self._g.edata[f"{split}_mask"] = torch.logical_and(
+                etime >= window[0], etime < window[1])
+            self.split[f"{split}_set"] = torch.arange(self._g.num_edges())[
+                self._g.edata[f"{split}_mask"]
+            ]
 
     def get_idx_split(self):
         """Return a dictionary of train, val, and test splits.

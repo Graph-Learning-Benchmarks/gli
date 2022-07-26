@@ -166,7 +166,7 @@ class LinkPredictionTask(GLBTask):
         self.target = "Edge/_Edge"
         self.val_neg = task_dict.get("val_neg", None)
         self.test_neg = task_dict.get("test_neg", None)
-        self.sample_runtime = self.val_neg is not None
+        self.sample_runtime = self.val_neg is not None   
         super().__init__(task_dict, pwd)
 
     pass
