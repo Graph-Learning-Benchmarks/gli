@@ -26,12 +26,14 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(args, model, features, labels, mask, pseudo=None):
+def evaluate(args, model, features, labels, mask, pseudo=None, row=None, col=None):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
         if args.model == "MoNet":
             logits = model(features, pseudo)
+        elif args.model == "LINKX":
+            logits = model(feats=features, row=row, col=col)
         else:
             logits = model(features)
         logits = logits[mask]
@@ -40,7 +42,7 @@ def evaluate(args, model, features, labels, mask, pseudo=None):
 
 
 def check_multiple_split(dataset):
-    """Chceck whether the dataset has multiple splits."""
+    """Check whether the dataset has multiple splits."""
     dataset_directory = os.path.dirname(os.path.dirname(os.getcwd())) \
         + "/datasets/" + dataset
     for file in os.listdir(dataset_directory):
@@ -78,6 +80,7 @@ def main(args):
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
 
+
     # for multi-split dataset, choose 0-th split for now
     if check_multiple_split(args.dataset):
         train_mask = train_mask[:, 0]
@@ -100,6 +103,12 @@ def main(args):
         udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
             torch.sqrt(g.in_degrees(vs).float())
         pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
+
+    if args.model == "LINKX":
+        row, col = g.edges()
+    
+    print("-==-----------==-",row.shape)
+    print("-==-----------==-",col.shape)
 
     print(f"""----Data statistics------'
       #Edges {n_edges}
@@ -131,6 +140,8 @@ def main(args):
         # forward
         if args.model == "MoNet":
             logits = model(features, pseudo)
+        elif args.model == "LINKX":
+            logits = model(features, row, col)
         else:
             logits = model(features)
 
@@ -151,6 +162,8 @@ def main(args):
             val_acc = accuracy(logits[val_mask], labels[val_mask])
         elif args.model == "MoNet":
             val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
+        elif args.model == "LINKX":
+            val_acc = evaluate(args, model, features, labels, val_mask, row=row, col=col)
         else:
             val_acc = evaluate(args, model, features, labels, val_mask)
 
@@ -162,6 +175,8 @@ def main(args):
     print()
     if args.model == "MoNet":
         acc = evaluate(args, model, features, labels, test_mask, pseudo)
+    elif args.model == "LINKX":
+        acc = evaluate(args, model, features, labels, test_mask, row=row, col=col)
     else:
         acc = evaluate(args, model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
@@ -172,7 +187,7 @@ if __name__ == "__main__":
                                                   classification")
     parser.add_argument("--model", type=str, default="GCN",
                         help="model to be used. GCN, GAT, MoNet,\
-                              GraphSAGE, MLP for now")
+                              GraphSAGE, MLP, MixHop, LINKX for now")
     parser.add_argument("--dataset", type=str, default="cora",
                         help="dataset to be trained")
     parser.add_argument("--task", type=str,
@@ -216,6 +231,16 @@ if __name__ == "__main__":
                               (default=False)")
     parser.add_argument("--aggregator-type", type=str, default="gcn",
                         help="Aggregator type: mean/gcn/pool/lstm")
+    parser.add_argument('--p', nargs='+', type=int, default=[0,1,2],
+                        help='List of powers of adjacency matrix.')
+    parser.add_argument("--layer-dropout", type=float, default=0.9, help='Dropout applied at hidden layers.')
+    parser.add_argument("--batchnorm",action="store_true",default=False, help='If True, use batch normalization for MixHop model' )
+    parser.add_argument("--inner-activation",action="store_true",default=False, help='If True, use inner activation for LINKX model' )
+    parser.add_argument("--inner-dropout",action="store_true",default=False, help='If True, use inner dropout for LINKX model' )
+    parser.add_argument("--init-layers-A", type=int, default=1,
+                        help="Initial number of layers in mlp_1 model in  LINKX")
+    parser.add_argument("--init-layers-X", type=int, default=1,
+                        help="Initial number of layers in mlp_2 model in  LINKX")
     Args = parser.parse_args()
     print(Args)
 
