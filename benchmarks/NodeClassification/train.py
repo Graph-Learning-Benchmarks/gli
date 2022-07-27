@@ -26,7 +26,8 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(args, model, features, labels, mask, pseudo=None, row=None, col=None):
+def evaluate(args, model, features, labels, mask,
+             pseudo=None, row=None, col=None):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
@@ -80,7 +81,6 @@ def main(args):
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
 
-
     # for multi-split dataset, choose 0-th split for now
     if check_multiple_split(args.dataset):
         train_mask = train_mask[:, 0]
@@ -106,11 +106,8 @@ def main(args):
 
     if args.model == "LINKX":
         row, col = g.edges()
-    
-    print("-==-----------==-",row.shape)
-    print("-==-----------==-",col.shape)
 
-    print(f"""----Data statistics------'
+    print(f"""----Data statistics------"
       #Edges {n_edges}
       #Classes {n_classes}
       #Train samples {train_mask.int().sum().item()}
@@ -163,7 +160,8 @@ def main(args):
         elif args.model == "MoNet":
             val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
         elif args.model == "LINKX":
-            val_acc = evaluate(args, model, features, labels, val_mask, row=row, col=col)
+            val_acc = evaluate(args, model, features, labels, val_mask,
+                               row=row, col=col)
         else:
             val_acc = evaluate(args, model, features, labels, val_mask)
 
@@ -176,7 +174,8 @@ def main(args):
     if args.model == "MoNet":
         acc = evaluate(args, model, features, labels, test_mask, pseudo)
     elif args.model == "LINKX":
-        acc = evaluate(args, model, features, labels, test_mask, row=row, col=col)
+        acc = evaluate(args, model, features, labels, test_mask,
+                       row=row, col=col)
     else:
         acc = evaluate(args, model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
@@ -231,16 +230,25 @@ if __name__ == "__main__":
                               (default=False)")
     parser.add_argument("--aggregator-type", type=str, default="gcn",
                         help="Aggregator type: mean/gcn/pool/lstm")
-    parser.add_argument('--p', nargs='+', type=int, default=[0,1,2],
-                        help='List of powers of adjacency matrix.')
-    parser.add_argument("--layer-dropout", type=float, default=0.9, help='Dropout applied at hidden layers.')
-    parser.add_argument("--batchnorm",action="store_true",default=False, help='If True, use batch normalization for MixHop model' )
-    parser.add_argument("--inner-activation",action="store_true",default=False, help='If True, use inner activation for LINKX model' )
-    parser.add_argument("--inner-dropout",action="store_true",default=False, help='If True, use inner dropout for LINKX model' )
+    parser.add_argument("--p", nargs="+", type=int, default=[0, 1, 2],
+                        help="List of powers of adjacency matrix.")
+    parser.add_argument("--layer-dropout", type=float, default=0.9,
+                        help="Dropout applied at hidden layers.")
+    parser.add_argument("--batchnorm", action="store_true", default=False,
+                        help="If True, use batch normalization \
+                        for MixHop model")
+    parser.add_argument("--inner-activation", action="store_true",
+                        default=False,
+                        help="If True, use inner activation for LINKX model")
+    parser.add_argument("--inner-dropout", action="store_true",
+                        default=False,
+                        help="If True, use inner dropout for LINKX model")
     parser.add_argument("--init-layers-A", type=int, default=1,
-                        help="Initial number of layers in mlp_1 model in  LINKX")
+                        help="Initial number of layers \
+                        in mlp_1 model in  LINKX")
     parser.add_argument("--init-layers-X", type=int, default=1,
-                        help="Initial number of layers in mlp_2 model in  LINKX")
+                        help="Initial number of layers \
+                        in mlp_2 model in  LINKX")
     Args = parser.parse_args()
     print(Args)
 

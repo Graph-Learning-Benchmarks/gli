@@ -6,66 +6,73 @@ https://github.com/CUAI/Non-Homophily-Large-Scale
 """
 
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
 from torch_sparse import SparseTensor
 
 
 class LINKX(nn.Module):
-    """ our LINKX method with skip connections 
-        a = MLP_1(A), x = MLP_2(X), MLP_3(sigma(W_1[a, x] + a + x))
+    """
+    LINKX method with skip connections.
+
+    a = MLP_1(A), x = MLP_2(X), MLP_3(sigma(W_1[a, x] + a + x)).
     """
 
-    def __init__(self, in_channels, hidden_channels, out_channels, num_layers, num_nodes, dropout=.5, inner_activation=False, inner_dropout=False, init_layers_A=1, init_layers_X=1):
-        """Initiate model"""
-        super(LINKX, self).__init__()	
-        self.mlpA = MLP(num_nodes, hidden_channels, hidden_channels, init_layers_A, dropout=0)
-        self.mlpX = MLP(in_channels, hidden_channels, hidden_channels, init_layers_X, dropout=0)
-        self.W = nn.Linear(2*hidden_channels, hidden_channels)
-        self.mlp_final = MLP(hidden_channels, hidden_channels, out_channels, num_layers, dropout=dropout)
+    def __init__(self, in_channels, hidden_channels, out_channels,
+                 num_layers, num_nodes, dropout=.5, inner_activation=False,
+                 inner_dropout=False, init_layers_A=1,
+                 init_layers_X=1):
+        """Initiate model."""
+        super().__init__()
+        self.mlpa = MLP(num_nodes, hidden_channels, hidden_channels,
+                        init_layers_A, dropout=0)
+        self.mlpx = MLP(in_channels, hidden_channels, hidden_channels,
+                        init_layers_X, dropout=0)
+        self.w = nn.Linear(2*hidden_channels, hidden_channels)
+        self.mlp_final = MLP(hidden_channels, hidden_channels, out_channels,
+                             num_layers, dropout=dropout)
         self.in_channels = in_channels
         self.num_nodes = num_nodes
-        self.A = None
         self.inner_activation = inner_activation
         self.inner_dropout = inner_dropout
 
-    def reset_parameters(self):	
+    def reset_parameters(self):
         """Reset parameters."""
-        self.mlpA.reset_parameters()	
-        self.mlpX.reset_parameters()
-        self.W.reset_parameters()
-        self.mlp_final.reset_parameters()	
+        self.mlpa.reset_parameters()
+        self.mlpx.reset_parameters()
+        self.w.reset_parameters()
+        self.mlp_final.reset_parameters()
 
     def forward(self, feats, row, col):
         """Forward."""
         m = self.num_nodes
         feat_dim = feats
         row = row-row.min()
-        A = SparseTensor(row=row, col=col,
-                 sparse_sizes=(m, m)
-                        ).to_torch_sparse_coo_tensor()
+        aa = SparseTensor(
+            row=row, col=col, sparse_sizes=(m, m)
+                         ).to_torch_sparse_coo_tensor()
 
-        xA = self.mlpA(A, input_tensor=True)
-        xX = self.mlpX(feat_dim, input_tensor=True)
-        x = torch.cat((xA, xX), axis=-1)
-        x = self.W(x)
+        xa = self.mlpa(aa, input_tensor=True)
+        xx = self.mlpx(feat_dim, input_tensor=True)
+        x = torch.cat((xa, xx), axis=-1)
+        x = self.w(x)
         if self.inner_dropout:
             x = F.dropout(x)
         if self.inner_activation:
             x = F.relu(x)
-        x = F.relu(x + xA + xX)
+        x = F.relu(x + xa + xx)
         x = self.mlp_final(x, input_tensor=True)
 
         return x
 
 
-
 class MLP(nn.Module):
-    """ adapted from https://github.com/CUAI/CorrectAndSmooth/blob/master/gen_models.py """
+    """MLP model."""
+
     def __init__(self, in_channels, hidden_channels, out_channels,
-                 num_layers,dropout=.5):
+                 num_layers, dropout=.5):
         """Initiate layer."""
-        super(MLP, self).__init__()
+        super().__init__()
         self.lins = nn.ModuleList()
         self.bns = nn.ModuleList()
         if num_layers == 1:
