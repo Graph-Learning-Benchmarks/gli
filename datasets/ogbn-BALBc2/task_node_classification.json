@@ -1,0 +1,21 @@
+{
+    "description": "NodeClassification on ogbn-BALBc2",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": "Node/NodeLabel",
+    "num_classes": "",
+    "train_set": {
+        "file": "ogbn-BALBc2_node_classification.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbn-BALBc2_node_classification.npz",
+        "key": "validation"
+    },
+    "test_set": {
+        "file": "ogbn-BALBc2_node_classification.npz",
+        "key": "test"
+    }
+}
