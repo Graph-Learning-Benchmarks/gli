@@ -27,14 +27,12 @@ def accuracy(logits, labels):
 
 
 def evaluate(args, model, features, labels, mask,
-             pseudo=None, row=None, col=None):
+             pseudo=None):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
         if args.model == "MoNet":
             logits = model(features, pseudo)
-        elif args.model == "LINKX":
-            logits = model(feats=features, row=row, col=col)
         else:
             logits = model(features)
         logits = logits[mask]
@@ -104,9 +102,6 @@ def main(args):
             torch.sqrt(g.in_degrees(vs).float())
         pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
 
-    if args.model == "LINKX":
-        row, col = g.edges()
-
     print(f"""----Data statistics------"
       #Edges {n_edges}
       #Classes {n_classes}
@@ -138,7 +133,7 @@ def main(args):
         if args.model == "MoNet":
             logits = model(features, pseudo)
         elif args.model == "LINKX":
-            logits = model(features, row, col)
+            logits = model(features)
         else:
             logits = model(features)
 
@@ -159,9 +154,6 @@ def main(args):
             val_acc = accuracy(logits[val_mask], labels[val_mask])
         elif args.model == "MoNet":
             val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
-        elif args.model == "LINKX":
-            val_acc = evaluate(args, model, features, labels, val_mask,
-                               row=row, col=col)
         else:
             val_acc = evaluate(args, model, features, labels, val_mask)
 
@@ -173,9 +165,6 @@ def main(args):
     print()
     if args.model == "MoNet":
         acc = evaluate(args, model, features, labels, test_mask, pseudo)
-    elif args.model == "LINKX":
-        acc = evaluate(args, model, features, labels, test_mask,
-                       row=row, col=col)
     else:
         acc = evaluate(args, model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")

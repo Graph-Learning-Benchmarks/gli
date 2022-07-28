@@ -70,7 +70,8 @@ def generate_model(args, g, in_feats, n_classes):
                        activation=F.tanh,
                        batchnorm=False)
     elif args.model == "LINKX":
-        model = LINKX(in_channels=in_feats,
+        model = LINKX(g=g,
+                      in_channels=in_feats,
                       num_nodes=g.ndata["NodeFeature"].shape[0],
                       hidden_channels=args.num_hidden,
                       out_channels=n_classes,

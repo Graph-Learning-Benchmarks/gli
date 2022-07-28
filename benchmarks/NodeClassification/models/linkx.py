@@ -18,12 +18,13 @@ class LINKX(nn.Module):
     a = MLP_1(A), x = MLP_2(X), MLP_3(sigma(W_1[a, x] + a + x)).
     """
 
-    def __init__(self, in_channels, hidden_channels, out_channels,
+    def __init__(self, g, in_channels, hidden_channels, out_channels,
                  num_layers, num_nodes, dropout=.5, inner_activation=False,
                  inner_dropout=False, init_layers_A=1,
                  init_layers_X=1):
         """Initiate model."""
         super().__init__()
+        self.g = g
         self.mlpa = MLP(num_nodes, hidden_channels, hidden_channels,
                         init_layers_A, dropout=0)
         self.mlpx = MLP(in_channels, hidden_channels, hidden_channels,
@@ -43,10 +44,11 @@ class LINKX(nn.Module):
         self.w.reset_parameters()
         self.mlp_final.reset_parameters()
 
-    def forward(self, feats, row, col):
+    def forward(self, feats):
         """Forward."""
         m = self.num_nodes
         feat_dim = feats
+        row, col = self.g.edges()
         row = row-row.min()
         aa = SparseTensor(
             row=row, col=col, sparse_sizes=(m, m)
