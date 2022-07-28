@@ -21,6 +21,7 @@ class GLBDataset(DGLDataset):
 
         super().__init__(name=task.description, force_reload=True)
 
+
 class NodeDataset(GLBDataset):
     """Node level dataset."""
 
@@ -204,7 +205,43 @@ class EdgeDataset(GLBDataset):
         self.sample_runtime = task.sample_runtime
         super().__init__(task)
 
-class TimeDependentLinkPredictionDataset(EdgeDataset):
+
+class LinkPredictionDataset(EdgeDataset):
+
+    def __init__(self, graph: DGLGraph, task: GLBTask):
+        self.split = task.split
+        super().__init__(graph, task)
+
+    def process(self):
+        for split in ("train", "val", "test"):
+            indices = torch.zeros(self._g.num_edges(), dtype=torch.bool)
+            indices[self.split[f"{split}_set"]] = True
+            self._g.edata[f"{split}_mask"] = indices
+
+    def get_idx_split(self):
+        """Return a dictionary of train, val, and test splits.
+
+        Returns:
+            Dict: split_dict
+        """
+        split_dict = {}
+        for split in ("train", "val", "test"):
+            split_dict[split] = torch.masked_select(
+                torch.arange(self._g.num_edges()),
+                self._g.edata[f"{split}_mask"])
+        return split_dict
+
+    def __getitem__(self, idx):
+        """Single graph dataset only has 1 element."""
+        assert idx == 0, "This dataset has only one graph"
+        return self._g
+
+    def __len__(self):
+        """Single graph dataset only has 1 element."""
+        return 1
+
+
+class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
     """Link Prediction dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
@@ -222,41 +259,17 @@ class TimeDependentLinkPredictionDataset(EdgeDataset):
         super().__init__(graph, task)
 
     def process(self):
-        """Load train, val, test edges."""
         time_entries = self.time.split("/")
         assert len(time_entries) == 2
         assert time_entries[0] == "Edge"
         time_attr = time_entries[-1]
         etime = self._g.edata[time_attr].squeeze()
-        for split in ["train", "val", "test"]:
+        for split in ("train", "val", "test"):
             window = self.time_window[f"{split}_time_window"]
-            self._g.edata[f"{split}_mask"] = torch.logical_and(
-                etime >= window[0], etime < window[1])
-            self.split[f"{split}_set"] = torch.arange(self._g.num_edges())[
-                self._g.edata[f"{split}_mask"]
-            ]
-
-    def get_idx_split(self):
-        """Return a dictionary of train, val, and test splits.
-
-        Returns:
-            Dict: split_dict
-        """
-        split_dict = {}
-        for split in ["train", "val", "test"]:
-            split_dict[split] = torch.masked_select(
-                torch.arange(self._g.num_edges()),
-                self._g.edata[f"{split}_mask"])
-        return split_dict
-
-    def __getitem__(self, idx):
-        """Single graph dataset only has 1 element."""
-        assert idx == 0, "This dataset has only one graph"
-        return self._g
-
-    def __len__(self):
-        """Single graph dataset only has 1 element."""
-        return 1
+            self.split[f"{split}_set"] = torch.arange(
+                self._g.num_edges())[torch.logical_and(etime >= window[0],
+                                                       etime < window[1])]
+        super().process()
 
 
 def node_dataset_factory(graph: DGLGraph, task: GLBTask):
