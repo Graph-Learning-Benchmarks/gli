@@ -1,0 +1,5 @@
+num_layers: 2
+num_hidden: 8
+dropout: .6
+pseudo_dim: 2
+num_kernels: 3

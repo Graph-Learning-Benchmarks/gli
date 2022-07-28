@@ -3,19 +3,17 @@ Train for node classification dataset.
 
 References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/train.py
+https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 """
 
-import argparse
+
 import time
-import os
-import fnmatch
-import json
 import torch
 import numpy as np
 import dgl
 import glb
-
-from utils import generate_model
+from utils import generate_model, parse_args, Models_need_to_be_densed,\
+                  load_config_file, check_multiple_split
 from glb.utils import to_dense
 
 
@@ -26,34 +24,17 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(args, model, features, labels, mask, pseudo=None):
+def evaluate(model, features, labels, mask):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
-        if args.model == "MoNet":
-            logits = model(features, pseudo)
-        else:
-            logits = model(features)
+        logits = model(features)
         logits = logits[mask]
         labels = labels[mask]
         return accuracy(logits, labels)
 
 
-def check_multiple_split(dataset):
-    """Chceck whether the dataset has multiple splits."""
-    dataset_directory = os.path.dirname(os.path.dirname(os.getcwd())) \
-        + "/datasets/" + dataset
-    for file in os.listdir(dataset_directory):
-        if fnmatch.fnmatch(file, "task*.json"):
-            with open(dataset_directory + "/" + file,  encoding="utf-8") as f:
-                task_dict = json.load(f)
-                if "num_splits" in task_dict and task_dict["num_splits"] > 1:
-                    return 1
-                else:
-                    return 0
-
-
-def main(args):
+def main(args, model_cfg, train_cfg):
     """Load dataset and train the model."""
     # load and preprocess dataset
     if args.gpu < 0:
@@ -66,10 +47,11 @@ def main(args):
     data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
     g = data[0]
-    if args.to_dense:
+    if train_cfg["dataset"]["to_dense"] or \
+       args.model in Models_need_to_be_densed:
         g = to_dense(g)
     # add self loop
-    if args.self_loop:
+    if train_cfg["dataset"]["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
     features = g.ndata["NodeFeature"]
@@ -94,13 +76,6 @@ def main(args):
     n_classes = data.num_labels
     n_edges = g.number_of_edges()
 
-    # calculate normalization factor (MoNet)
-    if args.model == "MoNet":
-        us, vs = g.edges(order="eid")
-        udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
-            torch.sqrt(g.in_degrees(vs).float())
-        pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
-
     print(f"""----Data statistics------'
       #Edges {n_edges}
       #Classes {n_classes}
@@ -109,7 +84,7 @@ def main(args):
       #Test samples {test_mask.int().sum().item()}""")
 
     # create model
-    model = generate_model(args, g, in_feats, n_classes)
+    model = generate_model(args, g, in_feats, n_classes, **model_cfg)
 
     print(model)
     if cuda:
@@ -118,21 +93,19 @@ def main(args):
 
     # use optimizer
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        model.parameters(), lr=train_cfg["optim"]["lr"],
+        weight_decay=train_cfg["optim"]["weight_decay"])
 
     # initialize graph
     dur = []
-    for epoch in range(args.epochs):
+    for epoch in range(train_cfg["max_epoch"]):
         model.train()
         if epoch >= 3:
             if cuda:
                 torch.cuda.synchronize()
             t0 = time.time()
         # forward
-        if args.model == "MoNet":
-            logits = model(features, pseudo)
-        else:
-            logits = model(features)
+        logits = model(features)
 
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
@@ -146,77 +119,24 @@ def main(args):
             dur.append(time.time() - t0)
 
         train_acc = accuracy(logits[train_mask], labels[train_mask])
-
-        if args.fastmode:
-            val_acc = accuracy(logits[val_mask], labels[val_mask])
-        elif args.model == "MoNet":
-            val_acc = evaluate(args, model, features, labels, val_mask, pseudo)
-        else:
-            val_acc = evaluate(args, model, features, labels, val_mask)
-
+        val_acc = evaluate(model, features, labels, val_mask)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
     print()
-    if args.model == "MoNet":
-        acc = evaluate(args, model, features, labels, test_mask, pseudo)
-    else:
-        acc = evaluate(args, model, features, labels, test_mask)
+
+    acc = evaluate(model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="train for node\
-                                                  classification")
-    parser.add_argument("--model", type=str, default="GCN",
-                        help="model to be used. GCN, GAT, MoNet,\
-                              GraphSAGE, MLP for now")
-    parser.add_argument("--dataset", type=str, default="cora",
-                        help="dataset to be trained")
-    parser.add_argument("--task", type=str,
-                        default="NodeClassification",
-                        help="task name for NodeClassification,")
-    parser.add_argument("--gpu", type=int, default=-1,
-                        help="which GPU to use. Set -1 to use CPU.")
-    parser.add_argument("--epochs", type=int, default=200,
-                        help="number of training epochs")
-    parser.add_argument("--num-heads", type=int, default=8,
-                        help="number of hidden attention heads")
-    parser.add_argument("--num-out-heads", type=int, default=1,
-                        help="number of output attention heads")
-    parser.add_argument("--num-layers", type=int, default=2,
-                        help="number of hidden layers")
-    parser.add_argument("--num-hidden", type=int, default=8,
-                        help="number of hidden units")
-    parser.add_argument("--residual", action="store_true", default=False,
-                        help="use residual connection")
-    parser.add_argument("--in-drop", type=float, default=.6,
-                        help="input feature dropout")
-    parser.add_argument("--attn-drop", type=float, default=.6,
-                        help="attention dropout")
-    parser.add_argument("--lr", type=float, default=0.005,
-                        help="learning rate")
-    parser.add_argument("--weight-decay", type=float, default=5e-4,
-                        help="weight decay")
-    parser.add_argument("--negative-slope", type=float, default=0.2,
-                        help="the negative slope of leaky relu")
-    parser.add_argument("--fastmode", action="store_true", default=False,
-                        help="skip re-evaluate the validation set")
-    parser.add_argument("--pseudo-dim", type=int, default=2,
-                        help="Pseudo coordinate dimensions in GMMConv,\
-                              2 for cora and 3 for pubmed")
-    parser.add_argument("--num-kernels", type=int, default=3,
-                        help="Number of kernels in GMMConv layer")
-    parser.add_argument("--self-loop", action="store_true",
-                        help="graph self-loop (default=False)")
-    parser.add_argument("--to-dense", action="store_true",
-                        help="whether change the model into dense \
-                              (default=False)")
-    parser.add_argument("--aggregator-type", type=str, default="gcn",
-                        help="Aggregator type: mean/gcn/pool/lstm")
-    Args = parser.parse_args()
+    # Load cmd line args
+    Args = parse_args()
     print(Args)
+    # Load config file
+    Model_cfg = load_config_file(Args.model_cfg)
+    Train_cfg = load_config_file(Args.train_cfg)
 
-    main(Args)
+    main(Args, Model_cfg, Train_cfg)
