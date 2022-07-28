@@ -5,6 +5,7 @@ References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/monet/citation.py
 """
 
+import torch
 from torch import nn
 from dgl.nn.pytorch.conv import GMMConv
 
@@ -27,6 +28,12 @@ class MoNet(nn.Module):
         self.layers = nn.ModuleList()
         self.pseudo_proj = nn.ModuleList()
 
+        # process pseudo
+        us, vs = g.edges(order="eid")
+        udeg, vdeg = 1 / torch.sqrt(g.in_degrees(us).float()), 1 / \
+            torch.sqrt(g.in_degrees(vs).float())
+        self.pseudo = torch.cat([udeg.unsqueeze(1), vdeg.unsqueeze(1)], dim=1)
+
         # Input layer
         self.layers.append(
             GMMConv(in_feats, n_hidden, dim, n_kernels))
@@ -45,12 +52,12 @@ class MoNet(nn.Module):
             nn.Sequential(nn.Linear(2, dim), nn.Tanh()))
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, feat, pseudo):
+    def forward(self, feat):
         """Forward."""
         h = feat
         for i in range(len(self.layers)):
             if i != 0:
                 h = self.dropout(h)
             h = self.layers[i](
-                self.g, h, self.pseudo_proj[i](pseudo))
+                self.g, h, self.pseudo_proj[i](self.pseudo))
         return h

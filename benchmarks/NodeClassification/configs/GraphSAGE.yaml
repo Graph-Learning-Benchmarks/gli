@@ -1,0 +1,4 @@
+num_layers: 2
+num_hidden: 8
+dropout: .6
+aggregator_type: gcn
