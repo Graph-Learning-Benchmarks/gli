@@ -166,10 +166,39 @@ class LinkPredictionTask(GLBTask):
         self.target = "Edge/_Edge"
         self.val_neg = task_dict.get("val_neg", None)
         self.test_neg = task_dict.get("test_neg", None)
-        self.sample_runtime = self.val_neg is not None   
+        self.sample_runtime = self.val_neg is not None
         super().__init__(task_dict, pwd)
 
-    pass
+
+class EntityLinkPredictionTask(ClassificationTask):
+    """Entity link prediction task."""
+
+    def __init__(self, task_dict, pwd, device="cpu"):
+        task_dict["num_classes"] = task_dict.pop("num_entities")
+        super().__init__(task_dict, pwd, device)
+
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
+    def _load_split(self, task_dict: dict):
+        for k in ("train", "val", "test"):
+            task_dict[f"{k}_set"] = task_dict.pop(f"{k}_triplet_set")
+        super()._load_split(task_dict)
+
+
+class RelationLinkPredictionTask(ClassificationTask):
+
+    def __init__(self, task_dict, pwd, device="cpu"):
+        task_dict["num_classes"] = task_dict.pop("num_relations")
+        super().__init__(task_dict, pwd, device)
+
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
+    def _load_split(self, task_dict: dict):
+        for k in ("train", "val", "test"):
+            task_dict[f"{k}_set"] = task_dict.pop(f"{k}_triplet_set")
+        super()._load_split(task_dict)
 
 
 class TimeDependentLinkPredictionTask(LinkPredictionTask):
@@ -205,7 +234,7 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
 
     if task_dict["type"] in SUPPORTED_TASK_TYPES:
         # Call class constructers by Python eval() method
-        return eval(task_dict["type"]+"Task")(task_dict, pwd)
+        return eval(task_dict["type"] + "Task")(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
                                   f"Supported tasks: {SUPPORTED_TASK_TYPES}")

@@ -6,13 +6,15 @@ import torch
 from dgl.data import DGLDataset
 from dgl import DGLGraph
 
-from glb.task import (GLBTask, GraphClassificationTask, GraphRegressionTask,
+from glb.task import (EntityLinkPredictionTask, GLBTask,
+                      GraphClassificationTask, GraphRegressionTask,
                       LinkPredictionTask, NodeClassificationTask,
-                      NodeRegressionTask, TimeDependentLinkPredictionTask)
+                      NodeRegressionTask, RelationLinkPredictionTask,
+                      TimeDependentLinkPredictionTask)
 
 
 class GLBDataset(DGLDataset):
-
+    
     def __init__(self, task: GLBTask):
         self.features = task.features
         self.target = task.target
@@ -205,18 +207,14 @@ class EdgeDataset(GLBDataset):
         self.sample_runtime = task.sample_runtime
         super().__init__(task)
 
-
-class LinkPredictionDataset(EdgeDataset):
-
-    def __init__(self, graph: DGLGraph, task: GLBTask):
-        self.split = task.split
-        super().__init__(graph, task)
-
     def process(self):
         for split in ("train", "val", "test"):
             indices = torch.zeros(self._g.num_edges(), dtype=torch.bool)
             indices[self.split[f"{split}_set"]] = True
             self._g.edata[f"{split}_mask"] = indices
+
+
+class LinkPredictionDataset(EdgeDataset):
 
     def get_idx_split(self):
         """Return a dictionary of train, val, and test splits.
@@ -272,6 +270,16 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
         super().process()
 
 
+class EntityLinkPredictionDataset(LinkPredictionDataset):
+
+    pass
+
+
+class RelationLinkPredictionDatset(LinkPredictionDataset):
+
+    pass
+
+
 def node_dataset_factory(graph: DGLGraph, task: GLBTask):
     """Initialize and return a NodeDataset.
 
@@ -300,6 +308,12 @@ def edge_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
 
     if isinstance(task, TimeDependentLinkPredictionTask):
         return TimeDependentLinkPredictionDataset(graph, task)
+    elif isinstance(task, RelationLinkPredictionTask):
+        return RelationLinkPredictionDatset(graph, task)
+    elif isinstance(task, EntityLinkPredictionTask):
+        return EntityLinkPredictionDataset(graph, task)
+    elif isinstance(task, LinkPredictionTask):
+        return LinkPredictionDataset(graph, task)
     else:
         raise TypeError(f"Unknown task type {type(task)}.")
 
