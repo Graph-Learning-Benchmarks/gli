@@ -174,6 +174,7 @@ class EntityLinkPredictionTask(ClassificationTask):
     """Entity link prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
+        """Rename num_entities to num_classes."""
         task_dict["num_classes"] = task_dict.pop("num_entities")
         super().__init__(task_dict, pwd, device)
 
@@ -187,8 +188,10 @@ class EntityLinkPredictionTask(ClassificationTask):
 
 
 class RelationLinkPredictionTask(ClassificationTask):
+    """Relation link prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
+        """Rename num_relations to num_classes."""
         task_dict["num_classes"] = task_dict.pop("num_relations")
         super().__init__(task_dict, pwd, device)
 
@@ -234,6 +237,8 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
 
     if task_dict["type"] in SUPPORTED_TASK_TYPES:
         # Call class constructers by Python eval() method
+        # This method is dicouraged by pylint but we have limited the type.
+        # pylint: disable=W0123
         return eval(task_dict["type"] + "Task")(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"

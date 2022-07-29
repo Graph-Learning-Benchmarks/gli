@@ -14,8 +14,10 @@ from glb.task import (EntityLinkPredictionTask, GLBTask,
 
 
 class GLBDataset(DGLDataset):
-    
+    """GLB dataset base class."""
+
     def __init__(self, task: GLBTask):
+        """Initialize the dataset with basic task info."""
         self.features = task.features
         self.target = task.target
         self.num_splits = task.num_splits
@@ -208,6 +210,7 @@ class EdgeDataset(GLBDataset):
         super().__init__(task)
 
     def process(self):
+        """Add split masks to edata."""
         for split in ("train", "val", "test"):
             indices = torch.zeros(self._g.num_edges(), dtype=torch.bool)
             indices[self.split[f"{split}_set"]] = True
@@ -215,6 +218,7 @@ class EdgeDataset(GLBDataset):
 
 
 class LinkPredictionDataset(EdgeDataset):
+    """Link prediction dataset."""
 
     def get_idx_split(self):
         """Return a dictionary of train, val, and test splits.
@@ -257,6 +261,7 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
         super().__init__(graph, task)
 
     def process(self):
+        """Extract split info from edge time."""
         time_entries = self.time.split("/")
         assert len(time_entries) == 2
         assert time_entries[0] == "Edge"
@@ -271,11 +276,13 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
 
 
 class EntityLinkPredictionDataset(LinkPredictionDataset):
+    """Entity link prediction dataset."""
 
     pass
 
 
 class RelationLinkPredictionDatset(LinkPredictionDataset):
+    """Relation link prediction dataset."""
 
     pass
 
