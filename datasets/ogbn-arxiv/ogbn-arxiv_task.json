@@ -1,0 +1,21 @@
+{
+    "description": "The task is to predict the 40 subject areas of arXiv CS papers, e.g., cs.AI, cs.LG, and cs.OS, which are manually determined (i.e., labeled) by the paper’s authors and arXiv moderators",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature",
+        "Edge/EdgeFeature"
+    ],
+    "target": "Node/NodeYear",
+    "train_set": {
+        "file": "ogbn-arxiv_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbn-arxiv_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "ogbn-arxiv_task.npz",
+        "key": "test"
+    }
+}
