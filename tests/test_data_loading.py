@@ -7,6 +7,7 @@ import glb
 from glb.task import SUPPORTED_TASK_TYPES
 from utils import find_datasets_dir
 
+
 @pytest.mark.parametrize("directory", find_datasets_dir())
 def test_data_loading(directory):
     """Test data loading for a given dataset.
