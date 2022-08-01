@@ -164,9 +164,9 @@ class LinkPredictionTask(GLBTask):
     def __init__(self, task_dict, pwd):
         """Link/Edge prediction."""
         self.target = "Edge/_Edge"
-        self.valid_neg = task_dict.get("valid_neg", None)
+        self.val_neg = task_dict.get("val_neg", None)
         self.test_neg = task_dict.get("test_neg", None)
-        self.sample_runtime = self.valid_neg is not None
+        self.sample_runtime = self.val_neg is not None
         super().__init__(task_dict, pwd)
 
     pass
@@ -180,13 +180,13 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
         self.time = task_dict["time"]
         self.time_window = {
             "train_time_window": task_dict["train_time_window"],
-            "valid_time_window": task_dict["valid_time_window"],
+            "val_time_window": task_dict["val_time_window"],
             "test_time_window": task_dict["test_time_window"]
         }
         super().__init__(task_dict, pwd)
 
     def _load(self, task_dict):
-        for neg_idx in ["valid_neg", "test_neg"]:
+        for neg_idx in ["val_neg", "test_neg"]:
             if getattr(self, neg_idx, None):
                 filename = task_dict[neg_idx]["file"]
                 key = task_dict[neg_idx].get("key")

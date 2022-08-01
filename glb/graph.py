@@ -150,19 +150,22 @@ def _get_heterograph(data):
     num_nodes_dict = {}
     num_nodes = data["Graph"]["_NodeList"].shape[-1]
     node_to_class = torch.zeros(num_nodes, dtype=torch.int)
+    node_map = torch.zeros(num_nodes, dtype=torch.int)
     if node_depth == 1:
         # Nodes are homogeneous
         node_classes.append("Node")
         node_features["Node"] = data["Node"]
-        node_features["Node"].pop("_ID", None)
+        # node_features["Node"].pop("_ID", None)
         num_nodes_dict["Node"] = num_nodes
+        node_map = torch.arange(num_nodes, dtype=torch.int)
     else:
         for i, node_class in enumerate(data["Node"]):
             node_classes.append(node_class)
             idx = data["Node"][node_class]["_ID"]
             node_to_class[idx] = i
+            node_map[idx] = torch.arange(len(idx), dtype=torch.int)
             node_features[node_class] = data["Node"][node_class]
-            node_features[node_class].pop("_ID", None)
+            # node_features[node_class].pop("_ID", None)
             num_nodes_dict[node_class] = len(idx)
 
     edge_depth = _dict_depth(data["Edge"])
@@ -175,9 +178,10 @@ def _get_heterograph(data):
         src_class = node_classes[node_to_class[edges[0][0]]]
         dst_class = node_classes[node_to_class[edges[0][1]]]
         triplet = (src_class, edge_class, dst_class)
+        edges = node_map[edges]
         graph_data[triplet] = (edges.T[0], edges.T[1])
         edge_features[edge_class] = data["Edge"][edge_class]
-        edge_features[edge_class].pop("_ID", None)
+        # edge_features[edge_class].pop("_ID", None)
 
     g: dgl.DGLGraph = dgl.heterograph(graph_data,
                                       num_nodes_dict=num_nodes_dict)
