@@ -2,8 +2,8 @@
 import pytest
 import os
 import json
-from utils import find_datasets_dir, check_if_metadata_json, _is_hetero_graph, \
-    find_datasets_abs_path
+from utils import find_datasets_dir, check_if_metadata_json, \
+    _is_hetero_graph, find_datasets_abs_path
 
 
 def check_essential_keys_metadata_json(dic):
