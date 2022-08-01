@@ -53,11 +53,19 @@ def dataset_dir_check(path_to_parent):
 
 def find_datasets_dir():
     """Recursively find dataset directories which have metadata json."""
+
     walk_dir = os.getcwd() + "/datasets"
 
     print("walk_dir = " + walk_dir)
 
     print("walk_dir (absolute) = " + os.path.abspath(walk_dir))
+
+    if os.path.exists("temp/changed_datasets"):
+        with open("temp/changed_datasets", encoding='utf-8') as f:
+            dataset_dir_list = f.read().split()
+            for i in range(len(dataset_dir_list)):
+                dataset_dir_list[i] = walk_dir + "/" + dataset_dir_list[i]
+        return dataset_dir_list
 
     dataset_dir_list = []
     for root, subdirs, _ in os.walk(walk_dir):
