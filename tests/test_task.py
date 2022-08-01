@@ -13,8 +13,8 @@ def check_essential_keys_task_json(dic):
     if dic.get("type", None) is None:
         missing_keys.append("type")
     else:
-        type = dic.get("type")
-        for req_keywords in SUPPORTED_TASK_REQUIRED_KEYS_HASH[type]:
+        task_type = dic.get("type")
+        for req_keywords in SUPPORTED_TASK_REQUIRED_KEYS_HASH[task_type]:
             if dic.get(req_keywords, None) is None:
                 missing_keys.append(req_keywords)
     return missing_keys
