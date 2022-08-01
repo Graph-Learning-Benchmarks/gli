@@ -3,7 +3,8 @@ import pytest
 import os
 from utils import \
     find_datasets_dir, check_if_metadata_json, \
-    check_if_urls_json, check_if_task_json, check_if_readme
+    check_if_urls_json, check_if_task_json, check_if_readme, \
+    find_datasets_abs_path
 
 
 def check_file_name(files):
@@ -49,6 +50,7 @@ def test_if_has_essential_files(directory):
     metadata.json file exist in all datasets.
     """
     violations = None
+    directory = find_datasets_abs_path(directory)
     result = check_file_name(os.listdir(directory))
 
     if result[0] is True:

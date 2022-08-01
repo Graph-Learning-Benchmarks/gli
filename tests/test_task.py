@@ -3,7 +3,7 @@ import pytest
 import os
 import json
 from utils import find_datasets_dir, check_if_task_json, \
-    SUPPORTED_TASK_REQUIRED_KEYS_HASH
+    SUPPORTED_TASK_REQUIRED_KEYS_HASH, find_datasets_abs_path
 
 
 def check_essential_keys_task_json(dic):
@@ -24,6 +24,8 @@ def check_essential_keys_task_json(dic):
 def test_task_json_content(directory):
     """Check if task json meets requirements."""
     file_list = []
+    directory = find_datasets_abs_path(directory)
+
     for root, _, file in os.walk(directory):
         if isinstance(file, str):
             file.append(os.path.join(root, file))

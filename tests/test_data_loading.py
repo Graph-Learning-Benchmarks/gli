@@ -2,19 +2,22 @@
 import os
 import fnmatch
 import json
+import pytest
 import glb
 from glb.task import SUPPORTED_TASK_TYPES
+from utils import find_datasets_dir
 
-
-def test_data_loading(dataset):
+@pytest.mark.parametrize("directory", find_datasets_dir())
+def test_data_loading(directory):
     """Test data loading for a given dataset.
 
     Test if get_glb_graph, get_glb_task, and get_glb_dataset
     can be applied successfully.
     """
     # temporary skipping all large datasets
+    dataset = directory
     large_dataset_to_skip = ["wiki", "ogbg-code2"]
-    if dataset in large_dataset_to_skip:
+    if directory in large_dataset_to_skip:
         return
 
     directory = os.getcwd() + "/datasets/" + dataset

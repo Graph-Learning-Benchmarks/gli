@@ -2,7 +2,7 @@
 import pytest
 import os
 import json
-from utils import find_datasets_dir, check_if_metadata_json, _is_hetero_graph
+from utils import find_datasets_dir, check_if_metadata_json, _is_hetero_graph, find_datasets_abs_path
 
 
 def check_essential_keys_metadata_json(dic):
@@ -104,6 +104,7 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
 def test_metadata_json_content(directory):
     """Check if metadata json meets requirements."""
     file_list = []
+    directory = find_datasets_abs_path(directory)
     print(directory)
     for root, _, file in os.walk(directory):
         if isinstance(file, str):
