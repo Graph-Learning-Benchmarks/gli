@@ -35,23 +35,20 @@ jobs:
         then
           dataset_list=()
           for path in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-              dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/([_a-zA-Z0-9-]+)\/.*/\1/')
+              dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/(\w+)\/.*/\1/')
               if [ -z "$dataset" ]; then continue; fi
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
-                echo "current dataset is $dataset"
-                pytest -q --dataset="$dataset" tests/test_data_loading.py
+                echo "add dataset: $dataset"
                 dataset_list+=($dataset)
-                echo "datasets list is ${dataset_list[*]}"        
               fi
           done
         fi
+        echo "datasets list is ${dataset_list[*]}"
+        mkdir temp
+        echo "${dataset_list[*]}" > temp/changed_datasets
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
       run: |
         if ${{ github.event_name == 'workflow_dispatch' }}
         then
-          for dataset in $(ls ./datasets); do
-              echo "current dataset is $dataset"
-              if [ -z "$dataset" ]; then continue; fi
-              pytest -q --dataset="$dataset" tests/test_data_loading.py 
-          done
+          pytest /tests
         fi
