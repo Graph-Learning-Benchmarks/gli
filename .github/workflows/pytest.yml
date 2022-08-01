@@ -42,10 +42,11 @@ jobs:
                 dataset_list+=($dataset)
               fi
           done
+          echo "datasets list is ${dataset_list[*]}"
+          mkdir temp
+          echo "${dataset_list[*]}" > temp/changed_datasets
+          pytest
         fi
-        echo "datasets list is ${dataset_list[*]}"
-        mkdir temp
-        echo "${dataset_list[*]}" > temp/changed_datasets
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
       run: |
         if ${{ github.event_name == 'workflow_dispatch' }}
