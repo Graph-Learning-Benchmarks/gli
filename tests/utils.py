@@ -53,7 +53,7 @@ def dataset_dir_check(path_to_parent):
 
 def find_datasets_abs_path(dataset):
     """Find dataset absolute path."""
-    return os.getcwd() + "/datasets" + dataset
+    return os.getcwd() + "/datasets/" + dataset
 
 
 def find_datasets_dir():
