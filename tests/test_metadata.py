@@ -101,11 +101,11 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
     return missing_keys
 
 
-@pytest.mark.parametrize("directory", find_datasets_dir())
-def test_metadata_json_content(directory):
+@pytest.mark.parametrize("dataset", find_datasets_dir())
+def test_metadata_json_content(dataset):
     """Check if metadata json meets requirements."""
     file_list = []
-    directory = find_datasets_abs_path(directory)
+    directory = find_datasets_abs_path(dataset)
     print(directory)
     for root, _, file in os.walk(directory):
         if isinstance(file, str):
