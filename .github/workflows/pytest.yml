@@ -40,14 +40,13 @@ jobs:
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
                 echo "add dataset: $dataset"
                 dataset_list+=($dataset)
-                pytest /tests
               fi
           done
           echo "datasets list is ${dataset_list[*]}"
           mkdir temp
           echo "${dataset_list[*]}" > temp/changed_datasets
           echo $(pwd)
-          pytest
+          pytest /tests
         fi
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
       run: |
