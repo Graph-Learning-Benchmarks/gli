@@ -20,11 +20,11 @@ def check_essential_keys_task_json(dic):
     return missing_keys
 
 
-@pytest.mark.parametrize("dataset", find_datasets_dir())
-def test_task_json_content(dataset):
+@pytest.mark.parametrize("dataset_name", find_datasets_dir())
+def test_task_json_content(dataset_name):
     """Check if task json meets requirements."""
     file_list = []
-    directory = find_datasets_abs_path(dataset)
+    directory = find_datasets_abs_path(dataset_name)
 
     for root, _, file in os.walk(directory):
         if isinstance(file, str):

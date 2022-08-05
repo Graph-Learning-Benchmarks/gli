@@ -42,15 +42,15 @@ def check_file_name(files):
     return True, "essential files included"
 
 
-@pytest.mark.parametrize("dataset", find_datasets_dir())
-def test_if_has_essential_files(dataset):
+@pytest.mark.parametrize("dataset_name", find_datasets_dir())
+def test_if_has_essential_files(dataset_name):
     """Check for essential json files.
 
     Recursively check if task.json file(s) and
     metadata.json file exist in all datasets.
     """
     violations = None
-    directory = find_datasets_abs_path(dataset)
+    directory = find_datasets_abs_path(dataset_name)
     result = check_file_name(os.listdir(directory))
 
     if result[0] is True:
