@@ -40,6 +40,7 @@ jobs:
               if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
                 echo "add dataset: $dataset"
                 dataset_list+=($dataset)
+                pytest /tests
               fi
           done
           echo "datasets list is ${dataset_list[*]}"
