@@ -27,7 +27,7 @@ jobs:
     - name: List all changed files
       run: |
           for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-            echo "$file was chasnged"
+            echo "$file was changed"
           done
     - name: Test with pytest, if triggered by PR
       run: |
