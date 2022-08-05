@@ -9,14 +9,17 @@ from utils import find_datasets_dir, check_if_task_json, \
 def check_essential_keys_task_json(dic):
     """Check if task json has all essential keys."""
     missing_keys = []
-
-    if dic.get("type", None) is None:
+    if "type" not in dic:
         missing_keys.append("type")
     else:
         task_type = dic.get("type")
         for req_keywords in SUPPORTED_TASK_REQUIRED_KEYS_HASH[task_type]:
-            if dic.get(req_keywords, None) is None:
-                missing_keys.append(req_keywords)
+            if req_keywords == "feature":
+                if req_keywords not in dic:
+                    missing_keys.append(req_keywords)
+            else:
+                if dic.get(req_keywords, None) is None:
+                    missing_keys.append(req_keywords)
     return missing_keys
 
 
