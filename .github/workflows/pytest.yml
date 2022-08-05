@@ -45,6 +45,7 @@ jobs:
           echo "datasets list is ${dataset_list[*]}"
           mkdir temp
           echo "${dataset_list[*]}" > temp/changed_datasets
+          echo $(pwd)
           pytest
         fi
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
