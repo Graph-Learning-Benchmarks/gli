@@ -31,7 +31,6 @@ jobs:
           done
     - name: Test with pytest, if triggered by PR
       run: |
-        pytest tests/
         if ${{ github.event_name == 'pull_request' }}
         then
           dataset_list=()
