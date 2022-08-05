@@ -31,6 +31,7 @@ jobs:
           done
     - name: Test with pytest, if triggered by PR
       run: |
+        pytest tests/
         if ${{ github.event_name == 'pull_request' }}
         then
           dataset_list=()
@@ -45,12 +46,11 @@ jobs:
           echo "datasets list is ${dataset_list[*]}"
           mkdir temp
           echo "${dataset_list[*]}" > temp/changed_datasets
-          echo $(pwd)
-          pytest tests
+          pytest tests/
         fi
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
       run: |
         if ${{ github.event_name == 'workflow_dispatch' }}
         then
-          pytest tests
+          pytest tests/
         fi
