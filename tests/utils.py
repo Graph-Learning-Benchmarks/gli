@@ -37,13 +37,14 @@ SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
                                "val_triplet_set",
                                "test_triplet_set",
                                ],
+    "GraphRegression": []
 }
 
 
 def dataset_dir_check(path_to_parent):
     """Check if a directory has metadata.json.
 
-    If has then it is a example dir.
+    If has then it is a dataset dir.
     """
     for fname in os.listdir(path_to_parent):
         if fname == "metadata.json":
