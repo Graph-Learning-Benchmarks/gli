@@ -55,6 +55,21 @@ def main(args, model_cfg, train_cfg):
     if train_cfg["dataset"]["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
+
+    # check EdgeFeature and multi-modal node features
+    edge_cnt = node_cnt = 0
+    if len(data.features) > 1:
+        for _, element in enumerate(data.features):
+            if "Edge" in element:
+                edge_cnt += 1
+            if "Node" in element:
+                node_cnt += 1
+        if edge_cnt >= 1:
+            raise NotImplementedError("Edge feature is not supported yet.")
+        elif node_cnt >= 2:
+            raise NotImplementedError("Multi-modal node features\
+                                       is not supported yet.")
+
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
     train_mask = g.ndata["train_mask"]
