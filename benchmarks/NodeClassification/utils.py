@@ -5,12 +5,15 @@ References:
 https://github.com/pyg-team/pytorch_geometric/blob/
 575611f4f5e2209c7923dba977a1eebc207bd2e2/torch_geometric/
 graphgym/cmd_args.py
+https://github.com/dmlc/dgl/blob/a107993f106cecb1c375f7a6ae41088d04f29e29/
+examples/pytorch/caregnn/utils.py
 """
 import argparse
 import yaml
 import os
 import fnmatch
 import json
+import torch
 import torch.nn.functional as F
 from models.gcn import GCN
 from models.gat import GAT
@@ -121,3 +124,36 @@ def check_multiple_split(dataset):
                     return 1
                 else:
                     return 0
+
+
+class EarlyStopping:
+    """Do early stopping."""
+
+    def __init__(self, patience=50):
+        """Init early stopping."""
+        self.patience = patience
+        self.counter = 0
+        self.best_score = None
+        self.early_stop = False
+
+    def step(self, acc, model):
+        """Step early stopping."""
+        score = acc
+        if self.best_score is None:
+            self.best_score = score
+            self.save_checkpoint(model)
+        elif score < self.best_score:
+            self.counter += 1
+            print(f"EarlyStopping counter: {self.counter}\
+                    out of {self.patience}")
+            if self.counter >= self.patience:
+                self.early_stop = True
+        else:
+            self.best_score = score
+            self.save_checkpoint(model)
+            self.counter = 0
+        return self.early_stop
+
+    def save_checkpoint(self, model):
+        """Save model when validation loss decrease."""
+        torch.save(model.state_dict(), "es_checkpoint.pt")

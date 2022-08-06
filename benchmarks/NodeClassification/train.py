@@ -13,7 +13,8 @@ import numpy as np
 import dgl
 import glb
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
-                  load_config_file, check_multiple_split
+                  load_config_file, check_multiple_split,\
+                  EarlyStopping
 from glb.utils import to_dense
 
 
@@ -96,6 +97,9 @@ def main(args, model_cfg, train_cfg):
         model.parameters(), lr=train_cfg["optim"]["lr"],
         weight_decay=train_cfg["optim"]["weight_decay"])
 
+    if train_cfg["early_stopping"]:
+        stopper = EarlyStopping(patience=50)
+
     # initialize graph
     dur = []
     for epoch in range(train_cfg["max_epoch"]):
@@ -124,6 +128,10 @@ def main(args, model_cfg, train_cfg):
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
+
+        if train_cfg["early_stopping"]:
+            if stopper.step(val_acc, model):
+                break
 
     print()
 
