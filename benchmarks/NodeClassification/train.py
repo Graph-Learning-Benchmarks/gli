@@ -135,6 +135,9 @@ def main(args, model_cfg, train_cfg):
 
     print()
 
+    if train_cfg["early_stopping"]:
+        model.load_state_dict(torch.load("es_checkpoint.pt"))
+
     acc = evaluate(model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
 
