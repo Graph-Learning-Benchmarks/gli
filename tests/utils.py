@@ -58,7 +58,7 @@ def find_datasets_abs_path(dataset):
 
 
 def find_datasets():
-    """Recursively find dataset directories which have metadata json."""
+    """Get the datasets with changed files or find all datasets."""
     walk_dir = os.getcwd() + "/datasets"
 
     print("walk_dir = " + walk_dir)
