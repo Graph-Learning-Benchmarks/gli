@@ -5,10 +5,10 @@ import json
 import pytest
 import glb
 from glb.task import SUPPORTED_TASK_TYPES
-from utils import find_datasets_dir
+from utils import find_datasets
 
 
-@pytest.mark.parametrize("dataset_name", find_datasets_dir())
+@pytest.mark.parametrize("dataset_name", find_datasets())
 def test_data_loading(dataset_name):
     """Test data loading for a given dataset.
 

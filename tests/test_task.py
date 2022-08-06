@@ -2,7 +2,7 @@
 import pytest
 import os
 import json
-from utils import find_datasets_dir, check_if_task_json, \
+from utils import find_datasets, check_if_task_json, \
     SUPPORTED_TASK_REQUIRED_KEYS_HASH, find_datasets_abs_path
 
 
@@ -23,7 +23,7 @@ def check_essential_keys_task_json(dic):
     return missing_keys
 
 
-@pytest.mark.parametrize("dataset_name", find_datasets_dir())
+@pytest.mark.parametrize("dataset_name", find_datasets())
 def test_task_json_content(dataset_name):
     """Check if task json meets requirements."""
     file_list = []

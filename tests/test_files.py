@@ -2,7 +2,7 @@
 import pytest
 import os
 from utils import \
-    find_datasets_dir, check_if_metadata_json, \
+    find_datasets, check_if_metadata_json, \
     check_if_urls_json, check_if_task_json, check_if_readme, \
     find_datasets_abs_path
 
@@ -42,7 +42,7 @@ def check_file_name(files):
     return True, "essential files included"
 
 
-@pytest.mark.parametrize("dataset_name", find_datasets_dir())
+@pytest.mark.parametrize("dataset_name", find_datasets())
 def test_if_has_essential_files(dataset_name):
     """Check for essential json files.
 
