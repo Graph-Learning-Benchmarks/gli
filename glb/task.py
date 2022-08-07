@@ -176,10 +176,6 @@ class LinkPredictionTask(GLBTask):
 class KGEntityPredictionTask(GLBTask):
     """Knowledge graph entity prediction task."""
 
-    def __init__(self, task_dict, pwd, device="cpu"):
-        """FIXME - Entity link prediction - needs example"""
-        super().__init__(task_dict, pwd, device)
-
     def _load(self, task_dict):
         self._load_split(task_dict)
 
