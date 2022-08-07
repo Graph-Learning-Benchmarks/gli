@@ -11,7 +11,8 @@ from glb.utils import file_reader
 
 SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",
-    "GraphRegression", "TimeDependentLinkPrediction", "LinkPrediction"
+    "GraphRegression", "TimeDependentLinkPrediction", "LinkPrediction",
+    "KGEntityPrediction", "KGRelationPrediction"
 ]
 
 
@@ -30,8 +31,10 @@ class GLBTask:
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
 
-        if "train_set" not in task_dict and \
-                "train_time_window" not in task_dict:
+        if not any([
+                "train_set" in task_dict, "train_time_window" in task_dict,
+                "train_triplet_set" in task_dict
+        ]):
             # use random split
             self.random_split = True
 
@@ -170,12 +173,11 @@ class LinkPredictionTask(GLBTask):
         super().__init__(task_dict, pwd)
 
 
-class EntityLinkPredictionTask(ClassificationTask):
+class KGEntityPredictionTask(ClassificationTask):
     """Entity link prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
-        """Rename num_entities to num_classes."""
-        task_dict["num_classes"] = task_dict.pop("num_entities")
+        """FIXME - Entity link prediction - needs example"""
         super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
@@ -187,7 +189,7 @@ class EntityLinkPredictionTask(ClassificationTask):
         super()._load_split(task_dict)
 
 
-class RelationLinkPredictionTask(ClassificationTask):
+class KGRelationPredictionTask(ClassificationTask):
     """Relation link prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):

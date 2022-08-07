@@ -6,10 +6,10 @@ import torch
 from dgl.data import DGLDataset
 from dgl import DGLGraph
 
-from glb.task import (EntityLinkPredictionTask, GLBTask,
-                      GraphClassificationTask, GraphRegressionTask,
-                      LinkPredictionTask, NodeClassificationTask,
-                      NodeRegressionTask, RelationLinkPredictionTask,
+from glb.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
+                      GraphRegressionTask, LinkPredictionTask,
+                      NodeClassificationTask, NodeRegressionTask,
+                      KGRelationPredictionTask,
                       TimeDependentLinkPredictionTask)
 
 
@@ -206,7 +206,6 @@ class EdgeDataset(GLBDataset):
             NotImplementedError: GraphDataset does not support multi-split.
         """
         self._g = graph
-        self.sample_runtime = task.sample_runtime
         super().__init__(task)
 
     def process(self):
@@ -275,13 +274,13 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
         super().process()
 
 
-class EntityLinkPredictionDataset(LinkPredictionDataset):
+class KGEntityPredictionDataset(LinkPredictionDataset):
     """Entity link prediction dataset."""
 
     pass
 
 
-class RelationLinkPredictionDatset(LinkPredictionDataset):
+class KGRelationPredictionDataset(LinkPredictionDataset):
     """Relation link prediction dataset."""
 
     pass
@@ -315,10 +314,10 @@ def edge_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
 
     if isinstance(task, TimeDependentLinkPredictionTask):
         return TimeDependentLinkPredictionDataset(graph, task)
-    elif isinstance(task, RelationLinkPredictionTask):
-        return RelationLinkPredictionDatset(graph, task)
-    elif isinstance(task, EntityLinkPredictionTask):
-        return EntityLinkPredictionDataset(graph, task)
+    elif isinstance(task, KGRelationPredictionTask):
+        return KGRelationPredictionDataset(graph, task)
+    elif isinstance(task, KGEntityPredictionTask):
+        return KGEntityPredictionDataset(graph, task)
     elif isinstance(task, LinkPredictionTask):
         return LinkPredictionDataset(graph, task)
     else:
