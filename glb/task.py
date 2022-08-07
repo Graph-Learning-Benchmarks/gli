@@ -173,8 +173,8 @@ class LinkPredictionTask(GLBTask):
         super().__init__(task_dict, pwd)
 
 
-class KGEntityPredictionTask(ClassificationTask):
-    """Entity link prediction task."""
+class KGEntityPredictionTask(GLBTask):
+    """Knowledge graph entity prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
         """FIXME - Entity link prediction - needs example"""
@@ -190,7 +190,7 @@ class KGEntityPredictionTask(ClassificationTask):
 
 
 class KGRelationPredictionTask(ClassificationTask):
-    """Relation link prediction task."""
+    """Knowledge graph relation prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
         """Rename num_relations to num_classes."""

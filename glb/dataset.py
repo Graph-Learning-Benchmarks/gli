@@ -232,6 +232,26 @@ class LinkPredictionDataset(EdgeDataset):
                 self._g.edata[f"{split}_mask"])
         return split_dict
 
+    def get_train_graph(self):
+        """Return the subgraph that removes val and test edges.
+
+        Notice that the returned graph will be generated from a copy of self._g
+        and be re-indexed.
+        
+        Returns:
+            DGLGraph: train_g
+        """
+        train_g = self._g.clone()
+        _non_train_edges = torch.cat((
+            self.split["val_set"],
+            self.split["test_set"]
+        ))
+        train_g.remove_edges(_non_train_edges)
+        for split in ("train", "val", "test"):
+            train_g.edata.pop(f"{split}_mask")
+        return train_g
+
+
     def __getitem__(self, idx):
         """Single graph dataset only has 1 element."""
         assert idx == 0, "This dataset has only one graph"
@@ -275,13 +295,13 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
 
 
 class KGEntityPredictionDataset(LinkPredictionDataset):
-    """Entity link prediction dataset."""
+    """Knowledge graph entity prediction dataset."""
 
     pass
 
 
 class KGRelationPredictionDataset(LinkPredictionDataset):
-    """Relation link prediction dataset."""
+    """Knowledge graph relation prediction dataset."""
 
     pass
 
