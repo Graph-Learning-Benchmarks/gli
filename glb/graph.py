@@ -186,6 +186,11 @@ def _get_heterograph(data):
     g: dgl.DGLGraph = dgl.heterograph(graph_data,
                                       num_nodes_dict=num_nodes_dict)
 
+    # Set indexing map
+    setattr(g, "node_classes", node_classes)
+    setattr(g, "node_to_class", node_to_class)
+    setattr(g, "node_map", node_map)
+
     # Add node and edge features
     for node_class, node_feats in node_features.items():
         for feat_name, feat_tensor in node_feats.items():
