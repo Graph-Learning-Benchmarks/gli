@@ -1,75 +1,95 @@
-"""Example of data loading for users."""
+"""usage: example.py [-h] [-g GRAPH] [-t TASK] [-d DEVICE] [-v].
+
+Demo data loading.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -g GRAPH, --graph GRAPH
+                        The graph to be loaded.
+  -t TASK, --task TASK  The task name of GNN training.
+                        The task name is the filename of the task configuration
+                        file w/o json extension. e.g., simply `task` for
+                        cora node_classification.
+  -d DEVICE, --device DEVICE
+  -v, --verbose
+"""
 import argparse
+import os
 import time
-import glb
 import tracemalloc
 
-TASKS = [
-    "NodeClassification", "TimeDepenedentLinkPrediction", "GraphClassification"
-]
-PATHS = [("examples/cora/metadata.json", "examples/cora/task.json"),
-         ("examples/ogbl-collab/metadata.json",
-          "examples/ogbl-collab/task_runtime_sampling.json"),
-         ("examples/ogbg-molhiv/metadata.json",
-          "examples/ogbg-molhiv/task.json")]
-
-
-class Timer:
-    """Tic-Toc timer."""
-
-    def __init__(self):
-        """Initialize tic by current time."""
-        self._tic = time.time()
-
-    def tic(self):
-        """Reset tic."""
-        self._tic = time.time()
-        return self._tic
-
-    def toc(self):
-        """Return time elaspe between tic and toc, and reset tic."""
-        last_tic = self._tic
-        self._tic = time.time()
-        return self._tic - last_tic
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--task", type=str, choices=TASKS, default=TASKS[0])
-parser.add_argument("--device", type=str, default="cpu")
-args = parser.parse_args()
-task_name = args.task
-clock = Timer()
-
-
-def prepare_dataset(metadata_path, task_path):
-    """Prepare dataset."""
-    clock.tic()
-    tracemalloc.start()
-    g = glb.graph.read_glb_graph(metadata_path=metadata_path,
-                                 device=args.device)
-    print(f"Read graph data from {metadata_path} in {clock.toc():.2f}s.")
-    task = glb.task.read_glb_task(task_path=task_path)
-    print(f"Read task specification from {task_path} in {clock.toc():.2f}s.")
-    datasets = glb.dataloading.combine_graph_and_task(g, task)
-    print(f"Combine graph and task into dataset(s) in {clock.toc():.2f}s.")
-    mem = tracemalloc.get_traced_memory()[1] / (1024 * 1024)
-    print(f"Peak memory usage: {mem:.2f}MB.")
-    tracemalloc.stop()
-    return g, task, datasets
+import glb
 
 
 def main():
     """Run main function."""
-    path_dict = dict(zip(TASKS, PATHS))
-    g, task, datasets = prepare_dataset(*path_dict[task_name])
-    if isinstance(g, list):
-        print(f"Dataset contains {len(g)} graphs.")
-        print(g[0].device)
-    else:
-        print(g.device)
+    # Initialize argparse
+    parser = argparse.ArgumentParser(description="Demo data loading.")
+    parser.add_argument("-g",
+                        "--graph",
+                        type=str,
+                        default="cora",
+                        help="The graph to be loaded.")
+    parser.add_argument(
+        "-t",
+        "--task",
+        type=str,
+        default=None,
+        help=("The task name of GNN training."
+              "The task name is the filename of the task configuration"
+              "file w/o json extension. e.g., simply `task` for"))
+    parser.add_argument("-d", "--device", type=str, default="cpu")
+    parser.add_argument("-v", "--verbose", default=False, action="store_true")
+    args = parser.parse_args()
 
-    print(task)
-    print(datasets)
+    # Find a proper task if user does not specify.
+    if args.task is None:
+        for f in os.listdir(os.path.join("datasets", args.graph)):
+            if f.endswith(".json") and f.startswith("task"):
+                args.task = f[:-5]
+
+    # Download graph and task data, with profiling.
+    # The following three commands are equivalent to
+    # dataset = glb.dataloading.get_glb_dataset(args.graph, args.task,
+    #                                           args.device, args.verbose)
+    with Profiler("> Graph(s) loading"):
+        g = glb.dataloading.get_glb_graph(args.graph,
+                                          device=args.device,
+                                          verbose=args.verbose)
+
+    with Profiler("> Task loading"):
+        task = glb.dataloading.get_glb_task(args.graph,
+                                            args.task,
+                                            verbose=args.verbose)
+
+    with Profiler("> Combining(s) graph and task"):
+        dataset = glb.dataloading.combine_graph_and_task(g, task)
+
+    print(dataset)
+
+
+class Profiler:
+    """Tic-Toc timer."""
+
+    def __init__(self, func_name):
+        """Initialize tic by current time."""
+        self.t = time.time()
+        self.func_name = func_name
+
+    def __enter__(self):
+        """Reset tic."""
+        self.t = time.time()
+        tracemalloc.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Return time elaspe between tic and toc, and reset tic."""
+        elapse = time.time() - self.t
+        mem = tracemalloc.get_traced_memory()[1] / (1024 * 1024)
+        tracemalloc.stop()
+        print(
+            f"{self.func_name} takes {elapse:.4f} seconds and"
+            f" uses {mem:.4f} MB."
+        )
 
 
 if __name__ == "__main__":
