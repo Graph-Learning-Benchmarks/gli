@@ -250,7 +250,7 @@ def download_data(dataset: str, verbose=False):
         data_file_path = os.path.join(data_dir, data_file_name)
         if os.path.exists(data_file_path):
             if verbose:
-                print(f"{data_file_path} already exists.")
+                print(f"{data_file_path} already exists. Skip downloading.")
             continue
         else:
             _download(url, data_file_path, verbose=verbose)
