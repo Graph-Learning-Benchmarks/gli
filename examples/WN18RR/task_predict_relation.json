@@ -17,5 +17,6 @@
     "num_relations": {
         "file": "WN18RR.npz",
         "key": "num_relations"
-    }
+    },
+    "target": "Edge/EdgeClass"
 }
