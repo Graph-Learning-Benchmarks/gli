@@ -28,6 +28,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     assert _is_hetero_graph(metadata) == metadata[
         "is_heterogeneous"], "is_heterogeneous attribute is inconsistent"
     hetero = metadata["is_heterogeneous"]
+    name = metadata["description"]
 
     assert "data" in metadata, "attribute `data` not in metadata.json."
 
@@ -39,9 +40,9 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     data = _dfs_read_file(pwd, data, device="cpu")
 
     if _is_single_graph(data):
-        return _get_single_graph(data, device, hetero=hetero)
+        return _get_single_graph(data, device, hetero=hetero, name=name)
     else:
-        return _get_multi_graph(data, device)
+        return _get_multi_graph(data, device, name=name)
 
 
 def _is_single_graph(data):
@@ -74,17 +75,18 @@ def _to_tensor(x, device="cpu"):
     return x
 
 
-def _get_single_graph(data, device="cpu", hetero=False):
+def _get_single_graph(data, device="cpu", hetero=False, name=None):
     """Initialize and return a single Graph instance given data."""
     if hetero:
         g = _get_heterograph(data)
     else:
         g = _get_homograph(data)
 
+    setattr(g, "name", name)
     return g.to(device=device)
 
 
-def _get_multi_graph(data, device="cpu"):
+def _get_multi_graph(data, device="cpu", name=None):
     """Initialize and return a list of Graph instance given data."""
     # Extract the whole graph
     g: dgl.DGLGraph = _get_single_graph(data)
@@ -114,6 +116,7 @@ def _get_multi_graph(data, device="cpu"):
         elif isinstance(edge_list, sp.lil_matrix):
             subgraph_edges = edge_list.rows[i]
         subgraph = dgl.edge_subgraph(g, subgraph_edges).to(device)
+        setattr(subgraph, "name", name)
         graphs.append(subgraph)
 
     for attr in data["Graph"]:
@@ -185,6 +188,11 @@ def _get_heterograph(data):
 
     g: dgl.DGLGraph = dgl.heterograph(graph_data,
                                       num_nodes_dict=num_nodes_dict)
+
+    # Set indexing map
+    setattr(g, "node_classes", node_classes)
+    setattr(g, "node_to_class", node_to_class)
+    setattr(g, "node_map", node_map)
 
     # Add node and edge features
     for node_class, node_feats in node_features.items():

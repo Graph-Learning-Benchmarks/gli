@@ -25,12 +25,16 @@ class NodeDataset(DGLDataset):
         self.features = task.features
         self.target = task.target
         self.num_splits = task.num_splits
-        self.task = task
-        super().__init__(name=task.description, force_reload=True)
+        self.node_map = getattr(graph, "node_map", None)
+        self.node_to_class = getattr(graph, "node_to_class", None)
+        self.node_classes = getattr(graph, "node_classes", None)
+        self.indices = task.split
+        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
-        for dataset_, indices_list_ in self.task.split.items():
+        reindexed_indices = {}
+        for split_, indices_list_ in self.indices.items():
             mask_list = []
             for fold in range(self.num_splits):
                 if self.num_splits == 1:
@@ -42,18 +46,41 @@ class NodeDataset(DGLDataset):
                 indices_ = indices_.to(self._g.device)
                 indices_ = torch.squeeze(indices_)
                 assert indices_.dim() == 1
-                if len(indices_) < self._g.num_nodes():  # index tensor
-                    mask = torch.zeros(self._g.num_nodes(),
-                                       device=self._g.device)
-                    mask[indices_] = 1
+                assert len(indices_) < self._g.num_nodes()
+                mask = torch.zeros(self._g.num_nodes(),
+                                   device=self._g.device,
+                                   dtype=torch.bool)
+                mask[indices_] = 1
+                if self._g.is_homogeneous:
+                    mask_list.append(mask)
                 else:
-                    mask = indices_
-                mask_list.append(mask)
-            if self.num_splits == 1:
-                mask = mask_list[0]
+                    # Reindex split for heterograph
+                    assert self.num_splits == 1, \
+                        "Heterograph only support single-fold split."
+                    split_indices = {}
+                    class_indices = torch.unique(self.node_to_class[indices_])
+                    for class_idx in class_indices:
+                        node_class = self.node_classes[class_idx]
+                        node_indices = torch.arange(
+                            self._g.num_nodes(node_class)
+                        )[self.node_map[torch.logical_and(
+                            mask, self.node_to_class == class_idx)].long()].to(
+                                self._g.device)
+                        split_indices[node_class] = node_indices
+                    reindexed_indices[split_] = split_indices
+
+            if self._g.is_homogeneous:
+                if self.num_splits == 1:
+                    mask = mask_list[0]
+                else:
+                    mask = torch.stack(mask_list, dim=1)
+                self._g.ndata[split_.replace("set", "mask")] = mask.bool()
             else:
-                mask = torch.stack(mask_list, dim=1)
-            self._g.ndata[dataset_.replace("set", "mask")] = mask.bool()
+                self.indices = reindexed_indices
+
+    def get_node_indices(self):
+        """Return a dictionary with train, val, and test splits."""
+        return self.indices
 
     def __getitem__(self, idx):
         """Single graph dataset only has 1 element."""
@@ -121,7 +148,7 @@ class GraphDataset(DGLDataset):
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
 
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
@@ -202,7 +229,7 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
         self.target = task.target
         self.sample_runtime = task.sample_runtime
         self.task = task
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Load train, val, test edges."""
