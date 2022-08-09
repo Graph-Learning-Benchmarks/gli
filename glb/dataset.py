@@ -29,7 +29,7 @@ class NodeDataset(DGLDataset):
         self.node_to_class = getattr(graph, "node_to_class", None)
         self.node_classes = getattr(graph, "node_classes", None)
         self.indices = task.split
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
@@ -148,7 +148,7 @@ class GraphDataset(DGLDataset):
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
 
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
@@ -229,7 +229,7 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
         self.target = task.target
         self.sample_runtime = task.sample_runtime
         self.task = task
-        super().__init__(name=task.description, force_reload=True)
+        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Load train, val, test edges."""
