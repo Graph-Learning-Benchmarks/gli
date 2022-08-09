@@ -42,6 +42,8 @@ def main():
     parser.add_argument("-v", "--verbose", default=False, action="store_true")
     args = parser.parse_args()
 
+    is_get = not (args.graph.endswith(".json") and args.task.endswith(".json"))
+
     # Find a proper task if user does not specify.
     if args.task is None:
         for f in os.listdir(os.path.join("datasets", args.graph)):
@@ -53,14 +55,23 @@ def main():
     # dataset = glb.dataloading.get_glb_dataset(args.graph, args.task,
     #                                           args.device, args.verbose)
     with Profiler("> Graph(s) loading"):
-        g = glb.dataloading.get_glb_graph(args.graph,
-                                          device=args.device,
-                                          verbose=args.verbose)
+        if is_get:
+            g = glb.dataloading.get_glb_graph(args.graph,
+                                              device=args.device,
+                                              verbose=args.verbose)
+        else:
+            g = glb.dataloading.read_glb_graph(args.graph,
+                                               device=args.device,
+                                               verbose=args.verbose)
 
     with Profiler("> Task loading"):
-        task = glb.dataloading.get_glb_task(args.graph,
-                                            args.task,
-                                            verbose=args.verbose)
+        if is_get:
+            task = glb.dataloading.get_glb_task(args.graph,
+                                                args.task,
+                                                verbose=args.verbose)
+        else:
+            task = glb.dataloading.read_glb_task(args.task,
+                                                 verbose=args.verbose)
 
     with Profiler("> Combining(s) graph and task"):
         dataset = glb.dataloading.combine_graph_and_task(g, task)
@@ -86,10 +97,8 @@ class Profiler:
         elapse = time.time() - self.t
         mem = tracemalloc.get_traced_memory()[1] / (1024 * 1024)
         tracemalloc.stop()
-        print(
-            f"{self.func_name} takes {elapse:.4f} seconds and"
-            f" uses {mem:.4f} MB."
-        )
+        print(f"{self.func_name} takes {elapse:.4f} seconds and"
+              f" uses {mem:.4f} MB.")
 
 
 if __name__ == "__main__":
