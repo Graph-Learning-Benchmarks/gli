@@ -1,0 +1,203 @@
+"""
+Train for node classification dataset.
+
+References:
+https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/train.py
+https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
+https://docs.dgl.ai/guide/minibatch-node.html?highlight=sampling
+"""
+
+
+import time
+import torch
+import numpy as np
+import dgl
+import glb
+from utils import generate_model, parse_args, Models_need_to_be_densed,\
+                  load_config_file, check_multiple_split,\
+                  EarlyStopping
+from glb.utils import to_dense
+
+
+def accuracy(logits, labels):
+    """Calculate accuracy."""
+    _, indices = torch.max(logits, dim=1)
+    correct = torch.sum(indices == labels)
+    return correct.item() * 1.0 / len(labels)
+
+
+def evaluate(model, dataloader):
+    """Evaluate model."""
+    model.eval()
+    ys = []
+    y_hats = []
+    for _, _, blocks in dataloader:
+            with torch.no_grad():
+                input_features = blocks[0].srcdata["feature"]
+                ys.append(blocks[-1].dstdata["label"])
+                y_hats.append(model.module(blocks, input_features))
+    return accuracy(torch.cat(ys), torch.cat(y_hats))
+
+
+def main(args, model_cfg, train_cfg):
+    """Load dataset and train the model."""
+    # load and preprocess dataset
+    if args.gpu < 0:
+        device = "cpu"
+        cuda = False
+    else:
+        device = args.gpu
+        cuda = True
+
+    data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
+                                           device=device)
+    g = data[0]
+
+    if train_cfg["dataset"]["to_dense"] or \
+       args.model in Models_need_to_be_densed:
+        g = to_dense(g)
+    # add self loop
+    if train_cfg["dataset"]["self_loop"]:
+        g = dgl.remove_self_loop(g)
+        g = dgl.add_self_loop(g)
+
+    # check EdgeFeature and multi-modal node features
+    edge_cnt = node_cnt = 0
+    if len(data.features) > 1:
+        for _, element in enumerate(data.features):
+            if "Edge" in element:
+                edge_cnt += 1
+            if "Node" in element:
+                node_cnt += 1
+        if edge_cnt >= 1:
+            raise NotImplementedError("Edge feature is not supported yet.")
+        elif node_cnt >= 2:
+            raise NotImplementedError("Multi-modal node features\
+                                       is not supported yet.")
+
+    features = g.ndata["NodeFeature"]
+    labels = g.ndata["NodeLabel"]
+    train_mask = g.ndata["train_mask"]
+    val_mask = g.ndata["val_mask"]
+    test_mask = g.ndata["test_mask"]
+
+    # for multi-split dataset, choose 0-th split for now
+    if check_multiple_split(args.dataset):
+        train_mask = train_mask[:, 0]
+        val_mask = val_mask[:, 0]
+        test_mask = test_mask[:, 0]
+
+    # When labels contains -1, modify masks
+    if min(labels) < 0:
+        train_mask = train_mask * (labels >= 0)
+        val_mask = val_mask * (labels >= 0)
+        test_mask = test_mask * (labels >= 0)
+
+    in_feats = features.shape[1]
+    n_classes = data.num_labels
+    n_edges = g.number_of_edges()
+
+    print("train_mask.shape:", train_mask.shape)
+    print("type(train_mask): ", type(train_mask))
+    print("train_mask: ", train_mask)
+    print("val_mask.shape: ", val_mask.shape)
+    print(val_mask)
+    sampler = dgl.dataloading.MultiLayerFullNeighborSampler(model_cfg["num_layers"])
+    train_dataloader = dgl.dataloading.DataLoader(
+        g, train_mask, sampler,
+        batch_size=1024,
+        device=device,
+        shuffle=True,
+        drop_last=False,
+        num_workers=0) # 0 for gpu training
+
+    valid_dataloader = dgl.dataloading.DataLoader(
+            g, val_mask, sampler,
+            device=device,
+            batch_size=1024,
+            shuffle=True,
+            drop_last=False,
+            num_workers=0)
+
+    print(f"""----Data statistics------'
+      #Edges {n_edges}
+      #Classes {n_classes}
+      #Train samples {train_mask.int().sum().item()}
+      #Val samples {val_mask.int().sum().item()}
+      #Test samples {test_mask.int().sum().item()}""")
+
+    # create model
+    model = generate_model(args, g, in_feats, n_classes, **model_cfg)
+
+    print(model)
+    if cuda:
+        model.cuda()
+    loss_fcn = torch.nn.CrossEntropyLoss()
+
+    # use optimizer
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=train_cfg["optim"]["lr"],
+        weight_decay=train_cfg["optim"]["weight_decay"])
+
+    if train_cfg["early_stopping"]:
+        stopper = EarlyStopping(patience=50)
+
+    # initialize graph
+    dur = []
+    for epoch in range(train_cfg["max_epoch"]):
+        model.train()
+        if epoch >= 3:
+            if cuda:
+                torch.cuda.synchronize()
+            t0 = time.time()
+
+        for it, _, _, blocks in enumerate(train_dataloader):
+            if cuda:
+                blocks = [b.to(torch.device('cuda')) for b in blocks]
+            input_features = blocks[0].srcdata["features"]
+            output_labels = blocks[-1].dstdata["label"]
+            logits = model(input_features)
+            loss = loss_fcn(logits, output_labels)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            if it % 20 == 0:
+                train_acc = accuracy(logits, output_labels)
+                print('Loss', loss.item(), 'Acc', train_acc.item())
+
+
+        if epoch >= 3:
+            if cuda:
+                torch.cuda.synchronize()
+            dur.append(time.time() - t0)
+
+        # train_acc = accuracy(logits[train_mask], labels[train_mask])
+        val_acc = evaluate(model, valid_dataloader)
+        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
+              f"| Loss {loss.item():.4f}"
+              f" ValAcc {val_acc:.4f} | "
+              f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
+
+        if train_cfg["early_stopping"]:
+            if stopper.step(val_acc, model):
+                break
+
+    print()
+
+    if train_cfg["early_stopping"]:
+        model.load_state_dict(torch.load("es_checkpoint.pt"))
+
+    acc = evaluate(model, features, labels, test_mask)
+    print(f"Test Accuracy {acc:.4f}")
+
+
+if __name__ == "__main__":
+    # Load cmd line args
+    Args = parse_args()
+    print(Args)
+    # Load config file
+    Model_cfg = load_config_file(Args.model_cfg)
+    Train_cfg = load_config_file(Args.train_cfg)
+
+    main(Args, Model_cfg, Train_cfg)
+
