@@ -2,17 +2,21 @@
 import os
 import fnmatch
 import json
+import pytest
 import glb
 from glb.task import SUPPORTED_TASK_TYPES
+from utils import find_datasets
 
 
-def test_data_loading(dataset):
+@pytest.mark.parametrize("dataset_name", find_datasets())
+def test_data_loading(dataset_name):
     """Test data loading for a given dataset.
 
     Test if get_glb_graph, get_glb_task, and get_glb_dataset
     can be applied successfully.
     """
     # temporary skipping all large datasets
+    dataset = dataset_name
     large_dataset_to_skip = ["wiki", "ogbg-code2"]
     if dataset in large_dataset_to_skip:
         return

@@ -6,4 +6,5 @@ optim:
   lr: .005
   weight_decay: 0.0005
 num_trials: 1
-max_epoch: 50
+max_epoch: 1000
+early_stopping: True

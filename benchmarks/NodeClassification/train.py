@@ -13,7 +13,8 @@ import numpy as np
 import dgl
 import glb
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
-                  load_config_file, check_multiple_split
+                  load_config_file, check_multiple_split,\
+                  EarlyStopping
 from glb.utils import to_dense
 
 
@@ -54,6 +55,21 @@ def main(args, model_cfg, train_cfg):
     if train_cfg["dataset"]["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
+
+    # check EdgeFeature and multi-modal node features
+    edge_cnt = node_cnt = 0
+    if len(data.features) > 1:
+        for _, element in enumerate(data.features):
+            if "Edge" in element:
+                edge_cnt += 1
+            if "Node" in element:
+                node_cnt += 1
+        if edge_cnt >= 1:
+            raise NotImplementedError("Edge feature is not supported yet.")
+        elif node_cnt >= 2:
+            raise NotImplementedError("Multi-modal node features\
+                                       is not supported yet.")
+
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
     train_mask = g.ndata["train_mask"]
@@ -96,6 +112,9 @@ def main(args, model_cfg, train_cfg):
         model.parameters(), lr=train_cfg["optim"]["lr"],
         weight_decay=train_cfg["optim"]["weight_decay"])
 
+    if train_cfg["early_stopping"]:
+        stopper = EarlyStopping(patience=50)
+
     # initialize graph
     dur = []
     for epoch in range(train_cfg["max_epoch"]):
@@ -125,7 +144,14 @@ def main(args, model_cfg, train_cfg):
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
+        if train_cfg["early_stopping"]:
+            if stopper.step(val_acc, model):
+                break
+
     print()
+
+    if train_cfg["early_stopping"]:
+        model.load_state_dict(torch.load("es_checkpoint.pt"))
 
     acc = evaluate(model, features, labels, test_mask)
     print(f"Test Accuracy {acc:.4f}")
