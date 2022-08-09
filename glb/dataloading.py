@@ -29,7 +29,8 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
         return glb.dataset.node_dataset_factory(graph, task)
     elif task.type in ("GraphClassification", "GraphRegression"):
         return glb.dataset.graph_dataset_factory(graph, task)
-    elif task.type in ("TimeDependentLinkPrediction", ):
+    elif task.type in ("TimeDependentLinkPrediction", "LinkPrediction",
+                       "KGEntityPrediction", "KGRelationPrediction"):
         return glb.dataset.edge_dataset_factory(graph, task)
     raise NotImplementedError(f"Unsupported type {task.type}")
 
