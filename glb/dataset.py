@@ -55,17 +55,17 @@ class NodeDataset(DGLDataset):
                     mask_list.append(mask)
                 else:
                     # Reindex split for heterograph
-                    assert self.num_splits == 1, "Heterograph only support single-fold split."
+                    assert self.num_splits == 1, \
+                        "Heterograph only support single-fold split."
                     split_indices = {}
                     class_indices = torch.unique(self.node_to_class[indices_])
                     for class_idx in class_indices:
                         node_class = self.node_classes[class_idx]
                         node_indices = torch.arange(
-                            self._g.num_nodes(node_class))[self.node_map[
-                                torch.logical_and(
-                                    mask,
-                                    self.node_to_class == class_idx)].long()].to(
-                                        self._g.device)
+                            self._g.num_nodes(node_class)
+                        )[self.node_map[torch.logical_and(
+                            mask, self.node_to_class == class_idx)].long()].to(
+                                self._g.device)
                         split_indices[node_class] = node_indices
                     reindexed_indices[split_] = split_indices
 
