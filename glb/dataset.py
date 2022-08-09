@@ -13,20 +13,7 @@ from glb.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
                       TimeDependentLinkPredictionTask)
 
 
-class GLBDataset(DGLDataset):
-    """GLB dataset base class."""
-
-    def __init__(self, task: GLBTask):
-        """Initialize the dataset with basic task info."""
-        self.features = task.features
-        self.target = task.target
-        self.num_splits = task.num_splits
-        self.split = task.split
-
-        super().__init__(name=task.description, force_reload=True)
-
-
-class NodeDataset(GLBDataset):
+class NodeDataset(DGLDataset):
     """Node level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
@@ -134,7 +121,7 @@ class NodeRegressionDataset(NodeDataset):
         super().__init__(graph, task)
 
 
-class GraphDataset(GLBDataset):
+class GraphDataset(DGLDataset):
     """Graph Dataset."""
 
     def __init__(self,
@@ -223,7 +210,7 @@ class GraphRegressionDataset(GraphDataset):
         super().__init__(graphs, task, split)
 
 
-class EdgeDataset(GLBDataset):
+class EdgeDataset(DGLDataset):
     """Edge level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
@@ -277,10 +264,8 @@ class LinkPredictionDataset(EdgeDataset):
             DGLGraph: train_g
         """
         train_g = self._g.clone()
-        non_train_edges = torch.cat((
-            self.split["val_set"],
-            self.split["test_set"]
-        ))
+        non_train_edges = torch.cat(
+            (self.split["val_set"], self.split["test_set"]))
         train_g.remove_edges(non_train_edges)
         for split in ("train", "val", "test"):
             train_g.edata.pop(f"{split}_mask")
