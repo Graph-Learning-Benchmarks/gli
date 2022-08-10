@@ -18,6 +18,7 @@ class GLBDataset(DGLDataset):
 
     def __init__(self, graph: Union[DGLGraph, Iterable[DGLGraph]],
                  task: GLBTask):
+        """GLB Base Dataset."""
         self.target = task.target
         self.features = task.features
         self.split = task.split
@@ -26,6 +27,7 @@ class GLBDataset(DGLDataset):
         elif isinstance(graph, Iterable):
             name = f"{graph[0].name} {task.type}"
         super().__init__(name, force_reload=True)
+
 
 class NodeDataset(GLBDataset):
     """Node level dataset."""
@@ -158,7 +160,6 @@ class GraphDataset(GLBDataset):
         if task.num_splits > 1:
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
-
 
     def process(self):
         """Add train, val, and test masks to graph."""
