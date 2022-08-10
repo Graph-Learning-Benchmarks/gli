@@ -17,6 +17,7 @@ from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
                   EarlyStopping
 from glb.utils import to_dense
+from dgl.dataloading import MultiLayerFullNeighborSampler as Sampler
 
 
 def accuracy(logits, labels):
@@ -32,11 +33,11 @@ def evaluate(model, dataloader):
     ys = []
     y_hats = []
     for _, _, blocks in dataloader:
-            with torch.no_grad():
-                input_features = blocks[0].srcdata["feature"]
-                ys.append(blocks[-1].dstdata["label"])
-                y_hats.append(model.module(blocks, input_features))
-    return accuracy(torch.cat(ys), torch.cat(y_hats))
+        with torch.no_grad():
+            input_features = blocks[0].srcdata["NodeFeature"]
+            ys.append(blocks[-1].dstdata["NodeLabel"])
+            y_hats.append(model(blocks, input_features))
+    return accuracy(torch.cat(y_hats), torch.cat(ys))
 
 
 def main(args, model_cfg, train_cfg):
@@ -52,6 +53,7 @@ def main(args, model_cfg, train_cfg):
     data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
     g = data[0]
+    indice = data.get_node_indices()
 
     if train_cfg["dataset"]["to_dense"] or \
        args.model in Models_need_to_be_densed:
@@ -97,27 +99,27 @@ def main(args, model_cfg, train_cfg):
     n_classes = data.num_labels
     n_edges = g.number_of_edges()
 
-    print("train_mask.shape:", train_mask.shape)
-    print("type(train_mask): ", type(train_mask))
-    print("train_mask: ", train_mask)
-    print("val_mask.shape: ", val_mask.shape)
-    print(val_mask)
-    sampler = dgl.dataloading.MultiLayerFullNeighborSampler(model_cfg["num_layers"])
+    sampler = Sampler(model_cfg["num_layers"] + 1)
     train_dataloader = dgl.dataloading.DataLoader(
-        g, train_mask, sampler,
+        g, indice["train_set"], sampler,
         batch_size=1024,
         device=device,
         shuffle=True,
-        drop_last=False,
-        num_workers=0) # 0 for gpu training
+        drop_last=False)
 
     valid_dataloader = dgl.dataloading.DataLoader(
-            g, val_mask, sampler,
+            g, indice["val_set"], sampler,
             device=device,
             batch_size=1024,
             shuffle=True,
-            drop_last=False,
-            num_workers=0)
+            drop_last=False)
+
+    test_dataloader = dgl.dataloading.DataLoader(
+            g, indice["test_set"], sampler,
+            device=device,
+            batch_size=1024,
+            shuffle=True,
+            drop_last=False)
 
     print(f"""----Data statistics------'
       #Edges {n_edges}
@@ -151,20 +153,19 @@ def main(args, model_cfg, train_cfg):
                 torch.cuda.synchronize()
             t0 = time.time()
 
-        for it, _, _, blocks in enumerate(train_dataloader):
+        for it, (_, _, blocks) in enumerate(train_dataloader):
             if cuda:
-                blocks = [b.to(torch.device('cuda')) for b in blocks]
-            input_features = blocks[0].srcdata["features"]
-            output_labels = blocks[-1].dstdata["label"]
-            logits = model(input_features)
+                blocks = [b.to(torch.device("cuda")) for b in blocks]
+            input_features = blocks[0].srcdata["NodeFeature"]
+            output_labels = blocks[-1].dstdata["NodeLabel"]
+            logits = model(blocks, input_features)
             loss = loss_fcn(logits, output_labels)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             if it % 20 == 0:
                 train_acc = accuracy(logits, output_labels)
-                print('Loss', loss.item(), 'Acc', train_acc.item())
-
+                print("Loss", loss, "Acc", train_acc)
 
         if epoch >= 3:
             if cuda:
@@ -174,7 +175,7 @@ def main(args, model_cfg, train_cfg):
         # train_acc = accuracy(logits[train_mask], labels[train_mask])
         val_acc = evaluate(model, valid_dataloader)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
-              f"| Loss {loss.item():.4f}"
+              f"| Loss {loss:.4f}"
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
@@ -187,7 +188,7 @@ def main(args, model_cfg, train_cfg):
     if train_cfg["early_stopping"]:
         model.load_state_dict(torch.load("es_checkpoint.pt"))
 
-    acc = evaluate(model, features, labels, test_mask)
+    acc = evaluate(model, test_dataloader)
     print(f"Test Accuracy {acc:.4f}")
 
 
@@ -200,4 +201,3 @@ if __name__ == "__main__":
     Train_cfg = load_config_file(Args.train_cfg)
 
     main(Args, Model_cfg, Train_cfg)
-

@@ -10,11 +10,10 @@ from torch import nn
 from dgl.nn.pytorch import GraphConv
 
 
-class GCN_minibatch(nn.Module):
+class GCNminibatch(nn.Module):
     """GCN network."""
 
     def __init__(self,
-                 g,
                  in_feats,
                  n_hidden,
                  n_classes,
@@ -23,7 +22,6 @@ class GCN_minibatch(nn.Module):
                  dropout):
         """Initiate model."""
         super().__init__()
-        self.blocks = g
         self.layers = nn.ModuleList()
         # input layer
         self.layers.append(GraphConv(in_feats, n_hidden,
@@ -39,12 +37,11 @@ class GCN_minibatch(nn.Module):
                                      norm='none'))
         self.dropout = nn.Dropout(p=dropout)
 
-    def forward(self, features):
+    def forward(self, blocks, features):
         """Forward."""
         h = features
         for i, layer in enumerate(self.layers):
             if i != 0:
                 h = self.dropout(h)
-            h = layer(self.blocks[i], h)
+            h = layer(blocks[i], h)
         return h
-
