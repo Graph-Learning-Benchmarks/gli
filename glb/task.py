@@ -11,7 +11,8 @@ from glb.utils import file_reader
 
 SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",
-    "GraphRegression", "TimeDependentLinkPrediction"
+    "GraphRegression", "TimeDependentLinkPrediction", "LinkPrediction",
+    "KGEntityPrediction", "KGRelationPrediction"
 ]
 
 
@@ -30,8 +31,10 @@ class GLBTask:
         self.split = {"train_set": None, "val_set": None, "test_set": None}
         self.device = device
 
-        if "train_set" not in task_dict and \
-                "train_time_window" not in task_dict:
+        if not any([
+                "train_set" in task_dict, "train_time_window" in task_dict,
+                "train_triplet_set" in task_dict
+        ]):
             # use random split
             self.random_split = True
 
@@ -169,7 +172,34 @@ class LinkPredictionTask(GLBTask):
         self.sample_runtime = self.val_neg is not None
         super().__init__(task_dict, pwd)
 
-    pass
+
+class KGEntityPredictionTask(GLBTask):
+    """Knowledge graph entity prediction task."""
+
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
+    def _load_split(self, task_dict: dict):
+        for k in ("train", "val", "test"):
+            task_dict[f"{k}_set"] = task_dict.pop(f"{k}_triplet_set")
+        super()._load_split(task_dict)
+
+
+class KGRelationPredictionTask(ClassificationTask):
+    """Knowledge graph relation prediction task."""
+
+    def __init__(self, task_dict, pwd, device="cpu"):
+        """Rename num_relations to num_classes."""
+        task_dict["num_classes"] = task_dict.pop("num_relations")
+        super().__init__(task_dict, pwd, device)
+
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
+    def _load_split(self, task_dict: dict):
+        for k in ("train", "val", "test"):
+            task_dict[f"{k}_set"] = task_dict.pop(f"{k}_triplet_set")
+        super()._load_split(task_dict)
 
 
 class TimeDependentLinkPredictionTask(LinkPredictionTask):
@@ -203,16 +233,11 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
     if verbose:
         print(task_dict["description"])
 
-    if task_dict["type"] == "NodeClassification":
-        return NodeClassificationTask(task_dict, pwd)
-    elif task_dict["type"] == "GraphClassification":
-        return GraphClassificationTask(task_dict, pwd)
-    elif task_dict["type"] == "TimeDependentLinkPrediction":
-        return TimeDependentLinkPredictionTask(task_dict, pwd)
-    elif task_dict["type"] == "NodeRegression":
-        return NodeRegressionTask(task_dict, pwd)
-    elif task_dict["type"] == "GraphRegression":
-        return GraphRegressionTask(task_dict, pwd)
+    if task_dict["type"] in SUPPORTED_TASK_TYPES:
+        # Call class constructers by Python eval() method
+        # This method is dicouraged by pylint but we have limited the type.
+        # pylint: disable=W0123
+        return eval(task_dict["type"] + "Task")(task_dict, pwd)
     else:
         raise NotImplementedError(f"Unrecognized task: {task_dict['type']}"
                                   f"Supported tasks: {SUPPORTED_TASK_TYPES}")

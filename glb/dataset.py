@@ -6,9 +6,11 @@ import torch
 from dgl.data import DGLDataset
 from dgl import DGLGraph
 
-from glb.task import (GLBTask, GraphClassificationTask, GraphRegressionTask,
-                      LinkPredictionTask, NodeClassificationTask,
-                      NodeRegressionTask, TimeDependentLinkPredictionTask)
+from glb.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
+                      GraphRegressionTask, LinkPredictionTask,
+                      NodeClassificationTask, NodeRegressionTask,
+                      KGRelationPredictionTask,
+                      TimeDependentLinkPredictionTask)
 
 
 class NodeDataset(DGLDataset):
@@ -125,7 +127,7 @@ class GraphDataset(DGLDataset):
     def __init__(self,
                  graphs: Iterable[DGLGraph],
                  task: GLBTask,
-                 split="train_set"):
+                 split_set="train_set"):
         """Initialize a graph level dataset.
 
         Args:
@@ -138,11 +140,8 @@ class GraphDataset(DGLDataset):
             NotImplementedError: GraphDataset does not support multi-split.
         """
         self.graphs = graphs
-        self.features = task.features
-        self.target = task.target
-        self.split = split
         self.label_name = None
-        self.task = task
+        self.split_set = split_set
 
         if task.num_splits > 1:
             raise NotImplementedError(
@@ -152,13 +151,13 @@ class GraphDataset(DGLDataset):
 
     def process(self):
         """Add train, val, and test masks to graph."""
-        entries = self.task.target.split("/")
+        entries = self.target.split("/")
         assert len(entries) == 2
         assert entries[0] == "Graph"
         self.label_name = entries[1]
 
         device = self.graphs[0].device
-        indices = self.task.split[self.split]
+        indices = self.split[self.split_set]
         assert not (indices.is_sparse or indices.is_sparse_csr)
         if isinstance(indices, np.ndarray):
             indices = torch.from_numpy(indices).to(device)
@@ -211,8 +210,8 @@ class GraphRegressionDataset(GraphDataset):
         super().__init__(graphs, task, split)
 
 
-class TimeDependentLinkPredictionDataset(DGLDataset):
-    """Link Prediction dataset."""
+class EdgeDataset(DGLDataset):
+    """Edge level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
         """Initialize a edge level dataset.
@@ -232,22 +231,15 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
         super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
-        """Load train, val, test edges."""
-        time_entries = self.task.time.split("/")
-        assert len(time_entries) == 2
-        assert time_entries[0] == "Edge"
-        time_attr = time_entries[-1]
-        etime = self._g.edata[time_attr]  # tensor / dict of tensor
-        for split in ["train", "val", "test"]:
-            window = self.task.time_window[f"{split}_time_window"]
-            if isinstance(etime, dict):
-                self._g.edata[f"{split}_mask"] = {
-                    k: torch.logical_and(v >= window[0], v < window[1])
-                    for k, v in etime.items()
-                }
-            else:
-                self._g.edata[f"{split}_mask"] = torch.logical_and(
-                    etime >= window[0], etime < window[1])
+        """Add split masks to edata."""
+        for split in ("train", "val", "test"):
+            indices = torch.zeros(self._g.num_edges(), dtype=torch.bool)
+            indices[self.split[f"{split}_set"]] = True
+            self._g.edata[f"{split}_mask"] = indices
+
+
+class LinkPredictionDataset(EdgeDataset):
+    """Link prediction dataset."""
 
     def get_idx_split(self):
         """Return a dictionary of train, val, and test splits.
@@ -256,11 +248,28 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
             Dict: split_dict
         """
         split_dict = {}
-        for split in ["train", "val", "test"]:
+        for split in ("train", "val", "test"):
             split_dict[split] = torch.masked_select(
                 torch.arange(self._g.num_edges()),
                 self._g.edata[f"{split}_mask"])
         return split_dict
+
+    def get_train_graph(self):
+        """Return the subgraph that removes val and test edges.
+
+        Notice that the returned graph will be generated from a copy of self._g
+        and be re-indexed.
+
+        Returns:
+            DGLGraph: train_g
+        """
+        train_g = self._g.clone()
+        non_train_edges = torch.cat(
+            (self.split["val_set"], self.split["test_set"]))
+        train_g.remove_edges(non_train_edges)
+        for split in ("train", "val", "test"):
+            train_g.edata.pop(f"{split}_mask")
+        return train_g
 
     def __getitem__(self, idx):
         """Single graph dataset only has 1 element."""
@@ -270,6 +279,50 @@ class TimeDependentLinkPredictionDataset(DGLDataset):
     def __len__(self):
         """Single graph dataset only has 1 element."""
         return 1
+
+
+class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
+    """Link Prediction dataset."""
+
+    def __init__(self, graph: DGLGraph, task: GLBTask):
+        """Initialize a edge level dataset.
+
+        Args:
+            graph (DGLGraph): A DGL graph
+            task (GLBTask): GLB task config
+
+        Raises:
+            NotImplementedError: GraphDataset does not support multi-split.
+        """
+        self.time = task.time
+        self.time_window = task.time_window
+        super().__init__(graph, task)
+
+    def process(self):
+        """Extract split info from edge time."""
+        time_entries = self.time.split("/")
+        assert len(time_entries) == 2
+        assert time_entries[0] == "Edge"
+        time_attr = time_entries[-1]
+        etime = self._g.edata[time_attr].squeeze()
+        for split in ("train", "val", "test"):
+            window = self.time_window[f"{split}_time_window"]
+            self.split[f"{split}_set"] = torch.arange(
+                self._g.num_edges())[torch.logical_and(etime >= window[0],
+                                                       etime < window[1])]
+        super().process()
+
+
+class KGEntityPredictionDataset(LinkPredictionDataset):
+    """Knowledge graph entity prediction dataset."""
+
+    pass
+
+
+class KGRelationPredictionDataset(LinkPredictionDataset):
+    """Knowledge graph relation prediction dataset."""
+
+    pass
 
 
 def node_dataset_factory(graph: DGLGraph, task: GLBTask):
@@ -300,6 +353,12 @@ def edge_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
 
     if isinstance(task, TimeDependentLinkPredictionTask):
         return TimeDependentLinkPredictionDataset(graph, task)
+    elif isinstance(task, KGRelationPredictionTask):
+        return KGRelationPredictionDataset(graph, task)
+    elif isinstance(task, KGEntityPredictionTask):
+        return KGEntityPredictionDataset(graph, task)
+    elif isinstance(task, LinkPredictionTask):
+        return LinkPredictionDataset(graph, task)
     else:
         raise TypeError(f"Unknown task type {type(task)}.")
 
