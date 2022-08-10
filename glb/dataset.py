@@ -1,4 +1,5 @@
 """Dataset for GLB."""
+from ctypes import Union
 from typing import Iterable
 import numpy as np
 
@@ -13,7 +14,21 @@ from glb.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
                       TimeDependentLinkPredictionTask)
 
 
-class NodeDataset(DGLDataset):
+class GLBDataset(DGLDataset):
+    """GLB Base Dataset."""
+
+    def __init__(self, graph: Union[DGLGraph, Iterable[DGLGraph]],
+                 task: GLBTask):
+        self.target = task.target
+        self.features = task.features
+        self.split = task.split
+        if isinstance(graph, DGLGraph):
+            self.name = f"{graph.name} {task.type}"
+        elif isinstance(graph, Iterable):
+            self.name = f"{graph[0].name} {task.type}"
+        super().__init__(self.name, force_reload=True)
+
+class NodeDataset(GLBDataset):
     """Node level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
@@ -24,19 +39,15 @@ class NodeDataset(DGLDataset):
             task (GLBTask): Node level GLB task config.
         """
         self._g = graph
-        self.features = task.features
-        self.target = task.target
         self.num_splits = task.num_splits
         self.node_map = getattr(graph, "node_map", None)
         self.node_to_class = getattr(graph, "node_to_class", None)
         self.node_classes = getattr(graph, "node_classes", None)
-        self.indices = task.split
-        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
         reindexed_indices = {}
-        for split_, indices_list_ in self.indices.items():
+        for split_, indices_list_ in self.split.items():
             mask_list = []
             for fold in range(self.num_splits):
                 if self.num_splits == 1:
@@ -78,11 +89,11 @@ class NodeDataset(DGLDataset):
                     mask = torch.stack(mask_list, dim=1)
                 self._g.ndata[split_.replace("set", "mask")] = mask.bool()
             else:
-                self.indices = reindexed_indices
+                self.split = reindexed_indices
 
     def get_node_indices(self):
         """Return a dictionary with train, val, and test splits."""
-        return self.indices
+        return self.split
 
     def __getitem__(self, idx):
         """Single graph dataset only has 1 element."""
@@ -121,7 +132,7 @@ class NodeRegressionDataset(NodeDataset):
         super().__init__(graph, task)
 
 
-class GraphDataset(DGLDataset):
+class GraphDataset(GLBDataset):
     """Graph Dataset."""
 
     def __init__(self,
@@ -139,19 +150,15 @@ class GraphDataset(DGLDataset):
         Raises:
             NotImplementedError: GraphDataset does not support multi-split.
         """
+        super().__init__(graph=graphs, task=task)
         self.graphs = graphs
         self.label_name = None
         self.split_set = split_set
-        self.features = task.features
-        self.target = task.target
-        self.split = task.split
 
         if task.num_splits > 1:
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
 
-        super().__init__(name=f"{self.graphs[0].name} {task.type}",
-                         force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
@@ -214,7 +221,7 @@ class GraphRegressionDataset(GraphDataset):
         super().__init__(graphs, task, split)
 
 
-class EdgeDataset(DGLDataset):
+class EdgeDataset(GLBDataset):
     """Edge level dataset."""
 
     def __init__(self, graph: DGLGraph, task: GLBTask):
@@ -227,12 +234,9 @@ class EdgeDataset(DGLDataset):
         Raises:
             NotImplementedError: GraphDataset does not support multi-split.
         """
+        super().__init__(graph=graph, task=task)
         self._g = graph
-        self.features = task.features
-        self.target = task.target
         self.sample_runtime = task.sample_runtime
-        self.task = task
-        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
 
     def process(self):
         """Add split masks to edata."""
