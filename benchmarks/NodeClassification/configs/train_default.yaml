@@ -1,7 +1,7 @@
 loss_fun: cross_entropy
 dataset:
   self_loop: True
-  to_dense: True
+  to_dense: False
 optim:
   lr: .005
   weight_decay: 0.0005
