@@ -1,6 +1,5 @@
 """Dataset for GLB."""
-from ctypes import Union
-from typing import Iterable
+from typing import Iterable, Union
 import numpy as np
 
 import torch
@@ -23,10 +22,10 @@ class GLBDataset(DGLDataset):
         self.features = task.features
         self.split = task.split
         if isinstance(graph, DGLGraph):
-            self.name = f"{graph.name} {task.type}"
+            name = f"{graph.name} {task.type}"
         elif isinstance(graph, Iterable):
-            self.name = f"{graph[0].name} {task.type}"
-        super().__init__(self.name, force_reload=True)
+            name = f"{graph[0].name} {task.type}"
+        super().__init__(name, force_reload=True)
 
 class NodeDataset(GLBDataset):
     """Node level dataset."""
@@ -150,10 +149,10 @@ class GraphDataset(GLBDataset):
         Raises:
             NotImplementedError: GraphDataset does not support multi-split.
         """
-        super().__init__(graph=graphs, task=task)
         self.graphs = graphs
         self.label_name = None
         self.split_set = split_set
+        super().__init__(graph=graphs, task=task)
 
         if task.num_splits > 1:
             raise NotImplementedError(
@@ -234,9 +233,9 @@ class EdgeDataset(GLBDataset):
         Raises:
             NotImplementedError: GraphDataset does not support multi-split.
         """
-        super().__init__(graph=graph, task=task)
         self._g = graph
         self.sample_runtime = task.sample_runtime
+        super().__init__(graph=graph, task=task)
 
     def process(self):
         """Add split masks to edata."""
