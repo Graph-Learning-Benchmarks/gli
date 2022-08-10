@@ -142,12 +142,15 @@ class GraphDataset(DGLDataset):
         self.graphs = graphs
         self.label_name = None
         self.split_set = split_set
+        self.features = task.features
+        self.target = task.target
+        self.split = task.split
 
         if task.num_splits > 1:
             raise NotImplementedError(
                 "GraphDataset does not support multi-split.")
 
-        super().__init__(name=f"{self._g.name} {task.type}", force_reload=True)
+        super().__init__(name=f"{self.graphs[0].name} {task.type}", force_reload=True)
 
     def process(self):
         """Add train, val, and test masks to graph."""
