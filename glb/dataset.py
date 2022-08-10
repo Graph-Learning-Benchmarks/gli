@@ -42,6 +42,7 @@ class NodeDataset(GLBDataset):
         self.node_map = getattr(graph, "node_map", None)
         self.node_to_class = getattr(graph, "node_to_class", None)
         self.node_classes = getattr(graph, "node_classes", None)
+        super().__init__(graph, task)
 
     def process(self):
         """Add train, val, and test masks to graph."""
