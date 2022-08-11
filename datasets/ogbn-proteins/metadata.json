@@ -47,6 +47,6 @@
         }
         
     },
-    "citation": "@inproceedings{title={STRING v11: protein–protein association networks with increased coverage, supporting functional discovery in genome-wide experimental datasets.},\nauthor={Damian Szklarczyk, Annika L Gable, David Lyon, Alexander Junge, Stefan Wyder, Jaime Huerta- Cepas, Milan Simonovic, Nadezhda T Doncheva, John H Morris, Peer Bork, et al.},\nbooktitle={Nucleic Acids Research},\npages={607=613},\nyear={2029}",
+    "citation": "@inproceedings{title={STRING v11: protein–protein association networks with increased coverage, supporting functional discovery in genome-wide experimental datasets.},\nauthor={Damian Szklarczyk, Annika L Gable, David Lyon, Alexander Junge, Stefan Wyder, Jaime Huerta- Cepas, Milan Simonovic, Nadezhda T Doncheva, John H Morris, Peer Bork, et al.},\nbooktitle={Nucleic Acids Research},\npages={607=613},\nyear={2029}}",
     "is_heterogeneous": false
 }

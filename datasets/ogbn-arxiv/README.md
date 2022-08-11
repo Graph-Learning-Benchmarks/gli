@@ -19,6 +19,7 @@ Statistics:
   year={2020}
 }
 ```
+- Current Version
 ```
 @inproceedings{
   title={Distributed representationsof words and phrases and their compositionality},
