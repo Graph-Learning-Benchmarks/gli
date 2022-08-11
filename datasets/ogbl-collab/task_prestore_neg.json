@@ -1,0 +1,20 @@
+{
+    "description": "The task is to predict the future author collaboration relationships given the past collaborations. The goal is to rank true collaborations higher than false collaborations. Specifically, we rank each true collaboration among a set of 100,000 randomly-sampled negative collaborations, and count the ratio of positive edges that are ranked at K-place or above (Hits@K). We found K = 50 to be a good threshold in our preliminary experiments.",
+    "type": "TimeDependentLinkPrediction",
+    "feature": [
+        "Node/NodeFeature",
+        "Edge/EdgeWeight"
+    ],
+    "time": "Edge/EdgeYear",
+    "val_neg": {
+        "file": "ogbl-collab_task_prestore_neg.npz",
+        "key": "val_neg"
+    },
+    "test_neg": {
+        "file": "ogbl-collab_task_prestore_neg.npz",
+        "key": "test_neg"
+    },
+    "train_time_window": [1963, 2018],
+    "val_time_window": [2018, 2019],
+    "test_time_window": [2019, 2020]
+}
