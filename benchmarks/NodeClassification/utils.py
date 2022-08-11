@@ -20,6 +20,7 @@ from models.gat import GAT
 from models.monet import MoNet
 from models.graph_sage import GraphSAGE
 from models.mlp import MLP
+from models.gcn_minibatch import GCNminibatch
 
 
 Models_need_to_be_densed = ["GraphSAGE", "GAT"]
@@ -75,6 +76,13 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                     model_cfg["num_layers"],
                     F.relu,
                     model_cfg["dropout"])
+    elif args.model == "GCN_minibatch":
+        model = GCNminibatch(in_feats,
+                             model_cfg["num_hidden"],
+                             n_classes,
+                             model_cfg["num_layers"],
+                             F.relu,
+                             model_cfg["dropout"])
     return model
 
 
