@@ -13,6 +13,7 @@ import yaml
 import os
 import fnmatch
 import json
+import shutil
 import torch
 import torch.nn.functional as F
 from models.gcn import GCN
@@ -165,3 +166,10 @@ class EarlyStopping:
     def save_checkpoint(self, model):
         """Save model when validation loss decrease."""
         torch.save(model.state_dict(), "es_checkpoint.pt")
+
+
+def makedirs_rm_exist(dir_name):
+    """Make a directory, remove any existing data."""
+    if os.path.isdir(dir_name):
+        shutil.rmtree(dir_name)
+    os.makedirs(dir_name, exist_ok=True)
