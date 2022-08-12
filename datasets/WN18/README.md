@@ -24,9 +24,9 @@ Statistics:
 
 ### Knowledge Graph Completion
 
-+ Task type: `EntityLinkPrediction`
++ Task type: `KGEntityPrediction`
     - Predict the tail (head) entity given a pair of relation and head (tail).
-+ Task type: `RelationLinkPrediction`
++ Task type: `KGRelationPrediction`
     - Predict the relation edge given a pair of head and tail entities.
 
 #### Citation
