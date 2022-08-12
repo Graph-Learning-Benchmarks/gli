@@ -19,6 +19,7 @@ Statistics:
   year={2029}
 }
 ```
+- Current Version
 ```
 @inproceedings{
   title={The gene ontology resource: 20 years and still going strong},
