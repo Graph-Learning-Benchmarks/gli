@@ -1,5 +1,5 @@
 """
-Grid search.
+Random search.
 
 References:
 https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/configs_gen.py
