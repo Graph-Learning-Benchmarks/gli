@@ -9,14 +9,12 @@ graphgym/utils/io.py
 
 import argparse
 import yaml
-import random
+import time
 from utils import load_config_file, makedirs_rm_exist
 from random import randint
 
 train_cfg_list = ["self_loop", "to_dense", "lr", "weight_decay", "num_trials",
                   "max_epoch", "early_stopping"]
-
-random.seed(123)
 
 
 def parse_args():
@@ -34,28 +32,33 @@ def parse_args():
     parser.add_argument("--sample_num", dest="sample_num",
                         help="Number of random samples in the space",
                         default=10, type=int)
+    parser.add_argument("--model", type=str, default="GCN",
+                        help="model to be used. GCN, GAT, MoNet,\
+                              GraphSAGE, MLP for now")
     return parser.parse_args()
 
 
-def gen_grid(args, gen_cfg, model_cfg, train_cfg):
+def grid_gen(args, gen_cfg, model_cfg, train_cfg):
     """Generate random search configuration files."""
+    dir_name = "./grid/" + args.model + time.strftime("_%Y%m%d_%H%M%S")
+    makedirs_rm_exist(dir_name)
     for i in range(args.sample_num):
-        train_cfg_name = "train"
-        model_cfg_name = "model"
+        train_cfg_name = args.model + "_train_" + str(i) + ".yaml"
+        model_cfg_name = args.model + "_model_" + str(i) + ".yaml"
+        train_cfg["seed"] = randint(1, 1000)
         for key in gen_cfg:
             key_len = len(gen_cfg[key])
             if key in train_cfg_list:
                 train_cfg[key] = gen_cfg[key][randint(0, key_len-1)]
-                train_cfg_name += f"_{key}={train_cfg[key]}"
+                # train_cfg_name += f"_{key}={train_cfg[key]}"
             else:
                 # otherwise, the key is for model
                 model_cfg[key] = gen_cfg[key][randint(0, key_len-1)]
-                model_cfg_name += f"_{key}={model_cfg[key]}"
-        makedirs_rm_exist(f"grid/{i}")
-        with open(f"grid/{i}/{train_cfg_name}.yaml",
+                # model_cfg_name += f"_{key}={model_cfg[key]}"
+        with open(dir_name + "/" + train_cfg_name,
                   "w", encoding="utf-8") as f:
             yaml.dump(train_cfg, f, default_flow_style=False)
-        with open(f"grid/{i}/{model_cfg_name}.yaml",
+        with open(dir_name + "/" + model_cfg_name,
                   "w", encoding="utf-8") as f:
             yaml.dump(model_cfg, f, default_flow_style=False)
 
@@ -66,4 +69,4 @@ if __name__ == "__main__":
     # load default configuration for training and model
     Model_cfg = load_config_file(Args.model_cfg)
     Train_cfg = load_config_file(Args.train_cfg)
-    gen_grid(Args, Gen_cfg, Model_cfg, Train_cfg)
+    grid_gen(Args, Gen_cfg, Model_cfg, Train_cfg)

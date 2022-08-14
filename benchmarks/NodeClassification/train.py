@@ -8,6 +8,7 @@ https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 
 
 import time
+import random
 import torch
 import numpy as np
 import dgl
@@ -47,15 +48,6 @@ def main(args, model_cfg, train_cfg):
 
     data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
-    g = data[0]
-    if train_cfg["dataset"]["to_dense"] or \
-       args.model in Models_need_to_be_densed:
-        g = to_dense(g)
-    # add self loop
-    if train_cfg["dataset"]["self_loop"]:
-        g = dgl.remove_self_loop(g)
-        g = dgl.add_self_loop(g)
-
     # check EdgeFeature and multi-modal node features
     edge_cnt = node_cnt = 0
     if len(data.features) > 1:
@@ -69,6 +61,15 @@ def main(args, model_cfg, train_cfg):
         elif node_cnt >= 2:
             raise NotImplementedError("Multi-modal node features\
                                        is not supported yet.")
+
+    g = data[0]
+    if train_cfg["dataset"]["to_dense"] or \
+       args.model in Models_need_to_be_densed:
+        g = to_dense(g)
+    # add self loop
+    if train_cfg["dataset"]["self_loop"]:
+        g = dgl.remove_self_loop(g)
+        g = dgl.add_self_loop(g)
 
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
@@ -154,7 +155,8 @@ def main(args, model_cfg, train_cfg):
         model.load_state_dict(torch.load("es_checkpoint.pt"))
 
     acc = evaluate(model, features, labels, test_mask)
-    print(f"Test Accuracy {acc:.4f}")
+    val_acc = stopper.best_score
+    print(f"Test{acc:.4f},Val{val_acc:.4f}")
 
 
 if __name__ == "__main__":
@@ -164,5 +166,5 @@ if __name__ == "__main__":
     # Load config file
     Model_cfg = load_config_file(Args.model_cfg)
     Train_cfg = load_config_file(Args.train_cfg)
-
+    random.seed(Train_cfg["seed"])
     main(Args, Model_cfg, Train_cfg)
