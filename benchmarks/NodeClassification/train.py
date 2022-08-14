@@ -166,5 +166,5 @@ if __name__ == "__main__":
     # Load config file
     Model_cfg = load_config_file(Args.model_cfg)
     Train_cfg = load_config_file(Args.train_cfg)
-    random.seed(Train_cfg["seed"])
+    random.seed(Train_cfg["seed"] * time.time())
     main(Args, Model_cfg, Train_cfg)
