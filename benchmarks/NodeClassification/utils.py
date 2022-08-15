@@ -84,8 +84,6 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                        layer_dropout=model_cfg["layer_dropout"],
                        batchnorm=model_cfg["batchnorm"])
     elif args.model == "LINKX":
-        print("============================")
-        print(model_cfg)
         model = LINKX(g=g,
                       in_channels=in_feats,
                       num_nodes=g.ndata["NodeFeature"].shape[0],
