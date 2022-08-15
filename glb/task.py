@@ -169,12 +169,18 @@ class LinkPredictionTask(GLBTask):
         self.target = "Edge/_Edge"
         self.val_neg = task_dict.get("val_neg", None)
         self.test_neg = task_dict.get("test_neg", None)
-        self.sample_runtime = self.val_neg is not None
+        self.sample_runtime = self.val_neg is None
         super().__init__(task_dict, pwd)
 
 
 class KGEntityPredictionTask(GLBTask):
     """Knowledge graph entity prediction task."""
+
+    def __init__(self, task_dict, pwd, device="cpu"):
+        """Initialize KGEntityPredictionTask."""
+        # REVIEW - only supports runtime sampling for now
+        self.sample_runtime = True
+        super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
         self._load_split(task_dict)
@@ -191,6 +197,8 @@ class KGRelationPredictionTask(ClassificationTask):
     def __init__(self, task_dict, pwd, device="cpu"):
         """Rename num_relations to num_classes."""
         task_dict["num_classes"] = task_dict.pop("num_relations")
+        # REVIEW - only supports runtime sampling for now
+        self.sample_runtime = True
         super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
