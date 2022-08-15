@@ -63,11 +63,11 @@ def main(args, model_cfg, train_cfg):
                                        is not supported yet.")
 
     g = data[0]
-    if train_cfg["dataset"]["to_dense"] or \
+    if train_cfg["to_dense"] or \
        args.model in Models_need_to_be_densed:
         g = to_dense(g)
     # add self loop
-    if train_cfg["dataset"]["self_loop"]:
+    if train_cfg["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
 
@@ -110,8 +110,8 @@ def main(args, model_cfg, train_cfg):
 
     # use optimizer
     optimizer = torch.optim.Adam(
-        model.parameters(), lr=train_cfg["optim"]["lr"],
-        weight_decay=train_cfg["optim"]["weight_decay"])
+        model.parameters(), lr=train_cfg["lr"],
+        weight_decay=train_cfg["weight_decay"])
 
     if train_cfg["early_stopping"]:
         ckpt_name = args.model + "_" + args.dataset
