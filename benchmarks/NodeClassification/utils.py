@@ -21,9 +21,10 @@ from models.monet import MoNet
 from models.graph_sage import GraphSAGE
 from models.mlp import MLP
 from models.gcn_minibatch import GCNminibatch
+from models.mixhop import MixHop
+from models.linkx import LINKX
 
-
-Models_need_to_be_densed = ["GraphSAGE", "GAT"]
+Models_need_to_be_densed = ["GraphSAGE", "GAT", "MixHop", "LINKX"]
 
 
 def generate_model(args, g, in_feats, n_classes, **model_cfg):
@@ -83,6 +84,28 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                              model_cfg["num_layers"],
                              F.relu,
                              model_cfg["dropout"])
+    elif args.model == "MixHop":
+        model = MixHop(g,
+                       in_dim=in_feats,
+                       hid_dim=model_cfg["num_hidden"],
+                       out_dim=n_classes,
+                       p=model_cfg["p"],
+                       num_layers=model_cfg["num_layers"],
+                       input_dropout=model_cfg["dropout"],
+                       layer_dropout=model_cfg["layer_dropout"],
+                       batchnorm=model_cfg["batchnorm"])
+    elif args.model == "LINKX":
+        model = LINKX(g=g,
+                      in_channels=in_feats,
+                      num_nodes=g.ndata["NodeFeature"].shape[0],
+                      hidden_channels=model_cfg["num_hidden"],
+                      out_channels=n_classes,
+                      num_layers=model_cfg["num_layers"],
+                      dropout=model_cfg["dropout"],
+                      inner_activation=model_cfg["inner_activation"],
+                      inner_dropout=model_cfg["inner_dropout"],
+                      init_layers_A=model_cfg["init_layers_A"],
+                      init_layers_X=model_cfg["init_layers_X"])
     return model
 
 
