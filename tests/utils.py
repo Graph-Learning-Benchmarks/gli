@@ -43,14 +43,6 @@ SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
         "val_triplet_set",
         "test_triplet_set",
     ],
-    "RelationLinkPrediction": [
-        "description",
-        "type",
-        "feature",
-        "train_triplet_set",
-        "val_triplet_set",
-        "test_triplet_set",
-    ],
     "GraphRegression": []
 }
 
