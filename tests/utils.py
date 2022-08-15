@@ -30,7 +30,7 @@ SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
         "type",
         "feature",
         "target",
-        "num_targets",
+        "num_relations",
         "train_triplet_set",
         "val_triplet_set",
         "test_triplet_set",
