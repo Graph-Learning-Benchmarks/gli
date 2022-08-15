@@ -114,7 +114,8 @@ def main(args, model_cfg, train_cfg):
         weight_decay=train_cfg["optim"]["weight_decay"])
 
     if train_cfg["early_stopping"]:
-        stopper = EarlyStopping(patience=50)
+        ckpt_name = args.model + "_" + args.dataset
+        stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
 
     # initialize graph
     dur = []
@@ -152,7 +153,7 @@ def main(args, model_cfg, train_cfg):
     print()
 
     if train_cfg["early_stopping"]:
-        model.load_state_dict(torch.load("es_checkpoint.pt"))
+        model.load_state_dict(torch.load(stopper.ckpt_name))
 
     acc = evaluate(model, features, labels, test_mask)
     val_acc = stopper.best_score

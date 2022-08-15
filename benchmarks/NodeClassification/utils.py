@@ -138,12 +138,13 @@ def check_multiple_split(dataset):
 class EarlyStopping:
     """Do early stopping."""
 
-    def __init__(self, patience=50):
+    def __init__(self, ckpt_name, patience=50):
         """Init early stopping."""
         self.patience = patience
         self.counter = 0
         self.best_score = None
         self.early_stop = False
+        self.ckpt_name = ckpt_name + "_checkpoint.pt"
 
     def step(self, acc, model):
         """Step early stopping."""
@@ -165,7 +166,7 @@ class EarlyStopping:
 
     def save_checkpoint(self, model):
         """Save model when validation loss decrease."""
-        torch.save(model.state_dict(), "es_checkpoint.pt")
+        torch.save(model.state_dict(), self.ckpt_name)
 
 
 def makedirs_rm_exist(dir_name):

@@ -52,17 +52,6 @@ def main(args, model_cfg, train_cfg):
 
     data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
-    g = data[0]
-    indice = data.get_node_indices()
-
-    if train_cfg["dataset"]["to_dense"] or \
-       args.model in Models_need_to_be_densed:
-        g = to_dense(g)
-    # add self loop
-    if train_cfg["dataset"]["self_loop"]:
-        g = dgl.remove_self_loop(g)
-        g = dgl.add_self_loop(g)
-
     # check EdgeFeature and multi-modal node features
     edge_cnt = node_cnt = 0
     if len(data.features) > 1:
@@ -76,6 +65,17 @@ def main(args, model_cfg, train_cfg):
         elif node_cnt >= 2:
             raise NotImplementedError("Multi-modal node features\
                                        is not supported yet.")
+
+    g = data[0]
+    indice = data.get_node_indices()
+
+    if train_cfg["dataset"]["to_dense"] or \
+       args.model in Models_need_to_be_densed:
+        g = to_dense(g)
+    # add self loop
+    if train_cfg["dataset"]["self_loop"]:
+        g = dgl.remove_self_loop(g)
+        g = dgl.add_self_loop(g)
 
     features = g.ndata["NodeFeature"]
     labels = g.ndata["NodeLabel"]
@@ -102,7 +102,7 @@ def main(args, model_cfg, train_cfg):
     sampler = Sampler(model_cfg["num_layers"] + 1)
     train_dataloader = dgl.dataloading.DataLoader(
         g, indice["train_set"], sampler,
-        batch_size=1024,
+        batch_size=16,
         device=device,
         shuffle=True,
         drop_last=False)
@@ -110,14 +110,14 @@ def main(args, model_cfg, train_cfg):
     valid_dataloader = dgl.dataloading.DataLoader(
             g, indice["val_set"], sampler,
             device=device,
-            batch_size=1024,
+            batch_size=16,
             shuffle=True,
             drop_last=False)
 
     test_dataloader = dgl.dataloading.DataLoader(
             g, indice["test_set"], sampler,
             device=device,
-            batch_size=1024,
+            batch_size=16,
             shuffle=True,
             drop_last=False)
 
@@ -142,7 +142,8 @@ def main(args, model_cfg, train_cfg):
         weight_decay=train_cfg["optim"]["weight_decay"])
 
     if train_cfg["early_stopping"]:
-        stopper = EarlyStopping(patience=50)
+        ckpt_name = args.model + "_" + args.dataset
+        stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
 
     # initialize graph
     dur = []
