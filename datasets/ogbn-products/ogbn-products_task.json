@@ -1,0 +1,22 @@
+{
+    "description": "The task is to predict the category of a product in a multi-class classification setup, where the 47 top-level categories are used for target labels.",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature",
+        "Edge/EdgeFeature"
+    ],
+    "target": "Node/NodeYear",
+    "num_classes":47,
+    "train_set": {
+        "file": "ogbn-products_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbn-products_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "ogbn-products_task.npz",
+        "key": "test"
+    }
+}

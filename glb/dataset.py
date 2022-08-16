@@ -39,10 +39,15 @@ class NodeDataset(GLBDataset):
             graph (DGLGraph): A DGL graph.
             task (GLBTask): Node level GLB task config.
         """
+        device = graph.device
         self._g = graph
         self.num_splits = task.num_splits
         self.node_map = getattr(graph, "node_map", None)
         self.node_to_class = getattr(graph, "node_to_class", None)
+        if self.node_map:
+            self.node_map = self.node_map.to(device)
+        if self.node_to_class:
+            self.node_to_class = self.node_to_class.to(device)
         self.node_classes = getattr(graph, "node_classes", None)
         super().__init__(graph, task)
 
