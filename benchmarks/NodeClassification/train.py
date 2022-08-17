@@ -8,6 +8,7 @@ https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 
 
 import time
+import re
 import random
 import torch
 import numpy as np
@@ -61,7 +62,6 @@ def main(args, model_cfg, train_cfg):
         elif node_cnt >= 2:
             raise NotImplementedError("Multi-modal node features\
                                        is not supported yet.")
-
     g = data[0]
     if train_cfg["to_dense"] or \
        args.model in Models_need_to_be_densed:
@@ -71,8 +71,10 @@ def main(args, model_cfg, train_cfg):
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
 
-    features = g.ndata["NodeFeature"]
-    labels = g.ndata["NodeLabel"]
+    feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
+    label_name = re.search(r".*Node/(\w+)", data.target).group(1)
+    features = g.ndata[feature_name]
+    labels = g.ndata[label_name]
     train_mask = g.ndata["train_mask"]
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
