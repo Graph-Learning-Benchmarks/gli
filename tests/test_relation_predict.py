@@ -2,16 +2,12 @@
 import glb
 import pytest
 import torch
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
 import numpy as np
-import dgl
 import time
-from test_data_loading import test_data_loading
-
-from glb.task import SUPPORTED_TASK_TYPES
+from torch.utils.data import DataLoader
+# from test_data_loading import test_data_loading
 from utils import find_datasets
-from KG_utils import TransE, KGDataset
+from kg_utils import TransE, KGDataset
 
 
 KG_DATASETS = [
@@ -27,8 +23,8 @@ def test_training(dataset_name):
     if dataset_name not in KG_DATASETS:
         return
 
-    print("First test whether the format of the dataset is correct")
-    test_data_loading(dataset_name)
+    # print("First test whether the format of the dataset is correct")
+    # test_data_loading(dataset_name)
 
     device = "cpu"
 

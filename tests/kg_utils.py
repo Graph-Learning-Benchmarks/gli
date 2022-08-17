@@ -1,7 +1,6 @@
 """Utils function for KG."""
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from torch import nn
 from torch.utils.data import Dataset
 
 
@@ -40,9 +39,9 @@ class KGDataset(Dataset):
     def __getitem__(self, idx):
         """KG Dataset function."""
         data = {
-            "batch_h": self.heads[idx],
-            "batch_t": self.tails[idx],
-            "batch_r": self.rels[idx],
+            'batch_h': self.heads[idx],
+            'batch_t': self.tails[idx],
+            'batch_r': self.rels[idx],
         }
         return data
 
@@ -53,9 +52,9 @@ class TransE(nn.Module):
     def __init__(
         self, ent_tot, rel_tot, dim=100, p_norm=1,
         norm_flag=True, margin=None, epsilon=None
-    ):  # noqa: D403
+    ):  # noqa: D403, R1725
         """TransE function."""
-        super(TransE, self).__init__()
+        super(TransE, self).__init__()  # pylint: disable=R1725
         self.ent_tot = ent_tot
         self.rel_tot = rel_tot
         self.dim = dim
