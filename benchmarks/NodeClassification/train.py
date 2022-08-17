@@ -9,14 +9,13 @@ https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 
 import time
 import re
-import random
 import torch
 import numpy as np
 import dgl
 import glb
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
-                  EarlyStopping
+                  EarlyStopping, set_seed
 from glb.utils import to_dense
 
 
@@ -116,7 +115,8 @@ def main(args, model_cfg, train_cfg):
         weight_decay=train_cfg["weight_decay"])
 
     if train_cfg["early_stopping"]:
-        ckpt_name = args.model + "_" + args.dataset
+        ckpt_name = args.model + "_" + args.dataset + "_"
+        ckpt_name += args.train_cfg
         stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
 
     # initialize graph
@@ -155,7 +155,7 @@ def main(args, model_cfg, train_cfg):
     print()
 
     if train_cfg["early_stopping"]:
-        model.load_state_dict(torch.load(stopper.ckpt_name))
+        model.load_state_dict(torch.load(stopper.ckpt_dir))
 
     acc = evaluate(model, features, labels, test_mask)
     val_acc = stopper.best_score
@@ -169,5 +169,5 @@ if __name__ == "__main__":
     # Load config file
     Model_cfg = load_config_file(Args.model_cfg)
     Train_cfg = load_config_file(Args.train_cfg)
-    random.seed(Train_cfg["seed"] * time.time())
+    set_seed(Train_cfg["seed"])
     main(Args, Model_cfg, Train_cfg)

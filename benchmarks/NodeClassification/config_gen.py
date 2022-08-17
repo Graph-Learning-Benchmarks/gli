@@ -27,14 +27,16 @@ def parse_args():
                         default="configs/train_default.yaml",
                         help="The training configuration file path.")
     parser.add_argument("--grid", type=str,
-                        help="configuration file for grid search",
+                        help="configuration file for grid search.",
                         default="grid/grid_example.yaml")
     parser.add_argument("--sample_num", dest="sample_num",
-                        help="Number of random samples in the space",
+                        help="Number of random samples in the space.",
                         default=10, type=int)
+    parser.add_argument("--trial_num", type=int, default=5,
+                        help="Number of trials for same configuration.")
     parser.add_argument("--model", type=str, default="GCN",
                         help="model to be used. GCN, GAT, MoNet,\
-                              GraphSAGE, MLP for now")
+                              GraphSAGE, MLP for now.")
     return parser.parse_args()
 
 
@@ -43,24 +45,25 @@ def grid_gen(args, gen_cfg, model_cfg, train_cfg):
     dir_name = "./grid/" + args.model + time.strftime("_%Y%m%d_%H%M%S")
     makedirs_rm_exist(dir_name)
     for i in range(args.sample_num):
-        train_cfg_name = args.model + "_train_" + str(i) + ".yaml"
-        model_cfg_name = args.model + "_model_" + str(i) + ".yaml"
-        train_cfg["seed"] = randint(1, 1000)
         for key in gen_cfg:
             key_len = len(gen_cfg[key])
             if key in train_cfg_list:
                 train_cfg[key] = gen_cfg[key][randint(0, key_len-1)]
-                # train_cfg_name += f"_{key}={train_cfg[key]}"
             else:
                 # otherwise, the key is for model
                 model_cfg[key] = gen_cfg[key][randint(0, key_len-1)]
-                # model_cfg_name += f"_{key}={model_cfg[key]}"
-        with open(dir_name + "/" + train_cfg_name,
-                  "w", encoding="utf-8") as f:
-            yaml.dump(train_cfg, f, default_flow_style=False)
-        with open(dir_name + "/" + model_cfg_name,
-                  "w", encoding="utf-8") as f:
-            yaml.dump(model_cfg, f, default_flow_style=False)
+        for j in range(args.trial_num):
+            index_str = str(i) + "_" + str(j)
+            # the i-th configuration, j-th trial
+            train_cfg_name = args.model + "_train_" + index_str + ".yaml"
+            model_cfg_name = args.model + "_model_" + index_str + ".yaml"
+            train_cfg["seed"] = randint(1, 10000)
+            with open(dir_name + "/" + train_cfg_name,
+                      "w", encoding="utf-8") as f:
+                yaml.dump(train_cfg, f, default_flow_style=False)
+            with open(dir_name + "/" + model_cfg_name,
+                      "w", encoding="utf-8") as f:
+                yaml.dump(model_cfg, f, default_flow_style=False)
 
 
 if __name__ == "__main__":

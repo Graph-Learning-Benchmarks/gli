@@ -3,7 +3,7 @@ self_loop: True
 to_dense: False
 lr: .005
 weight_decay: 0.0005
-num_trials: 1
 max_epoch: 10000
 early_stopping: True
-seed: 123
+seed: 0
+batch_size: 1024

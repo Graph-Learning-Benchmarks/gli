@@ -102,7 +102,7 @@ def main(args, model_cfg, train_cfg):
     sampler = Sampler(model_cfg["num_layers"] + 1)
     train_dataloader = dgl.dataloading.DataLoader(
         g, indice["train_set"], sampler,
-        batch_size=16,
+        batch_size=train_cfg["batch_size"],
         device=device,
         shuffle=True,
         drop_last=False)
@@ -110,14 +110,14 @@ def main(args, model_cfg, train_cfg):
     valid_dataloader = dgl.dataloading.DataLoader(
             g, indice["val_set"], sampler,
             device=device,
-            batch_size=16,
+            batch_size=train_cfg["batch_size"],
             shuffle=True,
             drop_last=False)
 
     test_dataloader = dgl.dataloading.DataLoader(
             g, indice["test_set"], sampler,
             device=device,
-            batch_size=16,
+            batch_size=train_cfg["batch_size"],
             shuffle=True,
             drop_last=False)
 
