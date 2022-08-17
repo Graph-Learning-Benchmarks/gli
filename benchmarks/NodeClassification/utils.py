@@ -13,8 +13,11 @@ import yaml
 import os
 import fnmatch
 import json
+import random
+import shutil
 import torch
 import torch.nn.functional as F
+import numpy as np
 from models.gcn import GCN
 from models.gat import GAT
 from models.monet import MoNet
@@ -160,12 +163,18 @@ def check_multiple_split(dataset):
 class EarlyStopping:
     """Do early stopping."""
 
-    def __init__(self, patience=50):
+    def __init__(self, ckpt_name, patience=50):
         """Init early stopping."""
         self.patience = patience
         self.counter = 0
         self.best_score = None
         self.early_stop = False
+        self.dir_name = "checkpoints/"
+        if ~os.path.isdir(self.dir_name):
+            os.makedirs(self.dir_name, exist_ok=True)
+        ckpt_name = ckpt_name.replace("/", "_")
+        ckpt_name = os.path.splitext(ckpt_name)[0]
+        self.ckpt_dir = self.dir_name + ckpt_name + "_checkpoint.pt"
 
     def step(self, acc, model):
         """Step early stopping."""
@@ -187,4 +196,20 @@ class EarlyStopping:
 
     def save_checkpoint(self, model):
         """Save model when validation loss decrease."""
-        torch.save(model.state_dict(), "es_checkpoint.pt")
+        torch.save(model.state_dict(), self.ckpt_dir)
+
+
+def makedirs_rm_exist(dir_name):
+    """Make a directory, remove any existing data."""
+    if os.path.isdir(dir_name):
+        shutil.rmtree(dir_name)
+    os.makedirs(dir_name, exist_ok=True)
+
+
+def set_seed(seed):
+    """Set random seed."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
