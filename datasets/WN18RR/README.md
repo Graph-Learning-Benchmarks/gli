@@ -2,7 +2,7 @@
 
 ## Dataset Description
 
-WN18RR is a link prediction dataset created from WN18, which is a subset of WordNet (a large lexical database of English). It has a total of 93,003 triplets with 40,943 entities and 18 unique relationships.
+WN18RR is a link prediction dataset created from WN18, which is a subset of WordNet (a large lexical database of English). It has a total of 93,003 triplets with 40,943 entities and 11 unique relationships.
 
 Statistics:
 - Nodes: 40943
@@ -25,9 +25,9 @@ Statistics:
 
 ### Knowledge Graph Completion
 
-+ Task type: `EntityLinkPrediction`
++ Task type: `KGEntityPrediction`
     - Predict the tail (head) entity given a pair of relation and head (tail).
-+ Task type: `RelationLinkPrediction`
++ Task type: `KGRelationPrediction`
     - Predict the relation edge given a pair of head and tail entities.
 
 #### Citation

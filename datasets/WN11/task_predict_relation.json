@@ -14,9 +14,6 @@
         "file": "WN11.npz",
         "key": "TestEdge_id"
     },
-    "num_relations": {
-        "file": "WN11.npz",
-        "key": "num_relations"
-    },
+    "num_relations": 11,
     "target": "Edge/EdgeClass"
 }

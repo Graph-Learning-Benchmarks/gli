@@ -14,9 +14,6 @@
         "file": "FB15K.npz",
         "key": "TestEdge_id"
     },
-    "num_relations": {
-        "file": "FB15K.npz",
-        "key": "num_relations"
-    },
+    "num_relations": 1345,
     "target": "Edge/EdgeClass"
 }

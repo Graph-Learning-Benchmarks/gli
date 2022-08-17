@@ -14,8 +14,5 @@
         "file": "NELL-995.npz",
         "key": "TestEdge_id"
     },
-    "num_relations": {
-        "file": "NELL-995.npz",
-        "key": "num_relations"
-    }
+    "num_relations": 200
 }
