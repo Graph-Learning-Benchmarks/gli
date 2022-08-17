@@ -36,7 +36,7 @@ def test_training(dataset_name):
     batch_size = 32
     n_entities = graph.num_nodes()
     n_edges = graph.num_edges()
-    n_relations = data.num_classes
+    n_relations = data.num_relations
     margin = torch.nn.Parameter(torch.Tensor([5.0]))
 
     train_relations = data.get_train_graph().edata["EdgeClass"]
@@ -89,3 +89,5 @@ def test_training(dataset_name):
     print("The dataset has successfully trained \
         on TransE model for two epoches.")
     print("Test passed.")
+
+test_training("WN18RR")
