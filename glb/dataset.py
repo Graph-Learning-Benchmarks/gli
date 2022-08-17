@@ -337,7 +337,6 @@ class KGEntityPredictionDataset(LinkPredictionDataset):
             graph (DGLGraph): A DGL graph
             task (GLBTask): GLB task config
         """
-        self.num_relations = task.num_classes
         super().__init__(graph, task)
 
 

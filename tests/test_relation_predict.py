@@ -89,5 +89,3 @@ def test_training(dataset_name):
     print("The dataset has successfully trained \
         on TransE model for two epoches.")
     print("Test passed.")
-
-test_training("WN18RR")
