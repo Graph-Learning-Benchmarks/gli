@@ -8,6 +8,7 @@ https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 
 
 import time
+import re
 import torch
 import numpy as np
 import dgl
@@ -70,8 +71,10 @@ def main(args, model_cfg, train_cfg):
             raise NotImplementedError("Multi-modal node features\
                                        is not supported yet.")
 
-    features = g.ndata["NodeFeature"]
-    labels = g.ndata["NodeLabel"]
+    feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
+    label_name = re.search(r".*Node/(\w+)", data.target).group(1)
+    features = g.ndata[feature_name]
+    labels = g.ndata[label_name]
     train_mask = g.ndata["train_mask"]
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
