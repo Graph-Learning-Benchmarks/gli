@@ -36,8 +36,16 @@ def evaluate(model, features, labels, mask):
         return accuracy(logits, labels)
 
 
-def main(args, model_cfg, train_cfg):
+def main():
     """Load dataset and train the model."""
+    # Load cmd line args
+    args = parse_args()
+    print(args)
+    # Load config file
+    model_cfg = load_config_file(args.model_cfg)
+    train_cfg = load_config_file(args.train_cfg)
+    set_seed(train_cfg["seed"])
+
     # load and preprocess dataset
     if args.gpu < 0:
         device = "cpu"
@@ -163,11 +171,4 @@ def main(args, model_cfg, train_cfg):
 
 
 if __name__ == "__main__":
-    # Load cmd line args
-    Args = parse_args()
-    print(Args)
-    # Load config file
-    Model_cfg = load_config_file(Args.model_cfg)
-    Train_cfg = load_config_file(Args.train_cfg)
-    set_seed(Train_cfg["seed"])
-    main(Args, Model_cfg, Train_cfg)
+    main()

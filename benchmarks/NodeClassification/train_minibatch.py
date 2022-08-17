@@ -9,13 +9,14 @@ https://docs.dgl.ai/guide/minibatch-node.html?highlight=sampling
 
 
 import time
+import re
 import torch
 import numpy as np
 import dgl
 import glb
-from utils import generate_model, parse_args, Models_need_to_be_densed,\
+from utils import generate_model, parse_args, \
                   load_config_file, check_multiple_split,\
-                  EarlyStopping
+                  EarlyStopping, set_seed
 from glb.utils import to_dense
 from dgl.dataloading import MultiLayerFullNeighborSampler as Sampler
 
@@ -40,8 +41,16 @@ def evaluate(model, dataloader):
     return accuracy(torch.cat(y_hats), torch.cat(ys))
 
 
-def main(args, model_cfg, train_cfg):
+def main():
     """Load dataset and train the model."""
+    # Load cmd line args
+    args = parse_args()
+    print(args)
+    # Load config file
+    model_cfg = load_config_file(args.model_cfg)
+    train_cfg = load_config_file(args.train_cfg)
+    set_seed(train_cfg["seed"])
+
     # load and preprocess dataset
     if args.gpu < 0:
         device = "cpu"
@@ -69,16 +78,19 @@ def main(args, model_cfg, train_cfg):
     g = data[0]
     indice = data.get_node_indices()
 
-    if train_cfg["to_dense"] or \
-       args.model in Models_need_to_be_densed:
-        g = to_dense(g)
+    # if train_cfg["to_dense"] or \
+    #    args.model in Models_need_to_be_densed:
+    #     g = to_dense(g)
+    g = to_dense(g)
     # add self loop
     if train_cfg["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
 
-    features = g.ndata["NodeFeature"]
-    labels = g.ndata["NodeLabel"]
+    feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
+    label_name = re.search(r".*Node/(\w+)", data.target).group(1)
+    features = g.ndata[feature_name]
+    labels = g.ndata[label_name]
     train_mask = g.ndata["train_mask"]
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
@@ -142,7 +154,8 @@ def main(args, model_cfg, train_cfg):
         weight_decay=train_cfg["weight_decay"])
 
     if train_cfg["early_stopping"]:
-        ckpt_name = args.model + "_" + args.dataset
+        ckpt_name = args.model + "_" + args.dataset + "_"
+        ckpt_name += args.train_cfg
         stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
 
     # initialize graph
@@ -159,6 +172,8 @@ def main(args, model_cfg, train_cfg):
                 blocks = [b.to(torch.device("cuda")) for b in blocks]
             input_features = blocks[0].srcdata["NodeFeature"]
             output_labels = blocks[-1].dstdata["NodeLabel"]
+            print(blocks)
+            print(input_features)
             logits = model(blocks, input_features)
             loss = loss_fcn(logits, output_labels)
             optimizer.zero_grad()
@@ -194,11 +209,4 @@ def main(args, model_cfg, train_cfg):
 
 
 if __name__ == "__main__":
-    # Load cmd line args
-    Args = parse_args()
-    print(Args)
-    # Load config file
-    Model_cfg = load_config_file(Args.model_cfg)
-    Train_cfg = load_config_file(Args.train_cfg)
-
-    main(Args, Model_cfg, Train_cfg)
+    main()
