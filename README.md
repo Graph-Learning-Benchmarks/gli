@@ -96,6 +96,6 @@ Please open a pull request to contribute a new dataset. The new dataset should b
 4. `README.md`: a document that describe the dataset information.
 5. `urls.json`*: a configuration file that stores the dropbox urls of the uploaded data files.
 
-*_Please do not upload the data file directly to GitHub._
+*_Please do not upload the data file directly to GitHub. Instead, please follow the [data uploading instructions](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/blob/main/CONTRIBUTING.md)._
 
 Please refer to our [contribution guide](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/blob/main/CONTRIBUTING.md) for details.
