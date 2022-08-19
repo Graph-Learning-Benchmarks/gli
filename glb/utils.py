@@ -229,7 +229,7 @@ def dgl_to_glb(graph: dgl.DGLGraph,
 
 
 def download_data(dataset: str, verbose=False):
-    """Download depenedent data of a configuration (metadata/task) file.
+    """Download dependent data of a configuration (metadata/task) file.
 
     Args:
         dataset (str): Name of dataset.
