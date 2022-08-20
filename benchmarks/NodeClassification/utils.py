@@ -13,17 +13,21 @@ import yaml
 import os
 import fnmatch
 import json
+import random
+import shutil
 import torch
 import torch.nn.functional as F
+import numpy as np
 from models.gcn import GCN
 from models.gat import GAT
 from models.monet import MoNet
 from models.graph_sage import GraphSAGE
 from models.mlp import MLP
 from models.gcn_minibatch import GCNminibatch
+from models.mixhop import MixHop
+from models.linkx import LINKX
 
-
-Models_need_to_be_densed = ["GraphSAGE", "GAT"]
+Models_need_to_be_densed = ["GraphSAGE", "GAT", "MixHop", "LINKX"]
 
 
 def generate_model(args, g, in_feats, n_classes, **model_cfg):
@@ -83,6 +87,28 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                              model_cfg["num_layers"],
                              F.relu,
                              model_cfg["dropout"])
+    elif args.model == "MixHop":
+        model = MixHop(g,
+                       in_dim=in_feats,
+                       hid_dim=model_cfg["num_hidden"],
+                       out_dim=n_classes,
+                       p=model_cfg["p"],
+                       num_layers=model_cfg["num_layers"],
+                       input_dropout=model_cfg["dropout"],
+                       layer_dropout=model_cfg["layer_dropout"],
+                       batchnorm=model_cfg["batchnorm"])
+    elif args.model == "LINKX":
+        model = LINKX(g=g,
+                      in_channels=in_feats,
+                      num_nodes=g.ndata["NodeFeature"].shape[0],
+                      hidden_channels=model_cfg["num_hidden"],
+                      out_channels=n_classes,
+                      num_layers=model_cfg["num_layers"],
+                      dropout=model_cfg["dropout"],
+                      inner_activation=model_cfg["inner_activation"],
+                      inner_dropout=model_cfg["inner_dropout"],
+                      init_layers_A=model_cfg["init_layers_A"],
+                      init_layers_X=model_cfg["init_layers_X"])
     return model
 
 
@@ -137,12 +163,18 @@ def check_multiple_split(dataset):
 class EarlyStopping:
     """Do early stopping."""
 
-    def __init__(self, patience=50):
+    def __init__(self, ckpt_name, patience=50):
         """Init early stopping."""
         self.patience = patience
         self.counter = 0
         self.best_score = None
         self.early_stop = False
+        self.dir_name = "checkpoints/"
+        if ~os.path.isdir(self.dir_name):
+            os.makedirs(self.dir_name, exist_ok=True)
+        ckpt_name = ckpt_name.replace("/", "_")
+        ckpt_name = os.path.splitext(ckpt_name)[0]
+        self.ckpt_dir = self.dir_name + ckpt_name + "_checkpoint.pt"
 
     def step(self, acc, model):
         """Step early stopping."""
@@ -164,4 +196,20 @@ class EarlyStopping:
 
     def save_checkpoint(self, model):
         """Save model when validation loss decrease."""
-        torch.save(model.state_dict(), "es_checkpoint.pt")
+        torch.save(model.state_dict(), self.ckpt_dir)
+
+
+def makedirs_rm_exist(dir_name):
+    """Make a directory, remove any existing data."""
+    if os.path.isdir(dir_name):
+        shutil.rmtree(dir_name)
+    os.makedirs(dir_name, exist_ok=True)
+
+
+def set_seed(seed):
+    """Set random seed."""
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)

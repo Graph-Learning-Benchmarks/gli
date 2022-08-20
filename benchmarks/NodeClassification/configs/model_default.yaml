@@ -1,3 +1,4 @@
-num_layers: 2
+num_layers: 1
 num_hidden: 8
 dropout: .6
+

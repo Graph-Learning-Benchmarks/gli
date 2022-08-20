@@ -1,6 +1,6 @@
 {
     "description": "The task is to predict a valid entity given (head, relation) or (relation, tail) that form a fact triple.",
-    "type": "EntityLinkPrediction",
+    "type": "KGEntityPrediction",
     "feature": null,
     "train_triplet_set": {
         "file": "WN11.npz",
@@ -13,5 +13,9 @@
     "test_triplet_set": {
         "file": "WN11.npz",
         "key": "TestEdge_id"
+    },
+    "num_relations": {
+        "file": "WN11.npz",
+        "key": "num_relations"
     }
 }

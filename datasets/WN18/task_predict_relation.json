@@ -1,6 +1,6 @@
 {
     "description": "The task is to predict a valid relation given (head, tail) that form a fact triple.",
-    "type": "RelationLinkPrediction",
+    "type": "KGRelationPrediction",
     "feature": null,
     "train_triplet_set": {
         "file": "WN18.npz",
@@ -13,5 +13,10 @@
     "test_triplet_set": {
         "file": "WN18.npz",
         "key": "TestEdge_id"
-    }
+    },
+    "num_relations": {
+        "file": "WN18.npz",
+        "key": "num_relations"
+    },
+    "target": "Edge/EdgeClass"
 }
