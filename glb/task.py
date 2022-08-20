@@ -242,8 +242,8 @@ def read_glb_task(task_path: os.PathLike, verbose=True):
         print(task_dict["description"])
 
     if task_dict["type"] in SUPPORTED_TASK_TYPES:
-        # Call class constructers by Python eval() method
-        # This method is dicouraged by pylint but we have limited the type.
+        # Call class constructors by Python eval() method
+        # This method is discouraged by pylint but we have limited the type.
         # pylint: disable=W0123
         return eval(task_dict["type"] + "Task")(task_dict, pwd)
     else:
