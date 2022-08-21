@@ -6,16 +6,16 @@ The central component of the data standardizing pipeline is a definition of the 
 
 ## Design Objectives
 
-There are several principles for the design of the GLI file format.
+There are two principles for the design of the GLI file format.
 
-1. Allow general dataloader that can be widely applicable to different datasets on different tasks.
-2. Build consistent APIs with downstream graph learning libraries such as [`dgl`](https://www.dgl.ai).
-3. Design generic format that is flexible to accommodate various graph-structured data.
-4. Allow efficient storage and fast access.
+1. Ease the development of dataloaders compatible with graph learning libraries with flexible extensions to various datasets and tasks.
+2. Allow efficient storage and fast access.
+
+Three highlighted design features of GLI are given below.
 
 ### Explicit separation of data storage and task configuration
 
-GLI makes an explicit separation between the data storage and the task configuration for graph learning. i.e., Multiple tasks can be performed on the same dataset, or the same task can be performed on different datasets. The separation between graphs and tasks further allows users to use general datasets bound to every type of task that can be applied to every graph dataset.
+In order to satisfy objective 1, GLI makes an explicit separation between the data storage and the task configuration for graph learning. i.e., Multiple tasks can be performed on the same dataset, or the same task can be performed on different datasets. The separation between graphs and tasks allow users to use the general dataloading API (`get_gli_dataset(graph, task)`) to load combinations of different graph datasets and tasks.
 
 ### Objects with attribute scheme
 
@@ -30,11 +30,11 @@ However, being too flexible about what attributes can be included will make it d
 
 When the existing attribute types are not enough to accommodate a certain type of data, we can further expand the predefined attribute types.
 
-### Efficient storage
+### Supporting data files
 
-Tensor is a common storage scheme for graph data. GLI also provides separate supporting data files for efficient storage of certain attributes such as high-dim sparse features. For example, the `NodeFeature` attribute of `cora` dataset is stored in the format of `SparseTensor`. Currently, these data formats are allowed for attributes:
+Tensor is a common storage scheme for graph data. GLI also provides separate supporting data files for efficient storage of certain attributes such as high-dim sparse features. For example, the `NodeFeature` attribute of `cora` dataset is stored in the format of `SparseTensor`. Currently, these data formats©are allowed for attributes:
 1. `Tensor`
-2. `SparseTensor` (In particular, only `csr` and `coo` tensor are stably supported.)
+2. `SparseTensor` (In particular, only `csr` and `coo` tensor are stably supported.)©248
 
 When the existing attribute formats are not enough to accommodate a certain type of data, we can further expand the predefined attribute types.
 
@@ -245,7 +245,7 @@ A complete example of a heterogeneous graph's `metadata.json` is given below.
 }
 ```
 
-## GLB Task Format
+## GLI Task Format
 
 The information about a graph learning task (e.g., the train/test splits or the prediction target) should be stored in a *task configuration file* named as `task_<task_type>.json`. There could be multiple different tasks for a single graph dataset, such as node classification and link prediction. Node classification with different data split can also be viewed as different tasks.
 
