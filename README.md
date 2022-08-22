@@ -69,7 +69,7 @@ Graph(num_nodes=2708, num_edges=10556,
 >>> dataset
 Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy/.dgl/CORA dataset. NodeClassification)
 ```
-The returned dataset is inherited from `DGLDataset`. Therefore, it can be incorporate into DGL's infrastructure seamlessly:
+The returned dataset is inherited from `DGLDataset`. Therefore, it can be incorporated into DGL's infrastructure seamlessly:
 ```python
 >>> type(dataset)
 <class 'glb.dataset.NodeClassificationDataset'>
