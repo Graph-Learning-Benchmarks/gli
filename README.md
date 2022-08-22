@@ -79,23 +79,6 @@ True
 
 ## Contributing
 
-### Bug Fixes, New Features, or Better Documentation.
+### New Dataset, Feature Request, Bug Fix, or Better Documentation.
 
-Please let us know if you encounter a bug or have any suggestions by [filing an issue](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/issues).
-
-We welcome all contributions from bug fixes to new features and extensions.
-
-We expect all contributions discussed in the issue tracker and going through PRs. Please refer to our [contribution guide](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/blob/main/CONTRIBUTING.md).
-
-### New Dataset
-
-Please open a pull request to contribute a new dataset. The new dataset should be placed in a folder under `datasets/`. The following files are expected to be included in the folder:
-1. `<dataset>.ipynb` or `<dataset>.py`: a script that converts the original dataset to GLB format.
-2. `metadata.json`: a configuration file that stores the metadata of the graph(s).
-3. `task_<task_type>.json` configuration file(s) that store the task(s) on this graph.
-4. `README.md`: a document that describe the dataset information.
-5. `urls.json`*: a configuration file that stores the dropbox urls of the uploaded data files.
-
-*_Please do not upload the data file directly to GitHub. Instead, please follow the [data uploading instructions](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/blob/main/CONTRIBUTING.md)._
-
-Please refer to our [contribution guide](https://github.com/Graph-Learning-Benchmarks/GLB-Repo/blob/main/CONTRIBUTING.md) for details.
+All kinds of improvement are welcomed! Please refer to our [contribution guide](CONTRIBUTING.md) for details.
