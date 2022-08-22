@@ -16,6 +16,11 @@ SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
         "feature",
         "target",
     ],
+    "LinkPrediction": [
+        "description",
+        "type",
+        "feature"
+    ],
     "TimeDependentLinkPrediction": [
         "description",
         "type",
