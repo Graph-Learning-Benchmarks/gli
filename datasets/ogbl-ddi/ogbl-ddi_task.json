@@ -1,6 +1,10 @@
 {
     "description": "The task is to predict drug-drug interactions given information on already known drug-drug interactions. ",
     "type": "LinkPrediction",
+    "feature": [
+        "Node/NodeFeature",
+        "Edge/NdgeFeature"
+    ],
     "train_triplet_set": {
         "file": "ogbl-ddi_task.npz",
         "key": "train"
