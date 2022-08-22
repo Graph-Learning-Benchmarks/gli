@@ -1,29 +1,30 @@
-# Contributing to GLB
+<!-- TODO - Change repo name (GLB->GLI) after repo update. -->
+# Contributing to GLI
 
-If you are interested in contributing to GLB, your contributions will likely fall into one of the following three categories:
+If you are interested in contributing to GLI, your contributions will likely fall into one of the following three categories:
 
 1. You want to contribute a new dataset/task.
 2. You want to implement a new feature.
 3. You want to fix a bug.
 
-## Developing GLB
+## Developing GLI
 
-To develop GLB on your machine, here are some tips:
+To develop GLI on your machine, here are some tips:
 
-1. Clone a copy of GLB from source:
+1. Clone a copy of GLI from source:
 
     ```bash
     https://github.com/Graph-Learning-Benchmarks/GLB-Repo.git
     cd GLB-Repo
     ```
 
-2. If you already cloned GLB from source, update it:
+2. If you already cloned GLI from source, update it:
 
     ```
     git pull
     ```
 
-3. Install GLB in editable mode:
+3. Install GLI in editable mode:
 
     <!-- ```
     pip install -e ".[dev,full]"
@@ -32,7 +33,7 @@ To develop GLB on your machine, here are some tips:
     pip install -e ".[test,full]"
     ```
 
-    This mode will symlink the Python files from the current local source tree into the Python install. Hence, if you modify a Python file, you do not need to reinstall GLB again.
+    This mode will symlink the Python files from the current local source tree into the Python install. Hence, if you modify a Python file, you do not need to reinstall GLI again.
 
 4. Run an example:
 
@@ -60,17 +61,17 @@ datasets/<name>
 ├── ...  # There might be multiple task configurations.
 └── urls.json
 ```
-where `<name>` is the dataset name and `<task_type>` is one of the given tasks defined in [GLB Task Format](FORMAT.md#glb-task-format).
+where `<name>` is the dataset name and `<task_type>` is one of the given tasks defined in [GLI Task Format](FORMAT.md#glb-task-format).
 
 - `<name>.ipynb/<name>.py`: A Jupyter Notebook or Python script that converts the original dataset into GLI format.
 - `README.md`: A document that contains the necessary information about the dataset and task(s), including description, citation(s), available task(s), and extra required packages for `<name>.ipynb/<name>.py`.
 - `metadata.json`: A json configuration file that stores the metadata of the graph dataset. See [GLI Data Format](FORMAT.md#gli-data-format).
-- `task_<task_type>.json`：A task configuration file that stores an available task on the given dataset. See [GLB Task Format](FORMAT.md#glb-task-format). Contributors can define multiple tasks on the same dataset. If the task type is the same, use `task_<task_type>_<id>.json` to distinguish between same tasks, where `<id>` should be replaced by 1, 2, etc.
-- `urls.json`: A url configuration file that stores the downloading urls of the uploaded files. See [Uploading GLB Data Files](#uploading-glb-data-files).
+- `task_<task_type>.json`：A task configuration file that stores an available task on the given dataset. See [GLI Task Format](FORMAT.md#glb-task-format). Contributors can define multiple tasks on the same dataset. If the task type is the same, use `task_<task_type>_<id>.json` to distinguish between same tasks, where `<id>` should be replaced by 1, 2, etc.
+- `urls.json`: A url configuration file that stores the downloading urls of the uploaded files. See [Uploading GLI Data Files](#uploading-glb-data-files).
 
-### Uploading GLB Data Files
+### Uploading GLI Data Files
 
-Please upload the npz or npy files referred in `metadata.json` or `task_<task_type>.json` to this website: [Upload data files for GLB-Repo
+Please upload the npz or npy files referred in `metadata.json` or `task_<task_type>.json` to this website: [Upload data files for GLI-Repo
 ](https://www.dropbox.com/request/pQVRimU7vd8aSTwtm5SC). The development team will then post the urls in your pull request.
 
 ## Reporting Bugs
