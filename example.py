@@ -73,7 +73,7 @@ def main():
             task = glb.dataloading.read_glb_task(args.task,
                                                  verbose=args.verbose)
 
-    with Profiler("> Combining(s) graph and task"):
+    with Profiler("> Combining graph(s) and task"):
         dataset = glb.dataloading.combine_graph_and_task(g, task)
 
     print(dataset)
