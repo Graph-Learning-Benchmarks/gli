@@ -34,7 +34,7 @@ When the existing attribute types are not enough to accommodate a certain type o
 
 Tensor is a common storage scheme for graph data. GLI also provides separate supporting data files for efficient storage of certain attributes such as high-dim sparse features. For example, the `NodeFeature` attribute of `cora` dataset is stored in the format of `SparseTensor`. Currently, these data formats©are allowed for attributes:
 1. `Tensor`
-2. `SparseTensor` (In particular, only `csr` and `coo` tensor are stably supported.)©248
+2. `SparseTensor` (In particular, only `csr` and `coo` tensor are stably supported.)
 
 When the existing attribute formats are not enough to accommodate a certain type of data, we can further expand the predefined attribute types.
 
