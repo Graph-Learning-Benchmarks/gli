@@ -548,11 +548,11 @@
         },
         "Graph": {
             "_NodeList": {
-                "file": "example.npz",
+                "file": "ogbl-biokg.npz",
                 "key": "node_list"
             },
             "_EdgeList": {
-                "file": "example.npz",
+                "file": "ogbl-biokg.npz",
                 "key": "edge_list"
             }
         }
