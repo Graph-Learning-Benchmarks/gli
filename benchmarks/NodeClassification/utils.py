@@ -27,7 +27,7 @@ from models.gcn_minibatch import GCNminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
 
-Models_need_to_be_densed = ["GraphSAGE", "GAT", "MixHop", "LINKX"]
+Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
 
 
 def generate_model(args, g, in_feats, n_classes, **model_cfg):
