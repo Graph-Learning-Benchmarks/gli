@@ -14,7 +14,7 @@ To develop GLI on your machine, here are some tips:
 1. Clone a copy of GLI from source:
 
     ```bash
-    https://github.com/Graph-Learning-Benchmarks/GLB-Repo.git
+    git clone https://github.com/Graph-Learning-Benchmarks/GLB-Repo.git
     cd GLB-Repo
     ```
 
