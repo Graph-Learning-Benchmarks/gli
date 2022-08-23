@@ -46,7 +46,7 @@ Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy
 
 ### Data Loading API
 
-To load a dataset from the remote data repository, simply use the `get_glb_dataset``()`` function:
+To load a dataset from the remote data repository, simply use the `get_glb_dataset()` function:
 ```python
 >>> import glb
 >>> dataset = glb.get_glb_dataset(dataset="cora", task="task", device="cpu")
