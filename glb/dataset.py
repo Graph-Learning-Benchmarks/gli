@@ -330,7 +330,15 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
 class KGEntityPredictionDataset(LinkPredictionDataset):
     """Knowledge graph entity prediction dataset."""
 
-    pass
+    def __init__(self, graph: DGLGraph, task: GLBTask):
+        """Initialize a KG dataset.
+
+        Args:
+            graph (DGLGraph): A DGL graph
+            task (GLBTask): GLB task config
+        """
+        self.num_relations = task.num_classes
+        super().__init__(graph, task)
 
 
 class KGRelationPredictionDataset(LinkPredictionDataset):

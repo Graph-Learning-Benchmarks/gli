@@ -178,6 +178,7 @@ class KGEntityPredictionTask(GLBTask):
 
     def __init__(self, task_dict, pwd, device="cpu"):
         """Initialize KGEntityPredictionTask."""
+        self.num_classes = task_dict["num_relations"]
         # REVIEW - only supports runtime sampling for now
         self.sample_runtime = True
         super().__init__(task_dict, pwd, device)
