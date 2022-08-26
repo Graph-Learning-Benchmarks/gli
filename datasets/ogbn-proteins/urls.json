@@ -1,4 +1,4 @@
 {
-      "ogbn-proteins.npz": "https://drive.google.com/uc?id=1_KXNOKi-hVp2MEv22J-JSWxagjpjRIFk&export=download",
-      "ogbn-proteins_task.npz": "https://drive.google.com/uc?id=1XaZuovsKecz9LuqblUCRfPcD9UPp5nXO&export=download"
+    "ogbn-proteins.npz": "https://drive.google.com/uc?id=1_KXNOKi-hVp2MEv22J-JSWxagjpjRIFk&export=download",
+    "ogbn-proteins_task.npz": "https://drive.google.com/uc?id=1XaZuovsKecz9LuqblUCRfPcD9UPp5nXO&export=download"
 }
