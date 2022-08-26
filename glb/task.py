@@ -192,13 +192,14 @@ class KGEntityPredictionTask(GLBTask):
         super()._load_split(task_dict)
 
 
-class KGRelationPredictionTask(ClassificationTask):
+class KGRelationPredictionTask(GLBTask):
     """Knowledge graph relation prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
         """Rename num_relations to num_classes."""
         # REVIEW - only supports runtime sampling for now
         self.sample_runtime = True
+        self.num_relations = task_dict["num_relations"]
         super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
