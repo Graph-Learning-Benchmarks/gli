@@ -329,6 +329,7 @@ GLI currently supports following task types:
     - `train_triplet_set`: the training edge IDs.
     - `val_triplet_set`: the validation edge IDs.
     - `test_triplet_set`: the test edge IDs.
+    - `num_relations`: the number of unique relations.
 
 #### `KGRelationPrediction`
 - Description: This task requires the model to predict the relation type-id for a triplet in the graph. Triplets are identified by edge ID which correspond to a unique (head_node, relation_id, tail_node).
@@ -339,6 +340,8 @@ GLI currently supports following task types:
     - `train_triplet_set`: the training edge IDs.
     - `val_triplet_set`: the validation edge IDs.
     - `test_triplet_set`: the test edge IDs.
+    - `num_relations`: the number of unique relations.
+    - `target`: the attribute to predict.
 
 ## Contributing
 

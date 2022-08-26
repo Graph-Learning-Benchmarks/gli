@@ -180,6 +180,7 @@ class KGEntityPredictionTask(GLBTask):
         """Initialize KGEntityPredictionTask."""
         # REVIEW - only supports runtime sampling for now
         self.sample_runtime = True
+        self.num_relations = task_dict["num_relations"]
         super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
@@ -196,7 +197,6 @@ class KGRelationPredictionTask(ClassificationTask):
 
     def __init__(self, task_dict, pwd, device="cpu"):
         """Rename num_relations to num_classes."""
-        task_dict["num_classes"] = task_dict.pop("num_relations")
         # REVIEW - only supports runtime sampling for now
         self.sample_runtime = True
         super().__init__(task_dict, pwd, device)
