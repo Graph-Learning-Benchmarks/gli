@@ -1,15 +1,147 @@
-"""Utility functions."""
+"""Utility functions.
+
+Download functions for Google Drive come from
+https://github.com/pytorch/vision/blob/main/torchvision/datasets/utils.py.
+"""
+import contextlib
+import itertools
 import json
 import os
+import re
 import subprocess
 import warnings
 
+from typing import (Iterator, Optional, Tuple)
+from urllib.parse import urlparse
+
 import dgl
 import numpy as np
+import requests
 import scipy.sparse as sp
 import torch
+from torch.utils.model_zoo import tqdm
 
 from glb import ROOT_PATH, WARNING_DENSE_SIZE
+
+
+def _save_response_content(
+    content: Iterator[bytes],
+    destination: str,
+    length: Optional[int] = None,
+    verbose: Optional[bool] = False,
+) -> None:
+    with open(destination,
+              "wb") as fh, tqdm(total=length,
+                                disable=not verbose) as pbar:
+        for chunk in content:
+            # filter out keep-alive new chunks
+            if not chunk:
+                continue
+
+            fh.write(chunk)
+            pbar.update(len(chunk))
+
+
+def _get_google_drive_file_id(url: str) -> Optional[str]:
+    parts = urlparse(url)
+
+    if re.match(r"(drive|docs)[.]google[.]com", parts.netloc) is None:
+        return None
+
+    match = re.match(r"/file/d/(?P<id>[^/]*)", parts.path)
+    if match is None:
+        match = re.match(r"id=(?P<id>[^/]*)&export=download", parts.query)
+        if match is None:
+            return None
+        return match.group("id")
+
+    return match.group("id")
+
+
+def _extract_gdrive_api_response(
+        response,
+        chunk_size: int = 32 * 1024) -> Tuple[bytes, Iterator[bytes]]:
+    content = response.iter_content(chunk_size)
+    first_chunk = None
+    # filter out keep-alive new chunks
+    while not first_chunk:
+        first_chunk = next(content)
+    content = itertools.chain([first_chunk], content)
+
+    try:
+        match = re.search(
+            "<title>Google Drive - (?P<api_response>.+?)</title>",
+            first_chunk.decode())  # noqa
+        api_response = match["api_response"] if match is not None else None
+    except UnicodeDecodeError:
+        api_response = None
+    return api_response, content
+
+
+def download_file_from_google_drive(g_url: str,
+                                    root: str,
+                                    filename: Optional[str] = None,
+                                    verbose: Optional[bool] = False):
+    """Download a Google Drive file from  and place it in root.
+
+    Args:
+        g_url (str): Google Drive url of file to be downloaded
+        root (str): Directory to place downloaded file in
+        filename (str, optional): Name to save the file under. If None, use the
+            id of the file.
+    """
+    # Based on https://stackoverflow.com/questions/38511444/python-download-files-from-google-drive-using-url  # noqa pylint: disable=line-too-long
+
+    file_id = _get_google_drive_file_id(g_url)
+    root = os.path.expanduser(root)
+    if not filename:
+        filename = file_id
+    fpath = os.path.join(root, filename)
+
+    os.makedirs(root, exist_ok=True)
+
+    url = "https://drive.google.com/uc"
+    params = dict(id=file_id, export="download")
+    with requests.Session() as session:
+        response = session.get(url, params=params, stream=True)
+
+        for key, value in response.cookies.items():
+            if key.startswith("download_warning"):
+                token = value
+                break
+        else:
+            api_response, content = _extract_gdrive_api_response(response)
+            token = "t" if api_response == "Virus scan warning" else None
+
+        if token is not None:
+            response = session.get(url,
+                                   params=dict(params, confirm=token),
+                                   stream=True)
+            api_response, content = _extract_gdrive_api_response(response)
+
+        if api_response == "Quota exceeded":
+            raise RuntimeError(
+                f"The daily quota of the file {filename} is exceeded and it "
+                f"can't be downloaded. This is a limitation of Google Drive "
+                f"and can only be overcome by trying again later.")
+
+        _save_response_content(content, fpath, verbose=verbose)
+
+    # In case we deal with an unhandled GDrive API response, the file should be smaller than 10kB and contain only text  # noqa pylint: disable=line-too-long
+    if os.stat(fpath).st_size < 10 * 1024:
+        with contextlib.suppress(UnicodeDecodeError), open(fpath) as fh:  # noqa pylint: disable=unspecified-encoding, line-too-long
+            text = fh.read()
+            # Regular expression to detect HTML. Copied from https://stackoverflow.com/a/70585604  # noqa pylint: disable=line-too-long
+            if re.search(
+                    r"</?\s*[a-z-][^>]*\s*>|(&(?:[\w\d]+|#\d+|#x[a-f\d]+);)",
+                    text):  # noqa
+                warnings.warn(
+                    f"We detected some HTML elements in the downloaded file. "
+                    f"This most likely means that the download triggered an unhandled API response by GDrive. "  # noqa pylint: disable=line-too-long
+                    f"Please report this to torchvision at https://github.com/pytorch/vision/issues including "  # noqa pylint: disable=line-too-long
+                    f"the response:\n\n{text}")
+    elif verbose:
+        print(f"Successfully downloaded {filename} to {root} from {g_url}.")
 
 
 def load_data(path: os.PathLike):
@@ -257,10 +389,16 @@ def download_data(dataset: str, verbose=False):
 
 
 def _download(url, out, verbose=False):
-    """Download url to out by running a wget subprocess.
+    """Download url to out by running a wget subprocess or a gdrive downloader.
 
     Note - This function may generate a lot of unhelpful message.
     """
+    parts = urlparse(url)
+    if re.match(r"(drive|docs)[.]google[.]com", parts.netloc) is not None:
+        root, filename = os.path.split(out)
+        download_file_from_google_drive(url, filename, root, verbose)
+        return
+
     if verbose:
         subprocess.run(["wget", "-O", out, url], check=True)
     else:
