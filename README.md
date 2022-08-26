@@ -1,14 +1,11 @@
 # Graph Learning Indexer (GLI)
 
-
 [![Pycodestyle](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pycodestyle.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pycodestyle.yml)
 [![Pydocstyle](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pydocstyle.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pydocstyle.yml)
 [![Pylint](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pylint.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pytest.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pytest.yml)
 
-
 GLI is an easy-to-use graph learning platform with unique features that can better serve the dataset contributors, in comparison to existing graph learning libraries. It aims to ease and incentivize the creation and curation of datasets.
-
 
 ## Highlighted Features
 
@@ -27,16 +24,21 @@ GLI makes an explicit separation between the data storage and the task configura
 ### Installation
 
 Currently, we support installation from the source.
+
 ```bash
 git clone https://github.com/Graph-Learning-Benchmarks/gli.git
 cd gli
 pip install -e .
 ```
+
 To test the installation, run the following command:
+
 ```bash
 python3 example.py -g cora -t task
 ```
+
 The output should be like this:
+
 ```
 > Graph(s) loading takes 0.0196 seconds and uses 0.9788 MB.
 > Task loading takes 0.0016 seconds and uses 0.1218 MB.
@@ -47,6 +49,7 @@ Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy
 ### Data Loading API
 
 To load a dataset from the remote data repository, simply use the `get_gli_dataset()` function:
+
 ```python
 >>> import gli
 >>> dataset = gli.get_gli_dataset(dataset="cora", task="task", device="cpu")
@@ -55,6 +58,7 @@ Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy
 ```
 
 Alternatively, one can also get a single graph or a list of graphs rather than a wrapped dataset by `get_gli_graph()`. Furthermore, GLI provides abstractions for various tasks (`GLITask`) and provides a function `get_gli_task()` to return a task instance. Combine these two instances to get a wrapped dataset that is identical to the previous case.
+
 ```python
 >>> import gli
 >>> g = gli.get_gli_graph(dataset="cora", device="cpu", verbose=False)
@@ -69,7 +73,9 @@ Graph(num_nodes=2708, num_edges=10556,
 >>> dataset
 Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy/.dgl/CORA dataset. NodeClassification)
 ```
+
 The returned dataset is inherited from `DGLDataset`. Therefore, it can be incorporated into DGL's infrastructure seamlessly:
+
 ```python
 >>> type(dataset)
 <class 'gli.dataset.NodeClassificationDataset'>

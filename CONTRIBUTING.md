@@ -12,45 +12,43 @@ To develop GLI on your machine, here are some tips:
 
 1. Clone a copy of GLI from source:
 
-    ```bash
-    git clone https://github.com/Graph-Learning-Benchmarks/gli.git
-    cd gli
-    ```
+   ```bash
+   git clone https://github.com/Graph-Learning-Benchmarks/gli.git
+   cd gli
+   ```
 
 2. If you already cloned GLI from source, update it:
 
-    ```
-    git pull
-    ```
+   ```
+   git pull
+   ```
 
 3. Install GLI in editable mode:
 
-    <!-- ```
-    pip install -e ".[dev,full]"
-    ``` -->
-    ```
-    pip install -e ".[test,full]"
-    ```
+   ```
+   pip install -e ".[test,full]"
+   ```
 
-    This mode will symlink the Python files from the current local source tree into the Python install. Hence, if you modify a Python file, you do not need to reinstall GLI again.
+   This mode will symlink the Python files from the current local source tree into the Python install. Hence, if you modify a Python file, you do not need to reinstall GLI again.
 
 4. Run an example:
 
-    ```
-    python3 example.py
-    ```
+   ```
+   python3 example.py
+   ```
 
-    This script will load the `NodeClassification` task on `cora` dataset.
+   This script will load the `NodeClassification` task on `cora` dataset.
 
 5. Ensure your installation is correct by running the entire test suite with
 
-    ```
-    pytest
-    ```
+   ```
+   pytest
+   ```
 
 ## Contributing A New Dataset
 
 Here is a checklist for a new dataset. Please [open a pull request](https://github.com/Graph-Learning-Benchmarks/gli/pulls?q=is%3Apr+is%3Aopen) that contains a directory in following format:
+
 ```
 datasets/<name>
 ├── <name>.ipynb/<name>.py
@@ -60,6 +58,7 @@ datasets/<name>
 ├── ...  # There might be multiple task configurations.
 └── urls.json
 ```
+
 where `<name>` is the dataset name and `<task_type>` is one of the given tasks defined in [GLI Task Format](FORMAT.md#gli-task-format).
 
 - `<name>.ipynb/<name>.py`: A Jupyter Notebook or Python script that converts the original dataset into GLI format.
