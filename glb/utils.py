@@ -396,7 +396,7 @@ def _download(url, out, verbose=False):
     parts = urlparse(url)
     if re.match(r"(drive|docs)[.]google[.]com", parts.netloc) is not None:
         root, filename = os.path.split(out)
-        download_file_from_google_drive(url, filename, root, verbose)
+        download_file_from_google_drive(url, root, filename, verbose)
         return
 
     if verbose:
