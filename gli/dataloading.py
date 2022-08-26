@@ -7,17 +7,17 @@ from dgl import DGLGraph
 import gli.dataset
 from gli import ROOT_PATH
 from gli.graph import read_glb_graph
-from gli.task import GLBTask, read_glb_task
+from gli.task import GLITask, read_glb_task
 from gli.utils import download_data
 
 
 def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
-                           task: GLBTask):
-    """Combine graph and task to get a GLB dataset.
+                           task: GLITask):
+    """Combine graph and task to get a GLI dataset.
 
     Args:
         graph (Union[DGLGraph, List[DGLGraph]]): Graph(s) to construct dataset.
-        task (GLBTask): GLB task config
+        task (GLITask): GLI task config
 
     Raises:
         NotImplementedError: Unknown task type
@@ -36,7 +36,7 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
 
 
 def get_glb_dataset(dataset: str, task: str, device="cpu", verbose=True):
-    """Get a known GLB dataset of a given task.
+    """Get a known GLI dataset of a given task.
 
     Args:
         dataset (str): Name of dataset.
@@ -53,7 +53,7 @@ def get_glb_dataset(dataset: str, task: str, device="cpu", verbose=True):
 
 
 def get_glb_graph(dataset: str, device="cpu", verbose=True):
-    """Get a known GLB graph.
+    """Get a known GLI graph.
 
     Download dependent files if needed.
 
@@ -77,7 +77,7 @@ def get_glb_graph(dataset: str, device="cpu", verbose=True):
 
 
 def get_glb_task(dataset: str, task: str, verbose=True):
-    """Get a known GLB task of a given dataset.
+    """Get a known GLI task of a given dataset.
 
     Args:
         dataset (str): Name of dataset.
@@ -85,7 +85,7 @@ def get_glb_task(dataset: str, task: str, verbose=True):
         verbose (bool, optional): Defaults to True.
 
     Returns:
-        GLBTask: Predefined GLB task.
+        GLITask: Predefined GLI task.
     """
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
     task_path = os.path.join(data_dir, f"{task}.json")

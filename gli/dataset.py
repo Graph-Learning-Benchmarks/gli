@@ -1,4 +1,4 @@
-"""Dataset for GLB."""
+"""Dataset for GLI."""
 from typing import Iterable, Union
 import numpy as np
 
@@ -6,19 +6,19 @@ import torch
 from dgl.data import DGLDataset
 from dgl import DGLGraph
 
-from gli.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
+from gli.task import (KGEntityPredictionTask, GLITask, GraphClassificationTask,
                       GraphRegressionTask, LinkPredictionTask,
                       NodeClassificationTask, NodeRegressionTask,
                       KGRelationPredictionTask,
                       TimeDependentLinkPredictionTask)
 
 
-class GLBDataset(DGLDataset):
-    """GLB Base Dataset."""
+class GLIDataset(DGLDataset):
+    """GLI Base Dataset."""
 
     def __init__(self, graph: Union[DGLGraph, Iterable[DGLGraph]],
-                 task: GLBTask):
-        """GLB Base Dataset."""
+                 task: GLITask):
+        """GLI Base Dataset."""
         self.target = task.target
         self.features = task.features
         self.split = task.split
@@ -29,15 +29,15 @@ class GLBDataset(DGLDataset):
         super().__init__(name, force_reload=True)
 
 
-class NodeDataset(GLBDataset):
+class NodeDataset(GLIDataset):
     """Node level dataset."""
 
-    def __init__(self, graph: DGLGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLITask):
         """Initialize a NodeDataset with a graph and a task.
 
         Args:
             graph (DGLGraph): A DGL graph.
-            task (GLBTask): Node level GLB task config.
+            task (GLITask): Node level GLI task config.
         """
         device = graph.device
         self._g = graph
@@ -139,18 +139,18 @@ class NodeRegressionDataset(NodeDataset):
         super().__init__(graph, task)
 
 
-class GraphDataset(GLBDataset):
+class GraphDataset(GLIDataset):
     """Graph Dataset."""
 
     def __init__(self,
                  graphs: Iterable[DGLGraph],
-                 task: GLBTask,
+                 task: GLITask,
                  split_set="train_set"):
         """Initialize a graph level dataset.
 
         Args:
-            graphs (Iterable[DGLGraph]): A list of GLB graphs
-            task (GLBTask): GLB task config
+            graphs (Iterable[DGLGraph]): A list of GLI graphs
+            task (GLITask): GLI task config
             split (str, optional): One of "train_set", "test_set", and
                 "val_set". Defaults to "train_set".
 
@@ -227,15 +227,15 @@ class GraphRegressionDataset(GraphDataset):
         super().__init__(graphs, task, split)
 
 
-class EdgeDataset(GLBDataset):
+class EdgeDataset(GLIDataset):
     """Edge level dataset."""
 
-    def __init__(self, graph: DGLGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLITask):
         """Initialize a edge level dataset.
 
         Args:
             graph (DGLGraph): A DGL graph
-            task (GLBTask): GLB task config
+            task (GLITask): GLI task config
 
         Raise©
             NotImplementedError: GraphDataset does not support multi-split.
@@ -298,12 +298,12 @@ class LinkPredictionDataset(EdgeDataset):
 class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
     """Link Prediction dataset."""
 
-    def __init__(self, graph: DGLGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLITask):
         """Initialize a edge level dataset.
 
         Args:
             graph (DGLGraph): A DGL graph
-            task (GLBTask): GLB task config
+            task (GLITask): GLI task config
 
         Raises:
             NotImplementedError: GraphDataset does not support multi-split.
@@ -330,12 +330,12 @@ class TimeDependentLinkPredictionDataset(LinkPredictionDataset):
 class KGEntityPredictionDataset(LinkPredictionDataset):
     """Knowledge graph entity prediction dataset."""
 
-    def __init__(self, graph: DGLGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLITask):
         """Initialize a KG dataset.
 
         Args:
             graph (DGLGraph): A DGL graph
-            task (GLBTask): GLB task config
+            task (GLITask): GLI task config
         """
         self.num_relations = task.num_relations
         super().__init__(graph, task)
@@ -344,23 +344,23 @@ class KGEntityPredictionDataset(LinkPredictionDataset):
 class KGRelationPredictionDataset(LinkPredictionDataset):
     """Knowledge graph relation prediction dataset."""
 
-    def __init__(self, graph: DGLGraph, task: GLBTask):
+    def __init__(self, graph: DGLGraph, task: GLITask):
         """Initialize a KG dataset.
 
         Args:
             graph (DGLGraph): A DGL graph
-            task (GLBTask): GLB task config
+            task (GLITask): GLI task config
         """
         self.num_relations = task.num_relations
         super().__init__(graph, task)
 
 
-def node_dataset_factory(graph: DGLGraph, task: GLBTask):
+def node_dataset_factory(graph: DGLGraph, task: GLITask):
     """Initialize and return a NodeDataset.
 
     Args:
         graph (DGLGraph): A DGL graph
-        task (GLBTask): GLB task config
+        task (GLITask): GLI task config
 
     Raises:
         TypeError: Unknown task type
@@ -393,12 +393,12 @@ def edge_dataset_factory(graph: DGLGraph, task: LinkPredictionTask):
         raise TypeError(f"Unknown task type {type(task)}.")
 
 
-def graph_dataset_factory(graphs: Iterable[DGLGraph], task: GLBTask):
+def graph_dataset_factory(graphs: Iterable[DGLGraph], task: GLITask):
     """Initialize and return split GraphDataset.
 
     Args:
-        graphs (Iterable[DGLGraph]): A list of GLB graphs.
-        task (GLBTask): GLB task config
+        graphs (Iterable[DGLGraph]): A list of GLI graphs.
+        task (GLITask): GLI task config
 
     Raises:
         TypeError: Unknown task type.
