@@ -25,7 +25,7 @@ def test_relation_prediction(dataset_name):
 
     device = "cpu"
 
-    data = gli.dataloading.get_glb_dataset(
+    data = gli.dataloading.get_gli_dataset(
         dataset_name, "task_predict_relation", device=device)
 
     graph = data[0]
@@ -103,7 +103,7 @@ def test_entity_prediction(dataset_name):
 
     device = "cpu"
 
-    data = gli.dataloading.get_glb_dataset(
+    data = gli.dataloading.get_gli_dataset(
         dataset_name, "task_predict_entity", device=device)
 
     graph = data[0]

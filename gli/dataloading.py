@@ -6,8 +6,8 @@ from dgl import DGLGraph
 
 import gli.dataset
 from gli import ROOT_PATH
-from gli.graph import read_glb_graph
-from gli.task import GLITask, read_glb_task
+from gli.graph import read_gli_graph
+from gli.task import GLITask, read_gli_task
 from gli.utils import download_data
 
 
@@ -35,7 +35,7 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
     raise NotImplementedError(f"Unsupported type {task.type}")
 
 
-def get_glb_dataset(dataset: str, task: str, device="cpu", verbose=True):
+def get_gli_dataset(dataset: str, task: str, device="cpu", verbose=True):
     """Get a known GLI dataset of a given task.
 
     Args:
@@ -47,12 +47,12 @@ def get_glb_dataset(dataset: str, task: str, device="cpu", verbose=True):
     Returns:
         Dataset: a iterable dataset of a given task.
     """
-    g = get_glb_graph(dataset, device=device, verbose=verbose)
-    t = get_glb_task(dataset, task, verbose=verbose)
+    g = get_gli_graph(dataset, device=device, verbose=verbose)
+    t = get_gli_task(dataset, task, verbose=verbose)
     return combine_graph_and_task(g, t)
 
 
-def get_glb_graph(dataset: str, device="cpu", verbose=True):
+def get_gli_graph(dataset: str, device="cpu", verbose=True):
     """Get a known GLI graph.
 
     Download dependent files if needed.
@@ -73,10 +73,10 @@ def get_glb_graph(dataset: str, device="cpu", verbose=True):
         raise FileNotFoundError(f"{metadata_path} not found.")
     download_data(dataset, verbose=verbose)
 
-    return read_glb_graph(metadata_path, device=device, verbose=verbose)
+    return read_gli_graph(metadata_path, device=device, verbose=verbose)
 
 
-def get_glb_task(dataset: str, task: str, verbose=True):
+def get_gli_task(dataset: str, task: str, verbose=True):
     """Get a known GLI task of a given dataset.
 
     Args:
@@ -95,4 +95,4 @@ def get_glb_task(dataset: str, task: str, verbose=True):
         raise FileNotFoundError(f"{task_path} not found.")
     download_data(dataset, verbose=verbose)
 
-    return read_glb_task(task_path, verbose=verbose)
+    return read_gli_task(task_path, verbose=verbose)

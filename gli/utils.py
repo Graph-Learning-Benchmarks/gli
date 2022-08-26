@@ -260,11 +260,11 @@ def sparse_to_torch(sparse_array: sp.spmatrix,
             raise TypeError(f"Unsupported sparse type {sparse_type}")
 
 
-def dgl_to_glb(graph: dgl.DGLGraph,
+def dgl_to_gli(graph: dgl.DGLGraph,
                name: str,
                pdir: os.PathLike = None,
                **kwargs):
-    """Dump a dgl graph into glb format."""
+    """Dump a dgl graph into gli format."""
     metadata = {"data": {"Node": {}, "Edge": {}, "Graph": {}}}
     metadata.update(kwargs)
     npz = f"{name}.npz"

@@ -209,11 +209,11 @@ def transitivity(g):
 
 def prepare_dataset(dataset, task):
     """Prepare datasets."""
-    glb_graph = gli.dataloading.get_glb_graph(dataset)
-    glb_task = gli.dataloading.get_glb_task(dataset, task)
-    glb_graph_task = gli.dataloading.combine_graph_and_task(
-        glb_graph, glb_task)
-    return glb_graph, glb_task, glb_graph_task
+    gli_graph = gli.dataloading.get_gli_graph(dataset)
+    gli_task = gli.dataloading.get_gli_task(dataset, task)
+    gli_graph_task = gli.dataloading.combine_graph_and_task(
+        gli_graph, gli_task)
+    return gli_graph, gli_task, gli_graph_task
 
 
 def dict_to_tensor(feature_dict, tensor_size):

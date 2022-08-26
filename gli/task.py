@@ -234,7 +234,7 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
                 setattr(self, neg_idx, indices)
 
 
-def read_glb_task(task_path: os.PathLike, verbose=True):
+def read_gli_task(task_path: os.PathLike, verbose=True):
     """Initialize and return a Task object given task_path."""
     pwd = os.path.dirname(task_path)
     with open(task_path, "r", encoding="utf-8") as fptr:
