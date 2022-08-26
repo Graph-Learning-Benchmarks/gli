@@ -32,7 +32,7 @@ def _save_response_content(
 ) -> None:
     with open(destination,
               "wb") as fh, tqdm(total=length,
-                                disable=not verbose) as pbar:  # noqa
+                                disable=not verbose) as pbar:
         for chunk in content:
             # filter out keep-alive new chunks
             if not chunk:
@@ -60,7 +60,7 @@ def _get_google_drive_file_id(url: str) -> Optional[str]:
 
 def _extract_gdrive_api_response(
         response,
-        chunk_size: int = 32 * 1024) -> Tuple[bytes, Iterator[bytes]]:  # noqa
+        chunk_size: int = 32 * 1024) -> Tuple[bytes, Iterator[bytes]]:
     content = response.iter_content(chunk_size)
     first_chunk = None
     # filter out keep-alive new chunks
@@ -81,7 +81,7 @@ def _extract_gdrive_api_response(
 def download_file_from_google_drive(g_url: str,
                                     root: str,
                                     filename: Optional[str] = None,
-                                    verbose: Optional[bool] = False):  # noqa
+                                    verbose: Optional[bool] = False):
     """Download a Google Drive file from  and place it in root.
 
     Args:
@@ -90,7 +90,7 @@ def download_file_from_google_drive(g_url: str,
         filename (str, optional): Name to save the file under. If None, use the
             id of the file.
     """
-    # Based on https://stackoverflow.com/questions/38511444/python-download-files-from-google-drive-using-url  # noqa
+    # Based on https://stackoverflow.com/questions/38511444/python-download-files-from-google-drive-using-url  # noqa pylint: disable=line-too-long
 
     file_id = _get_google_drive_file_id(g_url)
     root = os.path.expanduser(root)
@@ -127,18 +127,18 @@ def download_file_from_google_drive(g_url: str,
 
         _save_response_content(content, fpath, verbose=verbose)
 
-    # In case we deal with an unhandled GDrive API response, the file should be smaller than 10kB and contain only text  # noqa
+    # In case we deal with an unhandled GDrive API response, the file should be smaller than 10kB and contain only text  # noqa pylint: disable=line-too-long
     if os.stat(fpath).st_size < 10 * 1024:
-        with contextlib.suppress(UnicodeDecodeError), open(fpath) as fh:
+        with contextlib.suppress(UnicodeDecodeError), open(fpath) as fh:  # noqa pylint: disable=unspecified-encoding, line-too-long
             text = fh.read()
-            # Regular expression to detect HTML. Copied from https://stackoverflow.com/a/70585604  # noqa
+            # Regular expression to detect HTML. Copied from https://stackoverflow.com/a/70585604  # noqa pylint: disable=line-too-long
             if re.search(
                     r"</?\s*[a-z-][^>]*\s*>|(&(?:[\w\d]+|#\d+|#x[a-f\d]+);)",
                     text):  # noqa
                 warnings.warn(
                     f"We detected some HTML elements in the downloaded file. "
-                    f"This most likely means that the download triggered an unhandled API response by GDrive. "  # noqa
-                    f"Please report this to torchvision at https://github.com/pytorch/vision/issues including "  # noqa
+                    f"This most likely means that the download triggered an unhandled API response by GDrive. "  # noqa pylint: disable=line-too-long
+                    f"Please report this to torchvision at https://github.com/pytorch/vision/issues including "  # noqa pylint: disable=line-too-long
                     f"the response:\n\n{text}")
     elif verbose:
         print(f"Successfully downloaded {filename} to {root} from {g_url}.")
