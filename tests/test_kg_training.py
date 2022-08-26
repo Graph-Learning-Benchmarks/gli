@@ -30,9 +30,11 @@ def test_relation_prediction(dataset_name):
 
     graph = data[0]
     if "NodeFeature" in graph.ndata:
-        raise NotImplementedError("KG with node features is not supported yet.")
+        raise NotImplementedError(
+            "KG with node features is not supported yet.")
     if "EdgeFeature" in graph.ndata:
-        raise NotImplementedError("KG with edge features is not supported yet.")
+        raise NotImplementedError(
+            "KG with edge features is not supported yet.")
     n_negatives = 5
     batch_size = 32
     n_entities = graph.num_nodes()
@@ -106,9 +108,11 @@ def test_entity_prediction(dataset_name):
 
     graph = data[0]
     if "NodeFeature" in graph.ndata:
-        raise NotImplementedError("KG with node features is not supported yet.")
+        raise NotImplementedError(
+            "KG with node features is not supported yet.")
     if "EdgeFeature" in graph.ndata:
-        raise NotImplementedError("KG with edge features is not supported yet.")
+        raise NotImplementedError(
+            "KG with edge features is not supported yet.")
     n_negatives = 5
     batch_size = 32
     n_entities = graph.num_nodes()
@@ -166,6 +170,3 @@ def test_entity_prediction(dataset_name):
     print("The dataset has successfully trained \
         on TransE model for two epoches.")
     print("Test passed.")
-
-test_entity_prediction("WN11")
-test_relation_prediction("WN11")
