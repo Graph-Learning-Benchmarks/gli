@@ -21,7 +21,7 @@ import scipy.sparse as sp
 import torch
 from torch.utils.model_zoo import tqdm
 
-from glb import ROOT_PATH, WARNING_DENSE_SIZE
+from gli import ROOT_PATH, WARNING_DENSE_SIZE
 
 
 def _save_response_content(

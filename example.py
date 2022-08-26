@@ -18,7 +18,7 @@ import os
 import time
 import tracemalloc
 
-import glb
+import gli
 
 
 def main():
@@ -56,25 +56,25 @@ def main():
     #                                           args.device, args.verbose)
     with Profiler("> Graph(s) loading"):
         if is_get:
-            g = glb.dataloading.get_glb_graph(args.graph,
+            g = gli.dataloading.get_glb_graph(args.graph,
                                               device=args.device,
                                               verbose=args.verbose)
         else:
-            g = glb.dataloading.read_glb_graph(args.graph,
+            g = gli.dataloading.read_glb_graph(args.graph,
                                                device=args.device,
                                                verbose=args.verbose)
 
     with Profiler("> Task loading"):
         if is_get:
-            task = glb.dataloading.get_glb_task(args.graph,
+            task = gli.dataloading.get_glb_task(args.graph,
                                                 args.task,
                                                 verbose=args.verbose)
         else:
-            task = glb.dataloading.read_glb_task(args.task,
+            task = gli.dataloading.read_glb_task(args.task,
                                                  verbose=args.verbose)
 
     with Profiler("> Combining graph(s) and task"):
-        dataset = glb.dataloading.combine_graph_and_task(g, task)
+        dataset = gli.dataloading.combine_graph_and_task(g, task)
 
     print(dataset)
 

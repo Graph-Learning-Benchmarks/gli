@@ -4,11 +4,11 @@ from typing import List, Union
 
 from dgl import DGLGraph
 
-import glb.dataset
-from glb import ROOT_PATH
-from glb.graph import read_glb_graph
-from glb.task import GLBTask, read_glb_task
-from glb.utils import download_data
+import gli.dataset
+from gli import ROOT_PATH
+from gli.graph import read_glb_graph
+from gli.task import GLBTask, read_glb_task
+from gli.utils import download_data
 
 
 def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
@@ -26,12 +26,12 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
         DGLDataset
     """
     if task.type in ("NodeClassification", "NodeRegression"):
-        return glb.dataset.node_dataset_factory(graph, task)
+        return gli.dataset.node_dataset_factory(graph, task)
     elif task.type in ("GraphClassification", "GraphRegression"):
-        return glb.dataset.graph_dataset_factory(graph, task)
+        return gli.dataset.graph_dataset_factory(graph, task)
     elif task.type in ("TimeDependentLinkPrediction", "LinkPrediction",
                        "KGEntityPrediction", "KGRelationPrediction"):
-        return glb.dataset.edge_dataset_factory(graph, task)
+        return gli.dataset.edge_dataset_factory(graph, task)
     raise NotImplementedError(f"Unsupported type {task.type}")
 
 

@@ -7,7 +7,7 @@ from typing import List
 
 import torch
 
-from glb.utils import file_reader
+from gli.utils import file_reader
 
 SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",

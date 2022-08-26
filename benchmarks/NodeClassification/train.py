@@ -12,11 +12,11 @@ import re
 import torch
 import numpy as np
 import dgl
-import glb
+import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
                   EarlyStopping, set_seed
-from glb.utils import to_dense
+from gli.utils import to_dense
 
 
 def accuracy(logits, labels):
@@ -54,7 +54,7 @@ def main():
         device = args.gpu
         cuda = True
 
-    data = glb.dataloading.get_glb_dataset(args.dataset, args.task,
+    data = gli.dataloading.get_glb_dataset(args.dataset, args.task,
                                            device=device)
     # check EdgeFeature and multi-modal node features
     edge_cnt = node_cnt = 0

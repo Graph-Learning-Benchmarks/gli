@@ -6,7 +6,7 @@ import torch
 from dgl.data import DGLDataset
 from dgl import DGLGraph
 
-from glb.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
+from gli.task import (KGEntityPredictionTask, GLBTask, GraphClassificationTask,
                       GraphRegressionTask, LinkPredictionTask,
                       NodeClassificationTask, NodeRegressionTask,
                       KGRelationPredictionTask,
