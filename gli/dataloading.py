@@ -35,7 +35,11 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
     raise NotImplementedError(f"Unsupported type {task.type}")
 
 
-def get_gli_dataset(dataset: str, task: str, task_id=1, device="cpu", verbose=True):
+def get_gli_dataset(dataset: str,
+                    task: str,
+                    task_id=1,
+                    device="cpu",
+                    verbose=True):
     """Get a known GLI dataset of a given task.
 
     Args:
@@ -76,16 +80,40 @@ def get_gli_graph(dataset: str, device="cpu", verbose=True):
     return read_gli_graph(metadata_path, device=device, verbose=verbose)
 
 
-def get_gli_task(dataset: str, task: str, task_id=1, verbose=True):
-    """Get a known GLI task of a given dataset.
+def get_gli_task(dataset: str,
+                 task: str,
+                 task_id: int = 1,
+                 verbose: bool = True) -> GLITask:
+    """Get a GLI task configuration object.
 
-    Args:
-        dataset (str): Name of dataset.
-        task (str): Name of task.
-        verbose (bool, optional): Defaults to True.
+    Parameters
+    ----------
+    dataset : str
+        Dataset/Graph name
+    task : str
+        Task type
+    task_id : int, optional
+        Task id defined in dataset folder, by default 1
+    verbose : bool, optional
+        Verbose level, by default True
 
-    Returns:
-        GLITask: Predefined GLI task.
+    Returns
+    -------
+    GLITask
+        A GLI task configuration
+
+    Raises
+    ------
+    NotImplementedError
+        Raised when task type is unsupported.
+    FileNotFoundError
+        Raised when metadata/task configuration file is not found.
+        
+    Examples
+    --------
+    >>> get_gli_task(dataset="cora", task="NodeClassification", task_id=1)
+    Node classification on CORA dataset. Planetoid split.
+    <gli.task.NodeClassificationTask object at 0x100ad5760>
     """
     name_map = {
         "NodeClassification": "node_classification",
