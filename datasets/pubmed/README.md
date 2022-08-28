@@ -46,7 +46,7 @@ This is a node classification task with fixed split from [planetoid](https://git
 
 ## Preprocessing
 
-The data files and task config file in GLB format are transformed from the [DGL](https://www.dgl.ai) implementation. Check `pubmed.ipynb` for the preprocessing.
+The data files and task config file in GLI format are transformed from the [DGL](https://www.dgl.ai) implementation. Check `pubmed.ipynb` for the preprocessing.
 
 
 ### Requirements

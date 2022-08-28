@@ -15,9 +15,9 @@ test_requires = ["pytest", "pydocstyle", "pycodestyle", "pylint"]
 
 full_requires = install_requires
 
-setup(name="glb",
+setup(name="gli",
       version="0.1",
-      packages=find_packages(where="glb"),
+      packages=find_packages(where="gli"),
       install_requires=install_requires,
       extras_require={
           "test": test_requires,

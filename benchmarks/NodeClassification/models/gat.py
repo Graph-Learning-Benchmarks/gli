@@ -1,5 +1,5 @@
 """
-GAT model in GLB.
+GAT model in GLI.
 
 References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/gat.py

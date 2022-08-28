@@ -3,8 +3,8 @@ import os
 import fnmatch
 import json
 import pytest
-import glb
-from glb.task import SUPPORTED_TASK_TYPES
+import gli
+from gli.task import SUPPORTED_TASK_TYPES
 from utils import find_datasets
 
 
@@ -12,7 +12,7 @@ from utils import find_datasets
 def test_data_loading(dataset_name):
     """Test data loading for a given dataset.
 
-    Test if get_glb_graph, get_glb_task, and get_glb_dataset
+    Test if get_gli_graph, get_gli_task, and get_gli_dataset
     can be applied successfully.
     """
     # temporary skipping all large datasets
@@ -33,7 +33,7 @@ def test_data_loading(dataset_name):
             print(os.path.splitext(file)[0])
             task_list.append(os.path.splitext(file)[0])
     try:
-        _ = glb.dataloading.get_glb_graph(dataset)
+        _ = gli.dataloading.get_gli_graph(dataset)
     except (AssertionError,
             AttributeError,
             ModuleNotFoundError,
@@ -44,7 +44,7 @@ def test_data_loading(dataset_name):
 
     for task in task_list:
         try:
-            _ = glb.dataloading.get_glb_task(dataset, task)
+            _ = gli.dataloading.get_gli_task(dataset, task)
         except (AssertionError,
                 AttributeError,
                 ModuleNotFoundError,
@@ -54,7 +54,7 @@ def test_data_loading(dataset_name):
             assert False
 
         try:
-            glb.dataloading.get_glb_dataset(dataset, task)
+            gli.dataloading.get_gli_dataset(dataset, task)
         except (AssertionError,
                 AttributeError,
                 ModuleNotFoundError,

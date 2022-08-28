@@ -1,5 +1,5 @@
 """
-GraphSAGE model in GLB.
+GraphSAGE model in GLI.
 
 References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/graphsage/train_full.py

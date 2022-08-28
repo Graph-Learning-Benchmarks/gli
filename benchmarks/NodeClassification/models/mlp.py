@@ -1,5 +1,5 @@
 """
-MLP model in GLB.
+MLP model in GLI.
 
 References:
 https://github.com/dmlc/dgl/blob/195f99362d883f8b6d131b70a7868a537e55b786/examples/pytorch/grand/model.py

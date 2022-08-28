@@ -5,5 +5,5 @@ from . import dataset
 from . import graph
 from . import task
 from . import utils
-from .dataloading import get_glb_graph, get_glb_task, \
-    get_glb_dataset, combine_graph_and_task
+from .dataloading import get_gli_graph, get_gli_task, \
+    get_gli_dataset, combine_graph_and_task

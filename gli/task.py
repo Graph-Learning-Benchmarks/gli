@@ -1,4 +1,4 @@
-"""Task for GLB."""
+"""Task for GLI."""
 import json
 import math
 import os
@@ -7,7 +7,7 @@ from typing import List
 
 import torch
 
-from glb.utils import file_reader
+from gli.utils import file_reader
 
 SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",
@@ -16,11 +16,11 @@ SUPPORTED_TASK_TYPES = [
 ]
 
 
-class GLBTask:
-    """GLB task base class."""
+class GLITask:
+    """GLI task base class."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
-        """Initialize GLBTask."""
+        """Initialize GLITask."""
         self.pwd = pwd
         self.type = task_dict["type"]
         self.description = task_dict["description"]
@@ -112,7 +112,7 @@ class GLBTask:
                 # can be a mask tensor or an index tensor
 
 
-class ClassificationTask(GLBTask):
+class ClassificationTask(GLITask):
     """Classification task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
@@ -125,7 +125,7 @@ class ClassificationTask(GLBTask):
         self._load_split(task_dict)
 
 
-class RegressionTask(GLBTask):
+class RegressionTask(GLITask):
     """Regression task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
@@ -161,7 +161,7 @@ class GraphRegressionTask(RegressionTask):
     pass
 
 
-class LinkPredictionTask(GLBTask):
+class LinkPredictionTask(GLITask):
     """Link prediction task."""
 
     def __init__(self, task_dict, pwd):
@@ -173,7 +173,7 @@ class LinkPredictionTask(GLBTask):
         super().__init__(task_dict, pwd)
 
 
-class KGEntityPredictionTask(GLBTask):
+class KGEntityPredictionTask(GLITask):
     """Knowledge graph entity prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
@@ -192,7 +192,7 @@ class KGEntityPredictionTask(GLBTask):
         super()._load_split(task_dict)
 
 
-class KGRelationPredictionTask(GLBTask):
+class KGRelationPredictionTask(GLITask):
     """Knowledge graph relation prediction task."""
 
     def __init__(self, task_dict, pwd, device="cpu"):
@@ -234,7 +234,7 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
                 setattr(self, neg_idx, indices)
 
 
-def read_glb_task(task_path: os.PathLike, verbose=True):
+def read_gli_task(task_path: os.PathLike, verbose=True):
     """Initialize and return a Task object given task_path."""
     pwd = os.path.dirname(task_path)
     with open(task_path, "r", encoding="utf-8") as fptr:

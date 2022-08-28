@@ -1,5 +1,5 @@
 """Test if the Knowledge Graph (KG) dataset can be trained two epochs."""
-import glb
+import gli
 import pytest
 import torch
 import numpy as np
@@ -25,7 +25,7 @@ def test_relation_prediction(dataset_name):
 
     device = "cpu"
 
-    data = glb.dataloading.get_glb_dataset(
+    data = gli.dataloading.get_gli_dataset(
         dataset_name, "task_predict_relation", device=device)
 
     graph = data[0]
@@ -103,7 +103,7 @@ def test_entity_prediction(dataset_name):
 
     device = "cpu"
 
-    data = glb.dataloading.get_glb_dataset(
+    data = gli.dataloading.get_gli_dataset(
         dataset_name, "task_predict_entity", device=device)
 
     graph = data[0]
