@@ -35,7 +35,7 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
     raise NotImplementedError(f"Unsupported type {task.type}")
 
 
-def get_gli_dataset(dataset: str, task: str, device="cpu", verbose=True):
+def get_gli_dataset(dataset: str, task: str, task_id=1, device="cpu", verbose=True):
     """Get a known GLI dataset of a given task.
 
     Args:
@@ -48,7 +48,7 @@ def get_gli_dataset(dataset: str, task: str, device="cpu", verbose=True):
         Dataset: a iterable dataset of a given task.
     """
     g = get_gli_graph(dataset, device=device, verbose=verbose)
-    t = get_gli_task(dataset, task, verbose=verbose)
+    t = get_gli_task(dataset, task, task_id=task_id, verbose=verbose)
     return combine_graph_and_task(g, t)
 
 
@@ -76,7 +76,7 @@ def get_gli_graph(dataset: str, device="cpu", verbose=True):
     return read_gli_graph(metadata_path, device=device, verbose=verbose)
 
 
-def get_gli_task(dataset: str, task: str, verbose=True):
+def get_gli_task(dataset: str, task: str, task_id=1, verbose=True):
     """Get a known GLI task of a given dataset.
 
     Args:
@@ -87,8 +87,20 @@ def get_gli_task(dataset: str, task: str, verbose=True):
     Returns:
         GLITask: Predefined GLI task.
     """
+    name_map = {
+        "NodeClassification": "node_classification",
+        "GraphClassification": "graph_classification",
+        "LinkPrediction": "link_prediction",
+        "TimeDependentLinkPrediction": "time_dependent_link_prediction",
+        "KGRelationPrediction": "kg_relation_predication",
+        "KGEntityPrediction": "kg_entity_prediction",
+        "GraphRegression": "graph_regression",
+        "NodeRegression": "node_regression"
+    }
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
-    task_path = os.path.join(data_dir, f"{task}.json")
+    task_path = os.path.join(data_dir, f"task_{name_map[task]}_{task_id}.json")
+    if task not in name_map:
+        raise NotImplementedError(f"Unsupported task type {task}.")
     if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"{data_dir} not found.")
     if not os.path.exists(task_path):
