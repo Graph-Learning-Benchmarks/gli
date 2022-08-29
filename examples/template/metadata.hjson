@@ -1,0 +1,78 @@
+{
+  /*
+  This configuration is written in hjson format, which is essentially json with
+  comments. Please use this file as a template of a homogeneous graph's
+  metadata.json. See more about metadata format requirement at FORMAT.md. Note
+  that
+  - metadata.json is still a json file.
+  - this template contains only the required entries.
+  - you may define extra attributes in Node, Edge, or Graph objects as described
+    in FORMAT.md.
+  */
+
+  # A brief description of the dataset.
+  # A graph/dataset name would suffice.
+  "description": "",
+
+  # The information to construct the graph.
+  # The info of the graph is stored in three objects: Node, Edge, Graph. Each
+  # object may have multiple attributes. Users are free to define any
+  # attributes other than three reserved ones: _Edge, _NodeList, _EdgeList.
+  "data": {
+
+    # The node-level attributes. 
+    # The attributes of this level are typically node labels or node features.
+    "Node": {},
+
+    # The edge-level attributes.
+    # The attributes of this level are typically edge labels or edge features. 
+    "Edge": {
+
+      # The edges of the graph. (required)
+      # A tensor in shape (n_edges, 2). _Edge[i] stores the i-th edge in the 
+      # form of (src_node_id, dst_node_id).
+      "_Edge": {
+
+        # Path to the saved npz data. (required)
+        "file": "",
+        
+        # Key index of the saved npz data. (optional)
+        "key": ""
+      }
+    },
+
+    # The graph-level attributes.
+    # The attributes of this level are typically graph labels or graph
+    # features.
+    "Graph": {
+
+      # Node list of subgraphs. (required)
+      # A 0/1-valued (sparse) tensor in shape (n_graphs, n_nodes).
+      "_NodeList": {
+
+        # Path to the saved npz data. (required)
+        "file": "",
+
+        # Key index of the saved npz data. (optional)
+        "key": ""
+      },
+
+      # Edge list of subgraphs. (optional)
+      # A 0/1-valued (sparse) tensor in shape (n_graphs, n_edges).
+      "_EdgeList": {
+
+        # Path to the saved npz data. (required)
+        "file": "",
+
+        # Key index of the saved npz data. (optional)
+        "key": ""
+      }
+    }
+  },
+
+  # The bibtex citation of the dataset.
+  "citation": "",
+
+  # Whether the graph is heterogeneous. Boolean value.
+  "is_heterogeneous": true
+}
