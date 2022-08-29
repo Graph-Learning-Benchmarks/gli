@@ -3,6 +3,7 @@ import os
 from typing import List, Union
 
 from dgl import DGLGraph
+from dgl.data import DGLDataset
 
 import gli.dataset
 from gli import ROOT_PATH
@@ -12,18 +13,33 @@ from gli.utils import download_data
 
 
 def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
-                           task: GLITask):
-    """Combine graph and task to get a GLI dataset.
+                           task: GLITask) -> DGLDataset:
+    """Combine graph(s) and task to get a dataset.
 
-    Args:
-        graph (Union[DGLGraph, List[DGLGraph]]): Graph(s) to construct dataset.
-        task (GLITask): GLI task config
+    Parameters
+    ----------
+    graph : Union[DGLGraph, List[DGLGraph]]
+        Graph or a list of graphs.
+    task : GLITask
+        Predefined task configuration.
 
-    Raises:
-        NotImplementedError: Unknown task type
+    Returns
+    -------
+    DGLDataset
+        Graph dataset instance.
 
-    Returns:
-        DGLDataset
+    Raises
+    ------
+    NotImplementedError
+        Raised when task types are unknown.
+
+    Examples
+    --------
+    >>> g = get_gli_graph(dataset="cora")
+    >>> t = get_gli_task(dataset="cora", task="NodeClassification")
+    >>> d = combine_graph_and_task(g, t)
+    >>> d.name
+    'CORA dataset. NodeClassification'
     """
     if task.type in ("NodeClassification", "NodeRegression"):
         return gli.dataset.node_dataset_factory(graph, task)
@@ -37,38 +53,83 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
 
 def get_gli_dataset(dataset: str,
                     task: str,
-                    task_id=1,
-                    device="cpu",
-                    verbose=True):
-    """Get a known GLI dataset of a given task.
+                    task_id: int = 1,
+                    device: str = "cpu",
+                    verbose: bool = False) -> DGLDataset:
+    """Get a graph dataset given dataset name and task config.
 
-    Args:
-        dataset (str): Name of dataset.
-        task (str): Name of task file.
-        device (str, optional): Returned dataset's device. Defaults to "cpu".
-        verbose (bool, optional): Defaults to True.
+    GLI will download the dataset if the data files do not exist.
 
-    Returns:
-        Dataset: a iterable dataset of a given task.
+    Parameters
+    ----------
+    dataset : str
+        Dataset/Graph name
+    task : str
+        Task type
+    task_id : int, optional
+        Task id defined in dataset folder, by default 1
+    device : str, optional
+        Device name, by default "cpu"
+    verbose : bool, optional
+        Verbose level, by default False
+
+    Returns
+    -------
+    DGLDataset
+        A DGL dataset instance
+
+    Examples
+    --------
+    >>> d = get_gli_dataset(dataset="cora", task="NodeClassification")
+    >>> d.name
+    'CORA dataset. NodeClassification'
     """
     g = get_gli_graph(dataset, device=device, verbose=verbose)
     t = get_gli_task(dataset, task, task_id=task_id, verbose=verbose)
     return combine_graph_and_task(g, t)
 
 
-def get_gli_graph(dataset: str, device="cpu", verbose=True):
-    """Get a known GLI graph.
+def get_gli_graph(dataset: str,
+                  device: str = "cpu",
+                  verbose: bool = False) -> Union[DGLGraph, List[DGLGraph]]:
+    # pylint: disable=line-too-long
+    """Get a GLI graph object, or a list of GLI graph objects.
 
-    Download dependent files if needed.
+    If the metadata defines multiple subgraphs on the dataset, the returned
+    value is a list rather than a single graph.
 
-    Args:
-        dataset (str): Name of dataset.
-        device (str, optional): Returned graph's device. Defaults to "cpu".
-        verbose (bool, optional): Defaults to True.
+    Parameters
+    ----------
+    dataset : str
+        Dataset/Graph name
+    device : str, optional
+        Task type, by default "cpu"
+    verbose : bool, optional
+        Verbose level, by default False
 
-    Returns:
-        DGLHeteroGraph: Graph object(s) that represents the dataset.
-    """
+    Returns
+    -------
+    Union[DGLGraph, List[DGLGraph]]
+        Graph dataset instance
+
+    Raises
+    ------
+    FileNotFoundError
+        Raised when metadata/task configuration file is not found.
+
+    Examples
+    --------
+    >>> g = get_gli_graph(dataset="cora")
+    >>> g
+    Graph(num_nodes=2708, num_edges=10556,
+        ndata_schemes={'NodeFeature': Scheme(shape=(1433,), dtype=torch.float32), 'NodeLabel': Scheme(shape=(), dtype=torch.int64)}
+        edata_schemes={})
+
+    Notes
+    -----
+    The returned graph(s) is essentially DGLGraph with extra attributes defined
+    by GLI.
+    """  # noqa: E501
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
     metadata_path = os.path.join(data_dir, "metadata.json")
     if not os.path.isdir(data_dir):
@@ -83,7 +144,7 @@ def get_gli_graph(dataset: str, device="cpu", verbose=True):
 def get_gli_task(dataset: str,
                  task: str,
                  task_id: int = 1,
-                 verbose: bool = True) -> GLITask:
+                 verbose: bool = False) -> GLITask:
     """Get a GLI task configuration object.
 
     Parameters
@@ -95,7 +156,7 @@ def get_gli_task(dataset: str,
     task_id : int, optional
         Task id defined in dataset folder, by default 1
     verbose : bool, optional
-        Verbose level, by default True
+        Verbose level, by default False
 
     Returns
     -------
