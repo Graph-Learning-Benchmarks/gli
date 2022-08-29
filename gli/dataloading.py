@@ -108,7 +108,7 @@ def get_gli_task(dataset: str,
         Raised when task type is unsupported.
     FileNotFoundError
         Raised when metadata/task configuration file is not found.
-        
+
     Examples
     --------
     >>> get_gli_task(dataset="cora", task="NodeClassification", task_id=1)
@@ -125,10 +125,10 @@ def get_gli_task(dataset: str,
         "GraphRegression": "graph_regression",
         "NodeRegression": "node_regression"
     }
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
-    task_path = os.path.join(data_dir, f"task_{name_map[task]}_{task_id}.json")
     if task not in name_map:
         raise NotImplementedError(f"Unsupported task type {task}.")
+    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    task_path = os.path.join(data_dir, f"task_{name_map[task]}_{task_id}.json")
     if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"{data_dir} not found.")
     if not os.path.exists(task_path):
