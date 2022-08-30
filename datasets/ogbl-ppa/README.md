@@ -1,11 +1,11 @@
-# Ogbn-arxiv
+# Ogbl-ppa
 ## Data Description
 
-The **ogbn-arxiv** dataset is a directed graph, representing the citation network between all Computer Science (CS) arXiv papers indexed by MAG. Each node is an arXiv paper and each directed edge indicates that one paper cites another one. Each paper comes with a 128-dimensional feature vector obtained by averaging the embeddings of words in its title and abstract.
+ The **ogbl-ppa** dataset is an undirected, unweighted graph. Nodes represent proteins from 58 different species, and edges indicate biologically meaningful associations between proteins, e.g., physical interactions, co-expression, homology or genomic neighborhood
 
 Statistics:
-1. Nodes: 169343
-2. Edges: 1166243
+1. Nodes: 576,289
+2. Edges: 30,326,273	
 
 
 #### Citation
@@ -19,7 +19,6 @@ Statistics:
   year={2020}
 }
 ```
-- Current Version
 ```
 @inproceedings{
   title={Distributed representationsof words and phrases and their compositionality},

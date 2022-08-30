@@ -10,7 +10,7 @@ Statistics:
 - Number of Classes: 3
 
 #### Citation
-
+- Original Source
 ```
 @article{sen2008collective,
   title={Collective classification in network data},
@@ -22,7 +22,17 @@ Statistics:
   year={2008}
 }
 ```
-
+- Current Version
+```
+@inproceedings{yang2016revisiting,
+  title={Revisiting semi-supervised learning with graph embeddings},
+  author={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},
+  booktitle={International conference on machine learning},
+  pages={40--48},
+  year={2016},
+  organization={PMLR}
+}
+```
 ## Available Tasks
 
 ### Planetoid
@@ -46,7 +56,7 @@ This is a node classification task with fixed split from [planetoid](https://git
 
 ## Preprocessing
 
-The data files and task config file in GLI format are transformed from the [DGL](https://www.dgl.ai) implementation. Check `pubmed.ipynb` for the preprocessing.
+The data files and task config file in GLB format are transformed from the [DGL](https://www.dgl.ai) implementation. Check `pubmed.ipynb` for the preprocessing.
 
 
 ### Requirements

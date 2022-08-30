@@ -10,13 +10,22 @@ Statistics:
 - Number of Classes: 5
 
 #### Citation
-
+- Original Source
 ```
 @online{webkb,
   author={WebKb Group},
   title={CMU World Wide Knowledge Base},
   date={2001-01},
   url={http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-11/www/wwkb/}
+}
+```
+- Current Version
+```
+@article{pei2020geom,
+  title={Geom-gcn: Geometric graph convolutional networks},
+  author={Pei, Hongbin and Wei, Bingzhe and Chang, Kevin Chen-Chuan and Lei, Yu and Yang, Bo},
+  journal={arXiv preprint arXiv:2002.05287},
+  year={2020}
 }
 ```
 
@@ -40,7 +49,7 @@ This is a node classification task with fixed split from [Webkb](https://github.
 ```
 
 ## Preprocessing
-The data files and task config file in GLI format are transformed from the [torch_geometric.datasets](https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html). Check `texas.ipynb` for the preprocessing.
+The data files and task config file in GLB format are transformed from the [torch_geometric.datasets](https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html). Check `texas.ipynb` for the preprocessing.
 
 
 ### Requirements

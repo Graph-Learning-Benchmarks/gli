@@ -1,7 +1,10 @@
 # Ogbn-products
 ## Data Description
 
-The **ogbn-products** dataset is an undirected and unweighted graph, representing an Amazon product co-purchasing network. Nodes represent products sold in Amazon, and edges between two products indicate that the products are purchased together. 
+
+The **ogbn-products** dataset is an undirected and unweighted graph, representing an Amazon product co-purchasing networ. Nodes represent products sold in Amazon, and edges between two products indicate that the products are purchased together. 
+
+
 
 Statistics:
 1. Nodes: 2,449,029
@@ -11,6 +14,7 @@ Statistics:
 #### Citation
 - Original Source
 ```
+
 @Misc{Bhatia16,
           author    = {Bhatia, K. and Dahiya, K. and Jain, H. and Kar, P. and Mittal, A. and Prabhu, Y. and Varma, M.},
           title     = {The extreme classification repository: Multi-label datasets and code},
@@ -45,7 +49,7 @@ Statistics:
 ```
 
 ## Preprocessing
-The data files and task config file in GLI format are transformed from the OGB implementation. 
+The data files and task config file in GLB format are transformed from the OGB implementation. 
 
 ### Requirements
 The preprocessing code requires the following package.

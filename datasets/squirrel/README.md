@@ -10,7 +10,7 @@ Statistics:
 - Number of Classes: 5
 
 #### Citation
-
+- Original Source
 ```
 @article{rozemberczki2021multi,
   title={Multi-scale attributed node embedding},
@@ -23,7 +23,15 @@ Statistics:
   publisher={Oxford University Press}
 }
 ```
-
+- Current Version
+```
+@article{pei2020geom,
+  title={Geom-gcn: Geometric graph convolutional networks},
+  author={Pei, Hongbin and Wei, Bingzhe and Chang, Kevin Chen-Chuan and Lei, Yu and Yang, Bo},
+  journal={arXiv preprint arXiv:2002.05287},
+  year={2020}
+}
+```
 ## Available Tasks
 
   ### MUSAE
@@ -44,7 +52,7 @@ This is a node classification task with fixed split from [MUSAE](https://github.
 ```
 
 ## Preprocessing
-The data files and task config file in GLI format are transformed from the [torch_geometric.datasets](https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html). Check `squirrel.ipynb` for the preprocessing.
+The data files and task config file in GLB format are transformed from the [torch_geometric.datasets](https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html). Check `squirrel.ipynb` for the preprocessing.
 
 
 ### Requirements

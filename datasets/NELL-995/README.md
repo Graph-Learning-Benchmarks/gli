@@ -9,7 +9,7 @@ Statistics:
 - Edges: 154213
 
 #### Citation
-
+- Original Source
 ```
 @article{xiong2017deeppath,
   title={Deeppath: A reinforcement learning method for knowledge graph reasoning},
@@ -18,7 +18,27 @@ Statistics:
   year={2017}
 }
 ```
-
+- Current Version
+```
+@article{padia2019knowledge,
+    title={Knowledge graph fact prediction via knowledge-enriched tensor factorization},
+    author={Padia, Ankur and Kalpakis, Konstantinos and Ferraro, Francis and Finin, Tim},
+    journal={Journal of Web Semantics},
+    volume={59},
+    pages={100497},
+    year={2019},
+    publisher={Elsevier}
+}
+```
+- Previous Version
+```
+@inproceedings{han2018openke,
+    title={OpenKE: An Open Toolkit for Knowledge Embedding},
+    author={Han, Xu and Cao, Shulin and Lv Xin and Lin, Yankai and Liu, Zhiyuan and Sun, Maosong  and Li, Juanzi},
+    booktitle={Proceedings of EMNLP},
+    year={2018}
+}
+```
 ## Available Tasks
 
 ### Knowledge Graph Completion
@@ -57,7 +77,7 @@ Statistics:
 
 ## Preprocessing
 
-The data files and task config file in GLI format are transformed from the [OpenKE](https://github.com/thunlp/OpenKE) implementation.
+The data files and task config file in GLB format are transformed from the [OpenKE](https://github.com/thunlp/OpenKE) implementation.
 
 ### Requirements
 
