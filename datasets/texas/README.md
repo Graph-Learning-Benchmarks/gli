@@ -49,7 +49,7 @@ This is a node classification task with fixed split from [Webkb](https://github.
 ```
 
 ## Preprocessing
-The data files and task config file in GLB format are transformed from the [torch_geometric.datasets](https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html). Check `texas.ipynb` for the preprocessing.
+The data files and task config file in GLI format are transformed from the [torch_geometric.datasets](https://pytorch-geometric.readthedocs.io/en/latest/modules/datasets.html). Check `texas.ipynb` for the preprocessing.
 
 
 ### Requirements

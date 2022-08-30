@@ -77,7 +77,7 @@ Statistics:
 
 ## Preprocessing
 
-The data files and task config file in GLB format are transformed from the [OpenKE](https://github.com/thunlp/OpenKE) implementation.
+The data files and task config file in GLI format are transformed from the [OpenKE](https://github.com/thunlp/OpenKE) implementation.
 
 ### Requirements
 
