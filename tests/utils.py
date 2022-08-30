@@ -129,7 +129,7 @@ def _dict_depth(d):
 
 
 def _is_hetero_graph(data):
-    """Return true if the glb data contains heterogeneous graph."""
+    """Return true if the gli data contains heterogeneous graph."""
     depth = _dict_depth(data)
     # Heterogeneous graph has one more depth than a homogeneous one.
     if depth == 5:

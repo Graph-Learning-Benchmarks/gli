@@ -1,5 +1,5 @@
 """
-MIXHOP model in GLB.
+MIXHOP model in GLI.
 
 References:
 https://github.com/dmlc/dgl/tree/master/examples/pytorch/mixhop

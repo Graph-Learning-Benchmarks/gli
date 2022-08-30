@@ -16,7 +16,7 @@ from tqdm import tqdm
 from .utils import file_reader, sparse_to_torch
 
 
-def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
+def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     """Initialize and return a Graph instance given metadata.json."""
     pwd = os.path.dirname(metadata_path)
     with open(metadata_path, "r", encoding="utf-8") as fptr:
@@ -46,7 +46,7 @@ def read_glb_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
 
 
 def _is_single_graph(data):
-    """Return true if the glb data contains a single graph."""
+    """Return true if the gli data contains a single graph."""
     node_list = data["Graph"]["_NodeList"]
     if len(node_list.shape) == 1:
         return True
@@ -57,7 +57,7 @@ def _is_single_graph(data):
 
 
 def _is_hetero_graph(data):
-    """Return true if the glb data contains heterogeneous graph."""
+    """Return true if the gli data contains heterogeneous graph."""
     depth = _dict_depth(data)
     # Heterogeneous graph has one more depth than a homogeneous one.
     if depth == 5:

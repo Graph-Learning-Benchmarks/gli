@@ -1,5 +1,5 @@
 """
-GCN model in GLB.
+GCN model in GLI.
 
 References:
 https://github.com/dmlc/dgl/tree/master/examples/pytorch/gcn
