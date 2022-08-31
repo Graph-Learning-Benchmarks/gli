@@ -55,7 +55,8 @@ def main():
         cuda = True
 
     data = gli.dataloading.get_gli_dataset(args.dataset, args.task,
-                                           device=device)
+                                           args.task_id, device,
+                                           args.verbose)
     # check EdgeFeature and multi-modal node features
     edge_cnt = node_cnt = 0
     if len(data.features) > 1:
@@ -172,3 +173,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
