@@ -78,9 +78,6 @@ def main():
     g = data[0]
     indice = data.get_node_indices()
 
-    # if train_cfg["to_dense"] or \
-    #    args.model in Models_need_to_be_densed:
-    #     g = to_dense(g)
     g = to_dense(g)
     # add self loop
     if train_cfg["self_loop"]:
@@ -88,24 +85,13 @@ def main():
         g = dgl.add_self_loop(g)
 
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
-    label_name = re.search(r".*Node/(\w+)", data.target).group(1)
     features = g.ndata[feature_name]
-    labels = g.ndata[label_name]
-    train_mask = g.ndata["train_mask"]
-    val_mask = g.ndata["val_mask"]
-    test_mask = g.ndata["test_mask"]
 
     # for multi-split dataset, choose 0-th split for now
     if check_multiple_split(args.dataset):
         train_mask = train_mask[:, 0]
         val_mask = val_mask[:, 0]
         test_mask = test_mask[:, 0]
-
-    # When labels contains -1, modify masks
-    if min(labels) < 0:
-        train_mask = train_mask * (labels >= 0)
-        val_mask = val_mask * (labels >= 0)
-        test_mask = test_mask * (labels >= 0)
 
     in_feats = features.shape[1]
     n_classes = data.num_labels
@@ -135,10 +121,7 @@ def main():
 
     print(f"""----Data statistics------'
       #Edges {n_edges}
-      #Classes {n_classes}
-      #Train samples {train_mask.int().sum().item()}
-      #Val samples {val_mask.int().sum().item()}
-      #Test samples {test_mask.int().sum().item()}""")
+      #Classes {n_classes}""")
 
     # create model
     model = generate_model(args, g, in_feats, n_classes, **model_cfg)
@@ -172,8 +155,11 @@ def main():
                 blocks = [b.to(torch.device("cuda")) for b in blocks]
             input_features = blocks[0].srcdata["NodeFeature"]
             output_labels = blocks[-1].dstdata["NodeLabel"]
-            print(blocks)
-            print(input_features)
+
+            # When labels contains -1, modify labels
+            if min(output_labels) < 0:
+                output_labels = output_labels * (output_labels >= 0)
+
             logits = model(blocks, input_features)
             loss = loss_fcn(logits, output_labels)
             optimizer.zero_grad()
@@ -181,7 +167,7 @@ def main():
             optimizer.step()
             if it % 20 == 0:
                 train_acc = accuracy(logits, output_labels)
-                print("Loss", loss, "Acc", train_acc)
+                print("Loss", loss.item(), "Acc", train_acc)
 
         if epoch >= 3:
             if cuda:
@@ -202,10 +188,11 @@ def main():
     print()
 
     if train_cfg["early_stopping"]:
-        model.load_state_dict(torch.load("es_checkpoint.pt"))
+        model.load_state_dict(torch.load(stopper.ckpt_dir))
 
     acc = evaluate(model, test_dataloader)
-    print(f"Test Accuracy {acc:.4f}")
+    val_acc = stopper.best_score
+    print(f"Test{acc:.4f},Val{val_acc:.4f}")
 
 
 if __name__ == "__main__":
