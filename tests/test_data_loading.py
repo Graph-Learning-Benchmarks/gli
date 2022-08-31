@@ -30,8 +30,7 @@ def test_data_loading(dataset_name):
                 if task_dict["type"] not in SUPPORTED_TASK_TYPES:
                     f.close()
                     return
-            print(os.path.splitext(file)[0])
-            task_list.append(os.path.splitext(file)[0])
+            task_list.append(task_dict["type"])
     try:
         _ = gli.dataloading.get_gli_graph(dataset)
     except (AssertionError,
@@ -41,7 +40,7 @@ def test_data_loading(dataset_name):
             ValueError) as e:
         print(e, dataset, "graph loading failed")
         assert False
-
+    
     for task in task_list:
         try:
             _ = gli.dataloading.get_gli_task(dataset, task)
