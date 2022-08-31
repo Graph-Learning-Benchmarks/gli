@@ -111,8 +111,8 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       init_layers_X=model_cfg["init_layers_X"])
     try:
         model
-    except UnboundLocalError:
-        raise NameError(f"model {args.model} is not supported yet.")
+    except UnboundLocalError as exc:
+        raise NameError(f"model {args.model} is not supported yet.") from exc
     else:
         return model
 
