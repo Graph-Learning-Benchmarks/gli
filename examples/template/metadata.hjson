@@ -4,7 +4,8 @@
   comments. Please use this file as a template of a homogeneous graph's
   metadata.json. See more about metadata format requirement at FORMAT.md. Note
   that
-  - metadata.json is still a json file.
+  - metadata.json is still a json file. All comments should be removed in json
+    files.
   - this template contains only the required entries.
   - you may define extra attributes in Node, Edge, or Graph objects as described
     in FORMAT.md.
