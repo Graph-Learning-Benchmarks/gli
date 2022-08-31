@@ -109,7 +109,8 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       inner_dropout=model_cfg["inner_dropout"],
                       init_layers_A=model_cfg["init_layers_A"],
                       init_layers_X=model_cfg["init_layers_X"])
-    try: model
+    try:
+        model
     except UnboundLocalError:
         raise NameError(f"model {args.model} is not supported yet.")
     else:

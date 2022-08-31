@@ -40,7 +40,7 @@ def test_data_loading(dataset_name):
             ValueError) as e:
         print(e, dataset, "graph loading failed")
         assert False
-    
+
     for task in task_list:
         try:
             _ = gli.dataloading.get_gli_task(dataset, task)
