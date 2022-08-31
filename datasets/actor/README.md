@@ -10,7 +10,7 @@ Statistics:
 - Number of Classes: 5
 
 #### Citation
-
+- Original Source
 ```
 @inproceedings{tang2009social,
   title={Social influence analysis in large-scale networks},
@@ -20,6 +20,16 @@ Statistics:
   year={2009}
   }
 ```
+- Current Version
+```
+@article{pei2020geom,
+  title={Geom-gcn: Geometric graph convolutional networks},
+  author={Pei, Hongbin and Wei, Bingzhe and Chang, Kevin Chen-Chuan and Lei, Yu and Yang, Bo},
+  journal={arXiv preprint arXiv:2002.05287},
+  year={2020}
+}
+```
+
 ## Available Tasks
 
 ### Actor

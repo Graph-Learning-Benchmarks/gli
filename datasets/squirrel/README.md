@@ -10,7 +10,7 @@ Statistics:
 - Number of Classes: 5
 
 #### Citation
-
+- Original Source
 ```
 @article{rozemberczki2021multi,
   title={Multi-scale attributed node embedding},
@@ -23,7 +23,15 @@ Statistics:
   publisher={Oxford University Press}
 }
 ```
-
+- Current Version
+```
+@article{pei2020geom,
+  title={Geom-gcn: Geometric graph convolutional networks},
+  author={Pei, Hongbin and Wei, Bingzhe and Chang, Kevin Chen-Chuan and Lei, Yu and Yang, Bo},
+  journal={arXiv preprint arXiv:2002.05287},
+  year={2020}
+}
+```
 ## Available Tasks
 
   ### MUSAE
