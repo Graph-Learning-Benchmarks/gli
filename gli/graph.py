@@ -121,7 +121,7 @@ def _get_multi_graph(data, device="cpu", name=None):
 
     for attr in data["Graph"]:
         for i, graph in enumerate(graphs):
-            setattr(graph, attr, data["Graph"][attr])  # Graph-level features
+            setattr(graph, attr, data["Graph"][attr][i])  # Graph-level features
 
     return graphs
 
