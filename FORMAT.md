@@ -251,7 +251,7 @@ The information about a graph learning task (e.g., the train/test splits or the 
 
 ### Supported Tasks
 
-GLI currently supports following task types:
+This section lists available task types of GLI.
 
 #### `NodeClassification`
 
@@ -301,9 +301,9 @@ GLI currently supports following task types:
         - `description`: task description.
         - `type`: task type (in this case, `LinkPrediction`).
         - `feature`: the attribute(s) used as feature in this task.
-        - `train_set` (optional): the training edge IDs.
-        - `val_set` (optional): the validation edge IDs.
-        - `test_set` (optional): the test edge IDs.
+        - `train_set`: the training edge IDs.
+        - `val_set`: the validation edge IDs.
+        - `test_set`: the testing edge IDs.
         - `valid_neg` (optional): the negative samples of edges to validate.
         - `test_neg` (optional): the negative samples of edges to test.
 
@@ -342,6 +342,8 @@ GLI currently supports following task types:
     - `test_triplet_set`: the test edge IDs.
     - `num_relations`: the number of unique relations.
     - `target`: the attribute to predict.
+
+In some cases, certain required attributes are not applicable. For example, some knowledge graphs do not have node and edge features. You may use `null` in json as a placeholder in this situation.
 
 ## Contributing
 
