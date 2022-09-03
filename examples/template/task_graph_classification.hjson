@@ -1,0 +1,61 @@
+{
+  /*
+  This configuration is written in hjson format, which is essentially json with
+  comments. Please use this file as a template of a graph classification task
+  cofiguration. See more about metadata format requirement at FORMAT.md. Note
+  that
+  - task_*.json is still a json file. All comments should be removed in json
+    files.
+  - this template contains only the required entries.
+  */
+
+  # A brief description of the task.
+  "description": "",
+
+  # Type of the task.
+  "type": "GraphClassification",
+
+  # Features that will be used in the prediction.
+  # Each feature is in following format:
+  # <Object>/<Object Group(if applied)>/<attr>
+  # e.g., Node/NodeFeature
+  #       Node/NodeGroup1/NodeGroup1Feature
+  "feature": [],
+
+  # Prediction target.
+  # The target is in the same format as above.
+  "target": "",
+
+  # Number of classes in classification task.
+  "num_classes": 0,
+
+  # Train set indices
+  "train_set": {
+
+    # Path to the saved npz data. (required)
+    "file": "",
+
+    # Key index of the saved npz data. (optional)
+    "key": ""
+  },
+
+  # Validation set indices
+  "val_set": {
+
+    # Path to the saved npz data. (required)
+    "file": "",
+
+    # Key index of the saved npz data. (optional)
+    "key": ""
+  },
+
+  # Testing set indices
+  "test_set": {
+
+    # Path to the saved npz data. (required)
+    "file": "",
+
+    # Key index of the saved npz data. (optional)
+    "key": ""
+  }
+}
