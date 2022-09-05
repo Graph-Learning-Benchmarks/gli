@@ -42,7 +42,7 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                     F.relu,
                     model_cfg["dropout"])
     elif args.model == "GAT":
-        heads = ([model_cfg["num_heads"]] * (model_cfg["num_layers"]-1))\
+        heads = ([model_cfg["num_heads"]] * (model_cfg["num_layers"]))\
                 + [model_cfg["num_out_heads"]]
         model = GAT(g,
                     model_cfg["num_layers"],
@@ -109,7 +109,12 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       inner_dropout=model_cfg["inner_dropout"],
                       init_layers_A=model_cfg["init_layers_A"],
                       init_layers_X=model_cfg["init_layers_X"])
-    return model
+    try:
+        model
+    except UnboundLocalError as exc:
+        raise NameError(f"model {args.model} is not supported yet.") from exc
+    else:
+        return model
 
 
 def parse_args():
@@ -124,14 +129,23 @@ def parse_args():
                         help="The training configuration file path.")
     parser.add_argument("--model", type=str, default="GCN",
                         help="model to be used. GCN, GAT, MoNet,\
-                              GraphSAGE, MLP for now")
+                              GraphSAGE, MLP, LINKX, MixHop for now")
     parser.add_argument("--dataset", type=str, default="cora",
                         help="dataset to be trained")
     parser.add_argument("--task", type=str,
-                        default="task",
-                        help="task name for NodeClassification,")
+                        default="NodeClassification",
+                        help="task name. NodeClassification,\
+                        GraphClassification, LinkPrediction,\
+                        TimeDependentLinkPrediction,\
+                        KGRelationPrediction, NodeRegression.\
+                        KGEntityPrediction, GraphRegression,\
+                        for now")
+    parser.add_argument("--task-id", type=int, default=1,
+                        help="task id, starting from 1")
     parser.add_argument("--gpu", type=int, default=-1,
-                        help="which GPU to use. Set -1 to use CPU.")
+                        help="which GPU to use. Set -1 to use CP U.")
+    parser.add_argument("--verbose", type=bool, default=False,
+                        help="whether to print verbosely")
     return parser.parse_args()
 
 

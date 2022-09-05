@@ -10,13 +10,22 @@ Statistics:
 - Number of Classes: 5
 
 #### Citation
-
+- Original Source
 ```
 @online{webkb,
   author={WebKb Group},
   title={CMU World Wide Knowledge Base},
   date={2001-01},
   url={http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-11/www/wwkb/}
+}
+```
+- Current Version
+```
+@article{pei2020geom,
+  title={Geom-gcn: Geometric graph convolutional networks},
+  author={Pei, Hongbin and Wei, Bingzhe and Chang, Kevin Chen-Chuan and Lei, Yu and Yang, Bo},
+  journal={arXiv preprint arXiv:2002.05287},
+  year={2020}
 }
 ```
 

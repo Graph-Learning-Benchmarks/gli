@@ -26,7 +26,7 @@ def test_relation_prediction(dataset_name):
     device = "cpu"
 
     data = gli.dataloading.get_gli_dataset(
-        dataset_name, "task_predict_relation", device=device)
+        dataset_name, "KGRelationPrediction", device=device)
 
     graph = data[0]
     if "NodeFeature" in graph.ndata:
@@ -104,7 +104,7 @@ def test_entity_prediction(dataset_name):
     device = "cpu"
 
     data = gli.dataloading.get_gli_dataset(
-        dataset_name, "task_predict_entity", device=device)
+        dataset_name, "KGEntityPrediction", device=device)
 
     graph = data[0]
     if "NodeFeature" in graph.ndata:
