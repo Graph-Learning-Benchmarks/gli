@@ -34,7 +34,7 @@ pip install -e .
 To test the installation, run the following command:
 
 ```bash
-python3 example.py -g cora -t task
+python example.py --graph cora --task task_node_classification_1
 ```
 
 The output should be like this:
