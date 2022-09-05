@@ -28,9 +28,20 @@
 
 #### Citation
 
+- Original Source
+<!--  -->
 ```
 
 ```
+
+- Current Version
+```
+```
+
+- Previous Version
+```
+```
+
 
 <!-- Insert the BibTeX citation into the above code block. -->
 
