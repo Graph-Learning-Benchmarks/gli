@@ -19,14 +19,14 @@ def evaluate(dataloader, device, model):
     model.eval()
     total = 0
     total_correct = 0
-    for batch, (batched_graph, labels) in enumerate(dataloader):
+    for batched_graph, labels in dataloader:
         batched_graph = batched_graph.to(device)
         labels = labels.to(device)
         feat = batched_graph.ndata["NodeFeature"].float()
         total += len(labels)
         logits = model(batched_graph, feat)
         _, predicted = torch.max(logits, 1)
-        total_correct += (predicted == labels[:, batch]).sum().item()
+        total_correct += (predicted == labels).sum().item()
     acc = 1.0 * total_correct / total
     return acc
 
@@ -91,7 +91,7 @@ def main():
             labels = labels.to(device)
             feat = batched_graph.ndata["NodeFeature"].float()
             logits = model(batched_graph, feat)
-            loss = loss_fcn(logits, labels[:, batch])
+            loss = loss_fcn(logits, labels)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()

@@ -1,1 +1,3 @@
 hidden_dim: 16
+num_layers: 2
+dropout: .7

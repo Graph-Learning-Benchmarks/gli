@@ -6,10 +6,12 @@ https://github.com/dmlc/dgl/tree/master/examples/pytorch/gin
 """
 
 import torch
+import torch.nn.functional as F
 import random
 import numpy as np
 import yaml
 from models.gin import GIN
+from models.gcn import GCN
 import argparse
 
 
@@ -17,7 +19,17 @@ def generate_model(args, in_size, out_size, **model_cfg):
     """Generate required model."""
     # create models
     if args.model == "GIN":
-        model = GIN(in_size, model_cfg["hidden_dim"], out_size)
+        model = GIN(in_size,
+                    model_cfg["hidden_dim"],
+                    out_size)
+    elif args.model == "GCN":
+        model = GCN(in_size,
+                    model_cfg["hidden_dim"],
+                    out_size,
+                    model_cfg["num_layers"],
+                    F.relu,
+                    model_cfg["dropout"])
+
     try:
         model
     except UnboundLocalError as exc:
@@ -59,7 +71,7 @@ def parse_args():
     parser.add_argument("--model", type=str, default="GIN",
                         help="model to be used. GCN, GAT, MoNet,\
                               GraphSAGE, MLP, LINKX, MixHop for now")
-    parser.add_argument("--dataset", type=str, default="cora",
+    parser.add_argument("--dataset", type=str, default="ogbg-molhiv",
                         help="dataset to be trained")
     parser.add_argument("--task", type=str,
                         default="GraphClassification",
