@@ -11,7 +11,7 @@ import random
 import numpy as np
 import yaml
 from models.gin import GIN
-from models.gcn import GCN
+from models.gcn import GCNgraph
 import argparse
 
 
@@ -23,12 +23,12 @@ def generate_model(args, in_size, out_size, **model_cfg):
                     model_cfg["hidden_dim"],
                     out_size)
     elif args.model == "GCN":
-        model = GCN(in_size,
-                    model_cfg["hidden_dim"],
-                    out_size,
-                    model_cfg["num_layers"],
-                    F.relu,
-                    model_cfg["dropout"])
+        model = GCNgraph(in_size,
+                         model_cfg["hidden_dim"],
+                         out_size,
+                         model_cfg["num_layers"],
+                         F.relu,
+                         model_cfg["dropout"])
 
     try:
         model

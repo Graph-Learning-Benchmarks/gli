@@ -10,7 +10,7 @@ from torch import nn
 from dgl.nn.pytorch import GraphConv
 
 
-class GCN(nn.Module):
+class GCNgraph(nn.Module):
     """GCN network."""
 
     def __init__(self,
