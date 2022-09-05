@@ -12,23 +12,30 @@ import numpy as np
 import yaml
 from models.gin import GIN
 from models.gcn import GCNgraph
+from models.cheb_net import ChebNet
 import argparse
 
 
-def generate_model(args, in_size, out_size, **model_cfg):
+def generate_model(args, in_feats, n_classes, **model_cfg):
     """Generate required model."""
     # create models
     if args.model == "GIN":
-        model = GIN(in_size,
+        model = GIN(in_feats,
                     model_cfg["hidden_dim"],
-                    out_size)
+                    n_classes)
     elif args.model == "GCN":
-        model = GCNgraph(in_size,
+        model = GCNgraph(in_feats,
                          model_cfg["hidden_dim"],
-                         out_size,
+                         n_classes,
                          model_cfg["num_layers"],
                          F.relu,
                          model_cfg["dropout"])
+    elif args.model == "ChebNet":
+        model = ChebNet(in_feats,
+                        model_cfg["hidden_dim"],
+                        n_classes,
+                        model_cfg["num_layers"],
+                        model_cfg["k"])
 
     try:
         model
@@ -69,10 +76,11 @@ def parse_args():
                         default="configs/train_default.yaml",
                         help="The training configuration file path.")
     parser.add_argument("--model", type=str, default="GIN",
-                        help="model to be used. GCN, GAT, MoNet,\
-                              GraphSAGE, MLP, LINKX, MixHop for now")
+                        help="model to be used. GIN, ChebNet, GCN,\
+                              for now")
     parser.add_argument("--dataset", type=str, default="ogbg-molhiv",
-                        help="dataset to be trained")
+                        help="dataset to be trained, ogbg-molhiv\
+                             and ogbg-molpcba for now")
     parser.add_argument("--task", type=str,
                         default="GraphClassification",
                         help="task name. NodeClassification,\

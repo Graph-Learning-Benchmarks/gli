@@ -3,6 +3,8 @@ GCN model in GLI.
 
 References:
 https://github.com/dmlc/dgl/tree/master/examples/pytorch/gcn
+https://docs.dgl.ai/tutorials/blitz/5_graph_classification.html#
+sphx-glr-tutorials-blitz-5-graph-classification-py
 """
 
 import dgl

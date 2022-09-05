@@ -65,11 +65,9 @@ def main():
                                  pin_memory=torch.cuda.is_available())
 
     # create GIN model
-    in_size = train_dataset[0][0].ndata["NodeFeature"].shape[1]
-    out_size = train_dataset.num_labels
-    print("insize: ", in_size)
-    print("out_size: ", out_size)
-    model = generate_model(args, in_size, out_size, **model_cfg)
+    in_feats = train_dataset[0][0].ndata["NodeFeature"].shape[1]
+    n_classes = train_dataset.num_labels
+    model = generate_model(args, in_feats, n_classes, **model_cfg)
     if cuda:
         model.cuda()
 
