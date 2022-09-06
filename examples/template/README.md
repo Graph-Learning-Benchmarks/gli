@@ -8,11 +8,32 @@
 
 #### Citation
 
-```
+- Original Source
+
+<!-- The first work that created the dataset. -->
 
 ```
 
-<!-- Insert the BibTeX citation into the above code block. -->
+```
+
+- Current Version
+
+<!-- The work that is directly responsible for the dataset in this folder. -->
+
+```
+
+```
+
+- Previous Version
+
+<!-- Any intermediate versions between the original and the current version. -->
+<!-- There can be multiple citations in the "Previous Version" -->
+
+```
+
+```
+
+<!-- Insert the BibTeX citation into the above code blocks. -->
 
 ## Available Tasks
 
@@ -28,23 +49,9 @@
 
 #### Citation
 
-- Original Source
-<!-- The first work that created the dataset. -->
 ```
 
 ```
-
-- Current Version
-<!-- The work that is directly responsible for the dataset in this folder. -->
-```
-```
-
-- Previous Version
-<!-- Any intermediate versions between the original and the current version. -->
-<!-- There can be multiple citations in the "Previous Version" -->
-```
-```
-
 
 <!-- Insert the BibTeX citation into the above code block. -->
 
