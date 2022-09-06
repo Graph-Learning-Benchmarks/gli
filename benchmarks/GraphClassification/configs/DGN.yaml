@@ -1,0 +1,7 @@
+num_layers: 1
+hidden_dim: 16
+# aggregators: ['dir1-av', 'dir1-dx', 'sum']
+aggregators: ['mean']
+scalers: ['identity']
+delta: 2.5
+dropout: 0
