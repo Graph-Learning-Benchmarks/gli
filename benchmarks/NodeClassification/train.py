@@ -157,8 +157,6 @@ def main():
                 torch.cuda.synchronize()
             dur.append(time.time() - t0)
 
-        # print("logits[train_mask].shape: ", logits[train_mask].shape)
-        # print("labels[train_mask]: ", labels[train_mask].shape)
         train_acc = eval_func(logits[train_mask], labels[train_mask])
         val_acc = evaluate(model, features, labels, val_mask, eval_func)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
