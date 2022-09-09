@@ -252,7 +252,7 @@ def eval_rocauc(y_pred, y_true):
                 rocauc_list.append(score)
     else:
         y_pred = y_pred.detach().cpu().numpy()
-        is_labeled = ~torch.isnan(y_true)
+        is_labeled = ~torch.isnan(torch.tensor(y_true))
         score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
         rocauc_list.append(score)
 
