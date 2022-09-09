@@ -26,15 +26,19 @@ clean:
 
 test: pystyle pylint pytest
 
-pystyle:
-	pycodestyle ${PYTHON_FILES}
-	pydocstyle ${PYTHON_FILES}
+# The leading '-' will execute following command to ignore errors.
+pystyle: logs
+	-pycodestyle ${PYTHON_FILES} | tee logs/pycodestyle.log
+	-pydocstyle ${PYTHON_FILES} | tee logs/pydocstyle.log
 
-pylint:
-	pylint ${PYTHON_FILES} --rcfile .pylintrc
+pylint: logs
+	-pylint ${PYTHON_FILES} --rcfile .pylintrc | tee logs/pylint.log
 
-pytest:
-	pytest -v tests/
+pytest: logs
+	-pytest -v tests/ | tee logs/pytest.log
 
 download:
 	${PYTHON} tests/preprocess.py
+
+logs:
+	mkdir logs
