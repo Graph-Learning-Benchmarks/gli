@@ -30,6 +30,8 @@ from models.mixhop import MixHop
 from models.linkx import LINKX
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
+Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
+Models_using_adamW = ["LINKX", "MixHop"]
 
 
 def generate_model(args, g, in_feats, n_classes, **model_cfg):

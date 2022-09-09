@@ -1,6 +1,6 @@
-num_hidden: 8
-num_layers: 2
-dropout: .6
+num_hidden: 16
+num_layers: 1
+dropout: .5
 inner_activation: False
 inner_dropout: False
 init_layers_A: 1
