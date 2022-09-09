@@ -7,6 +7,7 @@ https://github.com/pyg-team/pytorch_geometric/blob/
 graphgym/cmd_args.py
 https://github.com/dmlc/dgl/blob/a107993f106cecb1c375f7a6ae41088d04f29e29/
 examples/pytorch/caregnn/utils.py
+https://github.com/CUAI/Non-Homophily-Large-Scale/blob/master/data_utils.py
 """
 import argparse
 import yaml
@@ -18,6 +19,7 @@ import shutil
 import torch
 import torch.nn.functional as F
 import numpy as np
+from sklearn.metrics import roc_auc_score
 from models.gcn import GCN
 from models.gat import GAT
 from models.monet import MoNet
@@ -227,3 +229,50 @@ def set_seed(seed):
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
+
+
+def eval_rocauc(y_pred, y_true):
+    """Evalution function for ROC."""
+    rocauc_list = []
+    y_true = y_true.detach().cpu().numpy()
+    if len(y_true.shape) > 1:
+        if y_true.shape[1] == 1:
+            # use the predicted class for single-class classification
+            y_pred = F.softmax(y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
+        else:
+            y_pred = y_pred.detach().cpu().numpy()
+
+        for i in range(y_true.shape[1]):
+            # AUC is only defined when there is at least one positive data.
+            if np.sum(y_true[:, i] == 1) > 0 and np.sum(y_true[:, i] == 0) > 0:
+                is_labeled = y_true[:, i] == y_true[:, i]
+                score = roc_auc_score(y_true[is_labeled, i],
+                                      y_pred[is_labeled, i])
+
+                rocauc_list.append(score)
+    else:
+        y_pred = y_pred.detach().cpu().numpy()
+        is_labeled = ~torch.isnan(torch.tensor(y_true))
+        score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
+        rocauc_list.append(score)
+
+    if len(rocauc_list) == 0:
+        raise RuntimeError(
+            "No positively labeled data available. Cannot compute ROC-AUC.")
+
+    return sum(rocauc_list)/len(rocauc_list)
+
+
+def check_binary_classification(dataset):
+    """Check whether the dataset has multiple splits."""
+    dataset_directory = os.path.dirname(os.path.dirname(os.getcwd())) \
+        + "/datasets/" + dataset
+    for file in os.listdir(dataset_directory):
+        if fnmatch.fnmatch(file, "task*.json"):
+            with open(dataset_directory + "/" + file,  encoding="utf-8") as f:
+                task_dict = json.load(f)
+                if "num_classes" in task_dict and\
+                   task_dict["num_classes"] == 2:
+                    return 1
+                else:
+                    return 0
