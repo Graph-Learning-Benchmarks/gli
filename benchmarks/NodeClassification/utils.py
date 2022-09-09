@@ -230,6 +230,7 @@ def set_seed(seed):
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
 
+
 def eval_rocauc(y_pred, y_true):
     """Evalution function for ROC."""
     rocauc_list = []
@@ -237,7 +238,7 @@ def eval_rocauc(y_pred, y_true):
     if len(y_true.shape) > 1:
         if y_true.shape[1] == 1:
             # use the predicted class for single-class classification
-            y_pred = F.softmax(y_pred, dim=-1)[:,1].unsqueeze(1).cpu().numpy()
+            y_pred = F.softmax(y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
         else:
             y_pred = y_pred.detach().cpu().numpy()
 
@@ -245,14 +246,14 @@ def eval_rocauc(y_pred, y_true):
             # AUC is only defined when there is at least one positive data.
             if np.sum(y_true[:, i] == 1) > 0 and np.sum(y_true[:, i] == 0) > 0:
                 is_labeled = y_true[:, i] == y_true[:, i]
-                score = roc_auc_score(y_true[is_labeled, i], y_pred[is_labeled, i])
-                                    
+                score = roc_auc_score(y_true[is_labeled, i],
+                                      y_pred[is_labeled, i])
+
                 rocauc_list.append(score)
     else:
         y_pred = y_pred.detach().cpu().numpy()
-        is_labeled = y_true == y_true
-        score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1],
-                              multi_class = "ovr", average = "macro")
+        is_labeled = ~torch.isnan(y_true)
+        score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
         rocauc_list.append(score)
 
     if len(rocauc_list) == 0:
@@ -260,6 +261,7 @@ def eval_rocauc(y_pred, y_true):
             "No positively labeled data available. Cannot compute ROC-AUC.")
 
     return sum(rocauc_list)/len(rocauc_list)
+
 
 def check_binary_classification(dataset):
     """Check whether the dataset has multiple splits."""
@@ -269,7 +271,8 @@ def check_binary_classification(dataset):
         if fnmatch.fnmatch(file, "task*.json"):
             with open(dataset_directory + "/" + file,  encoding="utf-8") as f:
                 task_dict = json.load(f)
-                if "num_classes" in task_dict and task_dict["num_classes"] == 2:
+                if "num_classes" in task_dict and\
+                   task_dict["num_classes"] == 2:
                     return 1
                 else:
                     return 0

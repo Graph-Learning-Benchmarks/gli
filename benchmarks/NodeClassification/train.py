@@ -128,7 +128,7 @@ def main():
         ckpt_name = args.model + "_" + args.dataset + "_"
         ckpt_name += args.train_cfg
         stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
-    
+
     # use rocauc for binary classification
     if check_binary_classification(args.dataset):
         eval_func = eval_rocauc
