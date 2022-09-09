@@ -3,6 +3,9 @@ Utility functions in gli.
 
 References:
 https://github.com/dmlc/dgl/tree/master/examples/pytorch/gin
+https://github.com/CUAI/Non-Homophily-Large-Scale/blob/master/data_utils.py
+https://scikit-learn.org/stable/modules/generated/sklearn.
+metrics.roc_auc_score.html
 """
 
 import os
@@ -89,7 +92,7 @@ def parse_args():
     parser.add_argument("--train-cfg", type=str,
                         default="configs/train_default.yaml",
                         help="The training configuration file path.")
-    parser.add_argument("--model", type=str, default="GIN",
+    parser.add_argument("--model", type=str, default="GCN",
                         help="model to be used. GIN, ChebNet, GCN,\
                               for now")
     parser.add_argument("--dataset", type=str, default="ogbg-molhiv",
@@ -151,6 +154,29 @@ class EarlyStopping:
         torch.save(model.state_dict(), self.ckpt_dir)
 
 
+def eval_acc(y_pred, y_true):
+    """
+    Evaluation for accuracy.
+    Return a list of binary number, indicating the
+    correctness of prediction.
+    """
+    correct_list = []
+    y_true = y_true.detach().cpu().numpy()
+    # y_pred = y_pred.argmax(dim=-1, keepdim=True).detach().cpu().numpy()
+
+    if len(y_true) > 1:
+        for i in range(y_true.shape[1]):
+            is_labeled = y_true[:, i] == y_true[:, i]
+            correct = y_true[is_labeled, i] == y_pred[is_labeled, i]
+            # acc_list.append(float(np.sum(correct))/len(correct))
+            correct_list.append(correct)
+    else:
+        is_labeled = y_true == y_true
+        _, predicted = torch.max(y_pred, 1)
+        correct_list.append(predicted[is_labeled] == y_true[is_labeled])
+    return correct_list
+
+
 def eval_rocauc(y_pred, y_true):
     """Evalution function for ROC."""
     rocauc_list = []
@@ -172,15 +198,17 @@ def eval_rocauc(y_pred, y_true):
                 rocauc_list.append(score)
     else:
         y_pred = y_pred.detach().cpu().numpy()
-        is_labeled = ~torch.isnan(torch.tensor(y_true))
-        score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
-        rocauc_list.append(score)
+        if np.sum(y_true == 1) > 0 and np.sum(y_true == 0) > 0:
+            is_labeled = ~torch.isnan(torch.tensor(y_true))
+            score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
+            rocauc_list.append(score)
 
-    if len(rocauc_list) == 0:
-        raise RuntimeError(
-            "No positively labeled data available. Cannot compute ROC-AUC.")
+    # if len(rocauc_list) == 0:
+    #     raise RuntimeError(
+    #         "No positively labeled data available. Cannot compute ROC-AUC.")
 
-    return sum(rocauc_list)/len(rocauc_list)
+    # return sum(rocauc_list)/len(rocauc_list)
+    return torch.tensor(rocauc_list)
 
 
 def check_binary_classification(dataset):

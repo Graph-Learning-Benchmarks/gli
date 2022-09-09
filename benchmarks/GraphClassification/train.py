@@ -5,30 +5,40 @@ References:
 https://github.com/dmlc/dgl/tree/master/examples/pytorch/gin
 """
 
+from cmath import log
 import torch
 from torch import nn
 from torch import optim
 import gli
 from utils import generate_model, load_config_file,\
                   set_seed, parse_args, EarlyStopping,\
-                  check_binary_classification, eval_rocauc
+                  check_binary_classification, eval_rocauc, eval_acc
 from dgl.dataloading import GraphDataLoader
 
 
-def evaluate(dataloader, device, model):
+def evaluate(dataloader, device, model, eval_func):
     """Evaluate model."""
     model.eval()
-    total = 0
-    total_correct = 0
+    # total = 0
+    # total_correct = 0
+    total_list = torch.tensor([])
     for batched_graph, labels in dataloader:
         batched_graph = batched_graph.to(device)
         labels = labels.to(device)
         feat = batched_graph.ndata["NodeFeature"].float()
-        total += len(labels)
+        # total += len(labels)
         logits = model(batched_graph, feat)
-        _, predicted = torch.max(logits, 1)
-        total_correct += (predicted == labels).sum().item()
-    acc = 1.0 * total_correct / total
+
+        # _, predicted = torch.max(logits, 1)
+        # total_correct += (predicted == labels).sum().item()
+        # total_correct += eval_func(logits, labels)
+        print("logits.shape: ", logits.shape)
+        print("labels.shape: ", labels.shape)
+        print(eval_func(logits, labels))
+        print("eval_func(logits, labels),shape: ", eval_func(logits, labels).shape)
+
+        total_list = torch.cat([total_list, eval_func(logits, labels)], dim=0)
+    acc = 1.0 * sum(total_list)/len(total_list)
     return acc
 
 
@@ -90,7 +100,7 @@ def main():
     if check_binary_classification(args.dataset):
         eval_func = eval_rocauc
     else:
-        eval_func = accuracy
+        eval_func = eval_acc
 
     # training loop
     for epoch in range(train_cfg["max_epoch"]):
@@ -108,8 +118,8 @@ def main():
             optimizer.step()
             total_loss += loss.item()
         scheduler.step()
-        train_acc = evaluate(train_loader, device, model)
-        valid_acc = evaluate(val_loader, device, model)
+        train_acc = evaluate(train_loader, device, model, eval_func)
+        valid_acc = evaluate(val_loader, device, model, eval_func)
         print(f"Epoch {epoch:05d} | Loss {total_loss / (batch + 1):.4f} | \
                 Train Acc. {train_acc:.4f} | Validation Acc. {valid_acc:.4f}")
 
@@ -119,7 +129,7 @@ def main():
 
     if train_cfg["early_stopping"]:
         model.load_state_dict(torch.load(stopper.ckpt_dir))
-    acc = evaluate(test_loader, device, model)
+    acc = evaluate(test_loader, device, model, eval_func)
     val_acc = stopper.best_score
     print(f"Test{acc:.4f},Val{val_acc:.4f}")
 
