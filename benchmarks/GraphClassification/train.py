@@ -10,7 +10,8 @@ from torch import nn
 from torch import optim
 import gli
 from utils import generate_model, load_config_file,\
-                  set_seed, parse_args, EarlyStopping
+                  set_seed, parse_args, EarlyStopping,\
+                  check_binary_classification, eval_rocauc
 from dgl.dataloading import GraphDataLoader
 
 
@@ -85,6 +86,11 @@ def main():
         ckpt_name = args.model + "_" + args.dataset + "_"
         ckpt_name += args.train_cfg
         stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
+
+    if check_binary_classification(args.dataset):
+        eval_func = eval_rocauc
+    else:
+        eval_func = accuracy
 
     # training loop
     for epoch in range(train_cfg["max_epoch"]):
