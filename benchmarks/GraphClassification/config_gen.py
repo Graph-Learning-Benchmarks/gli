@@ -29,10 +29,10 @@ def parse_args():
     parser.add_argument("--grid", type=str,
                         help="configuration file for grid search.",
                         default="grid/grid_example.yaml")
-    parser.add_argument("--sample_num", dest="sample_num",
+    parser.add_argument("--sample-num", dest="sample_num",
                         help="Number of random samples in the space.",
                         default=10, type=int)
-    parser.add_argument("--trial_num", type=int, default=5,
+    parser.add_argument("--trial-num", type=int, default=5,
                         help="Number of trials for same configuration.")
     parser.add_argument("--model", type=str, default="GCN",
                         help="model to be used. GCN, GIN, ChebNet for now.")

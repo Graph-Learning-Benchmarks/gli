@@ -170,7 +170,6 @@ def eval_acc(y_pred, y_true):
         for i in range(y_true.shape[1]):
             is_labeled = y_true[:, i] == y_true[:, i]
             correct = y_true[is_labeled, i] == y_pred[is_labeled, i]
-            # acc_list.append(float(np.sum(correct))/len(correct))
             correct_list.append(correct)
     else:
         is_labeled = ~torch.isnan(torch.tensor(y_true))
@@ -205,11 +204,6 @@ def eval_rocauc(y_pred, y_true):
             score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
             rocauc_list.append(score)
 
-    # if len(rocauc_list) == 0:
-    #     raise RuntimeError(
-    #         "No positively labeled data available. Cannot compute ROC-AUC.")
-
-    # return sum(rocauc_list)/len(rocauc_list)
     return torch.tensor(rocauc_list)
 
 
