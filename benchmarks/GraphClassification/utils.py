@@ -16,6 +16,7 @@ import numpy as np
 import yaml
 import fnmatch
 import json
+import shutil
 from sklearn.metrics import roc_auc_score
 from models.gin import GIN
 from models.gcn import GCNgraph
@@ -234,3 +235,10 @@ def get_label_number(dataloader):
             return labels.shape[1]
         else:
             return 1
+
+
+def makedirs_rm_exist(dir_name):
+    """Make a directory, remove any existing data."""
+    if os.path.isdir(dir_name):
+        shutil.rmtree(dir_name)
+    os.makedirs(dir_name, exist_ok=True)
