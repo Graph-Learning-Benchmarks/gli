@@ -114,7 +114,6 @@ def main():
             if label_number > 1:
                 # When binary multi-label, use BCE loss
                 is_labeled = ~torch.isnan(torch.tensor(labels))
-                # loss_fcn = nn.BCEWithLogitsLoss(is_labeled.float())
                 loss = loss_fcn(logits[is_labeled], labels.float()[is_labeled])
             else:
                 # Otherwise, use CE loss
