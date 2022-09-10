@@ -1,0 +1,22 @@
+{
+    "description": "The task is to predict the target molecular properties as accurately as possible, where the molecular properties are cast as binary labels, e.g, whether a molecule inhibits HIV virus replication or not.",
+    "type": "GraphClassification",
+    "feature": [
+        "Node/NodeFeature",
+        "Edge/EdgeFeature"
+    ],
+    "target": "Graph/GraphLabel",
+    "num_classes": 2,
+    "train_set": {
+        "file": "ogbg-molsider_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "ogbg-molsider_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "ogbg-molsider_task.npz",
+        "key": "test"
+    }
+}
