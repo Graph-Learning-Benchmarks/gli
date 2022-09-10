@@ -11,35 +11,31 @@ Statistics:
 #### Citation
 - Original Source
 ```
-@inproceedings{dettmers2018convolutional,
-  title={Convolutional 2d knowledge graph embeddings},
-  author={Dettmers, Tim and Minervini, Pasquale and Stenetorp, Pontus and Riedel, Sebastian},
-  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume={32},
-  number={1},
-  year={2018}
+@inproceedings{suchanek2007yago,
+    title={Yago: a core of semantic knowledge},
+    author={Suchanek, Fabian M and Kasneci, Gjergji and Weikum, Gerhard},
+    booktitle={Proceedings of the 16th international conference on World Wide Web},
+    pages={697--706},
+    year={2007}
 }
 ```
 - Current Version
-
-```
-@article{padia2019knowledge,
-    title={Knowledge graph fact prediction via knowledge-enriched tensor factorization},
-    author={Padia, Ankur and Kalpakis, Konstantinos and Ferraro, Francis and Finin, Tim},
-    journal={Journal of Web Semantics},
-    volume={59},
-    pages={100497},
-    year={2019},
-    publisher={Elsevier}
-}
-```
-- Previous Version
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
     author={Han, Xu and Cao, Shulin and Lv Xin and Lin, Yankai and Liu, Zhiyuan and Sun, Maosong  and Li, Juanzi},
     booktitle={Proceedings of EMNLP},
     year={2018}
+}
+```
+- Previous Version
+```
+@inproceedings{mahdisoltani2014yago3,
+    title={Yago3: A knowledge base from multilingual wikipedias},
+    author={Mahdisoltani, Farzaneh and Biega, Joanna and Suchanek, Fabian},
+    booktitle={7th biennial conference on innovative data systems research},
+    year={2014},
+    organization={CIDR Conference}
 }
 ```
 
