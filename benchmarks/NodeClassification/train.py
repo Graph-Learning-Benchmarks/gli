@@ -135,7 +135,7 @@ def main():
             model.parameters(), lr=train_cfg["lr"],
             weight_decay=train_cfg["weight_decay"])
     else:
-        raise NotImplementedError
+        raise NotImplementedError(f"Optimizer {train_cfg['optimizer']} is not supported.")
 
     if train_cfg["early_stopping"]:
         ckpt_name = args.model + "_" + args.dataset + "_"
