@@ -16,7 +16,7 @@ import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
                   EarlyStopping, set_seed, check_binary_classification,\
-                  eval_rocauc
+                  eval_rocauc, Datasets_need_to_be_undirected
 from gli.utils import to_dense
 
 
@@ -79,6 +79,12 @@ def main():
     if train_cfg["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
+    # convert to undirected set
+    if train_cfg["to_undirected"] or \
+       args.dataset in Datasets_need_to_be_undirected:
+        g = g.to(torch.device("cpu"))
+        g = dgl.to_bidirected(g, copy_ndata=True)
+        g = g.to(torch.device("cuda:"+str(device)))
 
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
     label_name = re.search(r".*Node/(\w+)", data.target).group(1)
@@ -120,9 +126,17 @@ def main():
     loss_fcn = torch.nn.CrossEntropyLoss()
 
     # use optimizer
-    optimizer = torch.optim.Adam(
-        model.parameters(), lr=train_cfg["lr"],
-        weight_decay=train_cfg["weight_decay"])
+    if train_cfg["optimizer"] == "AdamW":
+        optimizer = torch.optim.AdamW(
+            model.parameters(), lr=train_cfg["lr"],
+            weight_decay=train_cfg["weight_decay"])
+    elif train_cfg["optimizer"] == "Adam":
+        optimizer = torch.optim.Adam(
+            model.parameters(), lr=train_cfg["lr"],
+            weight_decay=train_cfg["weight_decay"])
+    else:
+        raise NotImplementedError(f"Optimizer \
+            {train_cfg['optimizer']} is not supported.")
 
     if train_cfg["early_stopping"]:
         ckpt_name = args.model + "_" + args.dataset + "_"
