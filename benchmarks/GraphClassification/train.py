@@ -5,14 +5,14 @@ References:
 https://github.com/dmlc/dgl/tree/master/examples/pytorch/gin
 """
 
-from cmath import log
 import torch
 from torch import nn
 from torch import optim
 import gli
 from utils import generate_model, load_config_file,\
                   set_seed, parse_args, EarlyStopping,\
-                  check_binary_classification, eval_rocauc, eval_acc
+                  check_binary_classification, eval_rocauc, eval_acc,\
+                  get_label_number
 from dgl.dataloading import GraphDataLoader
 
 
@@ -26,17 +26,7 @@ def evaluate(dataloader, device, model, eval_func):
         batched_graph = batched_graph.to(device)
         labels = labels.to(device)
         feat = batched_graph.ndata["NodeFeature"].float()
-        # total += len(labels)
         logits = model(batched_graph, feat)
-
-        # _, predicted = torch.max(logits, 1)
-        # total_correct += (predicted == labels).sum().item()
-        # total_correct += eval_func(logits, labels)
-        print("logits.shape: ", logits.shape)
-        print("labels.shape: ", labels.shape)
-        print(eval_func(logits, labels))
-        print("eval_func(logits, labels),shape: ", eval_func(logits, labels).shape)
-
         total_list = torch.cat([total_list, eval_func(logits, labels)], dim=0)
     acc = 1.0 * sum(total_list)/len(total_list)
     return acc
@@ -78,10 +68,20 @@ def main():
                                   batch_size=train_cfg["batch_size"],
                                   pin_memory=torch.cuda.is_available())
 
-    # create GIN model
+    # create model
     in_feats = train_dataset[0][0].ndata["NodeFeature"].shape[1]
     n_classes = train_dataset.num_labels
-    model = generate_model(args, in_feats, n_classes, **model_cfg)
+
+    label_number = get_label_number(train_loader)
+    if label_number > 1:
+        # When binary multi-label, output shape is (batchsize, label_num)
+        model = generate_model(args, in_feats, label_number, **model_cfg)
+        loss_fcn = nn.BCEWithLogitsLoss()
+    else:
+        # When single-label, output shape is (batchsize, num_classes)
+        model = generate_model(args, in_feats, n_classes, **model_cfg)
+        loss_fcn = nn.CrossEntropyLoss()
+
     if cuda:
         model.cuda()
 
@@ -89,7 +89,6 @@ def main():
     print("Training...")
 
     # loss function, optimizer, scheduler and early stopping
-    loss_fcn = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
     if train_cfg["early_stopping"]:
@@ -112,7 +111,15 @@ def main():
             labels = labels.to(device)
             feat = batched_graph.ndata["NodeFeature"].float()
             logits = model(batched_graph, feat)
-            loss = loss_fcn(logits, labels)
+            if label_number > 1:
+                # When binary multi-label, use BCE loss
+                is_labeled = ~torch.isnan(torch.tensor(labels))
+                # loss_fcn = nn.BCEWithLogitsLoss(is_labeled.float())
+                loss = loss_fcn(logits[is_labeled], labels.float()[is_labeled])
+            else:
+                # Otherwise, use CE loss
+                loss = loss_fcn(logits, labels)
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()

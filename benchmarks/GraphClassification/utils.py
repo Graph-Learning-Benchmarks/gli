@@ -156,7 +156,8 @@ class EarlyStopping:
 
 def eval_acc(y_pred, y_true):
     """
-    Evaluation for accuracy.
+    Evaluate accuracy.
+
     Return a list of binary number, indicating the
     correctness of prediction.
     """
@@ -171,7 +172,7 @@ def eval_acc(y_pred, y_true):
             # acc_list.append(float(np.sum(correct))/len(correct))
             correct_list.append(correct)
     else:
-        is_labeled = y_true == y_true
+        is_labeled = ~torch.isnan(torch.tensor(y_true))
         _, predicted = torch.max(y_pred, 1)
         correct_list.append(predicted[is_labeled] == y_true[is_labeled])
     return correct_list
@@ -193,7 +194,7 @@ def eval_rocauc(y_pred, y_true):
             if np.sum(y_true[:, i] == 1) > 0 and np.sum(y_true[:, i] == 0) > 0:
                 is_labeled = y_true[:, i] == y_true[:, i]
                 score = roc_auc_score(y_true[is_labeled, i],
-                                        y_pred[is_labeled, i])
+                                      y_pred[is_labeled, i])
 
                 rocauc_list.append(score)
     else:
@@ -224,3 +225,12 @@ def check_binary_classification(dataset):
                     return 1
                 else:
                     return 0
+
+
+def get_label_number(dataloader):
+    """Return the label number of dataset."""
+    for _, labels in dataloader:
+        if len(labels.shape) > 1:
+            return labels.shape[1]
+        else:
+            return 1
