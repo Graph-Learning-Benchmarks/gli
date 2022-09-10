@@ -16,8 +16,7 @@ import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
                   EarlyStopping, set_seed, check_binary_classification,\
-                  eval_rocauc, Datasets_need_to_be_undirected,\
-                  Models_using_adamW
+                  eval_rocauc, Datasets_need_to_be_undirected
 from gli.utils import to_dense
 
 
@@ -127,15 +126,16 @@ def main():
     loss_fcn = torch.nn.CrossEntropyLoss()
 
     # use optimizer
-    if train_cfg["use_adamW"] or \
-       args.model in Models_using_adamW:
+    if train_cfg["optimizer"] == "AdamW":
         optimizer = torch.optim.AdamW(
             model.parameters(), lr=train_cfg["lr"],
             weight_decay=train_cfg["weight_decay"])
-    else:
+    elif train_cfg["optimizer"] == "Adam":
         optimizer = torch.optim.Adam(
             model.parameters(), lr=train_cfg["lr"],
             weight_decay=train_cfg["weight_decay"])
+    else:
+        raise NotImplementedError
 
     if train_cfg["early_stopping"]:
         ckpt_name = args.model + "_" + args.dataset + "_"

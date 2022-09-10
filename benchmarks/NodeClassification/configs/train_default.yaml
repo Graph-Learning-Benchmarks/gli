@@ -8,4 +8,4 @@ early_stopping: True
 seed: 0
 batch_size: 256
 to_undirected: False
-use_adamW: False
+optimizer: "Adam"
