@@ -30,24 +30,24 @@ def generate_model(args, in_feats, n_classes, **model_cfg):
     # create models
     if args.model == "GIN":
         model = GIN(in_feats,
-                    model_cfg["hidden_dim"],
+                    model_cfg["num_hidden"],
                     n_classes)
     elif args.model == "GCN":
         model = GCNgraph(in_feats,
-                         model_cfg["hidden_dim"],
+                         model_cfg["num_hidden"],
                          n_classes,
                          model_cfg["num_layers"],
                          F.relu,
                          model_cfg["dropout"])
     elif args.model == "ChebNet":
         model = ChebNet(in_feats,
-                        model_cfg["hidden_dim"],
+                        model_cfg["num_hidden"],
                         n_classes,
                         model_cfg["num_layers"],
                         model_cfg["k"])
     elif args.model == "DGN":
         model = DGN(in_feats,
-                    model_cfg["hidden_dim"],
+                    model_cfg["num_hidden"],
                     n_classes,
                     model_cfg["num_layers"],
                     model_cfg["aggregators"],
