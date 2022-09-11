@@ -4,13 +4,12 @@ ChebNet model in GLI.
 References:
 https://github.com/dmlc/dgl/blob/195f99362d883f8b6d131b70a7868a
 537e55b786/examples/pytorch/model_zoo/citation_network/models.py
-https://github.com/dmlc/dgl/blob/195f99362d883f8b6d131b70a7868a5
-37e55b786/examples/pytorch/model_zoo/citation_network/models.py
 """
 
 import dgl
 from torch import nn
 from dgl.nn.pytorch import ChebConv
+from models.mlp_readout_layer import MLPReadout
 
 
 class ChebNet(nn.Module):
@@ -34,8 +33,9 @@ class ChebNet(nn.Module):
             )
 
         self.layers.append(
-            ChebConv(n_hidden, n_classes, k)
+            ChebConv(n_hidden, n_hidden, k)
         )
+        self.MLP_layer = MLPReadout(n_hidden, n_classes)
 
     def forward(self, g, features):
         """Forward."""
@@ -43,4 +43,5 @@ class ChebNet(nn.Module):
         for layer in self.layers:
             h = layer(g, h)
         g.ndata["h"] = h
-        return dgl.mean_nodes(g, "h")
+        hg = dgl.mean_nodes(g, "h")
+        return self.MLP_layer(hg)
