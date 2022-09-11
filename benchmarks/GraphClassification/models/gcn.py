@@ -26,11 +26,13 @@ class GCNgraph(nn.Module):
         """Initiate model."""
         super().__init__()
         self.layers = nn.ModuleList()
+        # embedded layer
+        self.embedding_h = nn.Linear(in_feats, n_hidden)
         # input layer
-        self.layers.append(GraphConv(in_feats, n_hidden,
-                                     activation=activation))
+        # self.layers.append(GraphConv(in_feats, n_hidden,
+        #                              activation=activation))
         # hidden layers
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers):
             self.layers.append(GraphConv(n_hidden, n_hidden,
                                          activation=activation))
         # output layer
@@ -41,6 +43,7 @@ class GCNgraph(nn.Module):
     def forward(self, g, features):
         """Forward."""
         h = features
+        h = self.embedding_h(h)
         for i, layer in enumerate(self.layers):
             if i != 0:
                 h = self.dropout(h)
