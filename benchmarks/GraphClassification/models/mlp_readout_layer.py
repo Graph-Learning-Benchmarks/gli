@@ -16,9 +16,9 @@ class MLPReadout(nn.Module):
     def __init__(self, input_dim, output_dim, L=2):
         """Initiate layer, L=nb_hidden_layers."""
         super().__init__()
-        list_fc_layers = [nn.Linear(input_dim//2**layer, input_dim//2**
-                          (layer+1), bias=True) for layer in range(L)]
-        list_fc_layers.append(nn.Linear(input_dim//2**L, output_dim,
+        list_fc_layers = [nn.Linear(input_dim // 2 ** layer, input_dim // 2 **
+                          (layer + 1), bias=True) for layer in range(L)]
+        list_fc_layers.append(nn.Linear(input_dim // 2 ** L, output_dim,
                               bias=True))
         self.fc_layers = nn.ModuleList(list_fc_layers)
         self.n_layers = L
