@@ -12,6 +12,7 @@ from torch import nn
 from dgl.nn.pytorch import GraphConv
 from models.mlp_readout_layer import MLPReadout
 
+
 class GCNgraph(nn.Module):
     """GCN network."""
 
@@ -35,7 +36,7 @@ class GCNgraph(nn.Module):
         # output layer
         self.layers.append(GraphConv(n_hidden, n_hidden))
         self.dropout = nn.Dropout(p=dropout)
-        self.MLP_layer = MLPReadout(n_hidden, n_classes)
+        self.mlp_layer = MLPReadout(n_hidden, n_classes)
 
     def forward(self, g, features):
         """Forward."""
@@ -46,4 +47,4 @@ class GCNgraph(nn.Module):
             h = layer(g, h)
         g.ndata["h"] = h
         hg = dgl.mean_nodes(g, "h")
-        return self.MLP_layer(hg)
+        return self.mlp_layer(hg)

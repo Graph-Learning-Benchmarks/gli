@@ -35,7 +35,7 @@ class ChebNet(nn.Module):
         self.layers.append(
             ChebConv(n_hidden, n_hidden, k)
         )
-        self.MLP_layer = MLPReadout(n_hidden, n_classes)
+        self.mlp_layer = MLPReadout(n_hidden, n_classes)
 
     def forward(self, g, features):
         """Forward."""
@@ -44,4 +44,4 @@ class ChebNet(nn.Module):
             h = layer(g, h)
         g.ndata["h"] = h
         hg = dgl.mean_nodes(g, "h")
-        return self.MLP_layer(hg)
+        return self.mlp_layer(hg)
