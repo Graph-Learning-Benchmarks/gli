@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 import torch
 
-import glb
+import gli
 import powerlaw
 
 
@@ -380,11 +380,11 @@ def avg_node_connectivity(g):
 
 def prepare_dataset(dataset, task):
     """Prepare datasets."""
-    glb_graph = glb.dataloading.get_glb_graph(dataset)
-    glb_task = glb.dataloading.get_glb_task(dataset, task)
-    glb_graph_task = glb.dataloading.combine_graph_and_task(
-        glb_graph, glb_task)
-    return glb_graph, glb_task, glb_graph_task
+    gli_graph = gli.dataloading.get_gli_graph(dataset)
+    gli_task = gli.dataloading.get_gli_task(dataset, task)
+    gli_graph_task = gli.dataloading.combine_graph_and_task(
+        gli_graph, gli_task)
+    return gli_graph, gli_task, gli_graph_task
 
 
 def make_metric_dict():
