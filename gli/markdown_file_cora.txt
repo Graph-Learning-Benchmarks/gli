@@ -1,0 +1,45 @@
+# **Graph Metrics**
+## Basic Metrics
+>These are metrics associated with basic graph characteristics,such as the number of nodes / edges, node degrees, and whether the graph is directed / undirected.
+
+| Metric | Quantity |
+| ------ | ------ |
+| Directed | No |
+| Edge Density | 0.00288 |
+| Average Degree | 7.79616 |
+| Edge Reciprocity | 1.0 |
+| Degree Assortativity | -0.06913 |
+## Distance Metrics
+>These are metrics associated with (geodestic) distances on the graph.
+
+| Metric | Quantity |
+| ------ | ------ |
+| Pseudo Diameter | 18 |
+| Efficiency | 0.149605 |
+## Connectivity Metrics
+>These are metrics associated with the connectedness and connected component of the graph.
+
+| Metric | Quantity |
+| ------ | ------ |
+| Relative Size of Largest Connected Component | 0.917651 |
+| Relative Size of Largest Strongly Connected Component | 0.917651 |
+## Distribution Metrics
+>These are metrics assoicated with the characteristics of the distribution of the sequence of node-level properties.
+
+| Metric | Quantity |
+| ------ | ------ |
+| Power Law Exponent | 3.702153 |
+| Pareto Exponent | 0.9323 |
+| Gini Coefficient of Degree | 0.405139 |
+| Gini Coefficient of Coreness | 0.205183 |
+## Attribute Metrics
+>These are metrics associated with both graph structure and node features/labels.
+
+| Metric | Quantity |
+| ------ | ------ |
+| Edge Homogeneity | 0.809966 |
+| Average In-Feature Angular Distance | 0.52355 |
+| Average Out-Feature Angular Distance | 0.517805 |
+| Feature Angular SNR | 1.011095 |
+| Homophily Hat | 0.765718 |
+| Attribute Assortativity | -0.001035 |

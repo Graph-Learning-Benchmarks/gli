@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 import torch
 
-import gli
+import glb
 import powerlaw
 
 
@@ -132,7 +132,7 @@ def core_number_related(g):
     # remove potential self-loops
     nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
     core_list = list(nx.core_number(nx_g).values())
-    return gini_coreness(core_list), degeneracy(core_list)
+    return core_list
 
 
 def gini_coreness(nx_core_list):
@@ -151,6 +151,12 @@ def degree_assortativity(g):
     return nx.degree_assortativity_coefficient(nx_g)
 
 
+def attribute_assortativity(g):
+    """Compute the attribute(label) assortativity coefficient."""
+    nx_g = dgl.to_networkx(g, node_attrs=["NodeLabel"])
+    return nx.attribute_assortativity_coefficient(nx_g, "NodeLabel")
+
+
 def check_direct(g):
     """Check the graph is directed or not."""
     # to examine whether all the edges are bi-directed edges
@@ -160,6 +166,14 @@ def check_direct(g):
     n_all_edge = nx_g.number_of_edges()
     n_un_edge = nx_g.to_undirected().number_of_edges()
     return n_all_edge != 2 * n_un_edge
+
+
+def directed(g):
+    """Check the graph is directed or not and output."""
+    if check_direct(g):
+        return "Yes"
+    else:
+        return "No"
 
 
 def edge_homogeneity(g):
@@ -207,15 +221,6 @@ def transitivity(g):
     return nx.transitivity(nx_g)
 
 
-def prepare_dataset(dataset, task):
-    """Prepare datasets."""
-    gli_graph = gli.dataloading.get_gli_graph(dataset)
-    gli_task = gli.dataloading.get_gli_task(dataset, task)
-    gli_graph_task = gli.dataloading.combine_graph_and_task(
-        gli_graph, gli_task)
-    return gli_graph, gli_task, gli_graph_task
-
-
 def dict_to_tensor(feature_dict, tensor_size):
     """Transform dict of tensor to 2-D tensor."""
     out_tensor = torch.zeros(size=tensor_size)
@@ -232,7 +237,9 @@ def matrix_row_norm(feature_matrix):
 def get_feature_label(g):
     """Compute the feature homogeneity."""
     # convert sparse tensor to dense tensor
-    g.ndata["NodeFeature"] = g.ndata["NodeFeature"].to_dense()
+    if str(g.ndata["NodeFeature"].layout) == "torch.sparse_csr" or \
+            str(g.ndata["NodeFeature"].layout) == "torch.sparse_coo":
+        g.ndata["NodeFeature"] = g.ndata["NodeFeature"].to_dense()
     # get attribute size
     feature_size = g.ndata["NodeFeature"].size()
     label_size = g.ndata["NodeLabel"].size()
@@ -293,6 +300,189 @@ def feature_homogeneity(g):
     return in_avg, out_avg
 
 
+def avg_in_feature_dist(g):
+    """Compute the average in-feature angular distance."""
+    return feature_homogeneity(g)[0]
+
+
+def avg_out_feature_dist(g):
+    """Compute the average out-feature angular distance."""
+    return feature_homogeneity(g)[1]
+
+
+def feature_snr(g):
+    """Compute the feature angular SNR."""
+    return avg_in_feature_dist(g) / avg_out_feature_dist(g)
+
+
+def homophily_hat(g):
+    """Compute the modified homophily measure."""
+    # "Large Scale Learning on Non-Homophilous Graphs:
+    # New Benchmarks and Strong Simple Methods"
+    # For directed graphs, only outgoing neighbors /
+    # adjacencies are included.
+
+    nx_g = dgl.to_networkx(g, node_attrs=["NodeLabel"])
+    nx_g.remove_edges_from(list(nx.selfloop_edges(nx_g)))
+    label_dict = nx.get_node_attributes(nx_g, "NodeLabel")
+    label_dict = [label_dict[x].item() for x in label_dict]
+    all_label = list(set(label_dict))
+    label_edge_dict = {}
+    label_same_edge_dict = {}
+    # Initialize
+    for label in all_label:
+        label_edge_dict[label] = 0
+        label_same_edge_dict[label] = 0
+
+    # compute C_k
+    label_num_dict = {}
+    node_num = nx_g.number_of_nodes()
+    for n in nx_g.nodes(data=True):
+        label_name = n[1]["NodeLabel"].item()
+        if label_name not in label_num_dict:
+            label_num_dict[label_name] = 1
+        else:
+            label_num_dict[label_name] += 1
+
+    for n in nx_g.nodes(data=True):
+        # find n's neighbor
+        core_label = n[1]["NodeLabel"].item()
+        # print("core label: ", core_label)
+        for nb in nx_g.neighbors(n[0]):
+            label_edge_dict[core_label] += 1
+            nb_label = nx_g.nodes[nb]["NodeLabel"].item()
+            if core_label == nb_label:
+                label_same_edge_dict[core_label] += 1
+    # output value
+    counter = 0
+    for label in all_label:
+        if label_edge_dict[label] > 0:
+            h_k = label_same_edge_dict[label] * 1.0 / label_edge_dict[label]
+            if h_k > label_num_dict[label] / node_num:
+                counter += (h_k - label_num_dict[label] / node_num)
+
+    return counter / (len(all_label) - 1)
+
+
+def efficiency(g):
+    """Compute the efficiency of the graph."""
+    nx_g = dgl.to_networkx(g)
+    nx_g = nx.Graph(nx_g)
+    return nx.global_efficiency(nx_g)
+
+
+def avg_node_connectivity(g):
+    """Compute the average of node connectivity of the graph."""
+    nx_g = dgl.to_networkx(g)
+    nx_g = nx.Graph(nx_g)
+    return nx.average_node_connectivity(nx_g)
+
+
+def prepare_dataset(dataset, task):
+    """Prepare datasets."""
+    glb_graph = glb.dataloading.get_glb_graph(dataset)
+    glb_task = glb.dataloading.get_glb_task(dataset, task)
+    glb_graph_task = glb.dataloading.combine_graph_and_task(
+        glb_graph, glb_task)
+    return glb_graph, glb_task, glb_graph_task
+
+
+def make_metric_dict():
+    """Construct groups of graph metrics."""
+    output_dict = {"Basic": [directed, edge_density, avg_degree,
+                             edge_reciprocity,
+                             degree_assortativity],
+                   "Distance": [pseudo_diameter,
+                                efficiency],
+                   "Connectivity": [relative_largest_cc,
+                                    relative_largest_scc],
+                   "Clustering": [avg_cluster_coefficient,
+                                  transitivity, degeneracy],
+                   "Distribution": [power_law_expo, pareto_expo,
+                                    gini_degree, gini_coreness],
+                   "Attribute": [edge_homogeneity, avg_in_feature_dist,
+                                 avg_out_feature_dist, feature_snr,
+                                 homophily_hat, attribute_assortativity]}
+    return output_dict
+
+
+def make_metric_quote():
+    """Construct quotes of each metric group."""
+    output_dict = {"Basic": ">These are metrics associated "
+                            "with basic graph characteristics,"
+                            "such as the number of nodes / edges, "
+                            "node degrees, and "
+                            "whether the graph is directed / undirected.\n",
+                   "Distance": ">These are metrics associated "
+                               "with (geodestic) distances on the graph.\n",
+                   "Connectivity": ">These are metrics associated with the "
+                                   "connectedness and connected "
+                                   "component of the graph.\n",
+                   "Clustering": ">These are metrics associated with sparsity "
+                                 "and closeness of the graph.",
+                   "Distribution": ">These are metrics assoicated with the "
+                                   "characteristics of the distribution of "
+                                   "the sequence of node-level properties.\n",
+                   "Attribute": ">These are metrics associated with both "
+                                "graph structure and node features/labels.\n"}
+
+    return output_dict
+
+
+def make_metric_names():
+    """Construct names of each graph metric."""
+    output_dict = {"Basic": ["Directed", "Edge Density", "Average Degree",
+                             "Edge Reciprocity", "Degree Assortativity"],
+                   "Distance": ["Pseudo Diameter", "Efficiency"],
+                   "Connectivity": ["Relative Size of Largest "
+                                    "Connected Component",
+                                    "Relative Size of Largest "
+                                    "Strongly Connected Component"],
+                   "Clustering": ["Average Clustering Coefficient",
+                                  "Transitivity", "Degeneracy"],
+                   "Distribution": ["Power Law Exponent", "Pareto Exponent",
+                                    "Gini Coefficient of Degree",
+                                    "Gini Coefficient of Coreness"],
+                   "Attribute": ["Edge Homogeneity",
+                                 "Average In-Feature Angular Distance",
+                                 "Average Out-Feature Angular Distance",
+                                 "Feature Angular SNR", "Homophily Hat",
+                                 "Attribute Assortativity"]}
+    return output_dict
+
+
+def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
+    """Output the tags of a dataset into txt with Markdown format."""
+    group_dict = ["Basic", "Distance", "Connectivity",
+                  "Distribution", "Attribute"]
+
+    core_list = core_number_related(g)
+
+    with open(file_name, "w", encoding="utf-8") as f:
+        f.write("# **Graph Metrics**\n")
+        for group_name in group_dict:
+            f.write("## " + str(group_name) + " Metrics\n")
+            f.write(metric_quote[group_name])
+            f.write("\n")
+            f.write("| Metric | Quantity |\n")
+            f.write("| ------ | ------ |\n")
+            for i in range(len(metric_dict[group_name])):
+                if metric_dict[group_name][i].__name__ \
+                        in ("gini_coreness", "degeneracy"):
+                    var = metric_dict[group_name][i](core_list)
+                else:
+                    var = metric_dict[group_name][i](g)
+                if not isinstance(var, str):
+                    if torch.is_tensor(var):
+                        var = var.item()
+                    var = round(var, 6)
+                f.write("| " + str(metric_name[group_name][i]) +
+                        " | " + str(var) + " |")
+                f.write("\n")
+
+    f.close()
+
+
 def main():
     """Run main function."""
     # parsing the input command
@@ -307,33 +497,42 @@ def main():
     print(g)
     print(task)
     print(datasets)
-    print(f"Directed: {check_direct(g)}")
-    print(f"Edge Density: {edge_density(g):.6f}")
-    print(f"Average Degree: {avg_degree(g):.6f}")
-    # print(f"Diameter: {diameter(g)}")
-    print(f"Pseudo Diameter: {pseudo_diameter(g)}")
-    # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
-    print(f"Relative Size of Largest Connected Component: "
-          f"{relative_largest_cc(g):.6f}")
-    print(f"Relative Size of Largest Strongly Connected "
-          f"Component: {relative_largest_cc(g):.6f}")
-    print(f"Average Clustering Coefficient: "
-          f"{avg_cluster_coefficient(g):.6f}")
-    print(f"Edge Reciprocity: {edge_reciprocity(g):.6f}")
-    print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
-    # Related to coreness
-    gini_core, degen_core = core_number_related(g)
-    print(f"Gini Coefficient of Coreness: {gini_core:.6f}")
-    print(f"Degeneracy: {degen_core}")
-    print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
-    print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
-    print(f"Power Law Exponent: {power_law_expo(g):.6f}")
-    print(f"Pareto Exponent: {pareto_expo(g):.6f}")
-    print(f"Transitivity: {transitivity(g):.6f}")
-    in_avg, out_avg = feature_homogeneity(g)
-    print(f"Average In-Feature Angular Distance: {in_avg:.6f}")
-    print(f"Average Out-Feature Angular Distance: {out_avg:.6f}")
-    print(f"Feature Angular SNR: {in_avg / out_avg:.6f}")
+
+    metric_dict = make_metric_dict()
+    metric_quote = make_metric_quote()
+    metric_name = make_metric_names()
+
+    output_markdown_file("markdown_file_" + str(dataset_name) + ".txt",
+                         g, metric_dict, metric_quote, metric_name)
+
+    # print(f"Directed: {check_direct(g)}")
+    # print(f"Edge Density: {edge_density(g):.6f}")
+    # print(f"Average Degree: {avg_degree(g):.6f}")
+    # # print(f"Diameter: {diameter(g)}")
+    # print(f"Pseudo Diameter: {pseudo_diameter(g)}")
+    # # print(f"Average Shortest Path Length: {avg_shortest_path(g):.6f}")
+    # print(f"Relative Size of Largest Connected Component: "
+    #       f"{relative_largest_cc(g):.6f}")
+    # print(f"Relative Size of Largest Strongly Connected "
+    #       f"Component: {relative_largest_scc(g):.6f}")
+    # print(f"Average Clustering Coefficient: "
+    #       f"{avg_cluster_coefficient(g):.6f}")
+    # print(f"Edge Reciprocity: {edge_reciprocity(g):.6f}")
+    # print(f"Gini Coefficient of Degree: {gini_degree(g):.6f}")
+    # # Related to coreness
+    # gini_core, degen_core = core_number_related(g)
+    # print(f"Gini Coefficient of Coreness: {gini_core:.6f}")
+    # print(f"Degeneracy: {degen_core}")
+    # print(f"Degree Assortativity: {degree_assortativity(g):.6f}")
+    # print(f"Edge Homogeneity: {edge_homogeneity(g):.6f}")
+    # print(f"Power Law Exponent: {power_law_expo(g):.6f}")
+    # print(f"Pareto Exponent: {pareto_expo(g):.6f}")
+    # print(f"Transitivity: {transitivity(g):.6f}")
+    # in_avg, out_avg = feature_homogeneity(g)
+    # print(f"Average In-Feature Angular Distance: {in_avg:.6f}")
+    # print(f"Average Out-Feature Angular Distance: {out_avg:.6f}")
+    # print(f"Feature Angular SNR: {in_avg / out_avg:.6f}")
+    # print(f"Homophily hat: {homophily_hat(g):.6f}")
 
 
 if __name__ == "__main__":
