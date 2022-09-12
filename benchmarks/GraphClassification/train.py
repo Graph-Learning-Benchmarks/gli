@@ -41,18 +41,18 @@ def evaluate(dataloader, device, model, eval_func):
     model.eval()
     y_true = []
     y_pred = []
-    total_list = torch.tensor([])
     for batched_graph, labels in dataloader:
         batched_graph = batched_graph.to(device)
         labels = labels.to(device)
         feat = batched_graph.ndata["NodeFeature"].float()
         logits = model(batched_graph, feat)
 
-        y_true.append(labels.view(logits.shape).detach().cpu())
+        y_true.append(labels.detach().cpu())
         y_pred.append(logits.detach().cpu())
-        # total_list = torch.cat([total_list, eval_func(logits, labels)], dim=0)
-    # acc = 1.0 * sum(total_list)/len(total_list)
-    return eval_func(y_true, y_pred)
+
+    y_true = torch.cat(y_true, dim = 0).numpy()
+    y_pred = torch.cat(y_pred, dim = 0).numpy()
+    return eval_func(y_pred, y_true)
 
 
 def main():

@@ -181,32 +181,7 @@ def eval_acc(y_pred, y_true):
 def eval_rocauc(y_pred, y_true):
     """Evalution function for ROC."""
     rocauc_list = []
-    # #####
-    # if len(y_true.shape) == 1:
-    #     y_true = y_true.unsqueeze(1)
-    # #####
-    for i in range(y_true.shape[1]):
-        #AUC is only defined when there is at least one positive data.
-        if np.sum(y_true[:,i] == 1) > 0 and np.sum(y_true[:,i] == 0) > 0:
-            # ignore nan values
-            is_labeled = y_true[:,i] == y_true[:,i]
-            rocauc_list.append(roc_auc_score(y_true[is_labeled,i], y_pred[is_labeled,i]))
-
-    if len(rocauc_list) == 0:
-        raise RuntimeError('No positively labeled data available. Cannot compute ROC-AUC.')
-
-    return sum(rocauc_list)/len(rocauc_list)
-    # return {'rocauc': sum(rocauc_list)/len(rocauc_list)}
-    # """
-    rocauc_list = []
-    y_true = y_true.detach().cpu().numpy()
     if len(y_true.shape) > 1:
-        if y_true.shape[1] == 1:
-            # use the predicted class for single-class classification
-            y_pred = F.softmax(y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
-        else:
-            y_pred = y_pred.detach().cpu().numpy()
-
         for i in range(y_true.shape[1]):
             # AUC is only defined when there is at least one positive data.
             if np.sum(y_true[:, i] == 1) > 0 and np.sum(y_true[:, i] == 0) > 0:
@@ -216,13 +191,12 @@ def eval_rocauc(y_pred, y_true):
 
                 rocauc_list.append(score)
     else:
-        y_pred = y_pred.detach().cpu().numpy()
         if np.sum(y_true == 1) > 0 and np.sum(y_true == 0) > 0:
             is_labeled = ~torch.isnan(torch.tensor(y_true))
             score = roc_auc_score(y_true[is_labeled], y_pred[is_labeled, 1])
             rocauc_list.append(score)
 
-    return torch.tensor(rocauc_list)
+    return sum(rocauc_list)/len(rocauc_list)
 
 
 def check_binary_classification(dataset):
