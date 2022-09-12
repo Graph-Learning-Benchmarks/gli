@@ -6,10 +6,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -g GRAPH, --graph GRAPH
                         The graph to be loaded.
-  -t TASK, --task TASK  The task name of GNN training.
-                        The task name is the filename of the task configuration
-                        file w/o json extension. e.g., simply `task` for
-                        cora node_classification.
+  -t TASK, --task TASK  The predefined task type.
   -d DEVICE, --device DEVICE
   -v, --verbose
 """
@@ -30,14 +27,11 @@ def main():
                         type=str,
                         default="cora",
                         help="The graph to be loaded.")
-    parser.add_argument(
-        "-t",
-        "--task",
-        type=str,
-        default=None,
-        help=("The task name of GNN training."
-              "The task name is the filename of the task configuration"
-              "file w/o json extension. e.g., simply `task` for"))
+    parser.add_argument("-t",
+                        "--task",
+                        type=str,
+                        default="NodeClassification",
+                        help="The predefined task type.")
     parser.add_argument("-d", "--device", type=str, default="cpu")
     parser.add_argument("-v", "--verbose", default=False, action="store_true")
     args = parser.parse_args()
