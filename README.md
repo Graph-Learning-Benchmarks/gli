@@ -11,7 +11,7 @@ GLI is an easy-to-use graph learning platform with unique features that can bett
 
 ### Standard Data Format
 
-GLI defines a standard data format that has efficient storage and access for graphs. It unifies the storage for graphs of different scales and heterogeneity and is thus flexible to accommodate various graph-structured data.
+GLI defines a standard data format that has efficient storage and access to graphs. It unifies the storage for graphs of different scales and heterogeneity and is thus flexible to accommodate various graph-structured data.
 
 ### Explicit Separation of Data Storage and Task Configuration
 
