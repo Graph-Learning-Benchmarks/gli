@@ -11,34 +11,30 @@ Statistics:
 #### Citation
 - Original Source
 ```
-@inproceedings{dettmers2018convolutional,
-  title={Convolutional 2d knowledge graph embeddings},
-  author={Dettmers, Tim and Minervini, Pasquale and Stenetorp, Pontus and Riedel, Sebastian},
-  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume={32},
-  number={1},
-  year={2018}
+@book{miller1998wordnet,
+    title={WordNet: An electronic lexical database},
+    author={Miller, George A},
+    year={1998},
+    publisher={MIT press}
 }
 ```
 - Current Version
-```
-@article{padia2019knowledge,
-    title={Knowledge graph fact prediction via knowledge-enriched tensor factorization},
-    author={Padia, Ankur and Kalpakis, Konstantinos and Ferraro, Francis and Finin, Tim},
-    journal={Journal of Web Semantics},
-    volume={59},
-    pages={100497},
-    year={2019},
-    publisher={Elsevier}
-}
-```
-- Previous Version
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
     author={Han, Xu and Cao, Shulin and Lv Xin and Lin, Yankai and Liu, Zhiyuan and Sun, Maosong  and Li, Juanzi},
     booktitle={Proceedings of EMNLP},
     year={2018}
+}
+```
+- Previous Version
+```
+@article{bordes2013translating,
+    title={Translating embeddings for modeling multi-relational data},
+    author={Bordes, Antoine and Usunier, Nicolas and Garcia-Duran, Alberto and Weston, Jason and  Yakhnenko, Oksana},
+    journal={Advances in neural information processing systems},
+    volume={26},
+    year={2013}
 }
 ```
 
