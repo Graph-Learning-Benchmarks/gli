@@ -63,12 +63,15 @@ def main():
     # create dataloader
     train_loader = GraphDataLoader(train_dataset,
                                    batch_size=train_cfg["batch_size"],
+                                   shuffle=True,
                                    pin_memory=torch.cuda.is_available())
     val_loader = GraphDataLoader(val_dataset,
                                  batch_size=train_cfg["batch_size"],
+                                 shuffle=False,
                                  pin_memory=torch.cuda.is_available())
     test_loader = GraphDataLoader(test_dataset,
                                   batch_size=train_cfg["batch_size"],
+                                  shuffle=False,
                                   pin_memory=torch.cuda.is_available())
 
     # create model
