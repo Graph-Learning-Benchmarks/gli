@@ -1,0 +1,34 @@
+{
+    "description": "ogbn-BALBc1 dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "node features of ogbn-BALBc1 dataset.",
+                "type": "float",
+                "format": "Tensor",
+                "file": "ogbn-BALBc1.npz",
+                "key": "node_feats"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "ogbn-BALBc1.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "_NodeList": {
+                    "file": "ogbn-BALBc1.npz",
+                    "key": "node_list"
+                }
+            },
+            "_EdgeList": {
+                "file": "ogbn-BALBc1.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@misc{paetzold2021brain,\ntitle={Whole Brain Vessel Graphs: A Dataset and Benchmark for Graph Learning and Neuroscience (VesselGraph)},\nauthor={Johannes C. Paetzold and Julian McGinnis and Suprosanna Shit and Ivan Ezhov and Paul Büschl and Chinmay Prabhakar and Mihail I. Todorov and Anjany Sekuboyina and Georgios Kaissis and Ali Ertürk and Stephan Günnemann and Bjoern H. Menze},\nyear={2021},\neprint={2108.13233},\narchivePrefix={arXiv},\nprimaryClass={cs.LG}",
+    "is_heterogeneous": false
+}
