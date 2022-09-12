@@ -16,20 +16,43 @@ from utils import generate_model, load_config_file,\
 from dgl.dataloading import GraphDataLoader
 
 
+def eval(model, device, loader, evaluator):
+    model.eval()
+    y_true = []
+    y_pred = []
+
+    for step, batch in enumerate(tqdm(loader, desc="Iteration")):
+        batch = batch.to(device)
+
+        if batch.x.shape[0] == 1:
+            pass
+        else:
+            with torch.no_grad():
+                pred = model(batch)
+
+            y_true.append(batch.y.view(pred.shape).detach().cpu())
+            y_pred.append(pred.detach().cpu())
+
+    y_true = torch.cat(y_true, dim = 0).numpy()
+    y_pred = torch.cat(y_pred, dim = 0).numpy()
+
 def evaluate(dataloader, device, model, eval_func):
     """Evaluate model."""
     model.eval()
-    # total = 0
-    # total_correct = 0
+    y_true = []
+    y_pred = []
     total_list = torch.tensor([])
     for batched_graph, labels in dataloader:
         batched_graph = batched_graph.to(device)
         labels = labels.to(device)
         feat = batched_graph.ndata["NodeFeature"].float()
         logits = model(batched_graph, feat)
-        total_list = torch.cat([total_list, eval_func(logits, labels)], dim=0)
-    acc = 1.0 * sum(total_list)/len(total_list)
-    return acc
+
+        y_true.append(labels.view(logits.shape).detach().cpu())
+        y_pred.append(logits.detach().cpu())
+        # total_list = torch.cat([total_list, eval_func(logits, labels)], dim=0)
+    # acc = 1.0 * sum(total_list)/len(total_list)
+    return eval_func(y_true, y_pred)
 
 
 def main():
