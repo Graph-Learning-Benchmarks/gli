@@ -1,5 +1,5 @@
 {
-    "description": "The task is to classify handwritten numbers to 0-9 digit.",
+    "description": "The task is to classify pictures into 10 graph classes including aeroplane, automobile, birds, cat, deer, dog, frog, horse, ship, truck.",
     "type": "GraphClassification",
     "feature": [
         "Node/NodeFeature",
@@ -8,15 +8,15 @@
     "target": "Graph/GraphLabel",
     "num_classes": 10,
     "train_set": {
-        "file": "mnist_task.npz",
+        "file": "cifar_task.npz",
         "key": "train"
     },
     "val_set": {
-        "file": "mnist_task.npz",
+        "file": "cifar_task.npz",
         "key": "val"
     },
     "test_set": {
-        "file": "mnist_task.npz",
+        "file": "cifar_task.npz",
         "key": "test"
     }
 }

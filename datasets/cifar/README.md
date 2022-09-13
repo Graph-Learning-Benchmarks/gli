@@ -1,7 +1,7 @@
-# MNIST
+# CIFAR
 ## Data Description
 
-*MNIST* database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits that is commonly used for training various image processing systems. The database is also widely used for training and testing in the field of machine learning. It was created by "re-mixing" the samples from NIST's original datasets
+*CIFAR*  (Canadian Institute For Advanced Research) is a collection of images that are commonly used to train machine learning and computer vision algorithms. It is one of the most widely used datasets for machine learning research. The CIFAR-10 dataset contains 60,000 32x32 color images in 10 different classes.
 
 Statistics:
 - Nodes: 4939668
@@ -10,16 +10,19 @@ Statistics:
 #### Citation
 - Original Source
 ```
-@ARTICLE{726791,
-  author={Lecun, Y. and Bottou, L. and Bengio, Y. and Haffner, P.},
-  journal={Proceedings of the IEEE}, 
-  title={Gradient-based learning applied to document recognition}, 
-  year={1998},
-  volume={86},
-  number={11},
-  pages={2278-2324},
-  doi={10.1109/5.726791}
-  }
+@article{krizhevsky2009learning,
+  added-at = {2021-01-21T03:01:11.000+0100},
+  author = {Krizhevsky, Alex},
+  biburl = {https://www.bibsonomy.org/bibtex/2fe5248afe57647d9c85c50a98a12145c/s364315},
+  interhash = {cc2d42f2b7ef6a4e76e47d1a50c8cd86},
+  intrahash = {fe5248afe57647d9c85c50a98a12145c},
+  keywords = {},
+  pages = {32--33},
+  timestamp = {2021-01-21T03:01:11.000+0100},
+  title = {Learning Multiple Layers of Features from Tiny Images},
+  url = {https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf},
+  year = 2009
+}
 ```
 - Current Version
 #### Citation
