@@ -1,0 +1,11 @@
+loss_fun: cross_entropy
+self_loop: False
+to_dense: False
+lr: .01
+weight_decay: 0.001
+max_epoch: 10000
+early_stopping: True
+seed: 0
+batch_size: 256
+to_undirected: False
+optimizer: "AdamW"

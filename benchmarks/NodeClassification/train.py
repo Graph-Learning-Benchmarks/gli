@@ -15,7 +15,8 @@ import dgl
 import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
-                  EarlyStopping, set_seed
+                  EarlyStopping, set_seed, check_binary_classification,\
+                  eval_rocauc, Datasets_need_to_be_undirected
 from gli.utils import to_dense
 
 
@@ -26,14 +27,14 @@ def accuracy(logits, labels):
     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(model, features, labels, mask):
+def evaluate(model, features, labels, mask, eval_func):
     """Evaluate model."""
     model.eval()
     with torch.no_grad():
         logits = model(features)
         logits = logits[mask]
         labels = labels[mask]
-        return accuracy(logits, labels)
+        return eval_func(logits, labels)
 
 
 def main():
@@ -55,7 +56,8 @@ def main():
         cuda = True
 
     data = gli.dataloading.get_gli_dataset(args.dataset, args.task,
-                                           device=device)
+                                           args.task_id, device,
+                                           args.verbose)
     # check EdgeFeature and multi-modal node features
     edge_cnt = node_cnt = 0
     if len(data.features) > 1:
@@ -77,6 +79,12 @@ def main():
     if train_cfg["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
+    # convert to undirected set
+    if train_cfg["to_undirected"] or \
+       args.dataset in Datasets_need_to_be_undirected:
+        g = g.to(torch.device("cpu"))
+        g = dgl.to_bidirected(g, copy_ndata=True)
+        g = g.to(torch.device("cuda:"+str(device)))
 
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
     label_name = re.search(r".*Node/(\w+)", data.target).group(1)
@@ -118,14 +126,28 @@ def main():
     loss_fcn = torch.nn.CrossEntropyLoss()
 
     # use optimizer
-    optimizer = torch.optim.Adam(
-        model.parameters(), lr=train_cfg["lr"],
-        weight_decay=train_cfg["weight_decay"])
+    if train_cfg["optimizer"] == "AdamW":
+        optimizer = torch.optim.AdamW(
+            model.parameters(), lr=train_cfg["lr"],
+            weight_decay=train_cfg["weight_decay"])
+    elif train_cfg["optimizer"] == "Adam":
+        optimizer = torch.optim.Adam(
+            model.parameters(), lr=train_cfg["lr"],
+            weight_decay=train_cfg["weight_decay"])
+    else:
+        raise NotImplementedError(f"Optimizer \
+            {train_cfg['optimizer']} is not supported.")
 
     if train_cfg["early_stopping"]:
         ckpt_name = args.model + "_" + args.dataset + "_"
         ckpt_name += args.train_cfg
         stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
+
+    # use rocauc for binary classification
+    if check_binary_classification(args.dataset):
+        eval_func = eval_rocauc
+    else:
+        eval_func = accuracy
 
     # initialize graph
     dur = []
@@ -149,8 +171,8 @@ def main():
                 torch.cuda.synchronize()
             dur.append(time.time() - t0)
 
-        train_acc = accuracy(logits[train_mask], labels[train_mask])
-        val_acc = evaluate(model, features, labels, val_mask)
+        train_acc = eval_func(logits[train_mask], labels[train_mask])
+        val_acc = evaluate(model, features, labels, val_mask, eval_func)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
               f" ValAcc {val_acc:.4f} | "
@@ -165,7 +187,7 @@ def main():
     if train_cfg["early_stopping"]:
         model.load_state_dict(torch.load(stopper.ckpt_dir))
 
-    acc = evaluate(model, features, labels, test_mask)
+    acc = evaluate(model, features, labels, test_mask, eval_func)
     val_acc = stopper.best_score
     print(f"Test{acc:.4f},Val{val_acc:.4f}")
 
