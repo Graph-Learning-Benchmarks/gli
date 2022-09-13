@@ -1,0 +1,22 @@
+{
+    "description": "The task is to classify handwritten numbers to 0-9 digit.",
+    "type": "GraphClassification",
+    "feature": [
+        "Node/NodeFeature",
+        "Edge/EdgeFeature"
+    ],
+    "target": "Graph/GraphLabel",
+    "num_classes": 10,
+    "train_set": {
+        "file": "mnist_task.npz",
+        "key": "train"
+    },
+    "val_set": {
+        "file": "mnist_task.npz",
+        "key": "val"
+    },
+    "test_set": {
+        "file": "mnist_task.npz",
+        "key": "test"
+    }
+}

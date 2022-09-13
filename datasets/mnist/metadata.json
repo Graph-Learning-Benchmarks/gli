@@ -1,0 +1,41 @@
+{
+    "description": "mnist dataset",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "mnist.npz",
+                "key": "node_feats"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "mnist.npz",
+                "key": "edge"
+            },
+            "EdgeFeature": {
+                "description": "numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "mnist.npz",
+                "key": "edge_feats"
+        }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "mnist.npz",
+                "key": "node_list"
+            },
+            "GraphLabel": {
+                "file": "mnist.npz",
+                "type": "int",
+                "format": "Tensor",
+                "key": "graph_class"
+            }
+        }
+    },
+    "citation": "@misc{https://doi.org/10.48550/arxiv.2003.00982,\ndoi = {10.48550/ARXIV.2003.00982},\nurl = {https://arxiv.org/abs/2003.00982},\nauthor = {Dwivedi, Vijay Prakash and Joshi, Chaitanya K. and Luu, Anh Tuan and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},\nkeywords = {Machine Learning (cs.LG), Machine Learning (stat.ML), FOS: Computer and information sciences, FOS: Computer and information sciences},\ntitle = {Benchmarking Graph Neural Networks},\npublisher = {arXiv},\nyear = {2020},\ncopyright = {arXiv.org perpetual, non-exclusive license}",
+    "is_heterogeneous": false
+}
