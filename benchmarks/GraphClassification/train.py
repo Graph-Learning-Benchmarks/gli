@@ -12,7 +12,7 @@ import gli
 from utils import generate_model, load_config_file,\
                   set_seed, parse_args, EarlyStopping,\
                   check_binary_classification, eval_rocauc, eval_acc,\
-                  get_label_number
+                  get_label_number, eval_ap
 from dgl.dataloading import GraphDataLoader
 
 
@@ -103,7 +103,10 @@ def main():
         stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
 
     if check_binary_classification(args.dataset):
-        eval_func = eval_rocauc
+        if label_number > 1:
+            eval_func = eval_ap
+        else:
+            eval_func = eval_rocauc
     else:
         eval_func = eval_acc
 
