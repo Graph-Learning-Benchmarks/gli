@@ -11,7 +11,7 @@ GLI is an easy-to-use graph learning platform with unique features that can bett
 
 ### Standard Data Format
 
-GLI defines a standard data format that has efficient storage and access for graphs. It unifies the storage for graphs of different scales and heterogeneity and is thus flexible to accommodate various graph-structured data.
+GLI defines a standard data format that has efficient storage and access to graphs. It unifies the storage for graphs of different scales and heterogeneity and is thus flexible to accommodate various graph-structured data.
 
 ### Explicit Separation of Data Storage and Task Configuration
 
@@ -34,7 +34,7 @@ pip install -e .
 To test the installation, run the following command:
 
 ```bash
-python example.py --graph cora --task task_node_classification_1
+python example.py --graph cora --task NodeClassification
 ```
 
 The output should be like this:
@@ -52,7 +52,7 @@ To load a dataset from the remote data repository, simply use the `get_gli_datas
 
 ```python
 >>> import gli
->>> dataset = gli.get_gli_dataset(dataset="cora", task="task", device="cpu")
+>>> dataset = gli.get_gli_dataset(dataset="cora", task="NodeClassification", device="cpu")
 >>> dataset
 Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy/.dgl/CORA dataset. NodeClassification)
 ```
@@ -66,7 +66,7 @@ Alternatively, one can also get a single graph or a list of graphs rather than a
 Graph(num_nodes=2708, num_edges=10556,
       ndata_schemes={'NodeFeature': Scheme(shape=(1433,), dtype=torch.float32), 'NodeLabel': Scheme(shape=(), dtype=torch.int64)}
       edata_schemes={})
->>> task = gli.get_gli_task(dataset="cora", task="task", verbose=False)
+>>> task = gli.get_gli_task(dataset="cora", task="NodeClassification", verbose=False)
 >>> task
 <gli.task.NodeClassificationTask object at 0x100eff640>
 >>> dataset = gli.combine_graph_and_task(g, task)
