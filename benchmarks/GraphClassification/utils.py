@@ -198,29 +198,28 @@ def eval_rocauc(y_pred, y_true):
             rocauc_list.append(score)
 
     if len(rocauc_list) == 0:
-            raise RuntimeError('No positively labeled data available. Cannot compute ROC-AUC.')
+        raise RuntimeError("No positively labeled data available.\
+                            Cannot compute ROC-AUC.")
 
     return sum(rocauc_list)/len(rocauc_list)
 
 
-def eval_ap(y_true, y_pred):
+def eval_ap(y_pred, y_true):
     """Evalution function of Average Precision (AP)."""
-
     ap_list = []
-
     for i in range(y_true.shape[1]):
-        #AUC is only defined when there is at least one positive data.
+        # AUC is only defined when there is at least one positive data.
         if np.sum(y_true[:, i] == 1) > 0 and np.sum(y_true[:, i] == 0) > 0:
             # ignore nan values
-            print("(y_true[:, i] == 1).sum(): ", (y_true[:, i] == 1).sum())
-            is_labeled = ~torch.isnan(y_true[:, i])
-            print("is_labeled: ", is_labeled)
-            ap = average_precision_score(y_true[is_labeled,i], y_pred[is_labeled,i])
+            is_labeled = ~torch.isnan(torch.tensor(y_true[:, i]))
+            ap = average_precision_score(y_true[is_labeled, i],
+                                         y_pred[is_labeled, i])
 
             ap_list.append(ap)
 
     if len(ap_list) == 0:
-        raise RuntimeError('No positively labeled data available. Cannot compute Average Precision.')
+        raise RuntimeError("No positively labeled data available.\
+                            Cannot compute Average Precision.")
 
     return sum(ap_list)/len(ap_list)
 
