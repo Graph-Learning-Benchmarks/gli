@@ -157,12 +157,7 @@ class EarlyStopping:
 
 
 def eval_acc(y_pred, y_true):
-    """
-    Evaluate accuracy.
-
-    Return a list of binary number, indicating the
-    correctness of prediction.
-    """
+    """Evaluate accuracy."""
     acc_list = []
     print("len(y_true): ", len(y_true))
     if len(y_true.shape) > 1:
@@ -171,17 +166,11 @@ def eval_acc(y_pred, y_true):
             correct = y_true[is_labeled, i] == y_pred[is_labeled, i]
             acc_list.append(float(np.sum(correct))/len(correct))
     else:
-        print("y_pred: ", y_pred)
-        print("y_true: ", y_true)
         is_labeled = ~torch.isnan(torch.tensor(y_true))
         _, predicted = torch.max(torch.tensor(y_pred), 1)
         predicted = predicted.numpy()
         correct = y_true[is_labeled] == predicted[is_labeled]
-        print("y_true[is_labeled]: ", y_true[is_labeled])
-        print("is_labeled: ", is_labeled)
-        print("correct: ", correct)
-        print("predicted[is_labeled]: ", predicted[is_labeled])
-        
+
         acc_list.append(float(np.sum(correct))/len(correct))
 
     return sum(acc_list)/len(acc_list)

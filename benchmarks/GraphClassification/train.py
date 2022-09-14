@@ -33,10 +33,7 @@ def evaluate(dataloader, device, model, eval_func):
 
     y_true = torch.cat(y_true, dim=0).numpy()
     y_pred = torch.cat(y_pred, dim=0).numpy()
-    print("y_true.shape: ", y_true.shape)
-    print("y_pred.shape: ", y_pred.shape)
-    print("len(y_true.shape)", len(y_true.shape))
-    
+
     return eval_func(y_pred, y_true)
 
 
