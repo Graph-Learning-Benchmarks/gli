@@ -159,7 +159,6 @@ class EarlyStopping:
 def eval_acc(y_pred, y_true):
     """Evaluate accuracy."""
     acc_list = []
-    print("len(y_true): ", len(y_true))
     if len(y_true.shape) > 1:
         for i in range(y_true.shape[1]):
             is_labeled = ~torch.isnan(torch.tensor(y_true[:, i]))
