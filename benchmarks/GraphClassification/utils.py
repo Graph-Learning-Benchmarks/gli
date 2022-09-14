@@ -163,20 +163,28 @@ def eval_acc(y_pred, y_true):
     Return a list of binary number, indicating the
     correctness of prediction.
     """
-    correct_list = []
-    y_true = y_true.detach().cpu().numpy()
-    # y_pred = y_pred.argmax(dim=-1, keepdim=True).detach().cpu().numpy()
-
-    if len(y_true) > 1:
+    acc_list = []
+    print("len(y_true): ", len(y_true))
+    if len(y_true.shape) > 1:
         for i in range(y_true.shape[1]):
-            is_labeled = y_true[:, i] == y_true[:, i]
+            is_labeled = ~torch.isnan(torch.tensor(y_true[:, i]))
             correct = y_true[is_labeled, i] == y_pred[is_labeled, i]
-            correct_list.append(correct)
+            acc_list.append(float(np.sum(correct))/len(correct))
     else:
+        print("y_pred: ", y_pred)
+        print("y_true: ", y_true)
         is_labeled = ~torch.isnan(torch.tensor(y_true))
-        _, predicted = torch.max(y_pred, 1)
-        correct_list.append(predicted[is_labeled] == y_true[is_labeled])
-    return correct_list
+        _, predicted = torch.max(torch.tensor(y_pred), 1)
+        predicted = predicted.numpy()
+        correct = y_true[is_labeled] == predicted[is_labeled]
+        print("y_true[is_labeled]: ", y_true[is_labeled])
+        print("is_labeled: ", is_labeled)
+        print("correct: ", correct)
+        print("predicted[is_labeled]: ", predicted[is_labeled])
+        
+        acc_list.append(float(np.sum(correct))/len(correct))
+
+    return sum(acc_list)/len(acc_list)
 
 
 def eval_rocauc(y_pred, y_true):
@@ -186,7 +194,7 @@ def eval_rocauc(y_pred, y_true):
         for i in range(y_true.shape[1]):
             # AUC is only defined when there is at least one positive data.
             if np.sum(y_true[:, i] == 1) > 0 and np.sum(y_true[:, i] == 0) > 0:
-                is_labeled = y_true[:, i] == y_true[:, i]
+                is_labeled = ~torch.isnan(torch.tensor(y_true[:, i]))
                 score = roc_auc_score(y_true[is_labeled, i],
                                       y_pred[is_labeled, i])
 

@@ -14,6 +14,7 @@ from utils import generate_model, load_config_file,\
                   check_binary_classification, eval_rocauc, eval_acc,\
                   get_label_number, eval_ap
 from dgl.dataloading import GraphDataLoader
+from dgl import add_self_loop
 
 
 def evaluate(dataloader, device, model, eval_func):
@@ -32,6 +33,10 @@ def evaluate(dataloader, device, model, eval_func):
 
     y_true = torch.cat(y_true, dim=0).numpy()
     y_pred = torch.cat(y_pred, dim=0).numpy()
+    print("y_true.shape: ", y_true.shape)
+    print("y_pred.shape: ", y_pred.shape)
+    print("len(y_true.shape)", len(y_true.shape))
+    
     return eval_func(y_pred, y_true)
 
 
@@ -60,6 +65,14 @@ def main():
     val_dataset = dataset[1]
     test_dataset = dataset[2]
 
+    in_feats = train_dataset[0][0].ndata["NodeFeature"].shape[1]
+    n_classes = train_dataset.num_labels
+
+    if train_cfg["self_loop"]:
+        train_dataset.graphs = [add_self_loop(x) for x in train_dataset.graphs]
+        val_dataset.graphs = [add_self_loop(x) for x in val_dataset.graphs]
+        test_dataset.graphs = [add_self_loop(x) for x in test_dataset.graphs]
+
     # create dataloader
     train_loader = GraphDataLoader(train_dataset,
                                    batch_size=train_cfg["batch_size"],
@@ -75,8 +88,6 @@ def main():
                                   pin_memory=torch.cuda.is_available())
 
     # create model
-    in_feats = train_dataset[0][0].ndata["NodeFeature"].shape[1]
-    n_classes = train_dataset.num_labels
 
     label_number = get_label_number(train_loader)
     if label_number > 1:
@@ -117,6 +128,7 @@ def main():
         batch = 0
         for batch, (batched_graph, labels) in enumerate(train_loader):
             batched_graph = batched_graph.to(device)
+            # batched_graph = dgl.add_self_loop(batched_graph)
             labels = labels.to(device)
             feat = batched_graph.ndata["NodeFeature"].float()
             logits = model(batched_graph, feat)

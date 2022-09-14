@@ -28,9 +28,7 @@ class GCNgraph(nn.Module):
         self.layers = nn.ModuleList()
         # embedded layer
         self.embedding_h = nn.Linear(in_feats, n_hidden)
-        # input layer
-        # self.layers.append(GraphConv(in_feats, n_hidden,
-        #                              activation=activation))
+
         # hidden layers
         for _ in range(n_layers):
             self.layers.append(GraphConv(n_hidden, n_hidden,
@@ -38,6 +36,8 @@ class GCNgraph(nn.Module):
         # output layer
         self.layers.append(GraphConv(n_hidden, n_hidden))
         self.dropout = nn.Dropout(p=dropout)
+
+        # readout layer
         self.mlp_layer = MLPReadout(n_hidden, n_classes)
 
     def forward(self, g, features):
