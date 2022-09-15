@@ -57,7 +57,9 @@ def main():
 
     print("Training with a fixed epsilon = 0")
 
-    dataset = gli.dataloading.get_gli_dataset(args.dataset, args.task)
+    dataset = gli.dataloading.get_gli_dataset(args.dataset, args.task,
+                                              args.task_id, device,
+                                              args.verbose)
     train_dataset = dataset[0]
     val_dataset = dataset[1]
     test_dataset = dataset[2]
