@@ -459,9 +459,9 @@ def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
     core_list = core_number_related(g)
 
     with open(file_name, "w", encoding="utf-8") as f:
-        f.write("# **Graph Metrics**\n")
+        f.write("## **Graph Metrics**\n")
         for group_name in group_dict:
-            f.write("## " + str(group_name) + " Metrics\n")
+            f.write("### " + str(group_name) + " Metrics\n")
             f.write(metric_quote[group_name])
             f.write("\n")
             f.write("| Metric | Quantity |\n")
