@@ -69,8 +69,7 @@ where `<name>` is the dataset name and `<task_type>` is one of the given tasks d
 
 ### Uploading GLI Data Files
 
-Please upload the npz or npy files referred in `metadata.json` or `task_<task_type>.json` to this website: [Upload data files for GLI-Repo
-](https://www.dropbox.com/request/pQVRimU7vd8aSTwtm5SC). The development team will then post the urls in your pull request.
+Please upload the npz or npy files referred in `metadata.json` or `task_<task_type>.json` to a cloud storage platform (e.g., Dropbox or Google Drive), and include the public download links in `urls.json`.
 
 ## Reporting Bugs
 
