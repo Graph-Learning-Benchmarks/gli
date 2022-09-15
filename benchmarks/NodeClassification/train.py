@@ -82,9 +82,12 @@ def main():
     # convert to undirected set
     if train_cfg["to_undirected"] or \
        args.dataset in Datasets_need_to_be_undirected:
-        g = g.to(torch.device("cpu"))
+        # g = g.to(torch.device("cpu"))
+        # g = dgl.to_bidirected(g, copy_ndata=True)
+        # g = g.to(torch.device("cuda:"+str(device)))
+        g = g.to("cpu")
         g = dgl.to_bidirected(g, copy_ndata=True)
-        g = g.to(torch.device("cuda:"+str(device)))
+        g = g.to(device)
 
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
     label_name = re.search(r".*Node/(\w+)", data.target).group(1)
