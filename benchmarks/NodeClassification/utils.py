@@ -277,3 +277,11 @@ def check_binary_classification(dataset):
                     return 1
                 else:
                     return 0
+
+
+def get_label_number(labels):
+    """Return the label number of dataset."""
+    if len(labels.shape) > 1:
+        return labels.shape[1]
+    else:
+        return 1
