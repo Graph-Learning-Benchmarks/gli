@@ -5,7 +5,7 @@
         "Node/NodeFeature",
         "Edge/EdgeFeature"
     ],
-    "target": "Node/NodeSpecies",
+    "target": "Node/NodeLabel",
     "num_classes":112,
     "train_set": {
         "file": "ogbn-proteins_task.npz",
