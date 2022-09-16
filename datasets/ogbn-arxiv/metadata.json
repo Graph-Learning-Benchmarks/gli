@@ -15,6 +15,13 @@
                 "format": "SparseTensor",
                 "file": "ogbn-arxiv.npz",
                 "key": "node_year"
+            },
+            "NodeLabel":{
+                "description": "Label of the arxiv paper represented by the node",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbn-arxiv.npz",
+                "key": "node_label"
             }
         },
         "Edge": {
