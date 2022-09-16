@@ -59,18 +59,18 @@ def main():
                                            args.task_id, device,
                                            args.verbose)
     # check EdgeFeature and multi-modal node features
-    edge_cnt = node_cnt = 0
-    if len(data.features) > 1:
-        for _, element in enumerate(data.features):
-            if "Edge" in element:
-                edge_cnt += 1
-            if "Node" in element:
-                node_cnt += 1
-        if edge_cnt >= 1:
-            raise NotImplementedError("Edge feature is not supported yet.")
-        elif node_cnt >= 2:
-            raise NotImplementedError("Multi-modal node features\
-                                       is not supported yet.")
+    # edge_cnt = node_cnt = 0
+    # if len(data.features) > 1:
+    #     for _, element in enumerate(data.features):
+    #         if "Edge" in element:
+    #             edge_cnt += 1
+    #         if "Node" in element:
+    #             node_cnt += 1
+    #     if edge_cnt >= 1:
+    #         raise NotImplementedError("Edge feature is not supported yet.")
+    #     elif node_cnt >= 2:
+    #         raise NotImplementedError("Multi-modal node features\
+    #                                    is not supported yet.")
     g = data[0]
     if train_cfg["to_dense"] or \
        args.model in Models_need_to_be_densed:
@@ -82,9 +82,6 @@ def main():
     # convert to undirected set
     if train_cfg["to_undirected"] or \
        args.dataset in Datasets_need_to_be_undirected:
-        # g = g.to(torch.device("cpu"))
-        # g = dgl.to_bidirected(g, copy_ndata=True)
-        # g = g.to(torch.device("cuda:"+str(device)))
         g = g.to("cpu")
         g = dgl.to_bidirected(g, copy_ndata=True)
         g = g.to(device)
@@ -92,7 +89,7 @@ def main():
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
     label_name = re.search(r".*Node/(\w+)", data.target).group(1)
     features = g.ndata[feature_name]
-    labels = g.ndata[label_name]
+    labels = g.ndata[label_name].squeeze()
     train_mask = g.ndata["train_mask"]
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
@@ -162,7 +159,8 @@ def main():
             t0 = time.time()
         # forward
         logits = model(features)
-
+        print("labels[train_mask]: ", labels[train_mask])
+        print("labels[train_mask].shape", labels[train_mask].shape)
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()
