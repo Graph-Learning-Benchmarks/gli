@@ -121,9 +121,7 @@ def main():
 
     # create model
     label_number = get_label_number(labels)
-    print("label_number: ", label_number)
     if label_number > 1:
-        print("bce")
         # When binary multi-label, output shape is (batchsize, label_num)
         model = generate_model(args, g, in_feats, label_number, **model_cfg)
         loss_fcn = nn.BCEWithLogitsLoss()
@@ -156,7 +154,6 @@ def main():
 
     # use rocauc for binary classification
     if check_binary_classification(args.dataset):
-        print("rocauc")
         eval_func = eval_rocauc
     else:
         eval_func = accuracy
@@ -170,14 +167,8 @@ def main():
                 torch.cuda.synchronize()
             t0 = time.time()
         # forward
-        print("feature.shape: ", features.shape)
         logits = model(features)
-        print("logits[train_mask]:", logits[train_mask])
-        print("logits[train_mask].shape: ", logits[train_mask].shape)
-        print("labels[train_mask]).shape: ", labels[train_mask].shape)
-        print("labels[train_mask]): ", labels[train_mask])
-        print("loss_fcn: ", loss_fcn)
-        loss = loss_fcn(logits[train_mask], labels[train_mask].float())
+        loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()
         loss.backward()
