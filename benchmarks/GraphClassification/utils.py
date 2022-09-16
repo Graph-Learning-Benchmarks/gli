@@ -221,7 +221,7 @@ def eval_ap(y_pred, y_true):
 
 
 def check_binary_classification(dataset):
-    """Check whether the dataset has multiple splits."""
+    """Check whether the dataset is binary classification"""
     dataset_directory = os.path.dirname(os.path.dirname(os.getcwd())) \
         + "/datasets/" + dataset
     for file in os.listdir(dataset_directory):

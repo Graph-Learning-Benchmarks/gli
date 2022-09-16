@@ -10,13 +10,15 @@ https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 import time
 import re
 import torch
+from torch import nn
 import numpy as np
 import dgl
 import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
                   EarlyStopping, set_seed, check_binary_classification,\
-                  eval_rocauc, Datasets_need_to_be_undirected
+                  eval_rocauc, Datasets_need_to_be_undirected,\
+                  get_label_number
 from gli.utils import to_dense
 
 
@@ -118,7 +120,16 @@ def main():
       #Test samples {test_mask.int().sum().item()}""")
 
     # create model
-    model = generate_model(args, g, in_feats, n_classes, **model_cfg)
+    label_number = get_label_number(labels)
+    print(label_number)
+    if label_number > 1:
+        # When binary multi-label, output shape is (batchsize, label_num)
+        model = generate_model(args, g, in_feats, label_number, **model_cfg)
+        loss_fcn = nn.BCEWithLogitsLoss()
+    else:
+        # When single-label, output shape is (batchsize, num_classes)
+        model = generate_model(args, g, in_feats, n_classes, **model_cfg)
+        loss_fcn = nn.CrossEntropyLoss()
 
     print(model)
     if cuda:
@@ -158,7 +169,12 @@ def main():
                 torch.cuda.synchronize()
             t0 = time.time()
         # forward
+        print("feature.shape: ", features.shape)
         logits = model(features)
+        print("logits:", logits)
+        print("logits.shape: ", logits.shape)
+        print("labels.shape: ", labels.shape)
+        # print("loss_fcn: ", loss_fcn)
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()
