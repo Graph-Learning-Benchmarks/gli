@@ -10,7 +10,7 @@ Statistics:
 - Edges per graph: 27.5
 
 #### Citation
-
+- Original Source
 ```
 @inproceedings{
   author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
@@ -20,7 +20,14 @@ Statistics:
   pages={513–530}
 }
 ```
-
+- Current Version
+```
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
+}
+```
 ## Available Tasks
 
 ### OGB
