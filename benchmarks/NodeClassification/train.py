@@ -101,7 +101,6 @@ def main():
         test_mask = test_mask[:, 0]
 
     # When labels contains -1, modify masks
-    print("labels: ", labels)
     if labels.min() < 0:
         train_mask = train_mask * (labels >= 0)
         val_mask = val_mask * (labels >= 0)
@@ -160,8 +159,6 @@ def main():
             t0 = time.time()
         # forward
         logits = model(features)
-        print("labels[train_mask]: ", labels[train_mask])
-        print("labels[train_mask].shape", labels[train_mask].shape)
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()
