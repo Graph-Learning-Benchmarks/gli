@@ -12,7 +12,7 @@ Statistics:
 - Edges: 2358104
 
 #### Citation
-
+- Original Version
 ```
 @inproceedings{wang2020microsoft,
     title={Microsoft academic graph: When experts are not enough},
@@ -22,7 +22,14 @@ Statistics:
     year={2020}
 }
 ```
-
+- Current Version
+```
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
+}
+```
 ## Available Tasks
 
 ### OGB

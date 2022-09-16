@@ -15,6 +15,13 @@
                 "format": "SparseTensor",
                 "file": "ogbn-proteins.npz",
                 "key": "node_species"
+            },
+            "NodeLabel":{
+                "description": "Labels of the proteins represented by the node",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "ogbn-proteins.npz",
+                "key": "node_label"
             }
         },
         "Edge": {
