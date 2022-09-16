@@ -101,6 +101,7 @@ def main():
         test_mask = test_mask[:, 0]
 
     # When labels contains -1, modify masks
+    print("labels: ", labels)
     if min(labels) < 0:
         train_mask = train_mask * (labels >= 0)
         val_mask = val_mask * (labels >= 0)
