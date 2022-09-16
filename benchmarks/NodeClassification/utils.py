@@ -37,13 +37,13 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
     """Generate required model."""
     # create models
     if args.model == "GCN":
-        model = GCN(g,
-                    in_feats,
-                    model_cfg["num_hidden"],
-                    n_classes,
-                    model_cfg["num_layers"],
-                    F.relu,
-                    model_cfg["dropout"])
+        model = GCN(g=g,
+                    in_feats=in_feats,
+                    n_hidden=model_cfg["num_hidden"],
+                    n_classes=n_classes,
+                    n_layers=model_cfg["num_layers"],
+                    activation=F.relu,
+                    dropout=model_cfg["dropout"])
     elif args.model == "GAT":
         heads = ([model_cfg["num_heads"]] * (model_cfg["num_layers"]))\
                 + [model_cfg["num_out_heads"]]

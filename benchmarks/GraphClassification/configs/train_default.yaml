@@ -1,0 +1,9 @@
+loss_fun: cross_entropy
+self_loop: True
+to_dense: False
+lr: .0005
+weight_decay: 0.0
+max_epoch: 10000
+early_stopping: True
+seed: 0
+batch_size: 1024
