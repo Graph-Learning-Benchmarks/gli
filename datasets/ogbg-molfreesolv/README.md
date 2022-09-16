@@ -8,6 +8,7 @@ Statistics:
 - Edges: 642
 
 #### Citation
+- Original Source
 ```
 @inproceedings{Wu2018Stanford,
   title={Moleculenet: a benchmark for molecular machine learning},
@@ -17,7 +18,16 @@ Statistics:
   pages={513-530}
 }
 ```
-
+- Current Version
+#### Citation
+``` 
+@inproceedings{Hu2020Stanford,
+  title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
+  author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
+  year={2020},
+  booktitle={ICLR}
+}
+```
 ## Available Tasks
 ### [OGB](https://ogb.stanford.edu/)
 - Task type:  `GraphRegression`
