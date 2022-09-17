@@ -1,4 +1,4 @@
-num_layers: 1
+num_layers: 2
 num_hidden: 8
 num_heads: 8
 num_out_heads: 2

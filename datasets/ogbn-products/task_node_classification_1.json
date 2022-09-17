@@ -5,7 +5,7 @@
         "Node/NodeFeature",
         "Edge/EdgeFeature"
     ],
-    "target": "Node/NodeYear",
+    "target": "Node/NodeLabel",
     "num_classes":47,
     "train_set": {
         "file": "ogbn-products_task.npz",

@@ -2,11 +2,11 @@
     "description": "The task is to predict the presence of protein functions in a multi-label binary classification setup, where there are 112 kinds of labels to predict in total. ",
     "type": "NodeClassification",
     "feature": [
-        "Node/NodeFeature",
+        "Node/NodeSpecies",
         "Edge/EdgeFeature"
     ],
-    "target": "Node/NodeSpecies",
-    "num_classes":112,
+    "target": "Node/NodeLabel",
+    "num_classes":2,
     "train_set": {
         "file": "ogbn-proteins_task.npz",
         "key": "train"

@@ -1,5 +1,5 @@
 loss_fun: cross_entropy
-self_loop: False
+self_loop: True
 to_dense: False
 lr: .01
 weight_decay: 0.001

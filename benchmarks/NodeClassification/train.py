@@ -10,13 +10,15 @@ https://github.com/pyg-team/pytorch_geometric/blob/master/graphgym/main.py
 import time
 import re
 import torch
+from torch import nn
 import numpy as np
 import dgl
 import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
                   load_config_file, check_multiple_split,\
                   EarlyStopping, set_seed, check_binary_classification,\
-                  eval_rocauc, Datasets_need_to_be_undirected
+                  eval_rocauc, Datasets_need_to_be_undirected,\
+                  get_label_number
 from gli.utils import to_dense
 
 
@@ -59,18 +61,18 @@ def main():
                                            args.task_id, device,
                                            args.verbose)
     # check EdgeFeature and multi-modal node features
-    edge_cnt = node_cnt = 0
-    if len(data.features) > 1:
-        for _, element in enumerate(data.features):
-            if "Edge" in element:
-                edge_cnt += 1
-            if "Node" in element:
-                node_cnt += 1
-        if edge_cnt >= 1:
-            raise NotImplementedError("Edge feature is not supported yet.")
-        elif node_cnt >= 2:
-            raise NotImplementedError("Multi-modal node features\
-                                       is not supported yet.")
+    # edge_cnt = node_cnt = 0
+    # if len(data.features) > 1:
+    #     for _, element in enumerate(data.features):
+    #         if "Edge" in element:
+    #             edge_cnt += 1
+    #         if "Node" in element:
+    #             node_cnt += 1
+    #     if edge_cnt >= 1:
+    #         raise NotImplementedError("Edge feature is not supported yet.")
+    #     elif node_cnt >= 2:
+    #         raise NotImplementedError("Multi-modal node features\
+    #                                    is not supported yet.")
     g = data[0]
     if train_cfg["to_dense"] or \
        args.model in Models_need_to_be_densed:
@@ -82,14 +84,14 @@ def main():
     # convert to undirected set
     if train_cfg["to_undirected"] or \
        args.dataset in Datasets_need_to_be_undirected:
-        g = g.to(torch.device("cpu"))
+        g = g.to("cpu")
         g = dgl.to_bidirected(g, copy_ndata=True)
-        g = g.to(torch.device("cuda:"+str(device)))
+        g = g.to(device)
 
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
     label_name = re.search(r".*Node/(\w+)", data.target).group(1)
     features = g.ndata[feature_name]
-    labels = g.ndata[label_name]
+    labels = g.ndata[label_name].squeeze()
     train_mask = g.ndata["train_mask"]
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
@@ -101,7 +103,7 @@ def main():
         test_mask = test_mask[:, 0]
 
     # When labels contains -1, modify masks
-    if min(labels) < 0:
+    if labels.min() < 0:
         train_mask = train_mask * (labels >= 0)
         val_mask = val_mask * (labels >= 0)
         test_mask = test_mask * (labels >= 0)
@@ -118,12 +120,19 @@ def main():
       #Test samples {test_mask.int().sum().item()}""")
 
     # create model
-    model = generate_model(args, g, in_feats, n_classes, **model_cfg)
+    label_number = get_label_number(labels)
+    if label_number > 1:
+        # When binary multi-label, output shape is (batchsize, label_num)
+        model = generate_model(args, g, in_feats, label_number, **model_cfg)
+        loss_fcn = nn.BCEWithLogitsLoss()
+    else:
+        # When single-label, output shape is (batchsize, num_classes)
+        model = generate_model(args, g, in_feats, n_classes, **model_cfg)
+        loss_fcn = nn.CrossEntropyLoss()
 
     print(model)
     if cuda:
         model.cuda()
-    loss_fcn = torch.nn.CrossEntropyLoss()
 
     # use optimizer
     if train_cfg["optimizer"] == "AdamW":
@@ -159,7 +168,6 @@ def main():
             t0 = time.time()
         # forward
         logits = model(features)
-
         loss = loss_fcn(logits[train_mask], labels[train_mask])
 
         optimizer.zero_grad()

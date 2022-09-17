@@ -274,7 +274,6 @@ def feature_homogeneity(g):
     sum_matrix = torch.zeros((label_num, label_num))
     count_matrix = torch.zeros((label_num, label_num))
 
-
     for label_idx, i in enumerate(all_labels):
         idx_i = torch.where(label_matrix == i)[0]
         vec_i = normed_feature_matrix[idx_i, :]
@@ -419,7 +418,11 @@ def make_metric_quote():
                                    "connectedness and connected "
                                    "component of the graph.\n",
                    "Clustering": ">These are metrics associated with sparsity "
+<<<<<<< HEAD
                                  "and closeness of the graph.\n",
+=======
+                                 "and closeness of the graph.",
+>>>>>>> e13c7fdc28ce40be6b4dec41091accb35db75568
                    "Distribution": ">These are metrics assoicated with the "
                                    "characteristics of the distribution of "
                                    "the sequence of node-level properties.\n",
@@ -453,7 +456,11 @@ def make_metric_names():
 
 def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
     """Output the tags of a dataset into txt with Markdown format."""
+<<<<<<< HEAD
     group_dict = ["Basic", "Distance", "Connectivity", "Clustering",
+=======
+    group_dict = ["Basic", "Distance", "Connectivity",
+>>>>>>> e13c7fdc28ce40be6b4dec41091accb35db75568
                   "Distribution", "Attribute"]
 
     core_list = core_number_related(g)
