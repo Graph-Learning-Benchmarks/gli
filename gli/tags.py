@@ -419,7 +419,7 @@ def make_metric_quote():
                                    "connectedness and connected "
                                    "component of the graph.\n",
                    "Clustering": ">These are metrics associated with sparsity "
-                                 "and closeness of the graph.",
+                                 "and closeness of the graph.\n",
                    "Distribution": ">These are metrics assoicated with the "
                                    "characteristics of the distribution of "
                                    "the sequence of node-level properties.\n",
@@ -453,7 +453,7 @@ def make_metric_names():
 
 def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
     """Output the tags of a dataset into txt with Markdown format."""
-    group_dict = ["Basic", "Distance", "Connectivity",
+    group_dict = ["Basic", "Distance", "Connectivity", "Clustering",
                   "Distribution", "Attribute"]
 
     core_list = core_number_related(g)
