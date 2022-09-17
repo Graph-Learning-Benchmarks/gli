@@ -274,7 +274,7 @@ def feature_homogeneity(g):
     sum_matrix = torch.zeros((label_num, label_num))
     count_matrix = torch.zeros((label_num, label_num))
 
-    # find relationship between each pair of labels
+
     for label_idx, i in enumerate(all_labels):
         idx_i = torch.where(label_matrix == i)[0]
         vec_i = normed_feature_matrix[idx_i, :]
