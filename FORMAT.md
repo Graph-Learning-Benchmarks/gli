@@ -60,7 +60,7 @@ As mentioned above, there are three reserved attributes in GLI, all of which sta
 - Node
   - No required attribute.
 - Edge
-  - `_Edge` (*required*): A `Tensor` in shape `(n_edges, 2)`. `_Edge[i]` stores the i-th edge in the form of `(src_node_id, dst_node_id)`.
+  - `_Edge` (*required*): A `Tensor` in shape `(n_edges, 2)`. `_Edge[i]` stores the i-th edge in the form of `(src_node_id, dst_node_id)`. **Notice that nodes indices are zero-based. i.e., node ID starts from 0.**
 - Graph
   - `_NodeList` (*required*): A 0/1-valued `Tensor`/`SparseTensor` in shape `(n_graphs, n_nodes)`. 
   - `_EdgeList` (*optional*): A 0/1-valued `Tensor`/`SparseTensor` in shape `(n_graphs, n_edges)`. This attribute is optional when the `_EdgeList` of each subgraph can be inferred from `_NodeList`.
@@ -130,7 +130,7 @@ Heterogeneous graph has multiple kinds of nodes and edges. For a heterograph, `N
 - Edge
 	- `_ID`: The unique indices for all edges.
 
-Both `_ID`s should be indexed from 0.
+Both `_ID`s should follow **zero-based indexing**.
 
 #### Example (heterogeneous graph)
 
