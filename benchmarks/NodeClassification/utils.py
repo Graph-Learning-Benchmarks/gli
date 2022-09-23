@@ -180,12 +180,13 @@ def check_multiple_split(dataset):
 class EarlyStopping:
     """Do early stopping."""
 
-    def __init__(self, ckpt_name, patience=50):
+    def __init__(self, ckpt_name, early_stop, patience=50):
         """Init early stopping."""
         self.patience = patience
         self.counter = 0
         self.best_score = None
         self.early_stop = False
+        self.early_stop_flag = early_stop
         self.dir_name = "checkpoints/"
         if ~os.path.isdir(self.dir_name):
             os.makedirs(self.dir_name, exist_ok=True)
@@ -199,17 +200,18 @@ class EarlyStopping:
         if self.best_score is None:
             self.best_score = score
             self.save_checkpoint(model)
-        elif score < self.best_score:
-            self.counter += 1
-            print(f"EarlyStopping counter: {self.counter}\
-                    out of {self.patience}")
-            if self.counter >= self.patience:
-                self.early_stop = True
-        else:
-            self.best_score = score
-            self.save_checkpoint(model)
-            self.counter = 0
-        return self.early_stop
+        elif self.early_stop_flag:
+            if score < self.best_score:
+                self.counter += 1
+                print(f"EarlyStopping counter: {self.counter}\
+                        out of {self.patience}")
+                if self.counter >= self.patience:
+                    self.early_stop = True
+            else:
+                self.best_score = score
+                self.save_checkpoint(model)
+                self.counter = 0
+            return self.early_stop
 
     def save_checkpoint(self, model):
         """Save model when validation loss decrease."""
