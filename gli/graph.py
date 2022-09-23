@@ -132,6 +132,8 @@ def _get_homograph(data):
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
     num_nodes = data["Graph"]["_NodeList"].shape[-1]
+    assert edges.max() < num_nodes, ("The largest node id exceeds num_nodes."
+                                     "Is the node id zero-based indexed?")
 
     g: dgl.DGLGraph = dgl.graph((src_nodes, dst_nodes),
                                 num_nodes=num_nodes,
