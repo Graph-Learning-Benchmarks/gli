@@ -136,10 +136,11 @@ def main():
         model.parameters(), lr=train_cfg["lr"],
         weight_decay=train_cfg["weight_decay"])
 
-    if train_cfg["early_stopping"]:
-        ckpt_name = args.model + "_" + args.dataset + "_"
-        ckpt_name += args.train_cfg
-        stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
+    ckpt_name = args.model + "_" + args.dataset + "_"
+    ckpt_name += args.train_cfg
+    stopper = EarlyStopping(ckpt_name=ckpt_name,
+                            early_stop=train_cfg["early_stopping"],
+                            patience=50)
 
     # initialize graph
     dur = []
@@ -181,14 +182,12 @@ def main():
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
-        if train_cfg["early_stopping"]:
-            if stopper.step(val_acc, model):
-                break
+        if stopper.step(val_acc, model):
+            break
 
     print()
 
-    if train_cfg["early_stopping"]:
-        model.load_state_dict(torch.load(stopper.ckpt_dir))
+    model.load_state_dict(torch.load(stopper.ckpt_dir))
 
     acc = evaluate(model, test_dataloader)
     val_acc = stopper.best_score
