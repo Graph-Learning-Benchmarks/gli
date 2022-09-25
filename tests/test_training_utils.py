@@ -46,7 +46,7 @@ def get_cfg(dataset):
             "to_dense": False
         },
         "optim": {
-            "lr": .005,
+            "lr": .006,
             "weight_decay": 0.0005
         },
         "num_trials": 1,

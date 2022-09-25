@@ -3,7 +3,6 @@ import pytest
 import re
 import gli
 import torch
-from torch import nn
 import torch.nn.functional as F
 import numpy as np
 import dgl
@@ -29,7 +28,7 @@ def test_training(dataset_name):
     args, model_cfg, train_cfg = get_cfg(dataset_name)
     device = "cpu"
 
-    data = gli.dataloading.get_gli_dataset(args["dataset"], args["task"], 1, 
+    data = gli.dataloading.get_gli_dataset(args["dataset"], args["task"], 1,
                                            device=device)
 
     # check EdgeFeature and multi-modal node features
