@@ -107,10 +107,12 @@ def main():
     # loss function, optimizer, scheduler and early stopping
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.5)
-    if train_cfg["early_stopping"]:
-        ckpt_name = args.model + "_" + args.dataset + "_"
-        ckpt_name += args.train_cfg
-        stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
+
+    ckpt_name = args.model + "_" + args.dataset + "_"
+    ckpt_name += args.train_cfg
+    stopper = EarlyStopping(ckpt_name=ckpt_name,
+                            early_stop=train_cfg["early_stopping"],
+                            patience=50)
 
     if check_binary_classification(args.dataset):
         if label_number > 1:
@@ -149,12 +151,10 @@ def main():
         print(f"Epoch {epoch:05d} | Loss {total_loss / (batch + 1):.4f} | \
                 Train Acc. {train_acc:.4f} | Validation Acc. {valid_acc:.4f}")
 
-        if train_cfg["early_stopping"]:
-            if stopper.step(valid_acc, model):
-                break
+        if stopper.step(valid_acc, model):
+            break
 
-    if train_cfg["early_stopping"]:
-        model.load_state_dict(torch.load(stopper.ckpt_dir))
+    model.load_state_dict(torch.load(stopper.ckpt_dir))
     acc = evaluate(test_loader, device, model, eval_func)
     val_acc = stopper.best_score
     print(f"Test{acc:.4f},Val{val_acc:.4f}")
