@@ -5,7 +5,7 @@ import json
 import pytest
 import gli
 from gli.task import SUPPORTED_TASK_TYPES
-from utils import find_datasets
+from utils import find_datasets, load_config_file
 
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
@@ -17,8 +17,8 @@ def test_data_loading(dataset_name):
     """
     # temporary skipping all large datasets
     dataset = dataset_name
-    large_dataset_to_skip = ["wiki", "ogbg-code2"]
-    if dataset in large_dataset_to_skip:
+    test_cfg = load_config_file("tests/config.yaml")
+    if dataset in test_cfg["large_dataset_to_skip"]:
         return
 
     directory = os.getcwd() + "/datasets/" + dataset
