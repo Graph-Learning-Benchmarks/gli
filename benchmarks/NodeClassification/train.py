@@ -147,10 +147,11 @@ def main():
         raise NotImplementedError(f"Optimizer \
             {train_cfg['optimizer']} is not supported.")
 
-    if train_cfg["early_stopping"]:
-        ckpt_name = args.model + "_" + args.dataset + "_"
-        ckpt_name += args.train_cfg
-        stopper = EarlyStopping(ckpt_name=ckpt_name, patience=50)
+    ckpt_name = args.model + "_" + args.dataset + "_"
+    ckpt_name += args.train_cfg
+    stopper = EarlyStopping(ckpt_name=ckpt_name,
+                            early_stop=train_cfg["early_stopping"],
+                            patience=50)
 
     # use rocauc for binary classification
     if check_binary_classification(args.dataset):
@@ -186,14 +187,12 @@ def main():
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
-        if train_cfg["early_stopping"]:
-            if stopper.step(val_acc, model):
-                break
+        if stopper.step(val_acc, model):
+            break
 
     print()
 
-    if train_cfg["early_stopping"]:
-        model.load_state_dict(torch.load(stopper.ckpt_dir))
+    model.load_state_dict(torch.load(stopper.ckpt_dir))
 
     acc = evaluate(model, features, labels, test_mask, eval_func)
     val_acc = stopper.best_score
