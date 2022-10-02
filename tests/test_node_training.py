@@ -2,8 +2,6 @@
 import pytest
 import re
 import gli
-import sys
-sys.path.append("../benchmarks")
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -13,6 +11,8 @@ from utils import find_datasets
 from gli.utils import to_dense
 from test_training_utils import get_cfg, \
                                 check_multiple_split_v2
+import sys
+sys.path.append("../benchmarks")
 from benchmarks.NodeClassification.models.gcn import GCN
 from benchmarks.NodeClassification.train import accuracy, evaluate
 
@@ -27,6 +27,7 @@ NC_DATASETS = [
     "squirrel", "texas", "twitch-gamers",
     "wisconsin"
 ]
+
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
 def test_training(dataset_name):
