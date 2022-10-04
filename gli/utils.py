@@ -330,9 +330,8 @@ def _to_dense(graph: dgl.DGLGraph, feat=None, group=None, is_node=True):
         graph.ndata[feat][group] = _sparse_to_dense_safe(
             graph.ndata[feat][group])
     else:
-        raise NotImplementedError(
-            "Both feat and group should be provided for"
-            " heterograph.")
+        raise NotImplementedError("Both feat and group should be provided for"
+                                  " heterograph.")
 
     return graph
 
@@ -390,3 +389,30 @@ def to_dense(graph: dgl.DGLGraph):
         return node_to_dense(edge_to_dense(graph))
     else:
         raise NotImplementedError("to_dense only works for homograph.")
+
+
+def save_npz(dataset_name, **kwargs):
+    """Save arrays into numpy binary formats.
+    
+    Dense arrays (numpy) will be saved in the below format as a single file:
+        <dataset_name>.npz
+    Sparse arrays (scipy) will be saved in the below format individually:
+        <dataset_name>_<key>.sparse.npz
+    """
+    dense_arrays = {}
+    sparse_arrays = {}
+    for key, matrix in kwargs.items():
+        if sp.issparse(matrix):
+            sparse_arrays[key] = matrix
+        elif isinstance(matrix, np.ndarray):
+            dense_arrays[key] = matrix
+
+    # Save numpy arrays into a single file
+    np.savez_compressed(f"{dataset_name}.npz", **dense_arrays)
+    print("Save all dense arrays to",
+          f"{dataset_name}.npz, including {list(dense_arrays.keys())}")
+    
+    # Save scipy sparse matrices into different files by keys
+    for key, matrix in sparse_arrays.items():
+        sp.save_npz(f"{dataset_name}_{key}.sparse.npz", matrix)
+        print("Save sparse matrix", key, "to", f"{dataset_name}_{key}.sparse.npz")
