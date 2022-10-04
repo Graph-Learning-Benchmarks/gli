@@ -9,12 +9,26 @@ import dgl
 import time
 from utils import find_datasets
 from gli.utils import to_dense
-from test_training_utils import get_cfg, \
+from training_utils import get_cfg, \
                                 check_multiple_split_v2
-import sys
-sys.path.append("../benchmarks")
 from benchmarks.NodeClassification.models.gcn import GCN
-from benchmarks.NodeClassification.train import accuracy, evaluate
+
+
+def accuracy(logits, labels):
+    """Calculate accuracy."""
+    _, indices = torch.max(logits, dim=1)
+    correct = torch.sum(indices == labels)
+    return correct.item() * 1.0 / len(labels)
+
+
+def evaluate(model, features, labels, mask):
+    """Evaluate model."""
+    model.eval()
+    with torch.no_grad():
+        logits = model(features)
+        logits = logits[mask]
+        labels = labels[mask]
+        return accuracy(logits, labels)
 
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
