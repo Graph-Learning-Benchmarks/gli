@@ -165,9 +165,9 @@ def unwrap_array(array):
     sparse matrix by np.load(), which will wrap array to be a numpy.ndarray.
     """
     try:
-        if isinstance(array, np.ndarray):
-            if array.dtype.kind not in set("buifc"):
-                return array.all()
+        if isinstance(array,
+                      np.ndarray) and array.dtype.kind not in set("buifc"):
+            return array.all()
     except TypeError:
         return None
     return array
@@ -188,11 +188,7 @@ class KeyedFileReader():
         else:
             raw = self._data_buffer[path]
 
-        if key:
-            array = raw.get(key, None)
-        else:
-            array = raw
-
+        array = raw.get(key, None) if key else raw
         if array is None:
             return None
 
@@ -201,23 +197,19 @@ class KeyedFileReader():
         array = unwrap_array(array)
 
         if array is None:
-            file_key_entry = path + ":" + key if key else path
+            file_key_entry = f"{path}:{key}" if key else path
             warnings.warn(
                 f"Skip reading {file_key_entry} because it is non-numeric.")
             return None
 
-        if sp.issparse(array):
-            # Keep the array format to be scipy rather than pytorch
-            # because we may need row indexing later.
-            if array.getformat() in ("coo", "csr"):
-                return array
-            else:
-                try:
-                    return sp.coo_matrix(array)
-                except Exception as e:
-                    raise TypeError from e
-        else:
+        if not sp.issparse(array):
             return torch.from_numpy(array).to(device=device)
+        if array.getformat() in ("coo", "csr"):
+            return array
+        try:
+            return sp.coo_matrix(array)
+        except Exception as e:
+            raise TypeError from e
 
 
 file_reader = KeyedFileReader()
@@ -239,22 +231,22 @@ def sparse_to_torch(sparse_array: sp.spmatrix,
                 np.vstack((sparse_array.row, sparse_array.col)))
             v = torch.FloatTensor(sparse_array.data)
 
-            coo_tensor = torch.sparse_coo_tensor(i,
-                                                 v,
-                                                 torch.Size(shape),
-                                                 device=device)
-            return coo_tensor
+            return torch.sparse_coo_tensor(i,
+                                           v,
+                                           torch.Size(shape),
+                                           device=device)
+
         elif sparse_type == "csr":
             sparse_array: sp.csr_matrix
             crow_indices = sparse_array.indptr
             col_indices = sparse_array.indices
             values = sparse_array.data
-            csr_tensor = torch.sparse_csr_tensor(crow_indices,
-                                                 col_indices,
-                                                 values,
-                                                 size=torch.Size(shape),
-                                                 device=device)
-            return csr_tensor
+            return torch.sparse_csr_tensor(crow_indices,
+                                           col_indices,
+                                           values,
+                                           size=torch.Size(shape),
+                                           device=device)
+
         else:
             raise TypeError(f"Unsupported sparse type {sparse_type}")
 
@@ -272,11 +264,10 @@ def download_data(dataset: str, verbose=False):
         url_file = os.path.join(data_dir, "urls.json")
     else:
         raise FileNotFoundError(f"cannot find dataset {dataset}.")
-    if os.path.exists(url_file):
-        with open(url_file, "r", encoding="utf-8") as fp:
-            url_dict = json.load(fp)
-    else:
+    if not os.path.exists(url_file):
         raise FileNotFoundError(f"cannot find url files of {dataset}.")
+    with open(url_file, "r", encoding="utf-8") as fp:
+        url_dict = json.load(fp)
     for data_file_name, url in url_dict.items():
         data_file_path = os.path.join(data_dir, data_file_name)
         if os.path.exists(data_file_path):
@@ -334,15 +325,14 @@ def _to_dense(graph: dgl.DGLGraph, feat=None, group=None, is_node=True):
         else:
             for k in graph_data:
                 graph_data[k] = _sparse_to_dense_safe(graph_data[k])
+    elif feat:
+        assert group is not None
+        graph.ndata[feat][group] = _sparse_to_dense_safe(
+            graph.ndata[feat][group])
     else:
-        if feat:
-            assert group is not None
-            graph.ndata[feat][group] = _sparse_to_dense_safe(
-                graph.ndata[feat][group])
-        else:
-            raise NotImplementedError(
-                "Both feat and group should be provided for"
-                " heterograph.")
+        raise NotImplementedError(
+            "Both feat and group should be provided for"
+            " heterograph.")
 
     return graph
 
