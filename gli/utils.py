@@ -30,9 +30,8 @@ def _save_response_content(
     length: Optional[int] = None,
     verbose: Optional[bool] = False,
 ) -> None:
-    with open(destination,
-              "wb") as fh, tqdm(total=length,
-                                disable=not verbose) as pbar:
+    with open(destination, "wb") as fh, tqdm(total=length,
+                                             disable=not verbose) as pbar:
         for chunk in content:
             # filter out keep-alive new chunks
             if not chunk:
@@ -258,106 +257,6 @@ def sparse_to_torch(sparse_array: sp.spmatrix,
             return csr_tensor
         else:
             raise TypeError(f"Unsupported sparse type {sparse_type}")
-
-
-def dgl_to_gli(graph: dgl.DGLGraph,
-               name: str,
-               pdir: os.PathLike = None,
-               **kwargs):
-    """Dump a dgl graph into gli format."""
-    metadata = {"data": {"Node": {}, "Edge": {}, "Graph": {}}}
-    metadata.update(kwargs)
-    npz = f"{name}.npz"
-    data = {}
-    if graph.is_multigraph:
-        raise NotImplementedError
-    if graph.is_homogeneous:
-        for k, v in graph.ndata.items():
-            entry = f"node_{k}"
-            data[entry] = v.cpu().numpy()
-            metadata["data"]["Node"][entry] = {"file": npz, "key": entry}
-        for k, v in graph.edata.items():
-            entry = f"edge_{k}"
-            data[entry] = v.cpu().numpy()
-            metadata["data"]["Edge"][entry] = {"file": npz, "key": entry}
-
-        # Reserved Entries
-        entry = "_Edge"
-        data[entry] = torch.stack(graph.edges()).T.cpu().numpy()
-        metadata["data"]["Edge"]["_Edge"] = {"file": npz, "key": entry}
-
-    else:
-
-        for node_type in graph.ntypes:
-            # Save node id
-            entry = f"node_{node_type}_id"
-            metadata["data"]["Node"][node_type] = {
-                "_ID": {
-                    "file": npz,
-                    "key": entry
-                }
-            }
-            data[entry] = graph.nodes(node_type).cpu().numpy()
-            # Save node features
-            for k, v in graph.ndata.items():
-                if node_type in v:
-                    entry = f"node_{node_type}_{k}"
-                    data[entry] = v.cpu().numpy()
-                    metadata["data"]["Node"][node_type][entry] = {
-                        "file": npz,
-                        "key": entry
-                    }
-
-        edge_id = 0
-        for edge_type in graph.etypes:
-            # Save edge id
-            entry = f"edge_{edge_type}_id"
-            metadata["data"]["Edge"][edge_type] = {
-                "_ID": {
-                    "file": npz,
-                    "key": entry
-                },
-            }
-            u, v = graph.edges(etype=edge_type)
-            data[entry] = graph.edge_ids(u, v, edge_type) + edge_id
-            edge_id += len(u)
-            # Save edges
-            entry = f"edge_{edge_type}"
-            metadata["data"]["Edge"][edge_type]["_Edge"] = {
-                "file": npz,
-                "key": entry
-            }
-            data[entry] = torch.stack(graph.edges(edge_type)).T.cpu().numpy()
-            # Save edge features
-            for k, v in graph.edata.items():
-                # FIXME - AssertionError: Current HeteroNodeDataView
-                # has multiple node types, can not be iterated.
-                if edge_type in v:
-                    entry = f"edge_{edge_type}_{k}"
-                    data[entry] = v.cpu().numpy()
-                    metadata["data"]["Edge"][entry] = {
-                        "file": npz,
-                        "key": entry
-                    }
-
-    entry = "_NodeList"
-    data[entry] = np.ones((1, graph.num_nodes()))
-    metadata["data"]["Graph"]["_NodeList"] = {"file": npz, "key": entry}
-
-    entry = "_EdgeList"
-    data[entry] = np.ones((1, graph.num_edges()))
-    metadata["data"]["Graph"]["_EdgeList"] = {"file": npz, "key": entry}
-
-    # Save file
-    os.makedirs(pdir)
-    npz_path = os.path.join(pdir, npz)
-    metadata_path = os.path.join(pdir, "metadata.json")
-
-    np.savez_compressed(npz_path, **data)
-    with open(metadata_path, "w", encoding="utf-8") as fp:
-        json.dump(metadata, fp)
-
-    raise NotImplementedError
 
 
 def download_data(dataset: str, verbose=False):
