@@ -1,0 +1,29 @@
+{
+    "description": "Link prediction.",
+    "type": "LinkPrediction",
+    "feature": null,
+    "train_set": {
+        "file": "ogbl-BALBc1_link_prediction.npz",
+        "key": "train_set"
+    },
+    "train_neg": {
+        "file": "ogbl-BALBc1_link_prediction.npz",
+        "key": "train_neg"
+    },
+    "val_set": {
+        "file": "ogbl-BALBc1_link_prediction.npz",
+        "key": "val_set"
+    },
+    "val_neg": {
+        "file": "ogbl-BALBc1_link_prediction.npz",
+        "key": "val_neg"
+    },
+    "test_set": {
+        "file": "ogbl-BALBc1_link_prediction.npz",
+        "key": "test_set"
+    },
+    "test_neg": {
+        "file": "ogbl-BALBc1_link_prediction.npz",
+        "key": "test_neg"
+    }
+}
