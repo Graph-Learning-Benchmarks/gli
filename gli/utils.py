@@ -176,7 +176,7 @@ def load_data(path, key=None, device="cpu"):
     # Dense arrays file with a key
     raw = np.load(path, allow_pickle=False)
     assert key is not None
-    array = raw.get(key)    
+    array = raw.get(key)
     raw.close()
     return torch.from_numpy(array).to(device)
 
@@ -359,7 +359,7 @@ def to_dense(graph: dgl.DGLGraph):
 
 def save_data(prefix, **kwargs):
     """Save arrays into numpy binary formats.
-    
+
     Dense arrays (numpy) will be saved in the below format as a single file:
         <prefix>.npz
     Sparse arrays (scipy) will be saved in the below format individually:
@@ -377,7 +377,7 @@ def save_data(prefix, **kwargs):
     np.savez_compressed(f"{prefix}.npz", **dense_arrays)
     print("Save all dense arrays to",
           f"{prefix}.npz, including {list(dense_arrays.keys())}")
-    
+
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
