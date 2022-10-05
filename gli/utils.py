@@ -143,76 +143,42 @@ def download_file_from_google_drive(g_url: str,
         print(f"Successfully downloaded {filename} to {root} from {g_url}.")
 
 
-def load_data(path: os.PathLike):
-    """Load data from given path.
+def load_data(path, key=None, device="cpu"):
+    """Load data from npy or npz file, return sparse array or torch tensor.
 
-    Supported file format:
-    1. .npz
-    2. .npy
+    Parameters
+    ----------
+    path : str
+        Path to data file
+    key : str, optional
+        by default None
+    device : str, optional
+        by default "cpu"
+
+    Returns
+    -------
+    torch.Tensor or scipy.sparse.matrix
+
+    Raises
+    ------
+    TypeError
+        Unrecognized file extension
     """
     _, ext = os.path.splitext(path)
-    if ext in (".npz", ".npy"):
-        data = np.load(path, allow_pickle=True)
-    else:
-        raise NotImplementedError(f"{ext} file is currently not supported.")
-    return data
+    if ext not in (".npz", ".npy"):
+        raise TypeError(f"Invalid file extension {ext}.")
 
+    if path.endswith(".sparse.npz"):
+        # Sparse matrix
+        assert key is None, "Sparse format cannot contain key."
+        return sp.load_npz(path)
 
-def unwrap_array(array):
-    """Unwrap the array.
-
-    This method is to deal with the situation where array is loaded from
-    sparse matrix by np.load(), which will wrap array to be a numpy.ndarray.
-    """
-    try:
-        if isinstance(array,
-                      np.ndarray) and array.dtype.kind not in set("buifc"):
-            return array.all()
-    except TypeError:
-        return None
-    return array
-
-
-class KeyedFileReader():
-    """File reader for npz files."""
-
-    def __init__(self):
-        """File reader for npz files."""
-        self._data_buffer = {}
-
-    def get(self, path, key=None, device="cpu"):
-        """Return a torch array."""
-        if path not in self._data_buffer:
-            raw = load_data(path)
-            self._data_buffer[path] = raw
-        else:
-            raw = self._data_buffer[path]
-
-        array = raw.get(key, None) if key else raw
-        if array is None:
-            return None
-
-        assert isinstance(array, np.ndarray)
-
-        array = unwrap_array(array)
-
-        if array is None:
-            file_key_entry = f"{path}:{key}" if key else path
-            warnings.warn(
-                f"Skip reading {file_key_entry} because it is non-numeric.")
-            return None
-
-        if not sp.issparse(array):
-            return torch.from_numpy(array).to(device=device)
-        if array.getformat() in ("coo", "csr"):
-            return array
-        try:
-            return sp.coo_matrix(array)
-        except Exception as e:
-            raise TypeError from e
-
-
-file_reader = KeyedFileReader()
+    # Dense arrays file with a key
+    raw = np.load(path, allow_pickle=False)
+    assert key is not None
+    array = raw.get(key)    
+    raw.close()
+    return torch.from_numpy(array).to(device)
 
 
 def sparse_to_torch(sparse_array: sp.spmatrix,
@@ -391,13 +357,13 @@ def to_dense(graph: dgl.DGLGraph):
         raise NotImplementedError("to_dense only works for homograph.")
 
 
-def save_npz(dataset_name, **kwargs):
+def save_data(prefix, **kwargs):
     """Save arrays into numpy binary formats.
     
     Dense arrays (numpy) will be saved in the below format as a single file:
-        <dataset_name>.npz
+        <prefix>.npz
     Sparse arrays (scipy) will be saved in the below format individually:
-        <dataset_name>_<key>.sparse.npz
+        <prefix>_<key>.sparse.npz
     """
     dense_arrays = {}
     sparse_arrays = {}
@@ -408,11 +374,11 @@ def save_npz(dataset_name, **kwargs):
             dense_arrays[key] = matrix
 
     # Save numpy arrays into a single file
-    np.savez_compressed(f"{dataset_name}.npz", **dense_arrays)
+    np.savez_compressed(f"{prefix}.npz", **dense_arrays)
     print("Save all dense arrays to",
-          f"{dataset_name}.npz, including {list(dense_arrays.keys())}")
+          f"{prefix}.npz, including {list(dense_arrays.keys())}")
     
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
-        sp.save_npz(f"{dataset_name}_{key}.sparse.npz", matrix)
-        print("Save sparse matrix", key, "to", f"{dataset_name}_{key}.sparse.npz")
+        sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
+        print("Save sparse matrix", key, "to", f"{prefix}_{key}.sparse.npz")
