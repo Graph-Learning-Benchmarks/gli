@@ -1,6 +1,7 @@
 """Common functions for testing."""
 import os
 import re
+import yaml
 
 SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
     "NodeClassification": [
@@ -138,3 +139,14 @@ def _is_hetero_graph(data):
         return False
     else:
         raise RuntimeError("metadata.json has wrong structure.")
+
+
+def load_config_file(path):
+    """Load yaml files."""
+    with open(path, "r", encoding="utf-8") as stream:
+        try:
+            parsed_yaml = yaml.full_load(stream)
+            print(parsed_yaml)
+            return parsed_yaml
+        except yaml.YAMLError as exc:
+            print(exc)
