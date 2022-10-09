@@ -391,8 +391,7 @@ def make_metric_dict():
     output_dict = {"Basic": [directed, edge_density, avg_degree,
                              edge_reciprocity,
                              degree_assortativity],
-                   "Distance": [pseudo_diameter,
-                                efficiency],
+                   "Distance": [pseudo_diameter],
                    "Connectivity": [relative_largest_cc,
                                     relative_largest_scc],
                    "Clustering": [avg_cluster_coefficient,
@@ -432,7 +431,7 @@ def make_metric_names():
     """Construct names of each graph metric."""
     output_dict = {"Basic": ["Directed", "Edge Density", "Average Degree",
                              "Edge Reciprocity", "Degree Assortativity"],
-                   "Distance": ["Pseudo Diameter", "Efficiency"],
+                   "Distance": ["Pseudo Diameter"],
                    "Connectivity": ["Relative Size of Largest "
                                     "Connected Component",
                                     "Relative Size of Largest "
@@ -455,6 +454,7 @@ def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
     group_dict = ["Basic", "Distance", "Connectivity", "Clustering",
                   "Distribution", "Attribute"]
 
+    # skipped metric: diameter, efficiency
     core_list = core_number_related(g)
 
     with open(file_name, "w", encoding="utf-8") as f:
@@ -466,6 +466,7 @@ def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
             f.write("| Metric | Quantity |\n")
             f.write("| ------ | ------ |\n")
             for i in range(len(metric_dict[group_name])):
+                print(metric_dict[group_name][i].__name__)
                 if metric_dict[group_name][i].__name__ \
                         in ("gini_coreness", "degeneracy"):
                     var = metric_dict[group_name][i](core_list)
