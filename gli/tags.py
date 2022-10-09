@@ -454,7 +454,8 @@ def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
     group_dict = ["Basic", "Distance", "Connectivity", "Clustering",
                   "Distribution", "Attribute"]
 
-    # skipped metric: diameter, efficiency, avg_shortest_path, degree_assortativity
+    # skipped metric: diameter, efficiency,
+    # avg_shortest_path, degree_assortativity
     # since these will run forever on large datasets
     core_list = core_number_related(g)
 
@@ -499,9 +500,9 @@ def main():
     print(task)
     print(datasets)
 
-    metric_dict = make_metric_dict()
-    metric_quote = make_metric_quote()
-    metric_name = make_metric_names()
+    # metric_dict = make_metric_dict()
+    # metric_quote = make_metric_quote()
+    # metric_name = make_metric_names()
 
     # output_markdown_file("markdown_file_" + str(dataset_name) + ".txt",
     #                      g, metric_dict, metric_quote, metric_name)
@@ -510,17 +511,23 @@ def main():
     core_list = core_number_related(g)
 
     print("common metrics: ")
-    print(f"{directed(g)}", s.number_of_nodes(), s.number_of_edges(), f"{edge_density(g):.6f}",
-          f"{avg_degree(g):.6f}", f"{edge_reciprocity(g):.6f}", f"{pseudo_diameter(g)}",
+    print(f"{directed(g)}", s.number_of_nodes(), s.number_of_edges(),
+          f"{edge_density(g):.6f}",
+          f"{avg_degree(g):.6f}", f"{edge_reciprocity(g):.6f}",
+          f"{pseudo_diameter(g)}",
           f"{relative_largest_cc(g):.6f}",
-          f"{relative_largest_scc(g):6f}", f"{avg_cluster_coefficient(g):.6f}", f"{transitivity(g):.6f}",
-          f"{degeneracy(core_list)}", f"{power_law_expo(g):.6f}", f"{pareto_expo(g):.6f}", f"{gini_degree(g):.6f}",
+          f"{relative_largest_scc(g):6f}",
+          f"{avg_cluster_coefficient(g):.6f}",
+          f"{transitivity(g):.6f}",
+          f"{degeneracy(core_list)}", f"{power_law_expo(g):.6f}",
+          f"{pareto_expo(g):.6f}", f"{gini_degree(g):.6f}",
           f"{gini_coreness(core_list):.6f}"
           )
     in_avg, out_avg = feature_homogeneity(g)
     print("attributed metrics: ")
     print(f"{edge_homogeneity(g):.6f}", f"{in_avg:.6f}", f"{out_avg:.6f}",
-          f"{in_avg / out_avg:.6f}", f"{homophily_hat(g):.6f}", f"{attribute_assortativity(g):.6f}"
+          f"{in_avg / out_avg:.6f}",
+          f"{homophily_hat(g):.6f}", f"{attribute_assortativity(g):.6f}"
           )
 
     # print(f"Directed: {check_direct(g)}")
@@ -553,8 +560,6 @@ def main():
     # print(f"Feature Angular SNR: {in_avg / out_avg:.6f}")
     # print(f"Homophily hat: {homophily_hat(g):.6f}")
     # print(f"Attribute Assortativity: {attribute_assortativity(g):.6f}")
-
-
 
 
 if __name__ == "__main__":
