@@ -1,0 +1,9 @@
+{
+    "description": "Node classification on Twitch-DE dataset.",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": "Node/NodeLabel",
+    "num_classes": 2
+}

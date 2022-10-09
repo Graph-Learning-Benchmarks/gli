@@ -1,0 +1,35 @@
+{
+    "description": "Twitch FR dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features are games liked, location and streaming habits.(3169 unique features)",
+                "type": "int",
+                "format": "SparseTensor",
+                "file": "Twitch-FR.npz",
+                "key": "node_feats"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Twitch FR dataset, binary.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "Twitch-FR.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "Twitch-FR.npz",
+                "key": "edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "Twitch-FR.npz",
+                "key": "node_list"
+            }
+        }
+    },
+    "citation": "@misc{rozemberczki2019multiscale, title = {Multi-scale Attributed Node Embedding},author = {Benedek Rozemberczki and Carl Allen and Rik Sarkar}, year = {2019}, eprint = {1909.13021}, archivePrefix = {arXiv}, primaryClass = {cs.LG}}",
+    "is_heterogeneous": false
+}
