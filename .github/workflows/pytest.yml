@@ -2,14 +2,15 @@ name: Pytest
 
 on: [pull_request, workflow_dispatch]
 
+permissions:
+      # id-token: write
+      # contents: write
+      # security-events: write
+      pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      id-token: write
-      contents: write
-      security-events: write
     strategy:
       matrix:
         python-version: ["3.6"]
