@@ -29,9 +29,9 @@ jobs:
       uses: allthatjazzleo/actions-pull-request-add-comment@v1
     - name: List all changed files
       run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-            echo "$file was changed"
-          done
+        for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+          echo "$file was changed"
+        done
     - name: Test with pytest, if triggered by PR
       run: |
         if ${{ github.event_name == 'pull_request' }}
@@ -53,27 +53,27 @@ jobs:
           pytest tests/
         fi
     - name: Comment PR
-        # uses: allthatjazzleo/actions-pull- -add-comment@master
-        run: |
-          dataset_to_comment=()
-          large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
-          for dataset in "${dataset_list[@]}"; do
-            if [[  "$large_dataset_list" == *"$dataset"* ]]; then
-              echo "add ${dataset} to dataset_to_comment"
-              dataset_to_comment+=($dataset)
-            fi
-          done
-          echo "dataset to be commented are: ${dataset_to_comment[*]}"
-        if: >-
-          github.event_name == 'pull_request' || (github.event_name == 'issue_comment' 
-          && [ ! ${#dataset_to_comment[@]} -eq 0 ] )
-        with:
-          message: "This is an automatic reminder for pasting the local test results of ${dataset_to_comment[*]} as a comment in this PR, in case you haven't done so. 
-                    The aforementioned datasets are too large for them to be tested with GitHub Action workflow here. 
-                    The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. 
-                    For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset)."
-          # message: "echo ${{ github.event.comment.body }}" dynamic message based on comment
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: allthatjazzleo/actions-pull-request-add-comment@master
+      run: |
+        dataset_to_comment=()
+        large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
+        for dataset in "${dataset_list[@]}"; do
+          if [[  "$large_dataset_list" == *"$dataset"* ]]; then
+            echo "add ${dataset} to dataset_to_comment"
+            dataset_to_comment+=($dataset)
+          fi
+        done
+        echo "dataset to be commented are: ${dataset_to_comment[*]}"
+      if: >-
+        github.event_name == 'pull_request' || (github.event_name == 'issue_comment' 
+        && [ ! ${#dataset_to_comment[@]} -eq 0 ] )
+      with:
+        message: "This is an automatic reminder for pasting the local test results of ${dataset_to_comment[*]} as a comment in this PR, in case you haven't done so. 
+                  The aforementioned datasets are too large for them to be tested with GitHub Action workflow here. 
+                  The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. 
+                  For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset)."
+        # message: "echo ${{ github.event.comment.body }}" dynamic message based on comment
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
       run: |
         if ${{ github.event_name == 'workflow_dispatch' }}
