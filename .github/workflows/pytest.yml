@@ -103,7 +103,7 @@ jobs:
       if: ${{ github.event_name == 'pull_request' && steps.main.outputs.OUTPUT == 1 }}
       uses: peter-evans/create-or-update-comment@v2
       with:
-        issue_number: ${{ github.event.number }}
+        issue-number: ${{ github.event.number }}
         body: |
           'This is an automatic reminder for pasting the local test results of `${{ steps.main.outputs.DATASETS }}` as a comment in this PR, in case you haven't done so. 
           The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.
