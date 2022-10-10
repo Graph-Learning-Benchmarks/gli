@@ -70,7 +70,7 @@ jobs:
           echo "dataset to be commented are: ${dataset_to_comment[*]}"
           COMMENT=1
         fi
-        echo "::set-output name=OUTPUT::$OUTPUT"
+        echo "::set-output name=OUTPUT::$COMMENT"
     - name: Comment PR
       uses: allthatjazzleo/actions-pull-request-add-comment@master
       if: >-
