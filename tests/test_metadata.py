@@ -44,7 +44,8 @@ def check_essential_keys_metadata_json_homogeneous(dic):
                         ]:
             if dic["data"]["Node"][key].get(sub_key, None) is None:
                 if sub_key == "key":
-                    if _is_sparse_npz(dic["data"]["Node"].get("file", "")):
+                    if _is_sparse_npz(
+                          dic["data"]["Node"][key].get("file", "")):
                         # Scipy sparse file only stores one array
                         # No `key` is needed.
                         continue
