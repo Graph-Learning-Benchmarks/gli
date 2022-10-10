@@ -1,0 +1,63 @@
+name: Auto Comment
+
+on: pull_request_target
+
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Get changed files using defaults
+      id: changed-files
+      uses: tj-actions/changed-files@v23.1
+    - name: List all changed files
+      run: |
+        for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+          echo "$file was changed"
+        done
+    - name: Check large datasets
+      id: main
+      run: |
+        dataset_list=()
+        for path in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+            dir="$(dirname "${path}")" ;
+            if [ ! -d "$dir" ]; then
+              echo "$dir doesn't exist, continue"
+              continue;
+            fi
+            dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/([_a-zA-Z0-9-]+)\/.*/\1/')
+            if [ -z "$dataset" ]; then continue; fi
+            if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
+              echo "add dataset: $dataset"
+              dataset_list+=($dataset)
+            fi
+        done
+        dataset_to_comment=()
+        large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
+        for dataset in "${dataset_list[@]}"; do
+          if [[  "$large_dataset_list" == *"$dataset"* ]]; then
+            echo "add ${dataset} to dataset_to_comment"
+            dataset_to_comment+=($dataset)
+          fi
+        done
+        COMMENT=0
+        if [ ${#dataset_to_comment[@]} -ne 0 ]; then
+          echo "dataset to be commented are: ${dataset_to_comment[*]}"
+          COMMENT=1
+        fi
+        echo "::set-output name=OUTPUT::$COMMENT"
+        echo "::set-output name=DATASETS::${dataset_to_comment[*]}"
+    - name: Comment PR
+      if: ${{ steps.main.outputs.OUTPUT == 1 }}
+      uses: peter-evans/create-or-update-comment@v2
+      with:
+        issue-number: ${{ github.event.number }}
+        body: |
+          'This is an automatic reminder for pasting the local test results of `${{ steps.main.outputs.DATASETS }}` as a comment in this PR, in case you haven't done so. 
+          The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.
+          The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. 
+          For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).'s
