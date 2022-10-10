@@ -53,6 +53,7 @@ jobs:
           pytest tests/
         fi
     - name: Check large datasets
+      id: main
       run: |
         dataset_to_comment=()
         large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
@@ -62,14 +63,16 @@ jobs:
             dataset_to_comment+=($dataset)
           fi
         done
+        COMMENT=0
         if [ ${#dataset_to_comment[@]} -ne 0 ]; then
           echo "dataset to be commented are: ${dataset_to_comment[*]}"
-          comment = 1
+          COMMENT=1
         fi
+        echo "::set-output name=OUTPUT::$OUTPUT"
     - name: Comment PR
       uses: allthatjazzleo/actions-pull-request-add-comment@master
       if: >-
-        ${{ github.event_name == 'pull_request' && "$comment" == 1 }}
+        ${{ github.event_name == 'pull_request' && steps.main.outputs.OUTPUT == 1 }}
       with:
         message: "This is an automatic reminder for pasting the local test results of ${dataset_to_comment[*]} as a comment in this PR, in case you haven't done so. 
                   The aforementioned datasets are too large for them to be tested with GitHub Action workflow here. 
