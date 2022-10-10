@@ -490,38 +490,38 @@ def main():
     print(task)
     print(datasets)
 
-    metric_dict = make_metric_dict()
-    metric_quote = make_metric_quote()
-    metric_name = make_metric_names()
-    output_markdown_file("markdown_file_" + str(dataset_name) + ".txt",
-                         g, metric_dict, metric_quote, metric_name)
+    # metric_dict = make_metric_dict()
+    # metric_quote = make_metric_quote()
+    # metric_name = make_metric_names()
+    # output_markdown_file("markdown_file_" + str(dataset_name) + ".txt",
+    #                      g, metric_dict, metric_quote, metric_name)
 
-    # nx_g = dgl.to_networkx(g)
-    # nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
-    # core_list = core_number_related(nx_g)
+    nx_g = dgl.to_networkx(g)
+    nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
+    core_list = core_number_related(nx_g)
 
-    # print("common metrics: ")
-    # print(f"{directed(nx_g)}", nx_g.number_of_nodes(),
-    #       nx_g.number_of_edges(),
-    #       f"{edge_density(nx_g):.6f}",
-    #       f"{avg_degree(nx_g):.6f}", f"{edge_reciprocity(nx_g):.6f}",
-    #       f"{pseudo_diameter(nx_g)}",
-    #       f"{relative_largest_cc(nx_g):.6f}",
-    #       f"{relative_largest_scc(nx_g):6f}",
-    #       f"{avg_cluster_coefficient(nx_g):.6f}",
-    #       f"{transitivity(nx_g):.6f}",
-    #       f"{degeneracy(core_list)}", f"{power_law_expo(nx_g):.6f}",
-    #       f"{pareto_expo(nx_g):.6f}", f"{gini_degree(nx_g):.6f}",
-    #       f"{gini_coreness(core_list):.6f}"
-    #       )
-    # in_avg, out_avg = feature_homogeneity(g)
-    # print("attributed metrics: ")
-    # print(f"{edge_homogeneity(nx_g_attr):.6f}",
-    #       f"{in_avg:.6f}", f"{out_avg:.6f}",
-    #       f"{in_avg / out_avg:.6f}",
-    #       f"{homophily_hat(nx_g_attr):.6f}",
-    #       f"{attribute_assortativity(nx_g_attr):.6f}"
-    #       )
+    print("common metrics: ")
+    print(f"{directed(nx_g)}", nx_g.number_of_nodes(),
+          nx_g.number_of_edges(),
+          f"{edge_density(nx_g):.6f}",
+          f"{avg_degree(nx_g):.6f}", f"{edge_reciprocity(nx_g):.6f}",
+          f"{pseudo_diameter(nx_g)}",
+          f"{relative_largest_cc(nx_g):.6f}",
+          f"{relative_largest_scc(nx_g):6f}",
+          f"{avg_cluster_coefficient(nx_g):.6f}",
+          f"{transitivity(nx_g):.6f}",
+          f"{degeneracy(core_list)}", f"{power_law_expo(nx_g):.6f}",
+          f"{pareto_expo(nx_g):.6f}", f"{gini_degree(nx_g):.6f}",
+          f"{gini_coreness(core_list):.6f}"
+          )
+    in_avg, out_avg = feature_homogeneity(g)
+    print("attributed metrics: ")
+    print(f"{edge_homogeneity(nx_g_attr):.6f}",
+          f"{in_avg:.6f}", f"{out_avg:.6f}",
+          f"{in_avg / out_avg:.6f}",
+          f"{homophily_hat(nx_g_attr):.6f}",
+          f"{attribute_assortativity(nx_g_attr):.6f}"
+          )
 
 
 if __name__ == "__main__":
