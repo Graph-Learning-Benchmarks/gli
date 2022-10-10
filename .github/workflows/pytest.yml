@@ -53,7 +53,7 @@ jobs:
           pytest tests/
         fi
     - name: Comment PR
-        uses: allthatjazzleo/actions-pull-request-add-comment@master
+        # uses: allthatjazzleo/actions-pull- -add-comment@master
         run: |
           dataset_to_comment=()
           large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
