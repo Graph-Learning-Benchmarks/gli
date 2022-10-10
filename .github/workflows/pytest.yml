@@ -52,8 +52,7 @@ jobs:
           python tests/preprocess.py
           pytest tests/
         fi
-    - name: Comment PR
-      uses: allthatjazzleo/actions-pull-request-add-comment@master
+    - name: Check large datasets
       run: |
         dataset_to_comment=()
         large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
@@ -64,6 +63,8 @@ jobs:
           fi
         done
         echo "dataset to be commented are: ${dataset_to_comment[*]}"
+    - name: Comment PR
+      uses: allthatjazzleo/actions-pull-request-add-comment@master
       if: >-
         github.event_name == 'pull_request' || (github.event_name == 'issue_comment' 
         && [ ! ${#dataset_to_comment[@]} -eq 0 ] )
