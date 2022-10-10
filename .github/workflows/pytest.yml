@@ -109,7 +109,6 @@ jobs:
                    The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. 
                    For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).'
           })
-        # message: "echo ${{ github.event.comment.body }}" dynamic message based on comment
     - name: Test all datasets with pytest, if triggered by workflow_dispatch
       run: |
         if ${{ github.event_name == 'workflow_dispatch' }}
