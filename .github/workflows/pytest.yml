@@ -88,9 +88,8 @@ jobs:
         fi
         echo "::set-output name=OUTPUT::$COMMENT"
     - name: Comment PR
-      uses: allthatjazzleo/actions-pull-request-add-comment@master
-      if: >-
-        ${{ github.event_name == 'pull_request' && steps.main.outputs.OUTPUT == 1 }}
+      uses: thollander/actions-comment-pull-request@v1
+      if: ${{ github.event_name == 'pull_request' && steps.main.outputs.OUTPUT == 1 }}
       with:
         message: "This is an automatic reminder for pasting the local test results of ${dataset_to_comment[*]} as a comment in this PR, in case you haven't done so. 
                   The aforementioned datasets are too large for them to be tested with GitHub Action workflow here. 
