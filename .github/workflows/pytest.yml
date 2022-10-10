@@ -90,11 +90,12 @@ jobs:
           COMMENT=1
         fi
         echo "::set-output name=OUTPUT::$COMMENT"
+        echo "::set-output name=DATASETS::${dataset_to_comment[*]}"
     - name: Comment PR
       uses: thollander/actions-comment-pull-request@v1
       if: ${{ github.event_name == 'pull_request' && steps.main.outputs.OUTPUT == 1 }}
       with:
-        message: "This is an automatic reminder for pasting the local test results of ${{ dataset_to_comment[*] }} as a comment in this PR, in case you haven't done so. 
+        message: "This is an automatic reminder for pasting the local test results of ${{ steps.main.outputs.DATASETS }} as a comment in this PR, in case you haven't done so. 
                   The aforementioned datasets are too large for them to be tested with GitHub Action workflow here. 
                   The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. 
                   For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset)."
