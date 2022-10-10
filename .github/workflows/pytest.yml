@@ -57,6 +57,22 @@ jobs:
     - name: Check large datasets
       id: main
       run: |
+        echo "$dataset_list[*]"
+        dataset_list=()
+        for path in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+            dir="$(dirname "${path}")" ;
+            if [ ! -d "$dir" ]; then
+              echo "$dir doesn't exist, continue"
+              continue;
+            fi
+            dataset=$(echo $path | grep "datasets" | sed -r 's/datasets\/([_a-zA-Z0-9-]+)\/.*/\1/')
+            if [ -z "$dataset" ]; then continue; fi
+            if [[ ! " ${dataset_list[*]} " =~ " ${dataset} " ]]; then
+              echo "add dataset: $dataset"
+              dataset_list+=($dataset)
+            fi
+        done
+        echo "$dataset_list[*]"
         dataset_to_comment=()
         large_dataset_list=$(cat tests/config.yaml | sed -r 's/large_dataset_to_skip: \[(.*)\]/\1/')
         for dataset in "${dataset_list[@]}"; do
