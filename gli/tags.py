@@ -262,15 +262,29 @@ def get_feature_label(g):
     return normed_feature_matrix, label
 
 
-def sum_angular_distance_matrix_nan(x, y):
+def sum_angular_distance_matrix_nan(x, y, batch_size):
     """Compute summation of angular distance."""
-    inner_prod = x * y.transpose()
-    inner_prod.data = np.clip(inner_prod.data, -1.0, 1.0)
-    inner_prod.data = 1.0 - np.arccos(inner_prod.data) / np.pi
-    inner_prod.data[np.where(np.isnan(inner_prod.data))] = 1.0
-    # remaining numbers are zeros with arccos value = 0.5
-    return inner_prod.sum() + (np.prod(inner_prod.get_shape())
-                               - inner_prod.nnz) * 0.5
+    x_dim = x.shape[0]
+    y_dim = y.shape[0]
+    fsum = 0.0
+    x_start = 0
+    while x_start < x_dim:
+        x_end = min(x_start + batch_size, x_dim)
+        x_batch = x[x_start: x_end, :]
+
+        y_start = 0
+        while y_start < y_dim:
+            y_end = min(y_start + batch_size, y_dim)
+            y_batch = y[y_start: y_end, :]
+            inner_prod = np.dot(x_batch, y_batch.transpose())
+            inner_prod.data = np.clip(inner_prod.data, -1.0, 1.0)
+            inner_prod.data = 1.0 - np.arccos(inner_prod.data) / np.pi
+            # remaining numbers are zeros with arccos value = 0.5
+            fsum += (inner_prod.sum() + (np.prod(inner_prod.get_shape())
+                                         - inner_prod.nnz) * 0.5)
+            y_start += batch_size
+        x_start += batch_size
+    return fsum
 
 
 def feature_homogeneity(g):
@@ -290,7 +304,9 @@ def feature_homogeneity(g):
         for j in all_labels[label_idx:]:
             idx_j = np.where(label_matrix == j)[0]
             vec_j = normed_feature_matrix[idx_j, :]
-            the_sum = sum_angular_distance_matrix_nan(vec_i, vec_j)
+            batch_size = min(5000, len(idx_i), len(idx_j))
+            the_sum = sum_angular_distance_matrix_nan(vec_i, vec_j,
+                                                      batch_size=batch_size)
             # the total number of pairs
             the_count = len(idx_j) * len(idx_i)
             if i == j:
