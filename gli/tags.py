@@ -526,7 +526,8 @@ def main():
     nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
     # convert from tensor to numerical value
     for n in nx_g_attr:
-        nx_g_attr.nodes[n]["NodeLabel"] = nx_g_attr.nodes[n]["NodeLabel"].item()
+        nx_g_attr.nodes[n]["NodeLabel"] = \
+            nx_g_attr.nodes[n]["NodeLabel"].item()
 
     core_list = core_number_related(nx_g)
     print("common metrics: ")
