@@ -54,10 +54,6 @@ import powerlaw
 #         return nx.average_shortest_path_length(lcc)
 #
 #
-# def degree_assortativity(g):
-#     """Compute the degree assortativity coefficient."""
-#     nx_g = dgl.to_networkx(g)
-#     return nx.degree_assortativity_coefficient(nx_g)
 
 
 def check_direct(nx_g):
@@ -101,13 +97,25 @@ def avg_degree(nx_g):
         return 2 * edge_num / node_num
 
 
-def avg_cluster_coefficient(nx_g):
-    """Compute the average clustering coefficient."""
+def degree_assortativity(nx_g):
+    """Compute the degree assortativity coefficient."""
+    if not check_direct(nx_g):
+        nx_g = nx.Graph(nx_g)
+        return nx.degree_pearson_correlation_coefficient(nx_g)
+    else:
+        dic = {"in", "out"}
+        out = []
+        for i in dic:
+            for j in dic:
+                out.append(nx.degree_pearson_correlation_coefficient(
+                    nx_g, x=i, y=j))
+        return out
+
+
+def edge_reciprocity(nx_g):
+    """Compute the edge reciprocity."""
     # nx_g = dgl.to_networkx(g)
-    # transform from MultiDigraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
-    av_local_clustering_coeff = nx.average_clustering(nx_g)
-    return av_local_clustering_coeff
+    return nx.overall_reciprocity(nx_g)
 
 
 def pseudo_diameter(nx_g):
@@ -122,12 +130,6 @@ def pseudo_diameter(nx_g):
                     reverse=True)
         lcc = nx_g.subgraph(cc[0])
         return nx.algorithms.approximation.diameter(lcc)
-
-
-def edge_reciprocity(nx_g):
-    """Compute the edge reciprocity."""
-    # nx_g = dgl.to_networkx(g)
-    return nx.overall_reciprocity(nx_g)
 
 
 def relative_largest_cc(nx_g):
@@ -149,35 +151,22 @@ def relative_largest_scc(nx_g):
     return lcc_size / nx.number_of_nodes(nx_g)
 
 
-def gini_array(array):
-    """Compute the Gini Index of a given array."""
-    array = np.sort(array)
-    index = np.arange(1, array.shape[0] + 1)
-    return np.sum((2 * index - array.shape[0] - 1)
-                  * array) / (array.shape[0] * np.sum(array))
-
-
-def gini_degree(nx_g):
-    """Compute the gini index of the degree sequence."""
+def avg_cluster_coefficient(nx_g):
+    """Compute the average clustering coefficient."""
     # nx_g = dgl.to_networkx(g)
-    degree_sequence = [d for n, d in nx_g.degree()]
-    return gini_array(degree_sequence)
-
-
-def core_number_related(nx_g):
-    """Compute 2 tags related to coreness."""
-    # nx_g = dgl.to_networkx(g)
-    # convert the MultiDiGraph to Digraph
+    # transform from MultiDigraph to Digraph
     nx_g = nx.DiGraph(nx_g)
-    # remove potential self-loops
-    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
-    core_list = list(nx.core_number(nx_g).values())
-    return core_list
+    av_local_clustering_coeff = nx.average_clustering(nx_g)
+    return av_local_clustering_coeff
 
 
-def gini_coreness(nx_core_list):
-    """Compute the gini index of the coreness sequence."""
-    return gini_array(nx_core_list)
+def transitivity(nx_g):
+    """Compute the transitivity of the graph."""
+    # only work for in-directed graphs
+    # will disregard the edge direction
+    # nx_g = dgl.to_networkx(g)
+    nx_g = nx.Graph(nx_g)
+    return nx.transitivity(nx_g)
 
 
 def degeneracy(nx_core_list):
@@ -208,13 +197,35 @@ def pareto_expo(nx_g):
     return alpha
 
 
-def transitivity(nx_g):
-    """Compute the transitivity of the graph."""
-    # only work for in-directed graphs
-    # will disregard the edge direction
+def gini_array(array):
+    """Compute the Gini Index of a given array."""
+    array = np.sort(array)
+    index = np.arange(1, array.shape[0] + 1)
+    return np.sum((2 * index - array.shape[0] - 1)
+                  * array) / (array.shape[0] * np.sum(array))
+
+
+def core_number_related(nx_g):
+    """Compute 2 tags related to coreness."""
     # nx_g = dgl.to_networkx(g)
-    nx_g = nx.Graph(nx_g)
-    return nx.transitivity(nx_g)
+    # convert the MultiDiGraph to Digraph
+    nx_g = nx.DiGraph(nx_g)
+    # remove potential self-loops
+    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
+    core_list = list(nx.core_number(nx_g).values())
+    return core_list
+
+
+def gini_degree(nx_g):
+    """Compute the gini index of the degree sequence."""
+    # nx_g = dgl.to_networkx(g)
+    degree_sequence = [d for n, d in nx_g.degree()]
+    return gini_array(degree_sequence)
+
+
+def gini_coreness(nx_core_list):
+    """Compute the gini index of the coreness sequence."""
+    return gini_array(nx_core_list)
 
 
 def edge_homogeneity(nx_g_attr):
@@ -231,35 +242,34 @@ def edge_homogeneity(nx_g_attr):
     return count / edge_num
 
 
-def dict_to_tensor(feature_dict, tensor_size):
-    """Transform dict of tensor to 2-D tensor."""
-    out_tensor = torch.zeros(size=tensor_size)
-    for v in feature_dict:
-        out_tensor[v] = feature_dict[v]
-    return out_tensor
-
-
 def matrix_row_norm(feature_matrix):
     """Normalize the node feature tensor."""
-    return feature_matrix / norm(feature_matrix, axis=1)[:, None]
+    row_sums = norm(feature_matrix, axis=1)
+    row_ind, _ = feature_matrix.nonzero()
+    feature_matrix.data /= row_sums[row_ind]
+    return feature_matrix
 
 
 def get_feature_label(g):
     """Compute the feature homogeneity."""
-    dense_feat = g.ndata["NodeFeature"].to_dense().numpy()
-    sparse_feat = sparse.csr_matrix(dense_feat)
+    sparse_feat_ts = g.ndata["NodeFeature"].to_sparse_coo().coalesce()
+    sp_ind = sparse_feat_ts.indices().numpy()
+    sp_val = sparse_feat_ts.values().numpy()
+    sparse_feat = sparse.csr_matrix((sp_val, sp_ind))
     normed_feature_matrix = matrix_row_norm(sparse_feat)
-    dense_label = g.ndata["NodeLabel"].numpy()
-    return normed_feature_matrix, dense_label
+    label = g.ndata["NodeLabel"].numpy().squeeze()
+    return normed_feature_matrix, label
 
 
 def sum_angular_distance_matrix_nan(x, y):
     """Compute summation of angular distance."""
-    inner_prod = np.inner(x, y)
-    inner_prod = np.clip(inner_prod, -1.0, 1.0)
-    angular_dist = 1.0 - np.arccos(inner_prod) / torch.pi
-    angular_dist[np.where(np.isnan(angular_dist))] = 1.0
-    return np.sum(angular_dist)
+    inner_prod = x * y.transpose()
+    inner_prod.data = np.clip(inner_prod.data, -1.0, 1.0)
+    inner_prod.data = 1.0 - np.arccos(inner_prod.data) / np.pi
+    inner_prod.data[np.where(np.isnan(inner_prod.data))] = 1.0
+    # remaining numbers are zeros with arccos value = 0.5
+    return inner_prod.sum() + (np.prod(inner_prod.get_shape())
+                               - inner_prod.nnz) * 0.5
 
 
 def feature_homogeneity(g):
@@ -499,12 +509,12 @@ def main():
     nx_g = dgl.to_networkx(g)
     nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
     core_list = core_number_related(nx_g)
-
     print("common metrics: ")
     print(f"{directed(nx_g)}", nx_g.number_of_nodes(),
           nx_g.number_of_edges(),
           f"{edge_density(nx_g):.6f}",
           f"{avg_degree(nx_g):.6f}", f"{edge_reciprocity(nx_g):.6f}",
+          f"{degree_assortativity(nx_g):6f}",
           f"{pseudo_diameter(nx_g)}",
           f"{relative_largest_cc(nx_g):.6f}",
           f"{relative_largest_scc(nx_g):6f}",
