@@ -55,7 +55,7 @@ jobs:
         run: |
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
-          echo ${{ dataset_to_comment[*] }} > ./pr/NR
+          echo ${{ steps.main.outputs.DATASETS }} > ./pr/NR
       - uses: actions/upload-artifact@v2
         with:
           name: pr
