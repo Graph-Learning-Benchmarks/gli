@@ -43,10 +43,19 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             var fs = require('fs');
-            var issue_number = Number(fs.readFileSync('./NR'));
-            await github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: 'Everything is OK. Thank you for the PR!'
-            });
+            var lines = require('fs').readFileSync(filename, 'utf-8')
+                .split('\n')
+                .filter(Boolean);
+            console.log(lines);
+            var issue_number = Number(lines[0])
+            
+            if (lines.length > 1){
+              # var issue_number = Number(fs.readFileSync('./NR'));
+              await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_number,
+                body: 'Everything is OK. Thank you for the PR!'
+              });
+            }
+            
