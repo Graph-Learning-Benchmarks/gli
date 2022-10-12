@@ -19,44 +19,53 @@ jobs:
         uses: actions/github-script@v3.1.0
         with:
           script: |
-            var artifacts = await github.actions.listWorkflowRunArtifacts({
+            let artifacts = await github.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: ${{github.event.workflow_run.id }},
             });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+            let matchArtifact = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "pr"
             })[0];
-            var download = await github.actions.downloadArtifact({
+            let download = await github.actions.downloadArtifact({
                owner: context.repo.owner,
                repo: context.repo.repo,
                artifact_id: matchArtifact.id,
                archive_format: 'zip',
             });
-            var fs = require('fs');
+            let fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download.data));
       - run: unzip pr.zip
 
       - name: 'Comment on PR'
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            var lines = require('fs').readFileSync(filename, 'utf-8')
-                .split('\n')
-                .filter(Boolean);
-            console.log(lines);
-            var issue_number = Number(lines[0]);
-            var dataset_list = lines[1];
+            let fs = require('fs');
+            let issue_number = Number(fs.readFileSync('./pr_number'));
             console.log(issue_number);
-            console.log(dataset_list);
-            if (lines.length > 1){
-              # var issue_number = Number(fs.readFileSync('./NR'));
-              await github.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue_number,
-                body: 'This is an automatic reminder for pasting the local test results of `' + dataset_list + '` as a comment in this PR, in case you haven't done so. The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.\n The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).'s
-              });
-            }
-            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: 'Thank you for the PR!'
+            });
+            # var lines = require('fs').readFileSync(filename, 'utf-8')
+            #     .split('\n')
+            #     .filter(Boolean);
+            # console.log(lines);
+            # var issue_number = Number(lines[0]);
+            # var dataset_list = lines[1];
+            # console.log(issue_number);
+            # console.log(dataset_list);
+            # if (lines.length > 1){
+            #   # var issue_number = Number(fs.readFileSync('./NR'));
+            #   var comment = 'This is an automatic reminder for pasting the local test results of `' + dataset_list + '` as a comment in this PR, in case you haven't done so. The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.\n The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).';
+            #   await github.issues.createComment({
+            #     owner: context.repo.owner,
+            #     repo: context.repo.repo,
+            #     issue_number: issue_number,
+            #     body: comment
+            #   });
+            # }
