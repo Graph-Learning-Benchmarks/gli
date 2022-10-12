@@ -42,10 +42,6 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // let fs = require('fs');
-            // let issue_number = Number(fs.readFileSync('./NR'));
-            // console.log(issue_number);
-            
             var lines = require('fs').readFileSync('./NR', 'utf-8')
                 .split('\n')
                 .filter(Boolean);
@@ -55,42 +51,10 @@ jobs:
             console.log(issue_number);
             console.log(dataset_list);
             var comment = 'This is an automatic reminder for pasting the local test results of `';
-            console.log(comment);
             comment += dataset_list;
-            console.log(comment);
             comment += '` as a comment in this PR, in case you haven\'t done so. The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.\n The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).';
-            console.log(comment);
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: 'Thank you for the PR!'
-            });
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: 'This is an automatic reminder for pasting the local test results of `' + dataset_list + '` as a comment in this PR, in case you haven\'t done so. The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.\n The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).'
-            });
-
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number,
-              body: comment
-            });
-
-            
 
             if (lines.length > 1){
-              var comment = 'This is an automatic reminder for pasting the local test results of `';
-              console.log(comment);
-              comment += dataset_list;
-              console.log(comment);
-              comment += '` as a comment in this PR, in case you haven\'t done so. The aforementioned datasets are too large for them to be tested with GitHub Action workflow here.\n The local test result for each dataset can be obtained by running `make pytest DATASET=<dataset name>`. For more details, please refer to [the dataset submission guide](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/CONTRIBUTING.md#contributing-a-new-dataset).';
-              console.log(comment);
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
