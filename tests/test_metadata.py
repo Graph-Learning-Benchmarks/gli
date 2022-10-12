@@ -3,7 +3,7 @@ import pytest
 import os
 import json
 from utils import find_datasets, check_if_metadata_json, \
-    _is_hetero_graph, find_datasets_abs_path
+    _is_hetero_graph, _is_sparse_npz, find_datasets_abs_path
 
 
 def check_essential_keys_metadata_json(dic):
@@ -43,6 +43,12 @@ def check_essential_keys_metadata_json_homogeneous(dic):
                         "key",
                         ]:
             if dic["data"]["Node"][key].get(sub_key, None) is None:
+                if sub_key == "key":
+                    if _is_sparse_npz(
+                          dic["data"]["Node"][key].get("file", "")):
+                        # Scipy sparse file only stores one array
+                        # No `key` is needed.
+                        continue
                 missing_keys.append("data: Node: " + key + ": " + sub_key)
 
     for sup_key in ["Edge", "Graph"]:
@@ -51,6 +57,10 @@ def check_essential_keys_metadata_json_homogeneous(dic):
                             "key",
                             ]:
                 if dic["data"][sup_key][key].get(sub_key, None) is None:
+                    if sub_key == "key":
+                        if _is_sparse_npz(
+                              dic["data"][sup_key][key].get("file", "")):
+                            continue
                     missing_keys.append("data: " + sup_key + ": " +
                                         key + ": " + sub_key)
 
@@ -80,6 +90,11 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
                                     ]:
                     if dic["data"]["Node"][key][sub_key].get(sub_sub_key,
                                                              None) is None:
+                        if sub_sub_key == "key":
+                            if _is_sparse_npz(
+                                  dic["data"]["Node"][key][sub_key].get(
+                                    "file", "")):
+                                continue
                         missing_keys.append("data: Node: " +
                                             key + ": " + sub_key +
                                             ": " + sub_sub_key)
@@ -96,6 +111,11 @@ def check_essential_keys_metadata_json_heterogeneous(dic):
                                     ]:
                     if dic["data"]["Edge"][key][sub_key].get(sub_sub_key,
                                                              None) is None:
+                        if sub_sub_key == "key":
+                            if _is_sparse_npz(
+                                  dic["data"]["Edge"][key][sub_key].get(
+                                    "file", "")):
+                                continue
                         missing_keys.append("data: Edge: " + key + ": " +
                                             sub_key + ": " + sub_sub_key)
     return missing_keys

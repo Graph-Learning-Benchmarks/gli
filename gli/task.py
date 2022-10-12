@@ -7,7 +7,7 @@ from typing import List
 
 import torch
 
-from gli.utils import file_reader
+from gli.utils import load_data
 
 SUPPORTED_TASK_TYPES = [
     "NodeClassification", "NodeRegression", "GraphClassification",
@@ -105,10 +105,10 @@ class GLITask:
                     assert key[-4:] == "FOLD", "split key not ending with FOLD"
                     this_fold_key = f"{key[:-4]}{fold}"
                     self.split[dataset_].append(
-                        file_reader.get(path, this_fold_key, self.device))
+                        load_data(path, this_fold_key, self.device))
                     # can be a list of mask tensors or index tensors
             else:
-                self.split[dataset_] = file_reader.get(path, key, self.device)
+                self.split[dataset_] = load_data(path, key, self.device)
                 # can be a mask tensor or an index tensor
 
 
@@ -230,7 +230,7 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
                 filename = task_dict[neg_idx]["file"]
                 key = task_dict[neg_idx].get("key")
                 path = os.path.join(self.pwd, filename)
-                indices = file_reader.get(path, key, self.device)
+                indices = load_data(path, key, self.device)
                 setattr(self, neg_idx, indices)
 
 

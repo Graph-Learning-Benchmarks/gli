@@ -150,3 +150,8 @@ def load_config_file(path):
             return parsed_yaml
         except yaml.YAMLError as exc:
             print(exc)
+
+
+def _is_sparse_npz(filename):
+    """Check if the npz file is storing a scipy sparse array."""
+    return filename.endswith(".sparse.npz")

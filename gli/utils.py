@@ -30,9 +30,8 @@ def _save_response_content(
     length: Optional[int] = None,
     verbose: Optional[bool] = False,
 ) -> None:
-    with open(destination,
-              "wb") as fh, tqdm(total=length,
-                                disable=not verbose) as pbar:
+    with open(destination, "wb") as fh, tqdm(total=length,
+                                             disable=not verbose) as pbar:
         for chunk in content:
             # filter out keep-alive new chunks
             if not chunk:
@@ -144,84 +143,42 @@ def download_file_from_google_drive(g_url: str,
         print(f"Successfully downloaded {filename} to {root} from {g_url}.")
 
 
-def load_data(path: os.PathLike):
-    """Load data from given path.
+def load_data(path, key=None, device="cpu"):
+    """Load data from npy or npz file, return sparse array or torch tensor.
 
-    Supported file format:
-    1. .npz
-    2. .npy
+    Parameters
+    ----------
+    path : str
+        Path to data file
+    key : str, optional
+        by default None
+    device : str, optional
+        by default "cpu"
+
+    Returns
+    -------
+    torch.Tensor or scipy.sparse.matrix
+
+    Raises
+    ------
+    TypeError
+        Unrecognized file extension
     """
     _, ext = os.path.splitext(path)
-    if ext in (".npz", ".npy"):
-        data = np.load(path, allow_pickle=True)
-    else:
-        raise NotImplementedError(f"{ext} file is currently not supported.")
-    return data
+    if ext not in (".npz", ".npy"):
+        raise TypeError(f"Invalid file extension {ext}.")
 
+    if path.endswith(".sparse.npz"):
+        # Sparse matrix
+        assert key is None, "Sparse format cannot contain key."
+        return sp.load_npz(path)
 
-def unwrap_array(array):
-    """Unwrap the array.
-
-    This method is to deal with the situation where array is loaded from
-    sparse matrix by np.load(), which will wrap array to be a numpy.ndarray.
-    """
-    try:
-        if isinstance(array, np.ndarray):
-            if array.dtype.kind not in set("buifc"):
-                return array.all()
-    except TypeError:
-        return None
-    return array
-
-
-class KeyedFileReader():
-    """File reader for npz files."""
-
-    def __init__(self):
-        """File reader for npz files."""
-        self._data_buffer = {}
-
-    def get(self, path, key=None, device="cpu"):
-        """Return a torch array."""
-        if path not in self._data_buffer:
-            raw = load_data(path)
-            self._data_buffer[path] = raw
-        else:
-            raw = self._data_buffer[path]
-
-        if key:
-            array = raw.get(key, None)
-        else:
-            array = raw
-
-        if array is None:
-            return None
-
-        assert isinstance(array, np.ndarray)
-
-        array = unwrap_array(array)
-
-        if array is None:
-            file_key_entry = path + ":" + key if key else path
-            warnings.warn(
-                f"Skip reading {file_key_entry} because it is non-numeric.")
-            return None
-
-        if sp.issparse(array):
-            # Keep the array format to be scipy rather than pytorch
-            # because we may need row indexing later.
-            if array.getformat() in ("coo", "csr"):
-                return array
-            else:
-                try:
-                    return sp.coo_matrix(array)
-                except Exception as e:
-                    raise TypeError from e
-        else:
-            return torch.from_numpy(array).to(device=device)
-
-
-file_reader = KeyedFileReader()
+    # Dense arrays file with a key
+    raw = np.load(path, allow_pickle=False)
+    assert key is not None
+    array = raw.get(key)
+    raw.close()
+    return torch.from_numpy(array).to(device)
 
 
 def sparse_to_torch(sparse_array: sp.spmatrix,
@@ -240,124 +197,24 @@ def sparse_to_torch(sparse_array: sp.spmatrix,
                 np.vstack((sparse_array.row, sparse_array.col)))
             v = torch.FloatTensor(sparse_array.data)
 
-            coo_tensor = torch.sparse_coo_tensor(i,
-                                                 v,
-                                                 torch.Size(shape),
-                                                 device=device)
-            return coo_tensor
+            return torch.sparse_coo_tensor(i,
+                                           v,
+                                           torch.Size(shape),
+                                           device=device)
+
         elif sparse_type == "csr":
             sparse_array: sp.csr_matrix
             crow_indices = sparse_array.indptr
             col_indices = sparse_array.indices
             values = sparse_array.data
-            csr_tensor = torch.sparse_csr_tensor(crow_indices,
-                                                 col_indices,
-                                                 values,
-                                                 size=torch.Size(shape),
-                                                 device=device)
-            return csr_tensor
+            return torch.sparse_csr_tensor(crow_indices,
+                                           col_indices,
+                                           values,
+                                           size=torch.Size(shape),
+                                           device=device)
+
         else:
             raise TypeError(f"Unsupported sparse type {sparse_type}")
-
-
-def dgl_to_gli(graph: dgl.DGLGraph,
-               name: str,
-               pdir: os.PathLike = None,
-               **kwargs):
-    """Dump a dgl graph into gli format."""
-    metadata = {"data": {"Node": {}, "Edge": {}, "Graph": {}}}
-    metadata.update(kwargs)
-    npz = f"{name}.npz"
-    data = {}
-    if graph.is_multigraph:
-        raise NotImplementedError
-    if graph.is_homogeneous:
-        for k, v in graph.ndata.items():
-            entry = f"node_{k}"
-            data[entry] = v.cpu().numpy()
-            metadata["data"]["Node"][entry] = {"file": npz, "key": entry}
-        for k, v in graph.edata.items():
-            entry = f"edge_{k}"
-            data[entry] = v.cpu().numpy()
-            metadata["data"]["Edge"][entry] = {"file": npz, "key": entry}
-
-        # Reserved Entries
-        entry = "_Edge"
-        data[entry] = torch.stack(graph.edges()).T.cpu().numpy()
-        metadata["data"]["Edge"]["_Edge"] = {"file": npz, "key": entry}
-
-    else:
-
-        for node_type in graph.ntypes:
-            # Save node id
-            entry = f"node_{node_type}_id"
-            metadata["data"]["Node"][node_type] = {
-                "_ID": {
-                    "file": npz,
-                    "key": entry
-                }
-            }
-            data[entry] = graph.nodes(node_type).cpu().numpy()
-            # Save node features
-            for k, v in graph.ndata.items():
-                if node_type in v:
-                    entry = f"node_{node_type}_{k}"
-                    data[entry] = v.cpu().numpy()
-                    metadata["data"]["Node"][node_type][entry] = {
-                        "file": npz,
-                        "key": entry
-                    }
-
-        edge_id = 0
-        for edge_type in graph.etypes:
-            # Save edge id
-            entry = f"edge_{edge_type}_id"
-            metadata["data"]["Edge"][edge_type] = {
-                "_ID": {
-                    "file": npz,
-                    "key": entry
-                },
-            }
-            u, v = graph.edges(etype=edge_type)
-            data[entry] = graph.edge_ids(u, v, edge_type) + edge_id
-            edge_id += len(u)
-            # Save edges
-            entry = f"edge_{edge_type}"
-            metadata["data"]["Edge"][edge_type]["_Edge"] = {
-                "file": npz,
-                "key": entry
-            }
-            data[entry] = torch.stack(graph.edges(edge_type)).T.cpu().numpy()
-            # Save edge features
-            for k, v in graph.edata.items():
-                # FIXME - AssertionError: Current HeteroNodeDataView
-                # has multiple node types, can not be iterated.
-                if edge_type in v:
-                    entry = f"edge_{edge_type}_{k}"
-                    data[entry] = v.cpu().numpy()
-                    metadata["data"]["Edge"][entry] = {
-                        "file": npz,
-                        "key": entry
-                    }
-
-    entry = "_NodeList"
-    data[entry] = np.ones((1, graph.num_nodes()))
-    metadata["data"]["Graph"]["_NodeList"] = {"file": npz, "key": entry}
-
-    entry = "_EdgeList"
-    data[entry] = np.ones((1, graph.num_edges()))
-    metadata["data"]["Graph"]["_EdgeList"] = {"file": npz, "key": entry}
-
-    # Save file
-    os.makedirs(pdir)
-    npz_path = os.path.join(pdir, npz)
-    metadata_path = os.path.join(pdir, "metadata.json")
-
-    np.savez_compressed(npz_path, **data)
-    with open(metadata_path, "w", encoding="utf-8") as fp:
-        json.dump(metadata, fp)
-
-    raise NotImplementedError
 
 
 def download_data(dataset: str, verbose=False):
@@ -373,11 +230,10 @@ def download_data(dataset: str, verbose=False):
         url_file = os.path.join(data_dir, "urls.json")
     else:
         raise FileNotFoundError(f"cannot find dataset {dataset}.")
-    if os.path.exists(url_file):
-        with open(url_file, "r", encoding="utf-8") as fp:
-            url_dict = json.load(fp)
-    else:
+    if not os.path.exists(url_file):
         raise FileNotFoundError(f"cannot find url files of {dataset}.")
+    with open(url_file, "r", encoding="utf-8") as fp:
+        url_dict = json.load(fp)
     for data_file_name, url in url_dict.items():
         data_file_path = os.path.join(data_dir, data_file_name)
         if os.path.exists(data_file_path):
@@ -435,15 +291,13 @@ def _to_dense(graph: dgl.DGLGraph, feat=None, group=None, is_node=True):
         else:
             for k in graph_data:
                 graph_data[k] = _sparse_to_dense_safe(graph_data[k])
+    elif feat:
+        assert group is not None
+        graph.ndata[feat][group] = _sparse_to_dense_safe(
+            graph.ndata[feat][group])
     else:
-        if feat:
-            assert group is not None
-            graph.ndata[feat][group] = _sparse_to_dense_safe(
-                graph.ndata[feat][group])
-        else:
-            raise NotImplementedError(
-                "Both feat and group should be provided for"
-                " heterograph.")
+        raise NotImplementedError("Both feat and group should be provided for"
+                                  " heterograph.")
 
     return graph
 
@@ -501,3 +355,30 @@ def to_dense(graph: dgl.DGLGraph):
         return node_to_dense(edge_to_dense(graph))
     else:
         raise NotImplementedError("to_dense only works for homograph.")
+
+
+def save_data(prefix, **kwargs):
+    """Save arrays into numpy binary formats.
+
+    Dense arrays (numpy) will be saved in the below format as a single file:
+        <prefix>.npz
+    Sparse arrays (scipy) will be saved in the below format individually:
+        <prefix>_<key>.sparse.npz
+    """
+    dense_arrays = {}
+    sparse_arrays = {}
+    for key, matrix in kwargs.items():
+        if sp.issparse(matrix):
+            sparse_arrays[key] = matrix
+        elif isinstance(matrix, np.ndarray):
+            dense_arrays[key] = matrix
+
+    # Save numpy arrays into a single file
+    np.savez_compressed(f"{prefix}.npz", **dense_arrays)
+    print("Save all dense arrays to",
+          f"{prefix}.npz, including {list(dense_arrays.keys())}")
+
+    # Save scipy sparse matrices into different files by keys
+    for key, matrix in sparse_arrays.items():
+        sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
+        print("Save sparse matrix", key, "to", f"{prefix}_{key}.sparse.npz")
