@@ -13,7 +13,7 @@ import torch
 import numpy as np
 from tqdm import tqdm
 
-from .utils import file_reader, sparse_to_torch
+from .utils import sparse_to_torch, load_data
 
 
 def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
@@ -220,16 +220,14 @@ def _dict_depth(d):
 
 def _dfs_read_file(pwd, d, device="cpu"):
     """Read file efficiently."""
-    data = _dfs_read_file_helper(pwd, d, device)
-    return data
+    return _dfs_read_file_helper(pwd, d, device)
 
 
 def _dfs_read_file_helper(pwd, d, device="cpu"):
     """Read file recursively (helper of `_dfs_read_file`)."""
     if "file" in d:
         path = os.path.join(pwd, d["file"])
-        array = file_reader.get(path, d.get("key"), device)
-        return array
+        return load_data(path, d.get("key"), device)
 
     empty_keys = []
     for k in d:
