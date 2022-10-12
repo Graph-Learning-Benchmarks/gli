@@ -46,12 +46,9 @@ jobs:
               dataset_to_comment+=($dataset)
             fi
           done
-          COMMENT=0
           if [ ${#dataset_to_comment[@]} -ne 0 ]; then
             echo "dataset to be commented are: ${dataset_to_comment[*]}"
-            COMMENT=1
           fi
-          echo "::set-output name=OUTPUT::$COMMENT"
           echo "::set-output name=DATASETS::${dataset_to_comment[*]}"
 
       - name: Save PR number
