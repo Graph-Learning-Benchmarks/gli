@@ -102,7 +102,7 @@ def degree_assortativity(nx_g):
     if not check_direct(nx_g):
         nx_g = nx.Graph(nx_g)
         out = nx.degree_pearson_correlation_coefficient(nx_g)
-        return f"{out:6f}"
+        return out
     else:
         dic = {"in", "out"}
         out = []
@@ -110,7 +110,7 @@ def degree_assortativity(nx_g):
             for j in dic:
                 out.append(np.round(nx.degree_pearson_correlation_coefficient(
                     nx_g, x=i, y=j), 6))
-        return f"{out[0], out[1], out[2], out[3]}"
+        return out[0], out[1], out[2], out[3]
 
 
 def edge_reciprocity(nx_g):
@@ -269,11 +269,13 @@ def sum_angular_distance_matrix_nan(x, y, batch_size):
     fsum = 0.0
     x_start = 0
     while x_start < x_dim:
+        # print("x pos: ", x_start)
         x_end = min(x_start + batch_size, x_dim)
         x_batch = x[x_start: x_end, :]
 
         y_start = 0
         while y_start < y_dim:
+            # print("y pos: ", y_start)
             y_end = min(y_start + batch_size, y_dim)
             y_batch = y[y_start: y_end, :]
             inner_prod = np.dot(x_batch, y_batch.transpose())
@@ -302,9 +304,10 @@ def feature_homogeneity(g):
         idx_i = np.where(label_matrix == i)[0]
         vec_i = normed_feature_matrix[idx_i, :]
         for j in all_labels[label_idx:]:
+            # print(i, j)
             idx_j = np.where(label_matrix == j)[0]
             vec_j = normed_feature_matrix[idx_j, :]
-            batch_size = min(5000, len(idx_i), len(idx_j))
+            batch_size = 10000
             the_sum = sum_angular_distance_matrix_nan(vec_i, vec_j,
                                                       batch_size=batch_size)
             # the total number of pairs
@@ -545,14 +548,14 @@ def main():
           f"{pareto_expo(nx_g):.6f}", f"{gini_degree(nx_g):.6f}",
           f"{gini_coreness(core_list):.6f}"
           )
-    in_avg, out_avg = feature_homogeneity(g)
-    print("attributed metrics: ")
-    print(f"{edge_homogeneity(nx_g_attr):.6f}",
-          f"{in_avg:.6f}", f"{out_avg:.6f}",
-          f"{in_avg / out_avg:.6f}",
-          f"{homophily_hat(nx_g_attr):.6f}",
-          f"{attribute_assortativity(nx_g_attr):.6f}"
-          )
+    # in_avg, out_avg = feature_homogeneity(g)
+    # print("attributed metrics: ")
+    # print(f"{edge_homogeneity(nx_g_attr):.6f}",
+    #       f"{in_avg:.6f}", f"{out_avg:.6f}",
+    #       f"{in_avg / out_avg:.6f}",
+    #       f"{homophily_hat(nx_g_attr):.6f}",
+    #       f"{attribute_assortativity(nx_g_attr):.6f}"
+    #       )
 
 
 if __name__ == "__main__":
