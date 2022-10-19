@@ -372,6 +372,10 @@ def save_data(prefix, **kwargs):
             sparse_arrays[key] = matrix
         elif isinstance(matrix, np.ndarray):
             dense_arrays[key] = matrix
+        elif matrix is None:
+            continue
+        else:
+            raise TypeError(f"Unsupported format {type(matrix)}.")
 
     # Save numpy arrays into a single file
     np.savez_compressed(f"{prefix}.npz", **dense_arrays)
