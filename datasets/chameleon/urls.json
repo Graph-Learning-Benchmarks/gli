@@ -1,4 +1,5 @@
 {
-    "chameleon.npz": "https://drive.google.com/uc?id=1b_xbc82ChzZrpuIf_bn0qnsc0FIHh8dQ&export=download",
-    "chameleon_task.npz": "https://drive.google.com/uc?id=1Tq2gpxTlcJp7qaWRREL-fAOEh3nw-gfq&export=download"
+    "chameleon.npz": "https://www.dropbox.com/s/4yq84fizhcu1gaw/chameleon.npz",
+    "chameleon_node_feats.sparse.npz": "https://www.dropbox.com/s/xvvqhcon7qf7ij5/chameleon_node_feats.sparse.npz",
+    "chameleon_task.npz": "https://www.dropbox.com/s/9s90n42q0f4xuon/chameleon_task.npz"
 }
