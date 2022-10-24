@@ -6,8 +6,7 @@
                 "description": "Node features of Wisconsin dataset, 1/0-valued vectors.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "wisconsin.npz",
-                "key": "node_feats"
+                "file": "wisconsin_node_feats.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Wisconsin dataset, int ranged from 0 to 4.",
