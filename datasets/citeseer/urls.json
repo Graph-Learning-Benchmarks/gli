@@ -1,4 +1,5 @@
 {
-    "citeseer.npz": "https://drive.google.com/uc?id=1nPPOArDoDDLxMDKyuGpEEzM4y83w4Bmx&export=download",
-    "citeseer_task.npz": "https://drive.google.com/uc?id=1P8FoooFy0ZgGrxBATcRHy4tM6iRtBKxj&export=download"
+    "citeseer.npz": "https://www.dropbox.com/s/sc3fz6v139x6szd/citeseer.npz",
+    "citeseer_node_feats.sparse.npz": "https://www.dropbox.com/s/3h4amgwa5h6fw51/citeseer_node_feats.sparse.npz",
+    "citeseer_task.npz": "https://www.dropbox.com/s/ccmvbc63fzj9ogm/citeseer_task.npz"
 }
