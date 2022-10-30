@@ -1,7 +1,7 @@
 # CIFAR
 ## Data Description
 
-*CIFAR*  (Canadian Institute For Advanced Research) is a collection of images that are commonly used to train machine learning and computer vision algorithms. It is one of the most widely used datasets for machine learning research. The CIFAR-10 dataset contains 60,000 32x32 color images in 10 different classes.
+*CIFAR* is a collection of images that are commonly used to train machine learning and computer vision algorithms. It is one of the most widely used datasets for machine learning research. The CIFAR-10 dataset contains 60,000 32x32 color images in 10 different classes. In this dataset, the original images are converted to graphs using superpixels, which represent small regions of homogeneous intensity in images. For each image, the nodes are superpixels and the graph is a k-nearest neighbor graph on the superpixels.
 
 Statistics:
 

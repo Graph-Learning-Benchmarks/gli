@@ -1,7 +1,7 @@
 # MNIST
 ## Data Description
 
-*MNIST* database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits that is commonly used for training various image processing systems. The database is also widely used for training and testing in the field of machine learning. It was created by "re-mixing" the samples from NIST's original datasets
+*MNIST* is a large database of handwritten digits that is commonly used for training various image processing systems. The database is also widely used for training and testing in the field of machine learning. In this dataset, the original images are converted to graphs using superpixels, which represent small regions of homogeneous intensity in images. For each image, the nodes are superpixels and the graph is a k-nearest neighbor graph on the superpixels.
 
 Statistics:
 - Nodes: 4939668
