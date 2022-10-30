@@ -4,10 +4,10 @@ import os
 from utils import \
     find_datasets, check_if_metadata_json, \
     check_if_urls_json, check_if_task_json, check_if_readme, \
-    find_datasets_abs_path
+    check_if_license, check_if_converting_code, find_datasets_abs_path
 
 
-def check_file_name(files):
+def check_file_name(files, dataset_name):
     """Check if essential files exist.
 
     Correctly named task json, metadata json urls json, and README exist.
@@ -16,6 +16,8 @@ def check_file_name(files):
     metadata_json_flag = False
     urls_jason_flag = False
     readme_flag = False
+    license_flag = False
+    coverting_code_flag = False
 
     for file in files:
         if check_if_task_json(file):
@@ -26,20 +28,32 @@ def check_file_name(files):
             urls_jason_flag = True
         if check_if_readme(file):
             readme_flag = True
+        if check_if_license(file):
+            license_flag = True
+        if check_if_converting_code(file, dataset_name):
+            coverting_code_flag = True
 
+    missing_file_messages = []
     if not task_json_flag:
-        return False, "needs task json"
+        missing_file_messages.append("missing task_*.json file(s)")
 
     if not metadata_json_flag:
-        return False, "needs metadata json"
+        missing_file_messages.append("missing metadata.json")
 
     if not urls_jason_flag:
-        return False, "needs urls json"
+        missing_file_messages.append("missing urls.json")
 
     if not readme_flag:
-        return False, "needs README"
+        missing_file_messages.append("missing README.md")
 
-    return True, "essential files included"
+    if not license_flag:
+        missing_file_messages.append("missing LICENSE")
+
+    if not coverting_code_flag:
+        missing_file_messages.append(
+            "missing data conversion code (<dataset>.ipynb or <dataset>.py)")
+
+    return missing_file_messages
 
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
@@ -51,14 +65,12 @@ def test_if_has_essential_files(dataset_name):
     """
     violations = None
     directory = find_datasets_abs_path(dataset_name)
-    result = check_file_name(os.listdir(directory))
+    errors = check_file_name(os.listdir(directory), dataset_name)
 
-    if result[0] is True:
-        pass
-    else:
-        violations = (directory, result[1])
-
-    if violations is not None:
-        print("dataset at " + violations[0] + " " + violations[1],
-              "or json file(s) is not correctly named.\n")
-    assert violations is None
+    if len(errors) > 0:
+        print(f"Required files are missing for the dataset at {directory}:")
+        for err in errors:
+            print(err)
+        print(
+            "Please check if the above file(s) are present and correctly named.")
+    assert len(errors) == 0
