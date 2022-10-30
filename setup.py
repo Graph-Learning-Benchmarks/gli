@@ -12,14 +12,14 @@ install_requires = [
 ]
 
 test_requires = [
-    "pytest",
-    "pydocstyle",
-    "pycodestyle",
-    "pylint",
-    "pyyaml",
-    "pre-commit"]
+    "pytest", "pydocstyle", "pycodestyle", "pylint", "pyyaml", "pre-commit"
+]
 
-full_requires = install_requires
+doc_requires = ["sphinx", "sphinx-rtd-theme"]
+
+tag_requires = ["powerlaw"]
+
+full_requires = install_requires + test_requires + doc_requires
 
 setup(name="gli",
       version="0.1",
@@ -27,7 +27,8 @@ setup(name="gli",
       install_requires=install_requires,
       extras_require={
           "test": test_requires,
-          "full": full_requires
+          "full": full_requires,
+          "doc": doc_requires
       },
       python_requires=">=3.6",
       description=desc)
