@@ -11,59 +11,15 @@ import gli
 import powerlaw
 
 
-# def efficiency(g):
-#     """Compute the efficiency of the graph."""
-#     nx_g = dgl.to_networkx(g)
-#     nx_g = nx.Graph(nx_g)
-#     return nx.global_efficiency(nx_g)
-#
-#
-# def avg_node_connectivity(g):
-#     """Compute the average of node connectivity of the graph."""
-#     nx_g = dgl.to_networkx(g)
-#     nx_g = nx.Graph(nx_g)
-#     return nx.average_node_connectivity(nx_g)
-#
-#
-# def diameter(g):
-#     """Compute the diameters (need to be connected)."""
-#     nx_g = dgl.to_networkx(g)
-#     # nx_g = nx.Graph(nx_g)
-#     if nx.is_strongly_connected(nx_g):
-#         return nx.diameter(nx_g)
-#     else:
-#         # if the graph is not strongly connected,
-#         # we report the diameter in the LSCC
-#         cc = sorted(nx.strongly_connected_components(nx_g), key=len,
-#                     reverse=True)
-#         lcc = nx_g.subgraph(cc[0])
-#         return nx.diameter(lcc)
-#
-#
-# def avg_shortest_path(g):
-#     """Compute the average shortest path."""
-#     nx_g = dgl.to_networkx(g)
-#     if nx.is_strongly_connected(nx_g):
-#         return nx.average_shortest_path_length(nx_g)
-#     else:
-#         # if the graph is not strongly connected,
-#         # we report the avg shortest path in the LSCC
-#         cc = sorted(nx.strongly_connected_components(nx_g),
-#                     key=len, reverse=True)
-#         lcc = nx_g.subgraph(cc[0])
-#         return nx.average_shortest_path_length(lcc)
-#
-#
-
-
 def check_direct(nx_g):
     """Check the graph is directed or not."""
     # to examine whether all the edges are bi-directed edges
     # nx_g = dgl.to_networkx(g)
     # remove self-loop before edge computation
-    nx_g.remove_edges_from(list(nx.selfloop_edges(nx_g)))
-    n_all_edge = nx_g.number_of_edges()
-    n_un_edge = nx_g.to_undirected().number_of_edges()
+    # nx_g.remove_edges_from(list(nx.selfloop_edges(nx_g)))
+    nx_g_ = nx_g.copy()
+    n_all_edge = nx_g_.number_of_edges()
+    n_un_edge = nx_g_.to_undirected().number_of_edges()
     return n_all_edge != 2 * n_un_edge
 
 
@@ -100,9 +56,9 @@ def avg_degree(nx_g):
 def degree_assortativity(nx_g):
     """Compute the degree assortativity coefficient."""
     if not check_direct(nx_g):
-        nx_g = nx.Graph(nx_g)
-        out = nx.degree_pearson_correlation_coefficient(nx_g)
-        return out
+        nx_g_ = nx.Graph(nx_g)
+        out = nx.degree_pearson_correlation_coefficient(nx_g_)
+        return np.round(out, 6)
     else:
         dic = {"in", "out"}
         out = []
@@ -137,10 +93,10 @@ def relative_largest_cc(nx_g):
     """Compute relative size of the largest connected component."""
     # will disregard the edge direction
     # nx_g = dgl.to_networkx(g)
-    nx_g = nx.Graph(nx_g)
-    lcc = sorted(nx.connected_components(nx_g), key=len, reverse=True)
-    lcc_size = nx.number_of_nodes(nx_g.subgraph(lcc[0]))
-    return lcc_size / nx.number_of_nodes(nx_g)
+    nx_g_ = nx.Graph(nx_g)
+    lcc = sorted(nx.connected_components(nx_g_), key=len, reverse=True)
+    lcc_size = nx.number_of_nodes(nx_g_.subgraph(lcc[0]))
+    return lcc_size / nx.number_of_nodes(nx_g_)
 
 
 def relative_largest_scc(nx_g):
@@ -156,8 +112,8 @@ def avg_cluster_coefficient(nx_g):
     """Compute the average clustering coefficient."""
     # nx_g = dgl.to_networkx(g)
     # transform from MultiDigraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
-    av_local_clustering_coeff = nx.average_clustering(nx_g)
+    nx_g_ = nx.DiGraph(nx_g)
+    av_local_clustering_coeff = nx.average_clustering(nx_g_)
     return av_local_clustering_coeff
 
 
@@ -166,8 +122,8 @@ def transitivity(nx_g):
     # only work for in-directed graphs
     # will disregard the edge direction
     # nx_g = dgl.to_networkx(g)
-    nx_g = nx.Graph(nx_g)
-    return nx.transitivity(nx_g)
+    nx_g_ = nx.Graph(nx_g)
+    return nx.transitivity(nx_g_)
 
 
 def degeneracy(nx_core_list):
@@ -190,7 +146,8 @@ def pareto_expo(nx_g):
     # remove nodes that have 0 degree
     remove_nodes = [node for node, degree in
                     dict(nx_g.degree()).items() if degree == 0]
-    nx_g.remove_nodes_from(remove_nodes)
+    nx_g_ = nx_g.copy()
+    nx_g_.remove_nodes_from(remove_nodes)
     degree_sequence = [d for n, d in nx_g.degree()]
     degree_sequence = np.sort(degree_sequence)
     dmin = np.min(degree_sequence)
@@ -210,10 +167,9 @@ def core_number_related(nx_g):
     """Compute 2 tags related to coreness."""
     # nx_g = dgl.to_networkx(g)
     # convert the MultiDiGraph to Digraph
-    nx_g = nx.DiGraph(nx_g)
+    nx_g_ = nx.DiGraph(nx_g)
     # remove potential self-loops
-    nx_g.remove_edges_from(nx.selfloop_edges(nx_g))
-    core_list = list(nx.core_number(nx_g).values())
+    core_list = list(nx.core_number(nx_g_).values())
     return core_list
 
 
@@ -255,7 +211,7 @@ def get_feature_label(g):
     """Compute the feature homogeneity."""
     sparse_feat_ts = g.ndata["NodeFeature"].to_sparse_coo().coalesce()
     sp_ind = sparse_feat_ts.indices().numpy()
-    sp_val = sparse_feat_ts.values().numpy()
+    sp_val = sparse_feat_ts.values().numpy() * 1.0
     sparse_feat = sparse.csr_matrix((sp_val, sp_ind))
     normed_feature_matrix = matrix_row_norm(sparse_feat)
     label = g.ndata["NodeLabel"].numpy().squeeze()
@@ -304,7 +260,6 @@ def feature_homogeneity(g):
         idx_i = np.where(label_matrix == i)[0]
         vec_i = normed_feature_matrix[idx_i, :]
         for j in all_labels[label_idx:]:
-            # print(i, j)
             idx_j = np.where(label_matrix == j)[0]
             vec_j = normed_feature_matrix[idx_j, :]
             batch_size = 10000
@@ -350,8 +305,6 @@ def homophily_hat(nx_g_attr):
     # For directed graphs, only outgoing neighbors /
     # adjacencies are included.
 
-    # nx_g = dgl.to_networkx(g, node_attrs=["NodeLabel"])
-    nx_g_attr.remove_edges_from(list(nx.selfloop_edges(nx_g_attr)))
     label_dict = nx.get_node_attributes(nx_g_attr, "NodeLabel")
     all_label = list(set(label_dict.values()))
     label_edge_dict = {}
@@ -476,7 +429,10 @@ def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
     # skipped metric: diameter, efficiency,
     # avg_shortest_path, degree_assortativity
     # since these will run forever on large datasets
-    core_list = core_number_related(g)
+    nx_g = dgl.to_networkx(dgl.to_homogeneous(g))
+    nx_g_rem = nx_g.copy()
+    nx_g_rem.remove_edges_from(list(nx.selfloop_edges(nx_g_rem)))
+    core_list = core_number_related(nx_g_rem)
 
     with open(file_name, "w", encoding="utf-8") as f:
         f.write("## **Graph Metrics**\n")
@@ -486,20 +442,55 @@ def output_markdown_file(file_name, g, metric_dict, metric_quote, metric_name):
             f.write("\n")
             f.write("| Metric | Quantity |\n")
             f.write("| ------ | ------ |\n")
-            for i in range(len(metric_dict[group_name])):
-                print(metric_dict[group_name][i].__name__)
-                if metric_dict[group_name][i].__name__ \
-                        in ("gini_coreness", "degeneracy"):
-                    var = metric_dict[group_name][i](core_list)
-                else:
-                    var = metric_dict[group_name][i](g)
-                if not isinstance(var, str):
-                    if torch.is_tensor(var):
-                        var = var.item()
-                    var = round(var, 6)
-                f.write("| " + str(metric_name[group_name][i]) +
-                        " | " + str(var) + " |")
-                f.write("\n")
+            if group_name != "Attribute":
+                for i in range(len(metric_dict[group_name])):
+                    print(metric_dict[group_name][i].__name__)
+                    if metric_dict[group_name][i].__name__ in ("gini_coreness",
+                                                               "degeneracy"):
+                        var = metric_dict[group_name][i](core_list)
+                    else:
+                        var = metric_dict[group_name][i](nx_g)
+                    if not isinstance(var, str):
+                        if torch.is_tensor(var):
+                            var = var.item()
+                        var = round(var, 6)
+                    f.write("| " + str(metric_name[group_name][i]) +
+                            " | " + str(var) + " |")
+                    f.write("\n")
+            else:
+                nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
+                # convert from tensor to numerical value
+                for n in nx_g_attr:
+                    nx_g_attr.nodes[n]["NodeLabel"] = \
+                        nx_g_attr.nodes[n]["NodeLabel"].item()
+                nx_g_attr_rem = nx_g_attr.copy()
+                nx_g_attr_rem.remove_edges_from(
+                    list(nx.selfloop_edges(nx_g_attr_rem)))
+                in_avg, out_avg = feature_homogeneity(g)
+
+                for i in range(len(metric_dict[group_name])):
+                    print(metric_dict[group_name][i].__name__)
+                    if metric_dict[group_name][i].__name__ \
+                            == "avg_in_feature_dist":
+                        var = in_avg
+                    elif metric_dict[group_name][i].__name__ \
+                            == "avg_out_feature_dist":
+                        var = out_avg
+                    elif metric_dict[group_name][i].__name__ \
+                            == "feature_snr":
+                        var = in_avg / out_avg
+                    elif metric_dict[group_name][i].__name__ \
+                            == "homophily_hat":
+                        var = metric_dict[group_name][i](nx_g_attr_rem)
+                    else:
+                        var = metric_dict[group_name][i](nx_g_attr)
+                    if not isinstance(var, str):
+                        if torch.is_tensor(var):
+                            var = var.item()
+                        var = round(var, 6)
+                    f.write("| " + str(metric_name[group_name][i]) +
+                            " | " + str(var) + " |")
+                    f.write("\n")
 
     f.close()
 
@@ -519,43 +510,11 @@ def main():
     print(task)
     print(datasets)
 
-    # metric_dict = make_metric_dict()
-    # metric_quote = make_metric_quote()
-    # metric_name = make_metric_names()
-    # output_markdown_file("markdown_file_" + str(dataset_name) + ".txt",
-    #                      g, metric_dict, metric_quote, metric_name)
-
-    nx_g = dgl.to_networkx(g)
-    nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
-    # convert from tensor to numerical value
-    for n in nx_g_attr:
-        nx_g_attr.nodes[n]["NodeLabel"] = \
-            nx_g_attr.nodes[n]["NodeLabel"].item()
-
-    core_list = core_number_related(nx_g)
-    print("common metrics: ")
-    print(f"{directed(nx_g)}", nx_g.number_of_nodes(),
-          nx_g.number_of_edges(),
-          f"{edge_density(nx_g):.6f}",
-          f"{avg_degree(nx_g):.6f}", f"{edge_reciprocity(nx_g):.6f}",
-          f"{degree_assortativity(nx_g)}",
-          f"{pseudo_diameter(nx_g)}",
-          f"{relative_largest_cc(nx_g):.6f}",
-          f"{relative_largest_scc(nx_g):6f}",
-          f"{avg_cluster_coefficient(nx_g):.6f}",
-          f"{transitivity(nx_g):.6f}",
-          f"{degeneracy(core_list)}", f"{power_law_expo(nx_g):.6f}",
-          f"{pareto_expo(nx_g):.6f}", f"{gini_degree(nx_g):.6f}",
-          f"{gini_coreness(core_list):.6f}"
-          )
-    # in_avg, out_avg = feature_homogeneity(g)
-    # print("attributed metrics: ")
-    # print(f"{edge_homogeneity(nx_g_attr):.6f}",
-    #       f"{in_avg:.6f}", f"{out_avg:.6f}",
-    #       f"{in_avg / out_avg:.6f}",
-    #       f"{homophily_hat(nx_g_attr):.6f}",
-    #       f"{attribute_assortativity(nx_g_attr):.6f}"
-    #       )
+    metric_dict = make_metric_dict()
+    metric_quote = make_metric_quote()
+    metric_name = make_metric_names()
+    output_markdown_file("markdown_file_" + str(dataset_name) + ".txt",
+                         g, metric_dict, metric_quote, metric_name)
 
 
 if __name__ == "__main__":
