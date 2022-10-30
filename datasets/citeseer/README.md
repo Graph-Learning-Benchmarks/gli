@@ -11,6 +11,27 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://linqs.org/datasets/#citeseer-doc-classification)
+  + LICENSE: missing
+```
+@inproceedings{giles1998citeseer,
+  title={CiteSeer: An automatic citation indexing system},
+  author={Giles, C Lee and Bollacker, Kurt D and Lawrence, Steve},
+  booktitle={Proceedings of the third ACM conference on Digital libraries},
+  pages={89--98},
+  year={1998}
+}
+```
+```
+@inproceedings{lu:icml03,
+    title = {Link-Based Classification},
+    author = {Qing Lu and Lise Getoor},
+    booktitle = {International Conference on Machine Learning (ICML)},
+    year = {2003},
+    _publisher = {HP},
+    address = {Washington, DC, USA},
+}
+```
 ```
 @article{sen2008collective,
   title={Collective classification in network data},
@@ -23,6 +44,8 @@ Statistics:
 }
 ```
 - Current Version
+  + [Website](https://github.com/kimiyoung/planetoid)
+  + LICENSE: [MIT](https://github.com/kimiyoung/planetoid/blob/master/LICENSE)
 ```
 @inproceedings{yang2016revisiting,
   title={Revisiting semi-supervised learning with graph embeddings},
@@ -33,6 +56,7 @@ Statistics:
   organization={PMLR}
 }
 ```
+
 ## Available Tasks
 
 ### Planetoid

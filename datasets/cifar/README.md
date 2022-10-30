@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://www.cs.toronto.edu/~kriz/cifar.html)
+  + LICENSE: missing
 ```
 @Techreport{Krizhevsky_2009_17719,
   author = {Krizhevsky, Alex and Hinton, Geoffrey},
@@ -23,6 +25,8 @@ Statistics:
 }
 ```
 - Current Version
+  + [Website](https://github.com/graphdeeplearning/benchmarking-gnns/tree/master/data/superpixels)
+  + LICENSE: [MIT](https://github.com/graphdeeplearning/benchmarking-gnns/blob/master/LICENSE)
 ```
 @article{dwivedi2020benchmarking,
   title={Benchmarking graph neural networks},
