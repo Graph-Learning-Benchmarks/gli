@@ -131,7 +131,7 @@ def check_if_license(file):
 
 def check_if_converting_code(file, dataset):
     """Check if it is README.md and correctly named."""
-    if file == f"{dataset}.ipynb" or file == f"{dataset}.py":
+    if file in (f"{dataset}.ipynb", file == f"{dataset}.py"):
         return True
     return False
 
