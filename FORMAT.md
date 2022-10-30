@@ -62,7 +62,7 @@ As mentioned above, there are three reserved attributes in GLI, all of which sta
 - Edge
   - `_Edge` (*required*): A `Tensor` in shape `(n_edges, 2)`. `_Edge[i]` stores the i-th edge in the form of `(src_node_id, dst_node_id)`. **Notice that nodes indices are zero-based. i.e., node ID starts from 0.**
 - Graph
-  - `_NodeList` (*required*): A 0/1-valued `Tensor`/`SparseTensor` in shape `(n_graphs, n_nodes)`. 
+  - `_NodeList` (*required*): A 0/1-valued `Tensor`/`SparseTensor` in shape `(n_graphs, n_nodes)`.
   - `_EdgeList` (*optional*): A 0/1-valued `Tensor`/`SparseTensor` in shape `(n_graphs, n_edges)`. This attribute is optional when the `_EdgeList` of each subgraph can be inferred from `_NodeList`.
 
 #### Attribute properties
@@ -270,7 +270,7 @@ This section lists available task types of GLI.
     - `val ratio` (optional): the ratio of validation set size in `num_sampels`.
     - `test_ratio` (optional): the ratio of test set size in `num_sampels`.
     - `num_samples` (optional): total number of samples.
-- There could be three types of data split. 
+- There could be three types of data split.
     - Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_splits` should be set to 1 or omitted.
     - Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_splits`.
     - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
@@ -291,7 +291,7 @@ This section lists available task types of GLI.
     - `val ratio` (optional): the ratio of validation set size in `num_sampels`.
     - `test_ratio` (optional): the ratio of test set size in `num_sampels`.
     - `num_samples` (optional): total number of samples.
-- There could be two types of data split (fixed multi-split not supported). 
+- There could be two types of data split (fixed multi-split not supported).
     - Fixed split: A fixed data split is associated with the task. Task configuration file should specify `train_set`, `val_set` and `test_set`. `num_splits` should be set to 1 or omitted.
     - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 
