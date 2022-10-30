@@ -11,28 +11,15 @@ Statistics:
 #### Citation
 - Original Source
 ```
-@article{krizhevsky2009learning,
-  added-at = {2021-01-21T03:01:11.000+0100},
-  author = {Krizhevsky, Alex},
-  biburl = {https://www.bibsonomy.org/bibtex/2fe5248afe57647d9c85c50a98a12145c/s364315},
-  interhash = {cc2d42f2b7ef6a4e76e47d1a50c8cd86},
-  intrahash = {fe5248afe57647d9c85c50a98a12145c},
-  keywords = {},
-  pages = {32--33},
-  timestamp = {2021-01-21T03:01:11.000+0100},
-  title = {Learning Multiple Layers of Features from Tiny Images},
-  url = {https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf},
-  year = 2009
-}
-```
-- Previous Version
-```
-@article{knyazev2019understanding,
-  title={Understanding attention and generalization in graph neural networks},
-  author={Knyazev, Boris and Taylor, Graham W and Amer, Mohamed},
-  journal={Advances in neural information processing systems},
-  volume={32},
-  year={2019}
+@Techreport{Krizhevsky_2009_17719,
+  author = {Krizhevsky, Alex and Hinton, Geoffrey},
+ address = {Toronto, Ontario},
+ institution = {University of Toronto},
+ number = {0},
+ publisher = {Technical report, University of Toronto},
+ title = {Learning multiple layers of features from tiny images},
+ year = {2009},
+ title_with_no_special_chars = {Learning multiple layers of features from tiny images}
 }
 ```
 - Current Version
