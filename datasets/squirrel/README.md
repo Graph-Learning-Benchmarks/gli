@@ -11,6 +11,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://github.com/benedekrozemberczki/datasets#wikipedia-article-networks)
+  + LICENSE: [MIT](https://github.com/benedekrozemberczki/datasets/blob/master/LICENSE)
 ```
 @article{rozemberczki2021multi,
   title={Multi-scale attributed node embedding},
@@ -24,6 +26,8 @@ Statistics:
 }
 ```
 - Current Version
+  + [Website](https://github.com/graphdml-uiuc-jlu/geom-gcn)
+  + LICENSE: missing
 ```
 @article{pei2020geom,
   title={Geom-gcn: Geometric graph convolutional networks},

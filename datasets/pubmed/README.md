@@ -11,18 +11,21 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://linqs.org/datasets/#pubmed-diabetes)
+  + LICENSE: missing
 ```
-@article{sen2008collective,
-  title={Collective classification in network data},
-  author={Sen, Prithviraj and Namata, Galileo and Bilgic, Mustafa and Getoor, Lise and Galligher, Brian and Eliassi-Rad, Tina},
-  journal={AI magazine},
-  volume={29},
-  number={3},
-  pages={93--93},
-  year={2008}
+@inproceedings{namata:mlg12,
+    title = {Query-Driven Active Surveying for Collective Classification},
+    author = {Galileo Mark Namata and Ben London and Lise Getoor and Bert Huang},
+    booktitle = {International Workshop on Mining and Learning with Graphs (MLG)},
+    year = {2012},
+    _publisher = {MLG},
+    address = {Edinburgh, Scotland},
 }
 ```
 - Current Version
+  + [Website](https://github.com/kimiyoung/planetoid)
+  + LICENSE: [MIT](https://github.com/kimiyoung/planetoid/blob/master/LICENSE)
 ```
 @inproceedings{yang2016revisiting,
   title={Revisiting semi-supervised learning with graph embeddings},
@@ -33,6 +36,7 @@ Statistics:
   organization={PMLR}
 }
 ```
+
 ## Available Tasks
 
 ### Planetoid
