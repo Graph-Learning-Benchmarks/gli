@@ -122,6 +122,20 @@ def check_if_readme(file):
     return False
 
 
+def check_if_license(file):
+    """Check if it is README.md and correctly named."""
+    if file == "LICENSE":
+        return True
+    return False
+
+
+def check_if_converting_code(file, dataset):
+    """Check if it is README.md and correctly named."""
+    if file in (f"{dataset}.ipynb", file == f"{dataset}.py"):
+        return True
+    return False
+
+
 def _dict_depth(d):
     """Return the depth of a dictionary."""
     if isinstance(d, dict):

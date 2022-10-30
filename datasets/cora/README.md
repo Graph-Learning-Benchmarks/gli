@@ -11,6 +11,30 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://linqs.org/datasets/#cora)
+  + LICENSE: missing
+```
+@article{mccallum2000automating,
+  title={Automating the construction of internet portals with machine learning},
+  author={McCallum, Andrew Kachites and Nigam, Kamal and Rennie, Jason and Seymore, Kristie},
+  journal={Information Retrieval},
+  volume={3},
+  number={2},
+  pages={127--163},
+  year={2000},
+  publisher={Springer}
+}
+```
+```
+@inproceedings{lu:icml03,
+    title = {Link-Based Classification},
+    author = {Qing Lu and Lise Getoor},
+    booktitle = {International Conference on Machine Learning (ICML)},
+    year = {2003},
+    _publisher = {HP},
+    address = {Washington, DC, USA},
+}
+```
 ```
 @article{sen2008collective,
   title={Collective classification in network data},
@@ -23,6 +47,8 @@ Statistics:
 }
 ```
 - Current Version
+  + [Website](https://github.com/kimiyoung/planetoid)
+  + LICENSE: [MIT](https://github.com/kimiyoung/planetoid/blob/master/LICENSE)
 ```
 @inproceedings{yang2016revisiting,
   title={Revisiting semi-supervised learning with graph embeddings},
@@ -33,6 +59,7 @@ Statistics:
   organization={PMLR}
 }
 ```
+
 ## Available Tasks
 
 ### Planetoid
