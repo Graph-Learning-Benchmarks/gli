@@ -87,7 +87,7 @@ def download_file_from_google_drive(g_url: str,
         g_url (str): Google Drive url of file to be downloaded
         root (str): Directory to place downloaded file in
         filename (str, optional): Name to save the file under. If None, use the
-            id of the file.
+        id of the file.
     """
     # Based on https://stackoverflow.com/questions/38511444/python-download-files-from-google-drive-using-url  # noqa pylint: disable=line-too-long
 
@@ -317,11 +317,11 @@ def edge_to_dense(graph: dgl.DGLGraph, feat=None, edge_group=None):
         graph (dgl.DGLGraph): graph whose edges will be converted to dense.
         feat (str, optional): feature name. Defaults to None.
         edge_group (str, optional): edge group for heterograph. Defaults to
-            None.
+        None.
 
     Raises:
         NotImplementedError: If the graph is heterogeneous, feat and
-            edge_group cannot be None.
+        edge_group cannot be None.
     """
     return _to_dense(graph, feat, edge_group, is_node=False)
 
@@ -336,11 +336,11 @@ def node_to_dense(graph: dgl.DGLGraph, feat=None, node_group=None):
         graph (dgl.DGLGraph): graph whose nodes will be converted to dense.
         feat (str, optional): feature name. Defaults to None.
         node_group (str, optional): node group for heterograph. Defaults to
-            None.
+        None.
 
     Raises:
         NotImplementedError: If the graph is heterogeneous, feat and
-            node_group cannot be None.
+        node_group cannot be None.
     """
     return _to_dense(graph, feat, node_group, is_node=True)
 
