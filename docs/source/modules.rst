@@ -4,7 +4,7 @@ GLI API
 .. autosummary::
    :toctree: generated
    :recursive:
-   
+
    gli.dataloading
    gli.graph
    gli.task
