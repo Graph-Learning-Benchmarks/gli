@@ -6,8 +6,7 @@
                 "description": "Node features of Cora dataset, 1/0-valued vectors.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "cora.npz",
-                "key": "node_feats"
+                "file": "cora_node_feats.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Cora dataset, int ranged from 1 to 7.",

@@ -1,0 +1,5 @@
+{
+    "cora.npz": "https://www.dropbox.com/s/ba056xftgqp8uo4/cora.npz",
+    "cora_node_feats.sparse.npz": "https://www.dropbox.com/s/uqf6oszbgltkmd0/cora_node_feats.sparse.npz",
+    "cora_task.npz": "https://www.dropbox.com/s/zvpdfg6hz6r9pbn/cora_task.npz"
+}

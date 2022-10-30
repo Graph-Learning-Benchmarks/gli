@@ -10,7 +10,31 @@ Statistics:
 - Number of Classes: 7
 
 #### Citation
-
+- Original Source
+  + [Website](https://linqs.org/datasets/#cora)
+  + LICENSE: missing
+```
+@article{mccallum2000automating,
+  title={Automating the construction of internet portals with machine learning},
+  author={McCallum, Andrew Kachites and Nigam, Kamal and Rennie, Jason and Seymore, Kristie},
+  journal={Information Retrieval},
+  volume={3},
+  number={2},
+  pages={127--163},
+  year={2000},
+  publisher={Springer}
+}
+```
+```
+@inproceedings{lu:icml03,
+    title = {Link-Based Classification},
+    author = {Qing Lu and Lise Getoor},
+    booktitle = {International Conference on Machine Learning (ICML)},
+    year = {2003},
+    _publisher = {HP},
+    address = {Washington, DC, USA},
+}
+```
 ```
 @article{sen2008collective,
   title={Collective classification in network data},
@@ -20,6 +44,19 @@ Statistics:
   number={3},
   pages={93--93},
   year={2008}
+}
+```
+- Current Version
+  + [Website](https://github.com/kimiyoung/planetoid)
+  + LICENSE: [MIT](https://github.com/kimiyoung/planetoid/blob/master/LICENSE)
+```
+@inproceedings{yang2016revisiting,
+  title={Revisiting semi-supervised learning with graph embeddings},
+  author={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},
+  booktitle={International conference on machine learning},
+  pages={40--48},
+  year={2016},
+  organization={PMLR}
 }
 ```
 
