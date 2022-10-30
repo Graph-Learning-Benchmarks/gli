@@ -6,8 +6,7 @@
                 "description": "Node features of Citeseer dataset.",
                 "type": "float",
                 "format": "SparseTensor",
-                "file": "citeseer.npz",
-                "key": "node_feats"
+                "file": "citeseer_node_feats.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Citeseer dataset, int ranged from 1 to 6.",

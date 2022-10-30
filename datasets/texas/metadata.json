@@ -6,8 +6,7 @@
                 "description": "Node features of Texas dataset, 1/0-valued vectors.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "texas.npz",
-                "key": "node_feats"
+                "file": "texas_node_feats.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of texas dataset, int ranged from 0 to 4.",

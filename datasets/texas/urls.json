@@ -1,4 +1,5 @@
 {
-    "texas.npz": "https://drive.google.com/uc?id=10SKZiv9ipEteJp6DNlUm8g0fhCJyk2Ck&export=download",
-    "texas_task.npz": "https://drive.google.com/uc?id=144XdEWIBMSjqKfvdTSFZK0H2CT9x_CDf&export=download"
+    "texas.npz": "https://www.dropbox.com/s/c8qaxucu69lykvc/texas.npz",
+    "texas_node_feats.sparse.npz": "https://www.dropbox.com/s/powturl1vjvfgew/texas_node_feats.sparse.npz",
+    "texas_task.npz": "https://www.dropbox.com/s/jn6rjv0shgw6kbq/texas_task.npz"
 }

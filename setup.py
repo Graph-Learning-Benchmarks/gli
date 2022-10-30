@@ -11,7 +11,7 @@ install_requires = [
     "dgl>=0.6",
 ]
 
-test_requires = ["pytest", "pydocstyle", "pycodestyle", "pylint"]
+test_requires = ["pytest", "pydocstyle", "pycodestyle", "pylint", "pyyaml"]
 
 full_requires = install_requires
 

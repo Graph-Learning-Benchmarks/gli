@@ -6,8 +6,7 @@
                 "description": "Node features of Chameleon dataset, 1/0-valued vectors.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "chameleon.npz",
-                "key": "node_feats"
+                "file": "chameleon_node_feats.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Chameleon dataset, int ranged from 0 to 4.",

@@ -1,4 +1,5 @@
 {
-    "wisconsin.npz": "https://drive.google.com/uc?id=1R02M4RCnBsT7j33qJ7i7AnR2xuh-WVuR&export=download",
-    "wisconsin_task.npz": "https://drive.google.com/uc?id=1yvZSLbePf07pekVz2z0GKkK70aU8nhdo&export=download"
+  "wisconsin.npz": "https://www.dropbox.com/s/e7ey4shlla2cs8c/wisconsin.npz",
+  "wisconsin_node_feats.sparse.npz": "https://www.dropbox.com/s/nm2104053jrpcmv/wisconsin_node_feats.sparse.npz",
+  "wisconsin_task.npz": "https://www.dropbox.com/s/idigzr8u48q30wc/wisconsin_task.npz"
 }
