@@ -101,15 +101,16 @@ def degree_assortativity(nx_g):
     """Compute the degree assortativity coefficient."""
     if not check_direct(nx_g):
         nx_g = nx.Graph(nx_g)
-        return nx.degree_pearson_correlation_coefficient(nx_g)
+        out = nx.degree_pearson_correlation_coefficient(nx_g)
+        return out
     else:
         dic = {"in", "out"}
         out = []
         for i in dic:
             for j in dic:
-                out.append(nx.degree_pearson_correlation_coefficient(
-                    nx_g, x=i, y=j))
-        return out
+                out.append(np.round(nx.degree_pearson_correlation_coefficient(
+                    nx_g, x=i, y=j), 6))
+        return out[0], out[1], out[2], out[3]
 
 
 def edge_reciprocity(nx_g):
@@ -261,15 +262,31 @@ def get_feature_label(g):
     return normed_feature_matrix, label
 
 
-def sum_angular_distance_matrix_nan(x, y):
+def sum_angular_distance_matrix_nan(x, y, batch_size):
     """Compute summation of angular distance."""
-    inner_prod = x * y.transpose()
-    inner_prod.data = np.clip(inner_prod.data, -1.0, 1.0)
-    inner_prod.data = 1.0 - np.arccos(inner_prod.data) / np.pi
-    inner_prod.data[np.where(np.isnan(inner_prod.data))] = 1.0
-    # remaining numbers are zeros with arccos value = 0.5
-    return inner_prod.sum() + (np.prod(inner_prod.get_shape())
-                               - inner_prod.nnz) * 0.5
+    x_dim = x.shape[0]
+    y_dim = y.shape[0]
+    fsum = 0.0
+    x_start = 0
+    while x_start < x_dim:
+        # print("x pos: ", x_start)
+        x_end = min(x_start + batch_size, x_dim)
+        x_batch = x[x_start: x_end, :]
+
+        y_start = 0
+        while y_start < y_dim:
+            # print("y pos: ", y_start)
+            y_end = min(y_start + batch_size, y_dim)
+            y_batch = y[y_start: y_end, :]
+            inner_prod = np.dot(x_batch, y_batch.transpose())
+            inner_prod.data = np.clip(inner_prod.data, -1.0, 1.0)
+            inner_prod.data = 1.0 - np.arccos(inner_prod.data) / np.pi
+            # remaining numbers are zeros with arccos value = 0.5
+            fsum += (inner_prod.sum() + (np.prod(inner_prod.get_shape())
+                                         - inner_prod.nnz) * 0.5)
+            y_start += batch_size
+        x_start += batch_size
+    return fsum
 
 
 def feature_homogeneity(g):
@@ -287,9 +304,12 @@ def feature_homogeneity(g):
         idx_i = np.where(label_matrix == i)[0]
         vec_i = normed_feature_matrix[idx_i, :]
         for j in all_labels[label_idx:]:
+            # print(i, j)
             idx_j = np.where(label_matrix == j)[0]
             vec_j = normed_feature_matrix[idx_j, :]
-            the_sum = sum_angular_distance_matrix_nan(vec_i, vec_j)
+            batch_size = 10000
+            the_sum = sum_angular_distance_matrix_nan(vec_i, vec_j,
+                                                      batch_size=batch_size)
             # the total number of pairs
             the_count = len(idx_j) * len(idx_i)
             if i == j:
@@ -333,8 +353,7 @@ def homophily_hat(nx_g_attr):
     # nx_g = dgl.to_networkx(g, node_attrs=["NodeLabel"])
     nx_g_attr.remove_edges_from(list(nx.selfloop_edges(nx_g_attr)))
     label_dict = nx.get_node_attributes(nx_g_attr, "NodeLabel")
-    label_dict = [label_dict[x].item() for x in label_dict]
-    all_label = list(set(label_dict))
+    all_label = list(set(label_dict.values()))
     label_edge_dict = {}
     label_same_edge_dict = {}
     # Initialize
@@ -346,7 +365,7 @@ def homophily_hat(nx_g_attr):
     label_num_dict = {}
     node_num = nx_g_attr.number_of_nodes()
     for n in nx_g_attr.nodes(data=True):
-        label_name = n[1]["NodeLabel"].item()
+        label_name = n[1]["NodeLabel"]
         if label_name not in label_num_dict:
             label_num_dict[label_name] = 1
         else:
@@ -354,11 +373,11 @@ def homophily_hat(nx_g_attr):
 
     for n in nx_g_attr.nodes(data=True):
         # find n's neighbor
-        core_label = n[1]["NodeLabel"].item()
+        core_label = n[1]["NodeLabel"]
         # print("core label: ", core_label)
         for nb in nx_g_attr.neighbors(n[0]):
             label_edge_dict[core_label] += 1
-            nb_label = nx_g_attr.nodes[nb]["NodeLabel"].item()
+            nb_label = nx_g_attr.nodes[nb]["NodeLabel"]
             if core_label == nb_label:
                 label_same_edge_dict[core_label] += 1
     # output value
@@ -508,13 +527,18 @@ def main():
 
     nx_g = dgl.to_networkx(g)
     nx_g_attr = dgl.to_networkx(g, node_attrs=["NodeLabel"])
+    # convert from tensor to numerical value
+    for n in nx_g_attr:
+        nx_g_attr.nodes[n]["NodeLabel"] = \
+            nx_g_attr.nodes[n]["NodeLabel"].item()
+
     core_list = core_number_related(nx_g)
     print("common metrics: ")
     print(f"{directed(nx_g)}", nx_g.number_of_nodes(),
           nx_g.number_of_edges(),
           f"{edge_density(nx_g):.6f}",
           f"{avg_degree(nx_g):.6f}", f"{edge_reciprocity(nx_g):.6f}",
-          f"{degree_assortativity(nx_g):6f}",
+          f"{degree_assortativity(nx_g)}",
           f"{pseudo_diameter(nx_g)}",
           f"{relative_largest_cc(nx_g):.6f}",
           f"{relative_largest_scc(nx_g):6f}",
@@ -524,14 +548,14 @@ def main():
           f"{pareto_expo(nx_g):.6f}", f"{gini_degree(nx_g):.6f}",
           f"{gini_coreness(core_list):.6f}"
           )
-    in_avg, out_avg = feature_homogeneity(g)
-    print("attributed metrics: ")
-    print(f"{edge_homogeneity(nx_g_attr):.6f}",
-          f"{in_avg:.6f}", f"{out_avg:.6f}",
-          f"{in_avg / out_avg:.6f}",
-          f"{homophily_hat(nx_g_attr):.6f}",
-          f"{attribute_assortativity(nx_g_attr):.6f}"
-          )
+    # in_avg, out_avg = feature_homogeneity(g)
+    # print("attributed metrics: ")
+    # print(f"{edge_homogeneity(nx_g_attr):.6f}",
+    #       f"{in_avg:.6f}", f"{out_avg:.6f}",
+    #       f"{in_avg / out_avg:.6f}",
+    #       f"{homophily_hat(nx_g_attr):.6f}",
+    #       f"{attribute_assortativity(nx_g_attr):.6f}"
+    #       )
 
 
 if __name__ == "__main__":
