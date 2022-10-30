@@ -9,6 +9,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  - [Website](https://moleculenet.org)
+  - LICENSE: MIT
 ```
 @inproceedings{Wu2018Stanford,
   title={Moleculenet: a benchmark for molecular machine learning},
@@ -19,6 +21,8 @@ Statistics:
 }
 ```
 - Current Version
+  - [Website](https://github.com/snap-stanford/pretrain-gnns)
+  - MIT
 #### Citation
 ```
 @inproceedings{Hu2020Stanford,
@@ -49,4 +53,8 @@ The data files and task config file in GLI format are transformed from the OGB i
 The preprocessing code requires the following package.
 ```
 ogb >= 1.3.2
+torch_geometric
+numpy
+torch
+scipy
 ```
