@@ -9,6 +9,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](http://yann.lecun.com/exdb/mnist/)
+  + LICENSE: missing
 ```
 @ARTICLE{726791,
   author={Lecun, Y. and Bottou, L. and Bengio, Y. and Haffner, P.},
@@ -21,7 +23,20 @@ Statistics:
   doi={10.1109/5.726791}
   }
 ```
+- Current Version
+  + [Website](https://github.com/graphdeeplearning/benchmarking-gnns/tree/master/data/superpixels)
+  + LICENSE: [MIT](https://github.com/graphdeeplearning/benchmarking-gnns/blob/master/LICENSE)
+```
+@article{dwivedi2020benchmarking,
+  title={Benchmarking graph neural networks},
+  author={Dwivedi, Vijay Prakash and Joshi, Chaitanya K and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},
+  journal={arXiv preprint arXiv:2003.00982},
+  year={2020}
+}
+```
 - Previous Version
+  + [Website](https://github.com/bknyaz/graph_attention_pool/tree/master/data)
+  + LICENSE: [ECL-2.0](https://github.com/bknyaz/graph_attention_pool/blob/master/LICENSE.md)
 ```
 @article{knyazev2019understanding,
   title={Understanding attention and generalization in graph neural networks},
@@ -31,15 +46,7 @@ Statistics:
   year={2019}
 }
 ```
-- Current Version
-```
-@article{dwivedi2020benchmarking,
-  title={Benchmarking graph neural networks},
-  author={Dwivedi, Vijay Prakash and Joshi, Chaitanya K and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},
-  journal={arXiv preprint arXiv:2003.00982},
-  year={2020}
-}
-```
+
 ## Available Tasks
 ### [Benchmarking-gnns](https://github.com/graphdeeplearning/benchmarking-gnns/)
 - Task type:  `GraphClassification`

@@ -11,15 +11,21 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://www.cs.cmu.edu/~webkb/)
+  + LICENSE: missing
 ```
-@online{webkb,
-  author={WebKb Group},
-  title={CMU World Wide Knowledge Base},
-  date={2001-01},
-  url={http://www.cs.cmu.edu/afs/cs.cmu.edu/project/theo-11/www/wwkb/}
+@inproceedings{craven1998learning,
+  title={Learning to Extract Symbolic Knowledge from the World Wide Web},
+  author={CRAVEN, M},
+  booktitle={Proc. of the 15th National Conference on Artificial Intelligence},
+  pages={509--516},
+  year={1998},
+  organization={AAAI Press}
 }
 ```
 - Current Version
+  + [Website](https://github.com/graphdml-uiuc-jlu/geom-gcn)
+  + LICENSE: missing
 ```
 @article{pei2020geom,
   title={Geom-gcn: Geometric graph convolutional networks},
@@ -28,13 +34,25 @@ Statistics:
   year={2020}
 }
 ```
+- Previous Version
+  + [Website](https://linqs.org/datasets/#webkb)
+  + LICENSE: missing
+```
+@conference{lu:icml03,
+    title = {Link-Based Classification},
+    author = {Qing Lu and Lise Getoor},
+    booktitle = {International Conference on Machine Learning},
+    year = {2003},
+    _publisher = {HP},
+    address = {Washington, DC, USA},
+}
+```
+
 ## Available Tasks
 
 ### Webkb
 
 - Task type: `NodeClassification`
-
-This is a node classification task with fixed split from [Webkb](https://github.com/kimiyoung/planetoid).
 
 #### Citation
 

@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://github.com/cptq/genius-expertise)
+  + LICENSE: missing
   ```
   @inproceedings{lim2021expertise,
     title={Expertise and Dynamics within Crowdsourced Musical Knowledge Curation: A Case Study of the Genius Platform.},
@@ -21,6 +23,8 @@ Statistics:
   ```
 
 - Current Version
+  + [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  + LICENSE: missing
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},

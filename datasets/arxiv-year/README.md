@@ -15,6 +15,8 @@ Statistics:
 <a name="myfootnote3">[3]</a>: Lim, Derek, Felix Hohne, Xiuyu Li, Sijia Linda Huang, Vaishnavi Gupta, Omkar Bhalerao, and Ser Nam Lim. "Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods." Advances in Neural Information Processing Systems 34 (2021): 20887-20902.
 #### Citation
 - Original Source
+  + [Website](https://www.microsoft.com/en-us/research/project/microsoft-academic-graph/)
+  + LICENSE: missing
   ```
   @article{10.1162/qss_a_00021,
     author = {Wang, Kuansan and Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and Kanakia, Anshul},
@@ -31,9 +33,19 @@ Statistics:
     eprint = {https://direct.mit.edu/qss/article-pdf/1/1/396/1760880/qss\_a\_00021.pdf},
   }
   ```
+  ```
+  @inproceedings{sinha2015overview,
+    title={An overview of microsoft academic service (mas) and applications},
+    author={Sinha, Arnab and Shen, Zhihong and Song, Yang and Ma, Hao and Eide, Darrin and Hsu, Bo-June and Wang, Kuansan},
+    booktitle={Proceedings of the 24th international conference on world wide web},
+    pages={243--246},
+    year={2015}
+  }
+  ```
 
 - Current Version
-
+  + [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  + LICENSE: missing
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},
@@ -45,7 +57,9 @@ Statistics:
   }
   ```
 
-- Previou Version
+- Previous Version
+  + [Website](https://ogb.stanford.edu/docs/nodeprop/#ogbn-arxiv)
+  + LICENSE: [ODC-BY](https://ogb.stanford.edu/docs/nodeprop/#ogbn-arxiv)
   ```
   @article{hu2020open,
     title={Open graph benchmark: Datasets for machine learning on graphs},

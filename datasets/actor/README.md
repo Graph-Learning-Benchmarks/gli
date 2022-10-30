@@ -11,6 +11,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  + [Website](https://www.aminer.org/lab-datasets/soinf/)
+  + LICENSE: missing
 ```
 @inproceedings{tang2009social,
   title={Social influence analysis in large-scale networks},
@@ -21,6 +23,8 @@ Statistics:
   }
 ```
 - Current Version
+  + [Website](https://github.com/graphdml-uiuc-jlu/geom-gcn)
+  + LICENSE: missing
 ```
 @article{pei2020geom,
   title={Geom-gcn: Geometric graph convolutional networks},
