@@ -45,7 +45,7 @@
                 "key": "edge_list"
             }
         }
-        
+
     },
     "citation": "@Misc{Bhatia16,\nauthor    = {Bhatia, K. and Dahiya, K. and Jain, H. and Kar, P. and Mittal, A. and Prabhu, Y. and Varma, M.},\ntitle     = {The extreme classification repository: Multi-label datasets and code},\nurl       = {http://manikvarma.org/downloads/XC/XMLRepository.html},\nyear      = {2016}}",
     "is_heterogeneous": false

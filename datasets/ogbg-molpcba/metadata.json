@@ -30,7 +30,7 @@
             },
             "GraphLabel": {
                 "file": "ogbg-molpcba.npz",
-                "type": "int",                
+                "type": "int",
                 "format": "Tensor",
                 "key": "graph_class"
             }

@@ -13,7 +13,7 @@ Statistics:
 - Original Source
 ```
 @inproceedings{
-  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
+  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},
   title={Moleculenet: a benchmark for molecular machine learning},
   booktitle={Chemical Science},
   year={2018},

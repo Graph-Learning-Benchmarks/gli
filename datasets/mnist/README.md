@@ -12,8 +12,8 @@ Statistics:
 ```
 @ARTICLE{726791,
   author={Lecun, Y. and Bottou, L. and Bengio, Y. and Haffner, P.},
-  journal={Proceedings of the IEEE}, 
-  title={Gradient-based learning applied to document recognition}, 
+  journal={Proceedings of the IEEE},
+  title={Gradient-based learning applied to document recognition},
   year={1998},
   volume={86},
   number={11},
@@ -23,7 +23,7 @@ Statistics:
 ```
 - Current Version
 #### Citation
-``` 
+```
 @misc{https://doi.org/10.48550/arxiv.2003.00982,
   doi = {10.48550/ARXIV.2003.00982},
   url = {https://arxiv.org/abs/2003.00982},
@@ -41,7 +41,7 @@ Statistics:
 - Task type:  `GraphClassification`
 
 #### Citation
-``` 
+```
 @misc{https://doi.org/10.48550/arxiv.2003.00982,
   doi = {10.48550/ARXIV.2003.00982},
   url = {https://arxiv.org/abs/2003.00982},
@@ -56,7 +56,7 @@ Statistics:
 ```
 
 ## Preprocessing
-The data files and task config file in GLI format are transformed from the DGL implementation. 
+The data files and task config file in GLI format are transformed from the DGL implementation.
 
 ### Requirements
 The preprocessing code requires the following package.

@@ -21,22 +21,22 @@
   # attributes other than three reserved ones: _Edge, _NodeList, _EdgeList.
   "data": {
 
-    # The node-level attributes. 
+    # The node-level attributes.
     # The attributes of this level are typically node labels or node features.
     "Node": {},
 
     # The edge-level attributes.
-    # The attributes of this level are typically edge labels or edge features. 
+    # The attributes of this level are typically edge labels or edge features.
     "Edge": {
 
       # The edges of the graph. (required)
-      # A tensor in shape (n_edges, 2). _Edge[i] stores the i-th edge in the 
+      # A tensor in shape (n_edges, 2). _Edge[i] stores the i-th edge in the
       # form of (src_node_id, dst_node_id).
       "_Edge": {
 
         # Path to the saved npz data. (required)
         "file": "",
-        
+
         # Key index of the saved npz data. (optional)
         "key": ""
       }

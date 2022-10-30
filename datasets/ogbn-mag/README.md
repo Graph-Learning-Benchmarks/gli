@@ -5,8 +5,8 @@ The ogbn-mag dataset is a heterogeneous network composed of a subset of the Micr
 
 
 Statistics:
-- Nodes: 
-  - papers (736,389 nodes) 
+- Nodes:
+  - papers (736,389 nodes)
   - authors (1,134,649 nodes)
   - institutions (8,740 nodes)
   - fields of study (59,965 nodes)

@@ -12,7 +12,7 @@ Statistics:
 ```
 @inproceedings{Wu2018Stanford,
   title={Moleculenet: a benchmark for molecular machine learning},
-  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande}, 
+  author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},
   booktitle={Chemical Science},
   year={2018},
   pages={513-530}
@@ -20,7 +20,7 @@ Statistics:
 ```
 - Current Version
 #### Citation
-``` 
+```
 @inproceedings{Hu2020Stanford,
   title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
   author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
@@ -33,7 +33,7 @@ Statistics:
 - Task type:  `GraphRegression`
 
 #### Citation
-``` 
+```
 @inproceedings{Hu2020Stanford,
   title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
   author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
@@ -43,7 +43,7 @@ Statistics:
 ```
 
 ## Preprocessing
-The data files and task config file in GLI format are transformed from the OGB implementation. 
+The data files and task config file in GLI format are transformed from the OGB implementation.
 
 ### Requirements
 The preprocessing code requires the following package.
