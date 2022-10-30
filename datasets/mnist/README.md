@@ -1,7 +1,7 @@
 # MNIST
 ## Data Description
 
-*MNIST* database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits that is commonly used for training various image processing systems. The database is also widely used for training and testing in the field of machine learning. It was created by "re-mixing" the samples from NIST's original datasets
+*MNIST* is a large database of handwritten digits that is commonly used for training various image processing systems. The database is also widely used for training and testing in the field of machine learning. In this dataset, the original images are converted to graphs using superpixels, which represent small regions of homogeneous intensity in images. For each image, the nodes are superpixels and the graph is a k-nearest neighbor graph on the superpixels.
 
 Statistics:
 - Nodes: 4939668
@@ -21,19 +21,24 @@ Statistics:
   doi={10.1109/5.726791}
   }
 ```
+- Previous Version
+```
+@article{knyazev2019understanding,
+  title={Understanding attention and generalization in graph neural networks},
+  author={Knyazev, Boris and Taylor, Graham W and Amer, Mohamed},
+  journal={Advances in neural information processing systems},
+  volume={32},
+  year={2019}
+}
+```
 - Current Version
 ```
-@misc{https://doi.org/10.48550/arxiv.2003.00982,
-  doi = {10.48550/ARXIV.2003.00982},
-  url = {https://arxiv.org/abs/2003.00982},
-  author = {Dwivedi, Vijay Prakash and Joshi, Chaitanya K. and Luu, Anh Tuan and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},
-  keywords = {Machine Learning (cs.LG), Machine Learning (stat.ML), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  title = {Benchmarking Graph Neural Networks},
-  publisher = {arXiv},
-  year = {2020},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@article{dwivedi2020benchmarking,
+  title={Benchmarking graph neural networks},
+  author={Dwivedi, Vijay Prakash and Joshi, Chaitanya K and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},
+  journal={arXiv preprint arXiv:2003.00982},
+  year={2020}
 }
-
 ```
 ## Available Tasks
 ### [Benchmarking-gnns](https://github.com/graphdeeplearning/benchmarking-gnns/)
@@ -41,21 +46,16 @@ Statistics:
 
 #### Citation
 ```
-@misc{https://doi.org/10.48550/arxiv.2003.00982,
-  doi = {10.48550/ARXIV.2003.00982},
-  url = {https://arxiv.org/abs/2003.00982},
-  author = {Dwivedi, Vijay Prakash and Joshi, Chaitanya K. and Luu, Anh Tuan and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},
-  keywords = {Machine Learning (cs.LG), Machine Learning (stat.ML), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  title = {Benchmarking Graph Neural Networks},
-  publisher = {arXiv},
-  year = {2020},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@article{dwivedi2020benchmarking,
+  title={Benchmarking graph neural networks},
+  author={Dwivedi, Vijay Prakash and Joshi, Chaitanya K and Laurent, Thomas and Bengio, Yoshua and Bresson, Xavier},
+  journal={arXiv preprint arXiv:2003.00982},
+  year={2020}
 }
-
 ```
 
 ## Preprocessing
-The data files and task config file in GLI format are transformed from the DGL implementation.
+The data files and task config file in GLI format are transformed from the [benchmarking-gnns repository](https://github.com/graphdeeplearning/benchmarking-gnns/).
 
 ### Requirements
 The preprocessing code requires the following package.
