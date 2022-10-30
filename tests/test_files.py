@@ -63,7 +63,6 @@ def test_if_has_essential_files(dataset_name):
     Recursively check if task.json file(s) and
     metadata.json file exist in all datasets.
     """
-    violations = None
     directory = find_datasets_abs_path(dataset_name)
     errors = check_file_name(os.listdir(directory), dataset_name)
 
