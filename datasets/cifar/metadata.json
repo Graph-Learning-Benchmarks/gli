@@ -25,8 +25,7 @@
         },
         "Graph": {
             "_NodeList": {
-                "file": "cifar.npz",
-                "key": "node_list"
+                "file": "cifar_node_list.sparse.npz"
             },
             "GraphLabel": {
                 "file": "cifar.npz",

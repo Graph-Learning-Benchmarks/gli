@@ -25,8 +25,7 @@
         },
         "Graph": {
             "_NodeList": {
-                "file": "mnist.npz",
-                "key": "node_list"
+                "file": "mnist_node_list.sparse.npz"
             },
             "GraphLabel": {
                 "file": "mnist.npz",

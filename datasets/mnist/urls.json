@@ -1,4 +1,5 @@
 {
-    "mnist.npz": "https://drive.google.com/uc?id=1n-Y7kOzVLzr0rDn82vBLUVJRtAKetPUJ&export=download",
-    "mnist_task.npz": "https://drive.google.com/uc?id=1ttLny5crSsdv3GZfclm2oOm2q82BCaFU&export=download"
+    "mnist.npz": "https://www.dropbox.com/s/ah0sc5npyzxwyr1/mnist.npz",
+    "mnist_node_list.sparse.npz": "https://www.dropbox.com/s/w3vad00iqihvltf/mnist_node_list.sparse.npz",
+    "mnist_task.npz": "https://www.dropbox.com/s/fex1cvzrxbqre0q/mnist_task.npz"
 }

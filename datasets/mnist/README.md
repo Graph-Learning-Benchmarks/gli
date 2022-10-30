@@ -22,7 +22,6 @@ Statistics:
   }
 ```
 - Current Version
-#### Citation
 ```
 @misc{https://doi.org/10.48550/arxiv.2003.00982,
   doi = {10.48550/ARXIV.2003.00982},
@@ -60,6 +59,10 @@ The data files and task config file in GLI format are transformed from the DGL i
 
 ### Requirements
 The preprocessing code requires the following package.
+
 ```
 numpy >= 1.21.5
+scikit-learn >= 0.24.2
+scipy >= 1.5.4
+torch >= 1.10.2
 ```

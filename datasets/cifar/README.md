@@ -25,8 +25,17 @@ Statistics:
   year = 2009
 }
 ```
+- Previous Version
+```
+@article{knyazev2019understanding,
+  title={Understanding attention and generalization in graph neural networks},
+  author={Knyazev, Boris and Taylor, Graham W and Amer, Mohamed},
+  journal={Advances in neural information processing systems},
+  volume={32},
+  year={2019}
+}
+```
 - Current Version
-#### Citation
 ```
 @misc{https://doi.org/10.48550/arxiv.2003.00982,
   doi = {10.48550/ARXIV.2003.00982},
@@ -40,6 +49,7 @@ Statistics:
 }
 
 ```
+
 ## Available Tasks
 ### [Benchmarking-gnns](https://github.com/graphdeeplearning/benchmarking-gnns/)
 - Task type:  `GraphClassification`
@@ -64,6 +74,10 @@ The data files and task config file in GLI format are transformed from the DGL i
 
 ### Requirements
 The preprocessing code requires the following package.
+
 ```
 numpy >= 1.21.5
+scikit-learn >= 0.24.2
+scipy >= 1.5.4
+torch >= 1.10.2
 ```
