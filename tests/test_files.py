@@ -72,5 +72,6 @@ def test_if_has_essential_files(dataset_name):
         for err in errors:
             print(err)
         print(
-            "Please check if the above file(s) are present and correctly named.")
+            "Please check if the above file(s) are present and "
+            "correctly named.")
     assert len(errors) == 0
