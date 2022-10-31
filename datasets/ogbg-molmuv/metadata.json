@@ -25,8 +25,7 @@
         },
        "Graph": {
             "_NodeList": {
-                "file": "ogbg-molmuv.npz",
-                "key": "node_list"
+                "file": "ogbg-molmuv_node_list.sparse.npz"
             },
             "GraphLabel": {
                 "file": "ogbg-molmuv.npz",
