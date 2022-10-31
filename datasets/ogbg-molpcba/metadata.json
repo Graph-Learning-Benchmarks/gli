@@ -25,8 +25,7 @@
         },
        "Graph": {
             "_NodeList": {
-                "file": "ogbg-molpcba.npz",
-                "key": "node_list"
+                "file": "ogbg-molpcba_node_list.sparse.npz"
             },
             "GraphLabel": {
                 "file": "ogbg-molpcba.npz",
