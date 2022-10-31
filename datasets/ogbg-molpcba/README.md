@@ -7,13 +7,16 @@ Statistics:
 2. Edges: 11373137
 
 #### Citation
+- Original Source
+  - [Website](https://moleculenet.org)
+  - LICENSE: MIT
 ```
 @inproceedings{Wu2018Stanford,
   title={Moleculenet: a benchmark for molecular machine learning},
   author={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},
   booktitle={Chemical Science},
-  pages={513=520},
-  year={2018}
+  year={2018},
+  pages={513-530}
 }
 ```
 
@@ -38,4 +41,8 @@ The data files and task config file in GLI format are transformed from the OGB i
 The preprocessing code requires the following package.
 ```
 ogb >= 1.3.2
+torch_geometric
+numpy
+torch
+scipy
 ```
