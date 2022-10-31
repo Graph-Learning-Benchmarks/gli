@@ -18,17 +18,14 @@
             "EdgeFeature": {
                 "description": "Node features of ogbg-molhiv dataset.",
                 "type": "int",
-                "format": "SparseTensor",
+                "format": "Tensor",
                 "file": "ogbg-molhiv.npz",
                 "key": "edge_feats"
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "ogbg-molhiv.npz",
-                "type": "int",
-                "format": "SparseTensor",
-                "key": "node_list"
+                "file": "ogbg-molhiv_node_list.sparse.npz"
             },
             "GraphLabel": {
                 "file": "ogbg-molhiv.npz",

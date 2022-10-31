@@ -53,7 +53,10 @@ Data file(s) is transformed from [OGB](https://ogb.stanford.edu/). Check ogbg-mo
 
 The preprocessing code requires the following packages.
 
+The preprocessing code requires the following package.
 ```
-scipy==1.7.1
-ogb==1.3.2
+ogb >= 1.3.2
+numpy
+torch
+scipy
 ```
