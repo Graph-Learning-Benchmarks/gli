@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+  - [Website](https://direct.mit.edu/qss/article/1/1/396/15572/Microsoft-Academic-Graph-When-experts-are-not)
+  - LICENSE: Missing
 ```
 @inproceedings{Wu2018Stanford,
   title={Microsoft academic graph: When experts are not enough. },
@@ -20,13 +22,13 @@ Statistics:
 }
 ```
 - Current Version
+  - [Website](https://ogb.stanford.edu/docs/linkprop/)
+  - LICENSE: [ODC-BY](https://ogb.stanford.edu/docs/linkprop/)
 ```
-@inproceedings{
-  title={Distributed representationsof words and phrases and their compositionality},
-  author={Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg S Corrado, and Jeff Dean},
-  booktitle={In Advances in Neural Information Processing Systems (NeurIPS)},
-  pages={3111=3119},
-  year={2013}
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
 }
 ```
 
@@ -52,4 +54,6 @@ The data files and task config file in GLI format are transformed from the OGB i
 The preprocessing code requires the following package.
 ```
 ogb >= 1.1.1
+numpy
+torch
 ```
