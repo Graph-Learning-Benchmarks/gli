@@ -373,6 +373,7 @@ def save_data(prefix, **kwargs):
         elif isinstance(matrix, np.ndarray):
             dense_arrays[key] = matrix
         elif matrix is None:
+            print(f"{key} is None object. Skipping.")
             continue
         else:
             raise TypeError(f"Unsupported format {type(matrix)}.")
