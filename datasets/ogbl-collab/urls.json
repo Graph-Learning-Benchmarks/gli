@@ -1,2 +1,5 @@
 {
+  "ogbl_collab.npz": "https://www.dropbox.com/s/cgfx72ajyp77ab4/ogbl_collab.npz",
+  "ogbl_collab_task_prestore_neg.npz": "https://www.dropbox.com/s/7ezg5kb19cjsw8p/ogbl_collab_task_prestore_neg.npz",
+  "ogbl_collab_task_runtime_sampling.npz": "https://www.dropbox.com/s/8rkdseccdt8al4p/ogbl_collab_task_runtime_sampling.npz"
 }

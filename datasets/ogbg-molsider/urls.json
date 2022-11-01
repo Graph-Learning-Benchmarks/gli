@@ -1,2 +1,5 @@
 {
+  "ogbg_molsider.npz": "https://www.dropbox.com/s/195h34u6mev80uw/ogbg_molsider.npz",
+  "ogbg_molsider_node_list.sparse.npz": "https://www.dropbox.com/s/abvodycduaihtue/ogbg_molsider_node_list.sparse.npz",
+  "ogbg_molsider_task.npz": "https://www.dropbox.com/s/yr8qr1tlp6fy28l/ogbg_molsider_task.npz"
 }
