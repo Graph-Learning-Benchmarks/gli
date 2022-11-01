@@ -181,7 +181,7 @@ def get_gli_task(dataset: str,
         "GraphClassification": "graph_classification",
         "LinkPrediction": "link_prediction",
         "TimeDependentLinkPrediction": "time_dependent_link_prediction",
-        "KGRelationPrediction": "kg_relation_predication",
+        "KGRelationPrediction": "kg_relation_prediction",
         "KGEntityPrediction": "kg_entity_prediction",
         "GraphRegression": "graph_regression",
         "NodeRegression": "node_regression"
