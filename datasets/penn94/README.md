@@ -10,6 +10,9 @@ Statistics:
 
 #### Citation
 - Original Source
+  
+  - Website: Data URL expired
+  - LICENSE: missing
   ```
   @article{TRAUD20124165,
     title = {Social structure of Facebook networks},
@@ -26,6 +29,8 @@ Statistics:
   ```
 - Current Version
 
+  - [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  - LICENSE: missing
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},

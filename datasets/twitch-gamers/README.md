@@ -10,6 +10,9 @@ Statistics:
 
 #### Citation
 - Original Source
+  
+  - [Website](https://github.com/benedekrozemberczki/datasets)
+  - LICENSE: [MIT](https://github.com/benedekrozemberczki/datasets/blob/master/LICENSE)
   ```
   @article{rozemberczki2021twitch,
     title={Twitch gamers: a dataset for evaluating proximity preserving and structural role-based node embeddings},
@@ -19,6 +22,9 @@ Statistics:
   }
   ```
 - Current Version
+
+  - [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  - LICENSE: missing
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},

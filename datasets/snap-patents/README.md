@@ -10,6 +10,11 @@ Statistics:
 
 #### Citation
 - Original Source
+  
+  - [Website](https://snap.stanford.edu/data/cit-Patents.html)
+  
+  - LICENSE: missing
+  
   ```
   @misc{snapnets,
     author = {Jure Leskovec and Andrej Krevl},
@@ -19,8 +24,11 @@ Statistics:
     year = 2014
   }
   ```
-
+  
 - Current Version
+
+  - [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  - LICENSE: missing
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},
@@ -33,6 +41,8 @@ Statistics:
   ```
 
 - Previous Version
+
+  - LICENSE: missing
   ```
   @inproceedings{leskovec2005graphs,
     title={Graphs over time: densification laws, shrinking diameters and possible explanations},
@@ -42,6 +52,7 @@ Statistics:
     year={2005}
   }
   ```
+
 ## Available Tasks
 
 ### snap-patents

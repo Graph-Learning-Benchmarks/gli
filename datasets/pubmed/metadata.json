@@ -6,8 +6,7 @@
                 "description": "Node features of Pubmed dataset.",
                 "type": "float",
                 "format": "SparseTensor",
-                "file": "pubmed.npz",
-                "key": "node_feats"
+                "file": "pubmed_node_feats.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Pubmed dataset, int ranged from 1 to 3.",

@@ -1,4 +1,5 @@
 {
-    "pubmed.npz": "https://drive.google.com/uc?id=1UUNeVINscHIPXawWc8BfCP8dSPwqSdPL&export=download",
-    "pubmed_task.npz": "https://drive.google.com/uc?id=1XfxNtlm5IDYiQ2OMrKjzx3aaz8hNGjXF&export=download"
+    "pubmed.npz": "https://www.dropbox.com/s/sespzczsi6rkt18/pubmed.npz",
+    "pubmed_task.npz": "https://www.dropbox.com/s/sn68zzu8zv808bx/pubmed_task.npz",
+    "pubmed_node_feats.sparse.npz": "https://www.dropbox.com/s/ozn2c6r9roua0yu/pubmed_node_feats.sparse.npz"
 }

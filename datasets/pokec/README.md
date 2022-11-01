@@ -10,6 +10,21 @@ Statistics:
 
 #### Citation
 - Original Source
+
+  - [Website](http://snap.stanford.edu/data/soc-Pokec.html)
+  - LICENSE: missing
+  ```
+  @inproceedings{takac2012data,
+    title={Data analysis in public social networks},
+    author={Takac, Lubos and Zabovsky, Michal},
+    booktitle={International scientific conference and international workshop present day trends of innovations},
+    volume={1},
+    number={6},
+    year={2012},
+    organization={Present Day Trends of Innovations Lamza Poland}
+  }
+  ```
+
   ```
   @misc{snapnets,
     author = {Jure Leskovec and Andrej Krevl},
@@ -19,7 +34,12 @@ Statistics:
     year = 2014
   }
   ```
+
 - Current Version
+
+- - [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  - LICENSE: missing
+
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},
