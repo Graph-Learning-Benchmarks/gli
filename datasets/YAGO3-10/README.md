@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+	- [Website](https://yago-knowledge.org/)
+	- LICENSE: [MIT](https://creativecommons.org/licenses/by/4.0/)
 ```
 @inproceedings{suchanek2007yago,
     title={Yago: a core of semantic knowledge},
@@ -20,6 +22,8 @@ Statistics:
 }
 ```
 - Current Version
+	- [Website](https://github.com/thunlp/OpenKE)
+	- LICENSE: missing
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
@@ -29,6 +33,8 @@ Statistics:
 }
 ```
 - Previous Version
+	- [Website](https://yago-knowledge.org/downloads/yago-3)
+	- LICENSE: missing
 ```
 @inproceedings{mahdisoltani2014yago3,
     title={Yago3: A knowledge base from multilingual wikipedias},

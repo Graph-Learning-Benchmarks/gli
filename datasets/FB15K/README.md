@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+	- [Website](https://developers.google.com/freebase/guide/basic_concepts)
+	- LICENSE: missing
 ```
 @inproceedings{10.1145/1376616.1376746,
     author = {Bollacker, Kurt and Evans, Colin and Paritosh, Praveen and Sturge, Tim and Taylor, Jamie},
@@ -30,6 +32,8 @@ Statistics:
 }
 ```
 - Current Version
+	- [Website](https://github.com/thunlp/OpenKE)
+	- LICENSE: missing
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
@@ -39,6 +43,8 @@ Statistics:
 }
 ```
 - Previous Version
+	- [Website](https://aclanthology.org/D15-1174/)
+	- LICENSE: missing
 ```
 @inproceedings{toutanova2015representing,
     title={Representing text for joint embedding of text and knowledge bases},

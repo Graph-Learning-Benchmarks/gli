@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+	- [Website](https://aclanthology.org/D17-1060/)
+	- LICENSE: missing
 ```
 @article{xiong2017deeppath,
   title={Deeppath: A reinforcement learning method for knowledge graph reasoning},
@@ -19,6 +21,8 @@ Statistics:
 }
 ```
 - Current Version
+	- [Website](https://dl.acm.org/doi/abs/10.1016/j.websem.2019.01.004)
+	- LICENSE: missing
 ```
 @article{padia2019knowledge,
     title={Knowledge graph fact prediction via knowledge-enriched tensor factorization},
@@ -31,6 +35,8 @@ Statistics:
 }
 ```
 - Previous Version
+	- [Website](https://github.com/thunlp/OpenKE)
+	- LICENSE: missing
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},

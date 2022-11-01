@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+	- [Website](https://developers.google.com/freebase/guide/basic_concepts)
+	- LICENSE: missing
 ```
 @inproceedings{10.1145/1376616.1376746,
     author = {Bollacker, Kurt and Evans, Colin and Paritosh, Praveen and Sturge, Tim and Taylor, Jamie},
@@ -31,6 +33,8 @@ Statistics:
 ```
 
 - Current Version
+	- [Website](https://github.com/thunlp/OpenKE)
+	- LICENSE: missing
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
@@ -41,6 +45,8 @@ Statistics:
 ```
 
 - Previous Version
+	- [Website](https://papers.nips.cc/paper/2013/hash/b337e84de8752b27eda3a12363109e80-Abstract.html)
+	- LICENSE: missing
 ```
 @article{socher2013reasoning,
     title={Reasoning with neural tensor networks for knowledge base completion},

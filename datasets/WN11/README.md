@@ -10,6 +10,8 @@ Statistics:
 
 #### Citation
 - Original Source
+	- [Website](https://wordnet.princeton.edu/)
+	- LICENSE: [MIT](https://wordnet.princeton.edu/license-and-commercial-use)
 ```
 @book{miller1998wordnet,
     title={WordNet: An electronic lexical database},
@@ -19,6 +21,8 @@ Statistics:
 }
 ```
 - Current Version
+	- [Website](https://github.com/thunlp/OpenKE)
+	- LICENSE: missing
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
