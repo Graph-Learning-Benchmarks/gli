@@ -176,9 +176,14 @@ def load_data(path, key=None, device="cpu"):
     # Dense arrays file with a key
     raw = np.load(path, allow_pickle=False)
     assert key is not None
-    array = raw.get(key)
+    array: np.ndarray = raw.get(key)
     raw.close()
-    return torch.from_numpy(array).to(device)
+    try:
+        torch_tensor = torch.from_numpy(array)
+    except TypeError:
+        print(f"Non supported np.ndarray type {array.dtype}.")
+        return None
+    return torch_tensor.to(device)
 
 
 def sparse_to_torch(sparse_array: sp.spmatrix,
