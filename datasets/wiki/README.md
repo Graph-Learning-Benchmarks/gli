@@ -13,6 +13,9 @@ Statistics:
 
 #### Citation
 - Original Source
+  
+  - [Website](https://github.com/CUAI/Non-Homophily-Large-Scale)
+  - LICENSE: missing
   ```
   @article{lim2021large,
     title={Large scale learning on non-homophilous graphs: New benchmarks and strong simple methods},
