@@ -27,7 +27,7 @@ Statistics:
 }
 ```
 - Current Version
-  + [Website](https://github.com/graphdml-uiuc-jlu/geom-gcn/tree/master/new_data/)
+  + [Website](https://github.com/graphdml-uiuc-jlu/geom-gcn)
   + LICENSE: missing
 ```
 @article{pei2020geom,
