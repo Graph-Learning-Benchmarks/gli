@@ -1,5 +1,5 @@
 {
-    "ogbl-collab.npz": "https://drive.google.com/uc?id=1dbx-lBrH8iI3O1UY_34GevLG3mYuclIZ&export=download",
-    "ogbl-collab_task_runtime_sampling.npz": "https://drive.google.com/uc?id=1WasBUF4VGzJ8mJ1THJv9E2UN6QQ8ZbJN&export=download",
-    "ogbl-collab_task_prestore_neg.npz": "https://drive.google.com/uc?id=1pNaDiAgHO2UT5X1EWcW4wtNFYdGHLrQa&export=download"
+  "ogbl-collab.npz": "https://www.dropbox.com/s/cgfx72ajyp77ab4/ogbl-collab.npz",
+  "ogbl-collab_task_prestore_neg.npz": "https://www.dropbox.com/s/7ezg5kb19cjsw8p/ogbl-collab_task_prestore_neg.npz",
+  "ogbl-collab_task_runtime_sampling.npz": "https://www.dropbox.com/s/8rkdseccdt8al4p/ogbl-collab_task_runtime_sampling.npz"
 }

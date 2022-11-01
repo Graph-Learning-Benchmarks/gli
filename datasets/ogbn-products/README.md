@@ -13,8 +13,9 @@ Statistics:
 
 #### Citation
 - Original Source
+  - [Website](http://manikvarma.org/downloads/XC/XMLRepository.html)
+  - LICENSE: missing
 ```
-
 @Misc{Bhatia16,
           author    = {Bhatia, K. and Dahiya, K. and Jain, H. and Kar, P. and Mittal, A. and Prabhu, Y. and Varma, M.},
           title     = {The extreme classification repository: Multi-label datasets and code},
@@ -22,7 +23,9 @@ Statistics:
           year      = {2016}
         }
 ```
-- Current Version
+- Previous Version
+  - [Website](https://github.com/zhengjingwei/cluster_GCN)
+  - LICENSE: missing
 ```
 @inproceedings{
   title={Cluster-GCN: An efficient algorithm for training deep and large graph convolutional networks.},
@@ -30,6 +33,17 @@ Statistics:
   booktitle=ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD)},
   pages={257=266},
   year={2019}
+}
+```
+
+- Current Version
+  - [Website](https://ogb.stanford.edu/docs/nodeprop/)
+  - LICENSE: [Amazon](https://s3.amazonaws.com/amazon-reviews-pds/license.txt)
+```
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
 }
 ```
 

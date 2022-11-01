@@ -1,4 +1,5 @@
 {
-    "ogbg-molbace.npz": "https://drive.google.com/uc?id=1uAQ73QCgL9I7HGi-A1Pe_0PXg-EiuRHr&export=download",
-    "ogbg-molbace_task.npz": "https://drive.google.com/uc?id=1D37ddKOSuPK9YwAv8CuDZcfgUgdqHlmK&export=download"
+  "ogbg-molbace.npz": "https://www.dropbox.com/s/589ts6jzhoj4uzx/ogbg-molbace.npz",
+  "ogbg-molbace_node_list.sparse.npz": "https://www.dropbox.com/s/ch7skyraoc0p6kz/ogbg-molbace_node_list.sparse.npz",
+  "ogbg-molbace_task.npz": "https://www.dropbox.com/s/vygwslff9w6wcfp/ogbg-molbace_task.npz"
 }

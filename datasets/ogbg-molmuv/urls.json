@@ -1,4 +1,5 @@
 {
-    "ogbg-molmuv.npz": "https://drive.google.com/uc?id=1l1KDtyXuhTBU9Qk9NQjSgBICSrSzzE4a&export=download",
-    "ogbg-molmuv_task.npz": "https://drive.google.com/uc?id=1iekkqbxQE0PsoSxsOP0mZAmM1rqrfLbn&export=download"
+  "ogbg-molmuv.npz": "https://www.dropbox.com/s/tyx0onwr59ocmb3/ogbg-molmuv.npz",
+  "ogbg-molmuv_node_list.sparse.npz": "https://www.dropbox.com/s/j9xlvvmk8mrk0kj/ogbg-molmuv_node_list.sparse.npz",
+  "ogbg-molmuv_task.npz": "https://www.dropbox.com/s/g54ihs58z3walox/ogbg-molmuv_task.npz"
 }

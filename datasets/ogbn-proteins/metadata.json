@@ -1,59 +1,51 @@
 {
-    "description": "ogbn-proteins dataset.",
-    "data": {
-        "Node": {
-            "NodeFeature": {
-                "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-proteins.npz",
-                "key": "node_feats"
-            },
-            "NodeSpecies":{
-                "description": "Species of the proteins represented by the node",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-proteins.npz",
-                "key": "node_species"
-            },
-            "NodeLabel":{
-                "description": "Labels of the proteins represented by the node",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-proteins.npz",
-                "key": "node_label"
-            }
-        },
-        "Edge": {
-            "_Edge": {
-                "file": "ogbn-proteins.npz",
-                "key": "edge"
-            },
-            "EdgeFeature" :{
-                "description": "Numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of edge features and i-th row represents the feature of i-th edge. This can be None if no input edge features are available.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-proteins.npz",
-                "key": "edge_feats"
-            },
-            "ID" :{
-                "description": "ID of the edge, range from 0 to 30387995",
-                "file": "ogbn-proteins.npz",
-                "key": "edge_id"
-            }
-        },
-       "Graph": {
-            "_NodeList": {
-                "file": "ogbn-proteins.npz",
-                "key": "node_list"
-            },
-            "_EdgeList": {
-                "file": "ogbn-proteins.npz",
-                "key": "edge_list"
-            }
-        }
-
+  "description": "ogbn-proteins dataset.",
+  "data": {
+    "Node": {
+      "NodeSpecies": {
+        "description": "Species of the proteins represented by the node",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbn-proteins.npz",
+        "key": "node_species"
+      },
+      "NodeLabel": {
+        "description": "Labels of the proteins represented by the node",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbn-proteins.npz",
+        "key": "node_label"
+      }
     },
-    "citation": "@inproceedings{title={STRING v11: protein–protein association networks with increased coverage, supporting functional discovery in genome-wide experimental datasets.},\nauthor={Damian Szklarczyk, Annika L Gable, David Lyon, Alexander Junge, Stefan Wyder, Jaime Huerta- Cepas, Milan Simonovic, Nadezhda T Doncheva, John H Morris, Peer Bork, et al.},\nbooktitle={Nucleic Acids Research},\npages={607=613},\nyear={2029}}",
-    "is_heterogeneous": false
+    "Edge": {
+      "_Edge": {
+        "file": "ogbn-proteins.npz",
+        "key": "edge"
+      },
+      "EdgeFeature": {
+        "description": "Numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of edge features and i-th row represents the feature of i-th edge. This can be None if no input edge features are available.",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbn-proteins.npz",
+        "key": "edge_feats"
+      },
+      "ID": {
+        "description": "ID of the edge, range from 0 to 30387995",
+        "file": "ogbn-proteins.npz",
+        "key": "edge_id"
+      }
+    },
+    "Graph": {
+      "_NodeList": {
+        "file": "ogbn-proteins.npz",
+        "key": "node_list"
+      },
+      "_EdgeList": {
+        "file": "ogbn-proteins.npz",
+        "key": "edge_list"
+      }
+    }
+  },
+  "citation": "@inproceedings{title={STRING v11: protein–protein association networks with increased coverage, supporting functional discovery in genome-wide experimental datasets.},\nauthor={Damian Szklarczyk, Annika L Gable, David Lyon, Alexander Junge, Stefan Wyder, Jaime Huerta- Cepas, Milan Simonovic, Nadezhda T Doncheva, John H Morris, Peer Bork, et al.},\nbooktitle={Nucleic Acids Research},\npages={607=613},\nyear={2029}}",
+  "is_heterogeneous": false
 }

@@ -1,4 +1,4 @@
 {
-    "ogbn-mag.npz": "https://drive.google.com/uc?id=1GTmX8qS9xDY4g1RNAA9tGEsXlxj-I2Tf&export=download",
-    "ogbn-mag_task.npz": "https://drive.google.com/uc?id=1nfUA-rf7xXWzJ77SAPnTmNeQ9VrJsoM9&export=download"
+  "ogbn-mag.npz": "https://www.dropbox.com/s/6xbl1tybs44aj34/ogbn-mag.npz",
+  "ogbn-mag_task.npz": "https://www.dropbox.com/s/6w2dautw142j30i/ogbn-mag_task.npz"
 }

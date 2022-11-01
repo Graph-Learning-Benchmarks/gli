@@ -20,7 +20,21 @@ Statistics:
   pages={513–530}
 }
 ```
+- Previous Version
+  - [Website](https://github.com/snap-stanford/pretrain-gnns)
+  - LICENSE: [MIT](https://github.com/snap-stanford/pretrain-gnns/blob/master/LICENSE)
+```
+@inproceedings{Hu2020Stanford,
+  title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
+  author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
+  year={2020},
+  booktitle={ICLR}
+}
+```
+
 - Current Version
+  - [Website](https://ogb.stanford.edu/docs/graphprop/)
+  - LICENSE: [MIT](https://ogb.stanford.edu/docs/graphprop/)
 ```
 @article{hu2022stanford,
   title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
@@ -53,7 +67,10 @@ Data file(s) is transformed from [OGB](https://ogb.stanford.edu/). Check ogbg-mo
 
 The preprocessing code requires the following packages.
 
+The preprocessing code requires the following package.
 ```
-scipy==1.7.1
-ogb==1.3.2
+ogb >= 1.3.2
+numpy
+torch
+scipy
 ```

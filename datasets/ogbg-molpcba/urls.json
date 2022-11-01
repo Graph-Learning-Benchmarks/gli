@@ -1,4 +1,5 @@
 {
-    "ogbg-molpcba.npz": "https://drive.google.com/uc?id=1qUTp1ur2IT9edAmC37L3moRlk79jdUJu&export=download",
-    "ogbg-molpcba_task.npz": "https://drive.google.com/uc?id=1eIPdT2OyenYd-D-Xu15K0hvjatscs3Z6&export=download"
+  "ogbg-molpcba.npz": "https://www.dropbox.com/s/bdrhih9laqsn2xi/ogbg-molpcba.npz",
+  "ogbg-molpcba_node_list.sparse.npz": "https://www.dropbox.com/s/hjrdck4xrgy1h3t/ogbg-molpcba_node_list.sparse.npz",
+  "ogbg-molpcba_task.npz": "https://www.dropbox.com/s/ndpnur1094jh66g/ogbg-molpcba_task.npz"
 }

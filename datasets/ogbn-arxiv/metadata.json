@@ -1,59 +1,51 @@
 {
-    "description": "ogbn-arxiv dataset.",
-    "data": {
-        "Node": {
-            "NodeFeature": {
-                "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-arxiv.npz",
-                "key": "node_feats"
-            },
-            "NodeYear":{
-                "description": "Year of the arxiv paper represented by the node",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-arxiv.npz",
-                "key": "node_year"
-            },
-            "NodeLabel":{
-                "description": "Label of the arxiv paper represented by the node",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-arxiv.npz",
-                "key": "node_label"
-            }
-        },
-        "Edge": {
-            "_Edge": {
-                "file": "ogbn-arxiv.npz",
-                "key": "edge"
-            },
-            "EdgeFeature" :{
-                "description": "Numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of edge features and i-th row represents the feature of i-th edge. This can be None if no input edge features are available.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbn-arxiv.npz",
-                "key": "edge_feats"
-            },
-            "ID" :{
-                "description": "ID of the edge, range from 0 to 1166243",
-                "file": "ogbn-arxiv.npz",
-                "key": "edge_id"
-            }
-        },
-       "Graph": {
-            "_NodeList": {
-                "file": "ogbn-arxiv.npz",
-                "key": "node_list"
-            },
-            "_EdgeList": {
-                "file": "ogbn-arxiv.npz",
-                "key": "edge_list"
-            }
-        }
-
+  "description": "ogbn-arxiv dataset.",
+  "data": {
+    "Node": {
+      "NodeFeature": {
+        "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbn-arxiv.npz",
+        "key": "node_feats"
+      },
+      "NodeYear": {
+        "description": "Year of the arxiv paper represented by the node",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbn-arxiv.npz",
+        "key": "node_year"
+      },
+      "NodeLabel": {
+        "description": "Label of the arxiv paper represented by the node",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbn-arxiv.npz",
+        "key": "node_label"
+      }
     },
-    "citation": "@inproceedings{\ntitle={Microsoft academic graph: When experts are not enough. },\nauthor={Kuansan Wang, Zhihong Shen, Chiyuan Huang, Chieh-Han Wu, Yuxiao Dong, and Anshul Kanakia.},\nbooktitle={Quantitative Science Studies},\npages={396=413},\nyear={2020}\n}",
-    "is_heterogeneous": false
+    "Edge": {
+      "_Edge": {
+        "file": "ogbn-arxiv.npz",
+        "key": "edge"
+      },
+      "ID": {
+        "description": "ID of the edge, range from 0 to 1166243",
+        "file": "ogbn-arxiv.npz",
+        "key": "edge_id"
+      }
+    },
+    "Graph": {
+      "_NodeList": {
+        "file": "ogbn-arxiv.npz",
+        "key": "node_list"
+      },
+      "_EdgeList": {
+        "file": "ogbn-arxiv.npz",
+        "key": "edge_list"
+      }
+    }
+  },
+  "citation": "@inproceedings{\ntitle={Microsoft academic graph: When experts are not enough. },\nauthor={Kuansan Wang, Zhihong Shen, Chiyuan Huang, Chieh-Han Wu, Yuxiao Dong, and Anshul Kanakia.},\nbooktitle={Quantitative Science Studies},\npages={396=413},\nyear={2020}\n}",
+  "is_heterogeneous": false
 }

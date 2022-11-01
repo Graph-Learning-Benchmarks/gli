@@ -1,4 +1,4 @@
 {
-    "ogbn-arxiv.npz": "https://drive.google.com/uc?id=1prTWkZom4etQ513FIIpa0OoVpfE6aL7J&export=download",
-    "ogbn-arxiv_task.npz": "https://drive.google.com/uc?id=1W5KcJL8bHxsUFQI101yoE0OVdADTj0yn&export=download"
+  "ogbn-arxiv.npz": "https://www.dropbox.com/s/lbcna3s8ov8myvf/ogbn-arxiv.npz",
+  "ogbn-arxiv_task.npz": "https://www.dropbox.com/s/cjnzcj35utmfzdh/ogbn-arxiv_task.npz"
 }

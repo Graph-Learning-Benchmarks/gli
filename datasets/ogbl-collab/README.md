@@ -13,6 +13,8 @@ Statistics:
 
 #### Citation
 - Original Version
+  - [Website](https://direct.mit.edu/qss/article/1/1/396/15572/Microsoft-Academic-Graph-When-experts-are-not)
+  - LICENSE: Missing
 ```
 @inproceedings{wang2020microsoft,
     title={Microsoft academic graph: When experts are not enough},
@@ -23,6 +25,8 @@ Statistics:
 }
 ```
 - Current Version
+  - [Website](https://ogb.stanford.edu/docs/linkprop/)
+  - LICENSE: [ODC-BY](https://ogb.stanford.edu/docs/linkprop/)
 ```
 @article{hu2022stanford,
   title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
@@ -59,4 +63,6 @@ The preprocessing code requires the following packages.
 ```
 scipy==1.7.1
 ogb==1.3.2
+numpy
+torch
 ```

@@ -1,41 +1,40 @@
 {
-    "description": "ogbg-molfreesolv dataset",
-    "data": {
-        "Node": {
-            "NodeFeature": {
-                "description": "Numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbg-molfreesolv.npz",
-                "key": "node_feats"
-            }
-        },
-        "Edge": {
-            "_Edge": {
-                "file": "ogbg-molfreesolv.npz",
-                "key": "edge"
-            },
-            "EdgeFeature": {
-                "description": "Numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of edge features and i-th row represents the feature of i-th edge. This can be None if no input edge features are available.",
-                "type": "int",
-                "format": "SparseTensor",
-                "file": "ogbg-molfreesolv.npz",
-                "key": "edge_feats"
-        }
-        },
-        "Graph": {
-            "_NodeList": {
-                "file": "ogbg-molfreesolv.npz",
-                "key": "node_list"
-            },
-            "GraphLabel": {
-                "file": "ogbg-molfreesolv.npz",
-                "type": "int",
-                "format": "Tensor",
-                "key": "graph_class"
-            }
-        }
+  "description": "ogbg-molfreesolv dataset",
+  "data": {
+    "Node": {
+      "NodeFeature": {
+        "description": "Numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbg-molfreesolv.npz",
+        "key": "node_feats"
+      }
     },
-    "citation": "@inproceedings{Wu2018Stanford,\ntitle={Moleculenet: a benchmark for molecular machine learning},\nauthor={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},\nbooktitle={Chemical Science},\npages={513=520},\nyear={2018}\n}",
-    "is_heterogeneous": false
+    "Edge": {
+      "_Edge": {
+        "file": "ogbg-molfreesolv.npz",
+        "key": "edge"
+      },
+      "EdgeFeature": {
+        "description": "Numpy ndarray of shape (num_edges, edgefeat_dim), where edgefeat_dim is the dimensionality of edge features and i-th row represents the feature of i-th edge. This can be None if no input edge features are available.",
+        "type": "int",
+        "format": "Tensor",
+        "file": "ogbg-molfreesolv.npz",
+        "key": "edge_feats"
+      }
+    },
+    "Graph": {
+      "_NodeList": {
+        "file": "ogbg-molfreesolv_node_list.sparse.npz"
+      },
+      "GraphLabel": {
+        "file": "ogbg-molfreesolv.npz",
+        "type": "int",
+        "format": "Tensor",
+        "key": "graph_class"
+      }
+    }
+  },
+  "citation": "@inproceedings{Wu2018Stanford,\ntitle={Moleculenet: a benchmark for molecular machine learning},\nauthor={Zhenqin Wu, Bharath Ramsundar, Evan N Feinberg, Joseph Gomes, Caleb Geniesse, Aneesh SPappu, Karl Leswing, and Vijay Pande},\nbooktitle={Chemical Science},\npages={513=520},\nyear={2018}\n}",
+  "is_heterogeneous": false
 }

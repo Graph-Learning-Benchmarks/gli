@@ -1,4 +1,5 @@
 {
-    "ogbg-molfreesolv.npz": "https://drive.google.com/uc?id=1sC_3rlEN4_nktOAPENcXX4zmqD8WRVRF&export=download",
-    "ogbg-molfreesolv_task.npz": "https://drive.google.com/uc?id=1MkbLHvqTRLFr_RRrYanLh6ShWK11LhIn&export=download"
+  "ogbg-molfreesolv.npz": "https://www.dropbox.com/s/w56cztrld6umphl/ogbg-molfreesolv.npz",
+  "ogbg-molfreesolv_node_list.sparse.npz": "https://www.dropbox.com/s/1wbxoceh180oceq/ogbg-molfreesolv_node_list.sparse.npz",
+  "ogbg-molfreesolv_task.npz": "https://www.dropbox.com/s/6slygy0l6kdkt9r/ogbg-molfreesolv_task.npz"
 }

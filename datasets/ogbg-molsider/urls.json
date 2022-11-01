@@ -1,4 +1,5 @@
 {
-    "ogbg-molsider.npz": "https://drive.google.com/uc?id=16rJdF1mYwnOQut26EkUWQh-Xw4cUpgr2&export=download",
-    "ogbg-molsider_task.npz": "https://drive.google.com/uc?id=1bvMCBClJFF1bHS6xkIJRvbzs6UyP-ZMe&export=download"
+  "ogbg-molsider.npz": "https://www.dropbox.com/s/195h34u6mev80uw/ogbg-molsider.npz",
+  "ogbg-molsider_node_list.sparse.npz": "https://www.dropbox.com/s/abvodycduaihtue/ogbg-molsider_node_list.sparse.npz",
+  "ogbg-molsider_task.npz": "https://www.dropbox.com/s/yr8qr1tlp6fy28l/ogbg-molsider_task.npz"
 }
