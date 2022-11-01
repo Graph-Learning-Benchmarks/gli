@@ -39,6 +39,13 @@ Statistics:
 - Current Version
   - [Website](https://ogb.stanford.edu/docs/nodeprop/)
   - LICENSE: [Amazon](https://s3.amazonaws.com/amazon-reviews-pds/license.txt)
+```
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
+}
+```
 
 ## Available Tasks
 ### [OGB](https://ogb.stanford.edu/docs/nodeprop/)

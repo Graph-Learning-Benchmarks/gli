@@ -14,7 +14,6 @@ Statistics:
 - Original Source
   - [Website](https://moleculenet.org)
   - LICENSE: [MIT](https://github.com/deepchem/deepchem/blob/master/LICENSE)
-
 ```
 @inproceedings{Wu2018Stanford,
   title={Moleculenet: a benchmark for molecular machine learning},
@@ -25,18 +24,26 @@ Statistics:
 }
 ```
 
-- Current Version
+- Previous Version
   - [Website](https://github.com/snap-stanford/pretrain-gnns)
   - LICENSE: [MIT](https://github.com/snap-stanford/pretrain-gnns/blob/master/LICENSE)
-
-#### Citation
-
 ```
 @inproceedings{Hu2020Stanford,
   title={Strategies for pre-training graph neural networks. In International Conference on Learning Representations},
   author={Weihua Hu, Bowen Liu, Joseph Gomes, Marinka Zitnik, Percy Liang, Vijay Pande, and Jure Leskovec},
   year={2020},
   booktitle={ICLR}
+}
+```
+
+- Current Version
+  - [Website](https://ogb.stanford.edu/docs/graphprop/)
+  - LICENSE: [MIT](https://ogb.stanford.edu/docs/graphprop/)
+```
+@article{hu2022stanford,
+  title={Open Graph Benchmark: Datasets for Machine Learning on Graphs},
+  author={Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+  year={2021}
 }
 ```
 
