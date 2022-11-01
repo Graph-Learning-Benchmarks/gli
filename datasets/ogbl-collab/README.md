@@ -63,4 +63,6 @@ The preprocessing code requires the following packages.
 ```
 scipy==1.7.1
 ogb==1.3.2
+numpy
+torch
 ```
