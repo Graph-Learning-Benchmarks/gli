@@ -1,5 +1,5 @@
 {
-  "ogbg_molfreesolv.npz": "https://www.dropbox.com/s/w56cztrld6umphl/ogbg_molfreesolv.npz",
-  "ogbg_molfreesolv_node_list.sparse.npz": "https://www.dropbox.com/s/1wbxoceh180oceq/ogbg_molfreesolv_node_list.sparse.npz",
-  "ogbg_molfreesolv_task.npz": "https://www.dropbox.com/s/vbqnvyqtig7p7pq/ogbg_molfreesolv_task.npz"
+  "ogbg-molfreesolv.npz": "https://www.dropbox.com/s/w56cztrld6umphl/ogbg-molfreesolv.npz",
+  "ogbg-molfreesolv_node_list.sparse.npz": "https://www.dropbox.com/s/1wbxoceh180oceq/ogbg-molfreesolv_node_list.sparse.npz",
+  "ogbg-molfreesolv_task.npz": "https://www.dropbox.com/s/6slygy0l6kdkt9r/ogbg-molfreesolv_task.npz"
 }

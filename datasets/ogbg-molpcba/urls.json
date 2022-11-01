@@ -1,5 +1,5 @@
 {
-    "ogbg_molpcba.npz": "https://www.dropbox.com/s/bdrhih9laqsn2xi/ogbg_molpcba.npz",
-    "ogbg_molpcba_node_list.sparse.npz": "https://www.dropbox.com/s/hjrdck4xrgy1h3t/ogbg_molpcba_node_list.sparse.npz",
-    "ogbg_molpcba_task.npz": "https://www.dropbox.com/s/ndpnur1094jh66g/ogbg_molpcba_task.npz"
+  "ogbg-molpcba.npz": "https://www.dropbox.com/s/bdrhih9laqsn2xi/ogbg-molpcba.npz",
+  "ogbg-molpcba_node_list.sparse.npz": "https://www.dropbox.com/s/hjrdck4xrgy1h3t/ogbg-molpcba_node_list.sparse.npz",
+  "ogbg-molpcba_task.npz": "https://www.dropbox.com/s/ndpnur1094jh66g/ogbg-molpcba_task.npz"
 }

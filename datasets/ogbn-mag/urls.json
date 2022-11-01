@@ -1,4 +1,4 @@
 {
-  "ogbn_mag.npz": "https://www.dropbox.com/s/6xbl1tybs44aj34/ogbn_mag.npz",
-  "ogbn_mag_task.npz": "https://www.dropbox.com/s/6w2dautw142j30i/ogbn_mag_task.npz"
+  "ogbn-mag.npz": "https://www.dropbox.com/s/6xbl1tybs44aj34/ogbn-mag.npz",
+  "ogbn-mag_task.npz": "https://www.dropbox.com/s/6w2dautw142j30i/ogbn-mag_task.npz"
 }

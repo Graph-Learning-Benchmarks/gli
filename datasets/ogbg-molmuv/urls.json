@@ -1,5 +1,5 @@
 {
-    "ogbg_molmuv.npz": "https://www.dropbox.com/s/tyx0onwr59ocmb3/ogbg_molmuv.npz",
-    "ogbg_molmuv_node_list.sparse.npz": "https://www.dropbox.com/s/j9xlvvmk8mrk0kj/ogbg_molmuv_node_list.sparse.npz",
-    "ogbg_molmuv_task.npz": "https://www.dropbox.com/s/g54ihs58z3walox/ogbg_molmuv_task.npz"
+  "ogbg-molmuv.npz": "https://www.dropbox.com/s/tyx0onwr59ocmb3/ogbg-molmuv.npz",
+  "ogbg-molmuv_node_list.sparse.npz": "https://www.dropbox.com/s/j9xlvvmk8mrk0kj/ogbg-molmuv_node_list.sparse.npz",
+  "ogbg-molmuv_task.npz": "https://www.dropbox.com/s/g54ihs58z3walox/ogbg-molmuv_task.npz"
 }
