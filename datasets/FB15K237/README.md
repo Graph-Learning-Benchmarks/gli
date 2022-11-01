@@ -30,6 +30,8 @@ Statistics:
 }
 ```
 - Current Version
+	- [Website](https://github.com/thunlp/OpenKE)
+	- LICENSE: missing
 ```
 @inproceedings{han2018openke,
     title={OpenKE: An Open Toolkit for Knowledge Embedding},
@@ -39,6 +41,8 @@ Statistics:
 }
 ```
 - Previous Version
+	- [Website](https://aclanthology.org/D15-1174/)
+	- LICENSE: missing
 ```
 @inproceedings{toutanova2015representing,
     title={Representing text for joint embedding of text and knowledge bases},
