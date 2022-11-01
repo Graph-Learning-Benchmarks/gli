@@ -2,13 +2,6 @@
   "description": "ogbn-proteins dataset.",
   "data": {
     "Node": {
-      "NodeFeature": {
-        "description": "numpy ndarray of shape (num_nodes, nodefeat_dim), where nodefeat_dim is the dimensionality of node features and i-th row represents the feature of i-th node. This can be None if no input node features are available.",
-        "type": "int",
-        "format": "Tensor",
-        "file": "ogbn-proteins.npz",
-        "key": "node_feats"
-      },
       "NodeSpecies": {
         "description": "Species of the proteins represented by the node",
         "type": "int",
