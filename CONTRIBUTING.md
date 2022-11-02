@@ -71,6 +71,13 @@ where `<name>` is the dataset name and `<task_type>` is one of the given tasks d
 
 Please upload the npz or npy files referred in `metadata.json` or `task_<task_type>.json` to a cloud storage platform (e.g., Dropbox or Google Drive), and include the public download links in `urls.json`.
 
+### Data Removal Policy
+
+The original contributor(s) of a dataset may request a removal of the dataset. Project maintainers will notify all the subsequent contributors to that dataset, and remove the dataset from the main branch and the cloud storage platform within 30 days, if there is no reasonable objection from the subsequent contributors. 
+
+**Warning:** It may not be possible to remove the datasets completely once contributed to GLI. The metadata information will remain in the commit history, and there might be other distributions on the internet.
+
+
 ## Reporting Bugs
 
 Please feel free to [report a bug through Issues](https://github.com/Graph-Learning-Benchmarks/gli/issues/new?assignees=&labels=bug&template=bug_report.md&title=%5BBUG%5D) and/or [open a pull request to implement it](https://github.com/Graph-Learning-Benchmarks/gli/pulls?q=is%3Apr+is%3Aopen). Please provide a clear and concise description of what the bug was. If you are unsure about if this is a bug at all or how to fix, post about it in an issue.
