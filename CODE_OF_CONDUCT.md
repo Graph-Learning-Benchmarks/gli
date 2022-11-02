@@ -81,6 +81,30 @@ Project maintainers who do not follow or enforce the Code of Conduct in good
 faith may face temporary or permanent repercussions as determined by other
 members of the project's leadership.
 
+## Code of Ethics on Dataset Contribution
+
+We ask the dataset contributors to adhere to a high ethics standard for dataset contribution, especially for data collection. Project maintainers may deprecate datasets on ethical grounds. 
+
+### Data Collection
+
+Examples of ethical considerations to keep in mind include (but not limited to):
+
+* Conduct an ethical review process (e.g., by an Institutional Review Board) when human subjects are involved.
+* * When the data involves sensitive information about human subjects, ensure the data does not involve [Personally Identifiable Information (PII)](https://www.dhs.gov/privacy-training/what-personally-identifiable-information).
+* Think about how the data collection process may inject (potentially harmful) biases into the dataset.
+* Avoid toxic content unless the dataset is purposed for goals such as content detoxification, in which cases an explicit warning should be marked in the documentation of the dataset.
+* Consider what are the potential unethical exploitation of the collected data.
+
+We refer the dataset contributors to the following resources for more ethical considerations in data collection.
+
+- [Bender, Emily M., and Batya Friedman. "Data statements for natural language processing: Toward mitigating system bias and enabling better science." Transactions of the Association for Computational Linguistics 6 (2018): 587-604.](https://aclanthology.org/Q18-1041/)
+- [Gebru, Timnit, et al. "Datasheets for datasets." Communications of the ACM 64.12 (2021): 86-92.](https://cacm.acm.org/magazines/2021/12/256932-datasheets-for-datasets/fulltext)
+- [Cote, Catherine. 5 PRINCIPLES OF DATA ETHICS FOR BUSINESS. Harvard Business School Online's Business Insights Blog (2021).](https://online.hbs.edu/blog/post/data-ethics)
+
+### Dataset Deprecation
+
+Ethical concerns regarding the datasets hosted in the GLI repository can be raised as issues on GitHub or sent to the project team at GraphLearningBenchmarks@gmail.com. Project maintainers will review and investigate the reported concerns and will deprecate any dataset with ethical issues. An ethical note explaining the specific issues will be first incorporated into the metadata of the deprecated dataset, and then the dataset will be removed from the main branch to discourage further use of the dataset. The deprecation of the [Boston Housing dataset in Scikit-Learn](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_boston.html) is an example of this process.
+
 ## Attribution
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage], 
