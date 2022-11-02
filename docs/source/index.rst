@@ -28,10 +28,17 @@ GLI makes an explicit separation between the data storage and the task configura
 
    start/install
    start/tutorial
+   start/contribute
 
 .. toctree::
    :maxdepth: 2
    :caption: Modules
 
    modules
+
+.. toctree:: 
+   :maxdepth: 2
+   :caption: Data
+
+   format
 

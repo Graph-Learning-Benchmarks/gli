@@ -7,7 +7,10 @@ Currently, we support installation from the source.
 
    git clone https://github.com/Graph-Learning-Benchmarks/gli.git
    cd gli
-   pip install -e .
+   pip install -e .           # basic requirements
+   pip install -e ".[test]"   # test-related requirements
+   pip install -e ".[doc]"    # doc-related requirements
+   pip install -e ".[full]"   # all requirements
 
 To test the installation, run the following command:
 
