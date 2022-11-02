@@ -253,15 +253,15 @@ The information about a graph learning task (e.g., the train/test splits or the 
 
 This section lists available task types of GLI.
 
-#### `NodeClassification`
+#### `NodeClassification`/`NodeRegression`
 
-- Description: This task requires the model to perform classification on each node.
+- Description: This task requires the model to perform classification/regression on each node.
 - The list of required keys in the task configuration file:
     - `description`: task description.
-    - `type`: task type (in this case, `NodeClassification`).
+    - `type`: task type (in this case, `NodeClassification` or `NodeRegression`).
     - `feature`: the node attribute used as node feature in this task.
     - `target`: the node attribute used as prediction target in this task.
-    - `num_classes`: the number of classes.
+    - `num_classes`: the number of classes. (required for `NodeClassification`, not for `NodeRegression`)
     - `train_set` (optional): the training node IDs.
     - `val_set` (optional): the validation node IDs.
     - `test_set` (optional): the test node IDs.
@@ -275,14 +275,15 @@ This section lists available task types of GLI.
     - Fixed multi-split: Multiple fixed data splits are associated with the task. Task configuration file should specify `train_set`, `val_set`, `test_set` and `num_splits`.
     - Random split: No fixed data splits come with the task. Task configuration file should specify `train_ratio`, `val_ratio`, `test_ratio` and `num_samples`.
 
-#### `GraphClassification`
+#### `GraphClassification`/`GraphRegression`
 
-- Description: This task requires the model to perform classification on each graph.
+- Description: This task requires the model to perform classification/regression on each graph.
 - The list of required keys in task configuration file:
     - `description`: task description.
-    - `type`: task type (in this case, `GraphClassification`).
+    - `type`: task type (in this case, `GraphClassification` or `GraphRegression`).
     - `feature`: the attribute(s) used as feature in this task.
     - `target`: the graph attribute used as prediction target in this task.
+    - `num_classes`: the number of classes. (required for `GraphClassification`, not for `GraphRegression`)
     - `train_set` (optional): the training node IDs.
     - `val_set` (optional): the validation node IDs.
     - `test_set` (optional): the test node IDs.
