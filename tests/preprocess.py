@@ -3,8 +3,8 @@ import os
 import shutil
 import subprocess
 
-DATAFILES_URL = "https://www.dropbox.com/s/c4rjreeo34nm5ro/datafiles.tar?dl=0"
-NUM_TESTS_THRESHOLD = 15
+DATAFILES_URL = ""
+NUM_TESTS_THRESHOLD = 999999999999999  # no need to preprocess yet
 
 
 def _prepare_data_files():
@@ -14,6 +14,8 @@ def _prepare_data_files():
         if len(dataset_dir_list) < NUM_TESTS_THRESHOLD:
             # do not download the combined data files if # of tests is small
             return
+    else:
+        return
     out = "datafiles.tar"
     url = DATAFILES_URL
     subprocess.run(["wget", "-q", "-O", out, url], check=True)
