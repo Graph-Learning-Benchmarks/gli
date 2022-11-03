@@ -2,7 +2,7 @@
 
 The central component of the data standardizing pipeline is a definition of the standard GLI file format. The dataset contributors are supposed to convert the raw data into this standard format and submit their dataset in the GLI format. This platform will provide some helper functions to ease this process in the future. This platform will also provide tools to construct Dataset class in popular graph learning libraries out of the GLI format data files.
 
-![flowchart](/img/flowchart.png)
+![flowchart](./img/flowchart.png)
 
 ## Design Objectives
 
@@ -32,7 +32,7 @@ When the existing attribute types are not enough to accommodate a certain type o
 
 ### Supporting data files
 
-Tensor is a common storage scheme for graph data. GLI also provides separate supporting data files for efficient storage of certain attributes such as high-dim sparse features. For example, the `NodeFeature` attribute of `cora` dataset is stored in the format of `SparseTensor`. Currently, these data formats©are allowed for attributes:
+Tensor is a common storage scheme for graph data. GLI also provides separate supporting data files for efficient storage of certain attributes such as high-dim sparse features. For example, the `NodeFeature` attribute of `cora` dataset is stored in the format of `SparseTensor`. Currently, these data formats are allowed for attributes:
 1. `Tensor`
 2. `SparseTensor` (In particular, only `csr` and `coo` tensor are stably supported.)
 
@@ -348,4 +348,4 @@ In some cases, certain required attributes are not applicable. For example, some
 
 ## Contributing
 
-We are welcomed to new datasets and tasks! Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
+We welcome contributions to new datasets and tasks! Please refer to [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.

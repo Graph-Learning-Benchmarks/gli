@@ -5,21 +5,46 @@
 [![Pylint](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pylint.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pytest.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pytest.yml)
 
-GLI is an easy-to-use graph learning platform with unique features that can better serve the dataset contributors, in comparison to existing graph learning libraries. It aims to ease and incentivize the creation and curation of datasets.
+Graph Learning Indexer (GLI) is a benchmark curation platform for graph learning. 
+
+## Design Objectives
+In comparison to previous graph learning libraries, GLI highlights two design objectives. 
+
+* GLI is designed to better serve **dataset contributors** by minimizing the effort of contributing and maintaining a dataset. 
+* GLI is designed to create a knowledge base (as opposed to a simple collection) of benchmarks with **rich meta information** about the datasets.
 
 ## Highlighted Features
 
-### Standard Data Format
+### File-Based Data API
 
-GLI defines a standard data format that has efficient storage and access to graphs. It unifies the storage for graphs of different scales and heterogeneity and is thus flexible to accommodate various graph-structured data.
+GLI defines a file-based standard dataset API that is both efficient in storage and flexible for various graph structures. In comparison to the common code-based dataset API, the file-based design can significantly reduce the maintainance effort required for the dataset contributors.
 
-### Explicit Separation of Data Storage and Task Configuration
+### Explicit Separation of Data and Task
 
-GLI makes an explicit separation between the data storage and the task configuration for graph learning. i.e., Multiple tasks can be performed on the same dataset, or the same task can be performed on different datasets. The separation between graphs and tasks further allows users to use general datasets bound to every type of task that can be applied to every graph dataset.
+GLI makes an explicit separation between the data storage and the task configuration. For graph learning, there could often be multiple tasks (e.g., node classification and link prediction) defined on the same dataset, or there could be multiple settings for the same task (e.g., random split or fixed split).
+
+The explicit separation of data and task provides a number of benefits:
+
+- The API becomes more exensible to new tasks.
+- The automated tests can be separated by tasks and become more modularized.
+- It allows to implement general data loading schemes for each task.
+
+
+### Automated Tests
+
+GLI implements a wide range of automated tests for new dataset submissions, which provides prompt and rich feedback to the dataset contributors and makes the contribution process smoother.
+
+
+### Rich Meta Information
+
+GLI also provides tools to calculate graph properties (such as clustering coefficients or homophily ratio) and benchmark popular models for newly contributed datasets, which can augment new datasets with rich meta information.
+
 
 <!-- TODO: Add more highlighted features. -->
 
 ## Get Started
+
+This is a quickstart for users who want to use the existing datasets hosted in GLI. For users who want to contribute a new dataset, please refer to our [Contribution Guide](./CONTRIBUTING.md).
 
 ### Installation
 
@@ -37,13 +62,13 @@ To test the installation, run the following command:
 python example.py --graph cora --task NodeClassification
 ```
 
-The output should be like this:
+The output should be something like the following:
 
 ```
 > Graph(s) loading takes 0.0196 seconds and uses 0.9788 MB.
 > Task loading takes 0.0016 seconds and uses 0.1218 MB.
 > Combining(s) graph and task takes 0.0037 seconds and uses 0.0116 MB.
-Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=/Users/jimmy/.dgl/CORA dataset. NodeClassification)**
+Dataset("CORA dataset. NodeClassification", num_graphs=1, save_path=~/.dgl/CORA dataset. NodeClassification)**
 ```
 
 ### Data Loading API
@@ -87,4 +112,4 @@ True
 
 ### New Dataset, Feature Request, Bug Fix, or Better Documentation.
 
-All kinds of improvement are welcomed! Please refer to our [contribution guide](CONTRIBUTING.md) for details.
+All kinds of improvement are welcomed! Please refer to our [Contribution Guide](./CONTRIBUTING.md) for details.
