@@ -1,4 +1,4 @@
-# [Dataset Name]
+# <Dataset Name>
 
 <!-- Replace the title with the dataset name. -->
 
@@ -9,6 +9,8 @@
 #### Citation
 
 - Original Source
+	+ [Website](<URL to website>)
+	+ LICENSE: [<license type>](<URL to license>)
 
 <!-- The first work that created the dataset. -->
 
@@ -17,6 +19,8 @@
 ```
 
 - Current Version
+	+ [Website](<URL to website>)
+	+ LICENSE: [<license type>](<URL to license>)
 
 <!-- The work that is directly responsible for the dataset in this folder. -->
 
@@ -25,9 +29,11 @@
 ```
 
 - Previous Version
+	+ [Website](<URL to website>)
+	+ LICENSE: [<license type>](<URL to license>)
 
 <!-- Any intermediate versions between the original and the current version. -->
-<!-- There can be multiple citations in the "Previous Version" -->
+<!-- There can be no or multiple "Previous Version". -->
 
 ```
 
@@ -39,11 +45,11 @@
 
 <!-- This section lists the available tasks -->
 
-### [Task Name]
+### <Task Name>
 
 <!-- Replace the title with the task name. -->
 
-- Task type: `[TaskType]`
+- Task type: `<TaskType>`
 
 <!-- Replace the [TaskType] to be the predefined task types. -->
 
