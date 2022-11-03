@@ -86,7 +86,7 @@ where `<name>` is the dataset name and `<task_type>` is one of the given tasks d
 - `LICENSE`: The license associated to the dataset.
 - `metadata.json`: A json configuration file that stores the metadata of the graph dataset. See [GLI Data Format](./FORMAT.md#gli-data-format).
 - `task_<task_type>.json`：A task configuration file that stores an available task on the given dataset. See [GLI Task Format](./FORMAT.md#gli-task-format). Contributors can define multiple tasks on the same dataset. If there are multiple tasks with the same task type, use `task_<task_type>_<id>.json` to distinguish them, where `<id>` should be replaced by integers 1, 2, etc.
-- `urls.json`: A url configuration file that stores the downloading urls of the uploaded NumPy data files (.npz). See the following [Step 2](#step-2-upload-numpy-data-files-to-cloud-storage) for more details.
+- `urls.json`: A url configuration file that stores the downloading urls of the uploaded NumPy data files (.npz). See the [Step 2](#step-2-upload-numpy-data-files-to-cloud-storage) above for more details.
 
 
 #### Local Test
