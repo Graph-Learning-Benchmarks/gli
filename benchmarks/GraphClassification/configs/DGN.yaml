@@ -1,4 +1,4 @@
-num_layers: 3
+num_layers: 4
 hidden_dim: 128
 # aggregators: ['dir1-av', 'dir1-dx', 'sum']
 aggregators: ['mean']

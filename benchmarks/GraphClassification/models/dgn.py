@@ -37,7 +37,7 @@ class DGN(nn.Module):
                                    delta,
                                    dropout=dropout))
         # hidden layers
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers - 2):
             self.layers.append(DGNConv(n_hidden, n_hidden,
                                        aggregators,
                                        scalers,

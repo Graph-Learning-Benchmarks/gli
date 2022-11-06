@@ -97,7 +97,7 @@ def main():
     n_classes = data.num_labels
     n_edges = g.number_of_edges()
 
-    sampler = Sampler(model_cfg["num_layers"] + 1)
+    sampler = Sampler(model_cfg["num_layers"])
     train_dataloader = dgl.dataloading.DataLoader(
         g, indice["train_set"], sampler,
         batch_size=train_cfg["batch_size"],

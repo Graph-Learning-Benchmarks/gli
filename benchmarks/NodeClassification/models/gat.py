@@ -36,7 +36,7 @@ class GAT(nn.Module):
             in_dim, num_hidden, heads[0],
             feat_drop, attn_drop, negative_slope, False, self.activation))
         # hidden layers
-        for layer in range(1, num_layers-1):
+        for layer in range(1, num_layers - 2):
             # due to multi-head, the in_dim = num_hidden * num_heads
             self.gat_layers.append(GATConv(num_hidden * heads[layer-1],
                                            num_hidden, heads[layer],

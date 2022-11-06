@@ -28,7 +28,7 @@ class GCNminibatch(nn.Module):
                                      activation=activation,
                                      norm='none'))
         # hidden layers
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers - 2):
             self.layers.append(GraphConv(n_hidden, n_hidden,
                                          activation=activation,
                                          norm='none'))
