@@ -27,12 +27,12 @@ Note that some models may have unique hyperparameters not included in the defaul
 
 The following list of models are supported by this benchmark. 
 
-- GCN
-- DGN
-- ChebNet
-- GIN
+- `GCN`
+- `DGN`
+- `ChebNet`
+- `GIN`
 
-To add a new model, one should add the model implementation under the `models` folder, and add model specific confgurations under the `configs` folder when needed. We have tried to implement `train.py` in a generic way so one may only need to make minimal modifications to `train.py`.
+To add a new model, one should add the model implementation under the `models` folder, and add model specific confgurations under the `configs` folder when needed. We have tried to implement `train.py` in a generic way so one may only need to make minimal modifications to `train.py` and `utils.py`.
 
 Contributions of new models are welcome through pull requests. 
 

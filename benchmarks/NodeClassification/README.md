@@ -1,14 +1,13 @@
-# GLI benchmarking on Node Classification
+# GLI Benchmarking on `NodeClassification` Task
 
-Available datasets: `arxiv-year`, `cornell`, `chameleon`, `citeseer`, `penn94`, `wiki`, `wisconsin`, `ogbn-arxiv`, `cora`, `snap-patents`, `pokec`, `ogbn-products`, `texas`, `ogbn-mag`, `pubmed`, `twitch-gamers`, `ogbn-proteins`, `actor`, `squirrel`, `genius`.
+The code in this folder can be used to benchmark some popular models on `NodeClassification` task.
 
-## Graph Neural Network (full batch)
+## How to run
 
-Available models: `GCN`, `MLP`, `GAT`,`GraphSAGE`, `MoNet`, `MixHop`, `LINKX`.
-
-For each model, run with the following: 
+Example commands to run the code.
 
 ```bash
+# full batch
 python train.py --dataset <dataset> --model GCN
 python train.py --dataset <dataset> --model MLP
 python train.py --dataset <dataset> --model GAT --model-cfg configs/GAT.yaml
@@ -16,29 +15,73 @@ python train.py --dataset <dataset> --model GraphSAGE --model-cfg configs/GraphS
 python train.py --dataset <dataset> --model MoNet --model-cfg configs/MoNet.yaml
 python train.py --dataset <dataset> --model MixHop --model-cfg configs/MixHop.yaml
 python train.py --dataset <dataset> --model LINKX --model-cfg configs/LINKX.yaml --train-cfg configs/LINKX_train.yaml
+
+# mini batch
+python train_minibatch.py --dataset <dataset> --model GCN_minibatch
+
+# GBDT
+python train_gbdt.py --dataset <dataset>  --model lightgbm
+python train_gbdt.py --dataset <dataset>  --model catboost
 ```
 
-One can provide a `yaml` file for model configuration and training configuration. If not provided, default configurations will be used. See [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/train_default.yaml)
+One can provide a `yaml` file for model configuration and training configuration. If not provided, default configurations (see [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/train_default.yaml)) will be used. 
 
-For example, to train a GCN model on `cora`:
+For example, to train a GCN model on `cora` with default configuration:
 
 ```bash
 python train.py --dataset cora --model GCN
 ```
 
----
+Note that some models may have unique hyperparameters not included in the default configuration files. In this case, one should pass the model-specific coniguration files to `train.py`.
 
-## Graph Neural Network (mini batch)
+## Supported models
 
-```bash
-python train_minibatch.py --dataset <dataset> --model GCN_minibatch
-```
+The following list of models are supported by this benchmark.
 
-## Gradient Boosting Decision Tree (GBDT)
+### Full batch
 
-Available models: `lightgbm`, `catboost`.
+- `GCN`
+- `MLP`
+- `GAT`
+- `GraphSAGE`
+- `MoNet`
+- `MixHop`
+- `LINKX`
 
-```bash
-python train_gbdt.py --dataset <dataset>  --model lightgbm
-python train_gbdt.py --dataset <dataset>  --model catboost
-```
+### Mini batch
+
+- `GCN_minibatch`
+
+### Gradient Boosting Decision Tree (GBDT)
+
+- `catboost`
+- `lightgbm`
+
+To add a new model, one should add the model implementation under the `models` folder, and add model specific confgurations under the `configs` folder when needed. We have tried to implement `train.py` in a generic way so one may only need to make minimal modifications to `train.py` and `utils.py`.
+
+Contributions of new models are welcome through pull requests.
+
+## Supported datasets
+
+This benchmark should work for most datasets with a `NodeClassification` task associated. The following datasets have been tested for this code.
+
+- `arxiv-year`
+- `cornell`
+- `chameleon`
+- `citeseer`
+- `penn94`
+- `wiki`
+- `wisconsin`
+- `ogbn-arxiv`
+- `cora`
+- `snap-patents`
+- `pokec`
+- `ogbn-products`
+- `texas`
+- `ogbn-mag`
+- `pubmed`
+- `twitch-gamers`
+- `ogbn-proteins`
+- `actor`
+- `squirrel`
+- `genius`
