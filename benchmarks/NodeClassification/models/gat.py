@@ -2,7 +2,7 @@
 GAT model in GLI.
 
 References:
-https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/gat.py
+https://github.com/dmlc/dgl/tree/master/examples/pytorch/gat
 """
 
 from torch import nn
