@@ -28,7 +28,7 @@ class GCN(nn.Module):
         self.layers.append(GraphConv(in_feats, n_hidden,
                                      activation=activation))
         # hidden layers
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers - 2):
             self.layers.append(GraphConv(n_hidden, n_hidden,
                                          activation=activation))
         # output layer
