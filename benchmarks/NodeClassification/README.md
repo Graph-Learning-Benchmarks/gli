@@ -4,7 +4,7 @@ The code in this folder can be used to benchmark some popular models on `NodeCla
 
 ## How to run
 
-Example commands to run the code.
+Example commands to run the code:
 
 ```bash
 # full batch
@@ -24,13 +24,7 @@ python train_gbdt.py --dataset <dataset>  --model lightgbm
 python train_gbdt.py --dataset <dataset>  --model catboost
 ```
 
-One can provide a `yaml` file for model configuration and training configuration. If not provided, default configurations (see [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/train_default.yaml)) will be used. 
-
-For example, to train a GCN model on `cora` with default configuration:
-
-```bash
-python train.py --dataset cora --model GCN
-```
+One can provide a `yaml` file to arguments `--model-cfg` or `--train-cfg` respectively for model configuration or training configuration. If not provided, default configurations (see [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/train_default.yaml)) will be used. 
 
 Note that some models may have unique hyperparameters not included in the default configuration files. In this case, one should pass the model-specific coniguration files to `train.py`.
 
