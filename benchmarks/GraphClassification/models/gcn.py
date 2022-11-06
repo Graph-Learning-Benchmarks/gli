@@ -30,7 +30,7 @@ class GCNgraph(nn.Module):
         self.embedding_h = nn.Linear(in_feats, n_hidden)
 
         # hidden layers
-        for _ in range(n_layers):
+        for _ in range(n_layers - 2):
             self.layers.append(GraphConv(n_hidden, n_hidden,
                                          activation=activation))
         # output layer

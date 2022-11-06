@@ -41,7 +41,7 @@ class MoNet(nn.Module):
             nn.Sequential(nn.Linear(2, dim), nn.Tanh()))
 
         # Hidden layer
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers - 2):
             self.layers.append(GMMConv(n_hidden, n_hidden, dim, n_kernels))
             self.pseudo_proj.append(
                 nn.Sequential(nn.Linear(2, dim), nn.Tanh()))

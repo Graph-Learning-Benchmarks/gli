@@ -27,7 +27,7 @@ class ChebNet(nn.Module):
         self.layers.append(
             ChebConv(in_feats, n_hidden, k)
         )
-        for _ in range(n_layers - 1):
+        for _ in range(n_layers - 2):
             self.layers.append(
                 ChebConv(n_hidden, n_hidden, k)
             )
