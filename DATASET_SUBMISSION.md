@@ -43,9 +43,9 @@ Concretely, one can follow the following procedure to complete the data conversi
 
 0. Decide your dataset name, let's call it `<name>`.
 1. Construct the `metadata.json` for your dataset by filling in the blanks in `templates/template/metadata.hjson`.
-2. Write code to extract the NumPy arrays needed by `metadata.json` and save them to .npz files by calling `gli.utils.save_data`.
+2. Write code to extract the NumPy arrays needed by `metadata.json` and save them to .npz files by calling `gli.utils.save_data(prefix="<name>", **dict_of_arrarys)`, where `dict_of_arrays` should be a dictionary with values as arrays to be stored and keys as the name of each array. The keys here should correspond to the array keys specified in `metadata.json`.
 3. For each task in your dataset, construct the `task_<task_type>.json` by filling in the blanks in a suitable task template under `templates/template/`.
-4. Write code to extract the NumPy arrays needed by `task_<task_type>.json` and save them to .npz files by calling `gli.utils.save_data`.
+4. Write code to extract the NumPy arrays needed by `task_<task_type>.json` and save them to .npz files by calling `gli.utils.save_data(prefix="<name>_<task_type>", **dict_of_arrarys)`. The keys in `dict_of_arrays` should correspond to the array keys specified in `task_<task_type>.json`.
 5. Merge the code in 2 and 4 into a Jupyter Notebook `<name>.ipynb` or a Python script `<name>.py`.
 
 
