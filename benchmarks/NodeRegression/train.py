@@ -111,7 +111,6 @@ def main():
         raise NotImplementedError(f"Loss function \
             {train_cfg['loss_fcn']} is not supported.")
 
-
     print(model)
     if cuda:
         model.cuda()
@@ -145,7 +144,8 @@ def main():
             t0 = time.time()
         # forward
         logits = model(features)
-        loss = loss_fcn(logits[train_mask].squeeze(), labels[train_mask].float())
+        loss = loss_fcn(logits[train_mask].squeeze(),
+                        labels[train_mask].float())
 
         optimizer.zero_grad()
         loss.backward()
@@ -166,6 +166,7 @@ def main():
     print()
 
     model.load_state_dict(torch.load(stopper.ckpt_dir))
+
 
 if __name__ == "__main__":
     main()
