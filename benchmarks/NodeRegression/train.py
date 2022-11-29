@@ -1,5 +1,5 @@
 """
-Train for node classification dataset.
+Train for node regression dataset.
 
 References:
 https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/train.py
@@ -156,11 +156,13 @@ def main():
                 torch.cuda.synchronize()
             dur.append(time.time() - t0)
 
+        val_loss = evaluate(model, features, labels, val_mask, eval_func)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss.item():.4f} | "
+              f" Val Loss {val_loss.item():.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
-        if stopper.step(loss.item(), model):
+        if stopper.step(val_loss.item(), model):
             break
 
     print()

@@ -24,7 +24,7 @@ python train_gbdt.py --dataset <dataset>  --model lightgbm
 python train_gbdt.py --dataset <dataset>  --model catboost
 ```
 
-One can provide a `yaml` file to arguments `--model-cfg` or `--train-cfg` respectively for model configuration or training configuration. If not provided, default configurations (see [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeClassification/configs/train_default.yaml)) will be used. 
+One can provide a `yaml` file to arguments `--model-cfg` or `--train-cfg` respectively for model configuration or training configuration. If not provided, default configurations (see [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeRegression/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/NodeRegression/configs/train_default.yaml)) will be used. 
 
 Note that some models may have unique hyperparameters not included in the default configuration files. In this case, one should pass the model-specific coniguration files to `train.py`.
 

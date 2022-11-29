@@ -11,6 +11,7 @@ https://docs.dgl.ai/guide/minibatch-node.html?highlight=sampling
 import time
 import re
 import torch
+import torch.nn as nn
 import numpy as np
 import dgl
 import gli
@@ -21,14 +22,14 @@ from gli.utils import to_dense
 from dgl.dataloading import MultiLayerFullNeighborSampler as Sampler
 
 
-def accuracy(logits, labels):
-    """Calculate accuracy."""
-    _, indices = torch.max(logits, dim=1)
-    correct = torch.sum(indices == labels)
-    return correct.item() * 1.0 / len(labels)
+# def accuracy(logits, labels):
+#     """Calculate accuracy."""
+#     _, indices = torch.max(logits, dim=1)
+#     correct = torch.sum(indices == labels)
+#     return correct.item() * 1.0 / len(labels)
 
 
-def evaluate(model, dataloader):
+def evaluate(model, dataloader, eval_func):
     """Evaluate model."""
     model.eval()
     ys = []
@@ -38,7 +39,7 @@ def evaluate(model, dataloader):
             input_features = blocks[0].srcdata["NodeFeature"]
             ys.append(blocks[-1].dstdata["NodeLabel"])
             y_hats.append(model(blocks, input_features))
-    return accuracy(torch.cat(y_hats), torch.cat(ys))
+    return eval_func(torch.cat(y_hats), torch.cat(ys))
 
 
 def main():
@@ -123,13 +124,22 @@ def main():
       #Edges {n_edges}
       #Classes {n_classes}""")
 
-    # create model
-    model = generate_model(args, g, in_feats, n_classes, **model_cfg)
+    # create model, supporting only single label task
+    label_number = 1
+    model = generate_model(args, g, in_feats, label_number, **model_cfg)
 
     print(model)
     if cuda:
         model.cuda()
-    loss_fcn = torch.nn.CrossEntropyLoss()
+
+    # create loss function and evalution function
+    if train_cfg["loss_fcn"] == "mse":
+        eval_func = loss_fcn = nn.MSELoss()
+    elif train_cfg["loss_fcn"] == "mae":
+        eval_func = loss_fcn = nn.L1Loss()
+    else:
+        raise NotImplementedError(f"Loss function \
+            {train_cfg['loss_fcn']} is not supported.")
 
     # use optimizer
     optimizer = torch.optim.Adam(
@@ -162,36 +172,33 @@ def main():
                 output_labels = output_labels * (output_labels >= 0)
 
             logits = model(blocks, input_features)
-            loss = loss_fcn(logits, output_labels)
+            loss = loss_fcn(logits.squeeze(), output_labels.float())
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             if it % 20 == 0:
-                train_acc = accuracy(logits, output_labels)
-                print("Loss", loss.item(), "Acc", train_acc)
+                # train_acc = loss_fcn(logits.squeeze(), output_labels.float())
+                print("Loss", loss.item())
 
         if epoch >= 3:
             if cuda:
                 torch.cuda.synchronize()
             dur.append(time.time() - t0)
 
-        # train_acc = accuracy(logits[train_mask], labels[train_mask])
-        val_acc = evaluate(model, valid_dataloader)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
-              f"| Loss {loss:.4f}"
-              f" ValAcc {val_acc:.4f} | "
+              f"| Loss {loss:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
-        if stopper.step(val_acc, model):
+        if stopper.step(loss.item(), model):
             break
 
     print()
 
     model.load_state_dict(torch.load(stopper.ckpt_dir))
 
-    acc = evaluate(model, test_dataloader)
-    val_acc = stopper.best_score
-    print(f"Test{acc:.4f},Val{val_acc:.4f}")
+    loss = evaluate(model, test_dataloader)
+    val_loss = stopper.best_score
+    print(f"Test loss {loss:.4f}, Val loss {val_loss:.4f}")
 
 
 if __name__ == "__main__":
