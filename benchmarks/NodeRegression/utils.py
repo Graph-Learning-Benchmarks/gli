@@ -19,7 +19,6 @@ import shutil
 import torch
 import torch.nn.functional as F
 import numpy as np
-from sklearn.metrics import roc_auc_score
 from models.gcn import GCN
 from models.gat import GAT
 from models.monet import MoNet

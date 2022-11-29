@@ -11,7 +11,7 @@ https://docs.dgl.ai/guide/minibatch-node.html?highlight=sampling
 import time
 import re
 import torch
-import torch.nn as nn
+from torch import nn
 import numpy as np
 import dgl
 import gli
@@ -39,7 +39,7 @@ def evaluate(model, dataloader, eval_func):
             input_features = blocks[0].srcdata["NodeFeature"]
             ys.append(blocks[-1].dstdata["NodeLabel"])
             y_hats.append(model(blocks, input_features))
-    return eval_func(torch.cat(y_hats), torch.cat(ys))
+    return eval_func(torch.cat(y_hats).squeeze(), torch.cat(ys).float())
 
 
 def main():
@@ -185,18 +185,20 @@ def main():
                 torch.cuda.synchronize()
             dur.append(time.time() - t0)
 
+        val_loss = evaluate(model, valid_dataloader, eval_func)
         print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
               f"| Loss {loss:.4f} | "
+              f" Val Loss {val_loss.item():.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
 
-        if stopper.step(loss.item(), model):
+        if stopper.step(val_loss.item(), model):
             break
 
     print()
 
     model.load_state_dict(torch.load(stopper.ckpt_dir))
 
-    loss = evaluate(model, test_dataloader)
+    loss = evaluate(model, test_dataloader, eval_func)
     val_loss = stopper.best_score
     print(f"Test loss {loss:.4f}, Val loss {val_loss:.4f}")
 
