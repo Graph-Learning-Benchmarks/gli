@@ -57,25 +57,4 @@ Contributions of new models are welcome through pull requests.
 
 ## Supported datasets
 
-This benchmark should work for most datasets with a `NodeClassification` task associated. The following datasets have been tested for this code.
-
-- `arxiv-year`
-- `cornell`
-- `chameleon`
-- `citeseer`
-- `penn94`
-- `wiki`
-- `wisconsin`
-- `ogbn-arxiv`
-- `cora`
-- `snap-patents`
-- `pokec`
-- `ogbn-products`
-- `texas`
-- `ogbn-mag`
-- `pubmed`
-- `twitch-gamers`
-- `ogbn-proteins`
-- `actor`
-- `squirrel`
-- `genius`
+No `NodeRegrssion` datasets available now.

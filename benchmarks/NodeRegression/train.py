@@ -28,7 +28,7 @@ def evaluate(model, features, labels, mask, eval_func):
         logits = model(features)
         logits = logits[mask]
         labels = labels[mask]
-        return eval_func(logits, labels)
+        return eval_func(logits.squeeze(), labels)
 
 
 def main():
@@ -104,9 +104,9 @@ def main():
 
     # create loss function and evalution function
     if train_cfg["loss_fcn"] == "mse":
-        loss_fcn = nn.MSELoss()
+        eval_func = loss_fcn = nn.MSELoss()
     elif train_cfg["loss_fcn"] == "mae":
-        loss_fcn = nn.L1Loss()
+        eval_func = loss_fcn = nn.L1Loss()
     else:
         raise NotImplementedError(f"Loss function \
             {train_cfg['loss_fcn']} is not supported.")
@@ -166,6 +166,11 @@ def main():
     print()
 
     model.load_state_dict(torch.load(stopper.ckpt_dir))
+
+    loss = evaluate(model, features, labels, test_mask, eval_func)
+    val_loss = stopper.best_score
+    print(f"Test loss {loss:.4f}, Val loss {val_loss:.4f}")
+
 
 
 if __name__ == "__main__":
