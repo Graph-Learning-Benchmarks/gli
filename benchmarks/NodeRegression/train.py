@@ -172,6 +172,5 @@ def main():
     print(f"Test loss {loss:.4f}, Val loss {val_loss:.4f}")
 
 
-
 if __name__ == "__main__":
     main()
