@@ -11,6 +11,12 @@ SUPPORTED_TASK_REQUIRED_KEYS_HASH = {
         "target",
         "num_classes",
     ],
+    "NodeRegression": [
+        "description",
+        "type",
+        "feature",
+        "target",
+    ],
     "GraphClassification": [
         "description",
         "type",

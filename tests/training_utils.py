@@ -48,3 +48,15 @@ def check_multiple_split_v2(dataset):
                     return 1
                 else:
                     return 0
+
+
+def check_dataset_task(dataset, target_task):
+    """Check whether the dataset support target_task."""
+    directory = os.getcwd() + "/datasets/" + dataset
+    for file in os.listdir(directory):
+        if fnmatch.fnmatch(file, "task*.json"):
+            with open(directory + "/" + file,  encoding="utf-8") as f:
+                task_dict = json.load(f)
+                if task_dict["type"] == target_task:
+                    return True
+    return False
