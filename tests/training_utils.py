@@ -23,7 +23,7 @@ def get_cfg(dataset):
         "loss_fun": "cross_entropy",
         "dataset": {
             "self_loop": True,
-            "to_dense": False
+            "to_dense": True
         },
         "optim": {
             "lr": .005,

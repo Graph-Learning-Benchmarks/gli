@@ -22,10 +22,7 @@ def evaluate(model, features, labels, mask, eval_func):
         logits = model(features)
         logits = logits[mask]
         labels = labels[mask]
-        return eval_func(logits.squeeze(), labels)
-
-
-Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
+        return eval_func(logits.squeeze(), labels.float())
 
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
@@ -37,7 +34,7 @@ def test_training(dataset_name):
     Else, assert False.
     Use model GCN to do test training.
     """
-    # only do the test on Node Regression Dataset
+    # only do the test on NodeRegression datasets
     if not check_dataset_task(dataset_name, "NodeRegression"):
         return
 
@@ -48,9 +45,7 @@ def test_training(dataset_name):
                                            1, device=device)
 
     g = data[0]
-    if train_cfg["dataset"]["to_dense"] or \
-       args["model"] in Models_need_to_be_densed:
-        g = to_dense(g)
+    g = to_dense(g)
     # convert to undirected set
     if train_cfg["dataset"]["self_loop"]:
         g = dgl.remove_self_loop(g)
