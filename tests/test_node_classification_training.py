@@ -31,9 +31,6 @@ def evaluate(model, features, labels, mask):
         return accuracy(logits, labels)
 
 
-Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
-
-
 @pytest.mark.parametrize("dataset_name", find_datasets())
 def test_training(dataset_name):
     """
