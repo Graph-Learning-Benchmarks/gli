@@ -73,7 +73,6 @@ def test_training(dataset_name):
         test_mask = test_mask * (labels >= 0)
 
     in_feats = features.shape[1]
-    # n_classes = data.num_labels
     n_edges = g.number_of_edges()
 
     print(f"""----Data statistics------
@@ -93,7 +92,6 @@ def test_training(dataset_name):
 
     print(model)
 
-    # loss_fcn = torch.nn.CrossEntropyLoss()
     eval_func = loss_fcn = nn.MSELoss()
 
     # use optimizer
