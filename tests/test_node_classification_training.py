@@ -44,7 +44,7 @@ def test_training(dataset_name):
     Use model GCN to do test training.
     """
     # only do the test on NodeClassification datasets
-    if not check_dataset_task(dataset_name, "NodeRegression"):
+    if not check_dataset_task(dataset_name, "NodeClassification"):
         return
 
     args, model_cfg, train_cfg = get_cfg(dataset_name)
