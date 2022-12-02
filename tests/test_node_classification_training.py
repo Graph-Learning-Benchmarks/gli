@@ -9,8 +9,8 @@ import dgl
 import time
 from utils import find_datasets
 from gli.utils import to_dense
-from training_utils import get_cfg, \
-                                check_multiple_split_v2
+from training_utils import get_cfg, check_dataset_task,\
+                           check_multiple_split_v2
 from benchmarks.NodeClassification.models.gcn import GCN
 
 
@@ -31,16 +31,7 @@ def evaluate(model, features, labels, mask):
         return accuracy(logits, labels)
 
 
-Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
 Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
-
-NC_DATASETS = [
-    "actor", "arxiv-year", "chameleon", "citeseer",
-    "cora", "cornell", "genius", "penn94",
-    "pokec", "pubmed", "snap-patents",
-    "squirrel", "texas", "twitch-gamers",
-    "wisconsin"
-]
 
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
@@ -52,8 +43,8 @@ def test_training(dataset_name):
     Else, assert False.
     Use model GCN to do test training.
     """
-    # only do the test on NC datasets
-    if dataset_name not in NC_DATASETS:
+    # only do the test on NodeClassification datasets
+    if not check_dataset_task(dataset_name, "NodeRegression"):
         return
 
     args, model_cfg, train_cfg = get_cfg(dataset_name)
@@ -63,9 +54,7 @@ def test_training(dataset_name):
                                            device=device)
 
     g = data[0]
-    if train_cfg["dataset"]["to_dense"] or \
-       args["model"] in Models_need_to_be_densed:
-        g = to_dense(g)
+    g = to_dense(g)
     # convert to undirected set
     if train_cfg["dataset"]["self_loop"]:
         g = dgl.remove_self_loop(g)
@@ -139,7 +128,7 @@ def test_training(dataset_name):
 
         train_acc = accuracy(logits[train_mask], labels[train_mask])
         val_acc = evaluate(model, features, labels, val_mask)
-        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
+        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f} "
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
