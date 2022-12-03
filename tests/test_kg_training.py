@@ -5,22 +5,16 @@ import torch
 import numpy as np
 import time
 from torch.utils.data import DataLoader
-# from test_data_loading import test_data_loading
 from utils import find_datasets
 from kg_utils import TransE, KGDataset
-
-
-KG_DATASETS = [
-    "FB13", "FB15K", "FB15K237", "NELL-995",
-    "WN11", "WN18", "WN18RR", "YAGO3-10"
-]
+from training_utils import check_dataset_task
 
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
 def test_relation_prediction(dataset_name):
     """Test if the KG dataset can be trained for two epochs."""
     # only do the test on KG Datasets
-    if dataset_name not in KG_DATASETS:
+    if not check_dataset_task(dataset_name, "KGRelationPrediction"):
         return
 
     device = "cpu"
@@ -86,7 +80,7 @@ def test_relation_prediction(dataset_name):
 
         dur.append(time.time() - t0)
 
-        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}")
+        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f} ")
         print(f"| TrainLoss {loss.item():.4f} |")
 
     print("The dataset has successfully trained \
@@ -98,7 +92,7 @@ def test_relation_prediction(dataset_name):
 def test_entity_prediction(dataset_name):
     """Test if the KG dataset can be trained for two epochs."""
     # only do the test on KG Datasets
-    if dataset_name not in KG_DATASETS:
+    if not check_dataset_task(dataset_name, "KGEntityPrediction"):
         return
 
     device = "cpu"
@@ -164,7 +158,7 @@ def test_entity_prediction(dataset_name):
 
         dur.append(time.time() - t0)
 
-        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}")
+        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f} ")
         print(f"| TrainLoss {loss.item():.4f} |")
 
     print("The dataset has successfully trained \

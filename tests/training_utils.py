@@ -60,3 +60,11 @@ def check_dataset_task(dataset, target_task):
                 if task_dict["type"] == target_task:
                     return True
     return False
+
+
+def get_label_number(labels):
+    """Return the label number of dataset."""
+    if len(labels.shape) > 1:
+        return labels.shape[1]
+    else:
+        return 1

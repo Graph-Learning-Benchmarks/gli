@@ -3,14 +3,16 @@ import pytest
 import re
 import gli
 import torch
+from torch import nn
 import torch.nn.functional as F
 import numpy as np
 import dgl
 import time
 from utils import find_datasets
 from gli.utils import to_dense
-from training_utils import get_cfg, \
-                                check_multiple_split_v2
+from training_utils import get_cfg, get_label_number, \
+                           check_dataset_task, \
+                           check_multiple_split_v2
 from benchmarks.NodeClassification.models.gcn import GCN
 
 
@@ -31,18 +33,6 @@ def evaluate(model, features, labels, mask):
         return accuracy(logits, labels)
 
 
-Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
-Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
-
-NC_DATASETS = [
-    "actor", "arxiv-year", "chameleon", "citeseer",
-    "cora", "cornell", "genius", "penn94",
-    "pokec", "pubmed", "snap-patents",
-    "squirrel", "texas", "twitch-gamers",
-    "wisconsin"
-]
-
-
 @pytest.mark.parametrize("dataset_name", find_datasets())
 def test_training(dataset_name):
     """
@@ -52,8 +42,8 @@ def test_training(dataset_name):
     Else, assert False.
     Use model GCN to do test training.
     """
-    # only do the test on NC datasets
-    if dataset_name not in NC_DATASETS:
+    # only do the test on NodeClassification datasets
+    if not check_dataset_task(dataset_name, "NodeClassification"):
         return
 
     args, model_cfg, train_cfg = get_cfg(dataset_name)
@@ -63,9 +53,23 @@ def test_training(dataset_name):
                                            device=device)
 
     g = data[0]
-    if train_cfg["dataset"]["to_dense"] or \
-       args["model"] in Models_need_to_be_densed:
-        g = to_dense(g)
+
+    # check EdgeFeature and multi-modal node features
+    edge_cnt = node_cnt = 0
+    if len(data.features) > 1:
+        for _, element in enumerate(data.features):
+            if "Edge" in element:
+                edge_cnt += 1
+            if "Node" in element:
+                node_cnt += 1
+        if edge_cnt >= 1:
+            print("Edge feature is not supported yet.")
+            return
+        elif node_cnt >= 2:
+            print("Multi-modal node features is not supported yet.")
+            return
+
+    g = to_dense(g)
     # convert to undirected set
     if train_cfg["dataset"]["self_loop"]:
         g = dgl.remove_self_loop(g)
@@ -74,7 +78,7 @@ def test_training(dataset_name):
     feature_name = re.search(r".*Node/(\w+)", data.features[0]).group(1)
     label_name = re.search(r".*Node/(\w+)", data.target).group(1)
     features = g.ndata[feature_name]
-    labels = g.ndata[label_name]
+    labels = g.ndata[label_name].squeeze()
     train_mask = g.ndata["train_mask"]
     val_mask = g.ndata["val_mask"]
     test_mask = g.ndata["test_mask"]
@@ -104,13 +108,28 @@ def test_training(dataset_name):
       #Test samples {test_mask.int().sum().item()}""")
 
     # create model
-    model = GCN(g,
-                in_feats,
-                model_cfg["num_hidden"],
-                n_classes,
-                model_cfg["num_layers"],
-                F.relu,
-                model_cfg["dropout"])
+    label_number = get_label_number(labels)
+    print("label_number: ", label_number)
+    if label_number > 1:
+        # When binary multi-label, output shape is (batchsize, label_num)
+        model = GCN(g,
+                    in_feats,
+                    model_cfg["num_hidden"],
+                    label_number,
+                    model_cfg["num_layers"],
+                    F.relu,
+                    model_cfg["dropout"])
+        loss_fcn = nn.BCEWithLogitsLoss()
+    else:
+        # When single-label, output shape is (batchsize, num_classes)
+        model = GCN(g,
+                    in_feats,
+                    model_cfg["num_hidden"],
+                    n_classes,
+                    model_cfg["num_layers"],
+                    F.relu,
+                    model_cfg["dropout"])
+        loss_fcn = nn.CrossEntropyLoss()
 
     print(model)
 
@@ -139,7 +158,7 @@ def test_training(dataset_name):
 
         train_acc = accuracy(logits[train_mask], labels[train_mask])
         val_acc = evaluate(model, features, labels, val_mask)
-        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f}"
+        print(f"Epoch {epoch:05d} | Time(s) {np.mean(dur):.4f} "
               f"| Loss {loss.item():.4f} | TrainAcc {train_acc:.4f} |"
               f" ValAcc {val_acc:.4f} | "
               f"ETputs(KTEPS) {n_edges / np.mean(dur) / 1000:.2f}")
