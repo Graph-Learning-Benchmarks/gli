@@ -35,17 +35,7 @@ Statistics:
     address = {Washington, DC, USA},
 }
 ```
-```
-@article{sen2008collective,
-  title={Collective classification in network data},
-  author={Sen, Prithviraj and Namata, Galileo and Bilgic, Mustafa and Getoor, Lise and Galligher, Brian and Eliassi-Rad, Tina},
-  journal={AI magazine},
-  volume={29},
-  number={3},
-  pages={93--93},
-  year={2008}
-}
-```
+
 - Current Version
   + [Website](https://github.com/kimiyoung/planetoid)
   + LICENSE: [MIT](https://github.com/kimiyoung/planetoid/blob/master/LICENSE)
@@ -57,6 +47,21 @@ Statistics:
   pages={40--48},
   year={2016},
   organization={PMLR}
+}
+```
+
+- Previous Version
+  + [Website](https://linqs.org/datasets/#cora)
+  + LICENSE: missing
+```
+@article{sen2008collective,
+  title={Collective classification in network data},
+  author={Sen, Prithviraj and Namata, Galileo and Bilgic, Mustafa and Getoor, Lise and Galligher, Brian and Eliassi-Rad, Tina},
+  journal={AI magazine},
+  volume={29},
+  number={3},
+  pages={93--93},
+  year={2008}
 }
 ```
 
