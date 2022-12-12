@@ -113,3 +113,25 @@ True
 ### New Dataset, Feature Request, Bug Fix, or Better Documentation.
 
 All kinds of improvement are welcomed! Please refer to our [Contribution Guide](./CONTRIBUTING.md) for details.
+
+
+## Citation
+
+If you find GLI helpful for your research, please consider citing our paper below.
+
+[Graph Learning Indexer: A Contributor-Friendly and Metadata-Rich Platform for Graph Learning Benchmarks](https://openreview.net/pdf?id=ZBsxA6_gp3).
+
+Jiaqi Ma*, Xingjian Zhang*, Hezheng Fan, Jin Huang, Tianyue Li, Ting Wei Li, Yiwen Tu, Chenshu Zhu, and Qiaozhu Mei. LOG 2022. (*Equal Contributions.)
+
+BibTex:
+```
+@inproceedings{ma2022graph,
+      title={Graph Learning Indexer: A Contributor-Friendly and Metadata-Rich Platform for Graph Learning Benchmarks},
+      author={Jiaqi Ma and Xingjian Zhang and Hezheng Fan and Jin Huang and Tianyue Li and Ting Wei Li and Yiwen Tu and Chenshu Zhu and Qiaozhu Mei},
+      booktitle={The First Learning on Graphs Conference},
+      year={2022},
+      url={https://openreview.net/forum?id=ZBsxA6_gp3}
+}
+```
+
+Please note that you should cite the corresponding data source if you are using any datasets hosted here.
