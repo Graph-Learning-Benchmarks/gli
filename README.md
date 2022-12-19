@@ -117,6 +117,8 @@ All kinds of improvement are welcomed! Please refer to our [Contribution Guide](
 
 ## Citation
 
+**Note**: If you are using a dataset hosted in `datasets/`, please cite the corresponding data source listed in the README.md of *that dataset*.
+
 If you find GLI helpful for your research, please consider citing our paper below.
 
 [Graph Learning Indexer: A Contributor-Friendly and Metadata-Rich Platform for Graph Learning Benchmarks](https://openreview.net/pdf?id=ZBsxA6_gp3).
@@ -133,5 +135,3 @@ BibTex:
       url={https://openreview.net/forum?id=ZBsxA6_gp3}
 }
 ```
-
-**Note**: If you are using any dataset hosted in `datasets/`, please cite the corresponding data source listed in the README.md of each dataset.
