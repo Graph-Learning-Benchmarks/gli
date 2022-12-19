@@ -134,4 +134,4 @@ BibTex:
 }
 ```
 
-Please note that you should cite the corresponding data source if you are using any datasets hosted here.
+**Note**: If you are using any dataset hosted in `datasets/`, please cite the corresponding data source listed in the README.md of each dataset.
