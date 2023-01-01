@@ -51,4 +51,24 @@
     # Key index of the saved npz data. (optional)
     "key": ""
   }
+
+  # Negative samples of edges to validate. (optional)
+  "val_neg": {
+
+    # Path to the saved npz data. (required)
+    "file": "",
+
+    # Key index of the saved npz data. (optional)
+    "key": ""
+  },
+
+  # Negative samples of edges to test. (optional)
+  "test_neg": {
+
+    # Path to the saved npz data. (required)
+    "file": "",
+
+    # Key index of the saved npz data. (optional)
+    "key": ""
+  }
 }
