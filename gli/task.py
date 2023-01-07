@@ -288,8 +288,22 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
                 setattr(self, neg_idx, indices)
 
 
-def read_gli_task(task_path: os.PathLike, verbose=True):
-    """Initialize and return a Task object given task_path."""
+def read_gli_task(task_path: str, verbose=True):
+    """Read a local GLI task file and return a task object.
+    
+    :param task_path: Path to the task file.
+    :type task_path: str
+    :param verbose: Whether to print the task description, defaults to True.
+    :type verbose: bool, optional
+    :return: A task object.
+    :rtype: :class:`gli.task.GLITask`
+    
+    Notes
+    -----
+    This function is used to read a GLI task file locally. It is not used to
+    fetch a task configuration from a remote server. If you want to download any
+    task configuration provided by GLI, use :func:`gli.dataloading.get_gli_task` instead.
+    """
     pwd = os.path.dirname(task_path)
     with open(task_path, "r", encoding="utf-8") as fptr:
         task_dict = json.load(fptr)
