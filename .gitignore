@@ -157,3 +157,8 @@ cython_debug/
 .vscode/
 datasets/**/*.npz
 datasets/**/dataset
+
+# Doc build files
+docs/source/_build
+docs/html
+docs/doctrees
