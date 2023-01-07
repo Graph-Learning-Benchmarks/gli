@@ -23,10 +23,58 @@ SUPPORTED_TASK_TYPES = [
 
 
 class GLITask:
-    """GLI task base class."""
+    """The basic GLI task class for creating graph learning tasks.
+
+    This class contains the necessary attributes and methods for all GLI tasks.
+
+    :param task_dict: A dictionary containing the task information.
+    :type task_dict: dict
+    :param pwd: The path to the directory containing the task files.
+    :type pwd: str
+    :param device: The device to load the task data to.
+    :type device: str
+
+    Notes
+    -----
+    The ``task_dict`` should at least contain the following keys:
+
+    * ``type``: The type of the task.
+    * ``description``: A description of the task.
+    * ``feature``: A list of features to use for the task.
+    * ``target``: The target to use for the task.
+
+    The :class:`gli.task.GLITask` class also contains split information. There
+    are two split methods supported by GLI tasks: random split and predefined
+    split.
+
+    If the random split is used, the ``task_dict`` should contain the following
+    keys:
+
+    * ``train_ratio``: The ratio of training samples.
+    * ``val_ratio``: The ratio of validation samples.
+    * ``test_ratio``: The ratio of test samples.
+    * ``num_samples``: The number of samples used in random sampling.
+    * ``seed``: The random seed to use for random sampling. (optional)
+
+    Otherwise, in the predefined split method, the ``task_dict`` should contain
+    the following keys:
+
+    * ``train_set``: The path to the file containing the training set.
+    * ``val_set``: The path to the file containing the validation set.
+    * ``test_set``: The path to the file containing the test set.
+
+    Other optional keys include:
+
+    * ``num_splits``: The number of splits to use for the task. (optional, 1 by
+      default)
+    """
 
     def __init__(self, task_dict, pwd, device="cpu"):
-        """Initialize GLITask."""
+        """Initialize GLITask.
+
+        This method will infer whether to use random split or predefined split
+        and then load the split information into :attr:`.GLITask.splits`.
+        """
         self.pwd = pwd
         self.type = task_dict["type"]
         self.description = task_dict["description"]
