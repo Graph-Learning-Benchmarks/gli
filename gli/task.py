@@ -1,4 +1,10 @@
-"""Task for GLI."""
+"""
+The ``gli.task`` module contains task classes allowed by GLI and utilities for
+loading them during runtime. Directly using the classes in this module is still
+experimental. Users are encouraged to use the :func:`gli.task.read_gli_task`
+to load tasks from files instead.
+"""
+
 import json
 import math
 import os
