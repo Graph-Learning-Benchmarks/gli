@@ -63,6 +63,7 @@
     # Key index of the saved npz data. 
     "key": ""
   },
+  /* ------------------------------ Fixed splits ------------------------------ */
 
   /* ------------------------------ Random splits ------------------------------ */
   # Number of samples (Number of samples used in random splits).
@@ -77,4 +78,5 @@
 
   # Random split ratio for test set.
   "test_ratio": 0
+  /* ------------------------------ Random splits ------------------------------ */
 }
