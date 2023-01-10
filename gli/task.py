@@ -3,6 +3,8 @@ The ``gli.task`` module contains task classes allowed by GLI and utilities for
 loading them during runtime. Directly using the classes in this module is still
 experimental. Users are encouraged to use the :func:`gli.task.read_gli_task`
 to load tasks from files instead.
+
+See details of GLI file-based task format in :ref:`format`.
 """
 
 import json
@@ -35,7 +37,8 @@ class GLITask:
     :type device: str
 
     Notes
-    -----
+    =====
+    
     The ``task_dict`` should at least contain the following keys:
 
     * ``type``: The type of the task.
@@ -67,6 +70,14 @@ class GLITask:
 
     * ``num_splits``: The number of splits to use for the task. (optional, 1 by
       default)
+    
+    Warning
+    -------
+    
+    Instantiating a :class:`gli.task.GLITask` object directly is still
+    experimental. Instead, you should use the :func:`gli.task.read_gli_task` or
+    :func:`gli.dataloading.get_gli_task` to load tasks from files.
+    
     """
 
     def __init__(self, task_dict, pwd, device="cpu"):

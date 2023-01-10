@@ -8,3 +8,4 @@ KGEntityPredictionTask
 
 .. autoclass:: KGEntityPredictionTask
     :show-inheritance:
+    :members: __init__

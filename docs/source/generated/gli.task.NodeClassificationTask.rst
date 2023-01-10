@@ -8,3 +8,4 @@ NodeClassificationTask
 
 .. autoclass:: NodeClassificationTask
     :show-inheritance:
+    :members: __init__

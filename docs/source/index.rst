@@ -36,5 +36,14 @@ GLI makes an explicit separation between the data storage and the task configura
    :hidden:
    :glob:
 
-   api/graph
+   api/gli
    api/task
+   api/graph
+   api/dataset
+
+
+.. toctree:: 
+   :maxdepth: 2
+   :caption: File Format
+
+   format/file
