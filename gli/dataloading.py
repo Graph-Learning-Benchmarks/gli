@@ -1,4 +1,6 @@
-"""Data loading module for user-side."""
+"""
+The ``gli.dataloading`` module provides functions to load graph datasets.
+"""
 import os
 from typing import List, Union
 
@@ -93,43 +95,41 @@ def get_gli_graph(dataset: str,
                   device: str = "cpu",
                   verbose: bool = False) -> Union[DGLGraph, List[DGLGraph]]:
     # pylint: disable=line-too-long
-    """Get a GLI graph object, or a list of GLI graph objects.
+    """Get one (or a list of) :class:`dgl.DGLGraph` object(s) from GLI repo.
 
-    If the metadata defines multiple subgraphs on the dataset, the returned
-    value is a list rather than a single graph.
+    If the loaded graph dataset contains a single graph, the returned value is a
+    single :class:`dgl.DGLGraph` object. Otherwise, if the dataset contains
+    multiple graphs, the returned value is a list of :class:`dgl.DGLGraph`
+    objects.
 
-    Parameters
-    ----------
-    dataset : str
-        Dataset/Graph name
-    device : str, optional
-        Task type, by default "cpu"
-    verbose : bool, optional
-        Verbose level, by default False
+    :param dataset: graph dataset name.
+    :type dataset: str
+    :param device: device name, defaults to "cpu".
+    :type device: str, optional
+    :param verbose: verbose level, defaults to False.
+    :type verbose: bool, optional
 
-    Returns
-    -------
-    Union[DGLGraph, List[DGLGraph]]
-        Graph dataset instance
+    :rtype: :class:`dgl.DGLGraph` or list of :class:`dgl.DGLGraph`.
 
-    Raises
-    ------
-    FileNotFoundError
-        Raised when metadata/task configuration file is not found.
+    :raises FileNotFoundError: Raised when metadata/task configuration file is
+        not found.
 
+    .. note:: 
+        :func:`gli.dataloading.get_gli_graph` will download the data files if the data
+        files do not exist in the local file system.
+        
     Examples
     --------
-    >>> g = get_gli_graph(dataset="cora")
-    >>> g
-    Graph(num_nodes=2708, num_edges=10556,
-        ndata_schemes={'NodeFeature': Scheme(shape=(1433,), dtype=torch.float32), 'NodeLabel': Scheme(shape=(), dtype=torch.int64)}
-        edata_schemes={})
+    
+    .. code-block:: python
+    
+        >>> g = gli.get_gli_graph("cora")
+        >>> g
+        Graph(num_nodes=2708, num_edges=10556,
+            ndata_schemes={'NodeFeature': Scheme(shape=(1433,), dtype=torch.float32), 'NodeLabel': Scheme(shape=(), dtype=torch.int64)}
+            edata_schemes={})
+    """
 
-    Notes
-    -----
-    The returned graph(s) is essentially DGLGraph with extra attributes defined
-    by GLI.
-    """  # noqa: E501
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
     metadata_path = os.path.join(data_dir, "metadata.json")
     if not os.path.isdir(data_dir):
