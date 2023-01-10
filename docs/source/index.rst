@@ -40,6 +40,7 @@ GLI makes an explicit separation between the data storage and the task configura
    api/task
    api/graph
    api/dataset
+   api/utils
 
 
 .. toctree:: 
@@ -47,3 +48,4 @@ GLI makes an explicit separation between the data storage and the task configura
    :caption: File Format
 
    format/file
+   format/citation
