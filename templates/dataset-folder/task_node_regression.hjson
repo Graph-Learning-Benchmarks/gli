@@ -26,33 +26,54 @@
   # The target is in the same format as above.
   "target": "",
 
+  # Number of splits (number of rows of train, val, test sets).
+  # Default to 1.
+  "num_splits": 1,
+
+  /* ------------------------------ Fixed splits ------------------------------ */
   # Train set indices
   "train_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Validation set indices
   "val_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Testing set indices
   "test_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
-  }
+  },
+  /* ------------------------------ Fixed splits ------------------------------ */
+
+  /* ------------------------------ Random splits ------------------------------ */
+  # Number of samples (Number of samples used in random splits).
+  # Default to 0 (use the whole dataset).
+  "num_samples": 0,
+
+  # Random split ratio for train set.
+  "train_ratio": 0,
+
+  # Random split ratio for validation set.
+  "val_ratio": 0,
+
+  # Random split ratio for test set.
+  "test_ratio": 0
+  /* ------------------------------ Random splits ------------------------------ */
 }

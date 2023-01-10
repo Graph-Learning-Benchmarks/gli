@@ -34,10 +34,10 @@
       # form of (src_node_id, dst_node_id).
       "_Edge": {
 
-        # Path to the saved npz data. (required)
+        # Path to the saved npz data. 
         "file": "",
 
-        # Key index of the saved npz data. (optional)
+        # Key index of the saved npz data. 
         "key": ""
       }
     },
@@ -51,10 +51,10 @@
       # A 0/1-valued (sparse) tensor in shape (n_graphs, n_nodes).
       "_NodeList": {
 
-        # Path to the saved npz data. (required)
+        # Path to the saved npz data. 
         "file": "",
 
-        # Key index of the saved npz data. (optional)
+        # Key index of the saved npz data. 
         "key": ""
       },
 
@@ -62,10 +62,10 @@
       # A 0/1-valued (sparse) tensor in shape (n_graphs, n_edges).
       "_EdgeList": {
 
-        # Path to the saved npz data. (required)
+        # Path to the saved npz data. 
         "file": "",
 
-        # Key index of the saved npz data. (optional)
+        # Key index of the saved npz data. 
         "key": ""
       }
     }

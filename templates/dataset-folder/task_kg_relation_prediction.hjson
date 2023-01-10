@@ -13,7 +13,7 @@
   "description": "",
 
   # Type of the task.
-  "type": "KGEntityPrediction",
+  "type": "KGRelationPrediction",
 
   # Features that will be used in the prediction.
   # Each feature is in following format:
@@ -22,33 +22,37 @@
   #       Node/NodeGroup1/NodeGroup1Feature
   "feature": [],
 
+  # Prediction target.
+  # The target is in the same format as above.
+  "target": "",
+
   # Training edge indices
   "train_triplet_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Validation edge indices
   "val_triplet_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Testing edge indices
   "test_triplet_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 

@@ -1,7 +1,7 @@
 {
   /*
   This configuration is written in hjson format, which is essentially json with
-  comments. Please use this file as a template of a KG entity prediction task
+  comments. Please use this file as a template of a link prediction task
   cofiguration. See more about metadata format requirement at FORMAT.md. Note
   that
   - task_*.json is still a json file. All comments should be removed in json
@@ -13,7 +13,7 @@
   "description": "",
 
   # Type of the task.
-  "type": "KGRelationPrediction",
+  "type": "LinkPrediction",
 
   # Features that will be used in the prediction.
   # Each feature is in following format:
@@ -22,40 +22,53 @@
   #       Node/NodeGroup1/NodeGroup1Feature
   "feature": [],
 
-  # Prediction target.
-  # The target is in the same format as above.
-  "target": "",
-
   # Training edge indices
-  "train_triplet_set": {
+  "train_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Validation edge indices
-  "val_triplet_set": {
+  "val_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Testing edge indices
-  "test_triplet_set": {
+  "test_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
-  # Number of different relations between entities
-  "num_relations": 0
+  # Negative samples of edges to validate. (optional)
+  "val_neg": {
+
+    # Path to the saved npz data.
+    "file": "",
+
+    # Key index of the saved npz data. 
+    "key": ""
+  },
+
+  # Negative samples of edges to test. (optional)
+  "test_neg": {
+
+    # Path to the saved npz data.
+    "file": "",
+
+    # Key index of the saved npz data. 
+    "key": ""
+  }
 }

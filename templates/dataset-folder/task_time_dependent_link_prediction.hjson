@@ -13,7 +13,7 @@
   "description": "",
 
   # Type of the task.
-  "type": "LinkPrediction",
+  "type": "TimeDependentLinkPrediction",
 
   # Features that will be used in the prediction.
   # Each feature is in following format:
@@ -22,33 +22,35 @@
   #       Node/NodeGroup1/NodeGroup1Feature
   "feature": [],
 
-  # Training edge indices
-  "train_set": {
+  # The time attribute that indicates edge order.
+  "time": "",
 
-    # Path to the saved npz data. (required)
+  # Training time window (left inclusive and right exclusive)
+  "train_time_window": [0, 0],
+
+  # Validation time window (left inclusive and right exclusive)
+  "val_time_window": [0, 0],
+
+  # Testing time window (left inclusive and right exclusive)
+  "test_time_window": [0, 0],
+
+  # Negative samples of edges to validate. (optional)
+  "val_neg": {
+
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
-  # Validation edge indices
-  "val_set": {
+  # Negative samples of edges to test. (optional)
+  "test_neg": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
-    "key": ""
-  },
-
-  # Testing edge indices
-  "test_set": {
-
-    # Path to the saved npz data. (required)
-    "file": "",
-
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   }
 }
