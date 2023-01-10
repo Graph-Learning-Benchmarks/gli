@@ -25,50 +25,50 @@
   # Training edge indices
   "train_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Validation edge indices
   "val_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Testing edge indices
   "test_set": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
-  }
+  },
 
   # Negative samples of edges to validate. (optional)
   "val_neg": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   },
 
   # Negative samples of edges to test. (optional)
   "test_neg": {
 
-    # Path to the saved npz data. (required)
+    # Path to the saved npz data.
     "file": "",
 
-    # Key index of the saved npz data. (optional)
+    # Key index of the saved npz data. 
     "key": ""
   }
 }
