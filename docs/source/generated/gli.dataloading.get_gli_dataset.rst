@@ -1,6 +1,13 @@
-﻿gli.dataloading.get\_gli\_dataset
-=================================
+﻿
+.. role:: hidden
+    :class: hidden-section
 
 .. currentmodule:: gli.dataloading
 
-.. autofunction:: get_gli_dataset
+
+get_gli_dataset
+===============
+
+.. autoclass:: get_gli_dataset
+    :show-inheritance:
+    :members: __init__

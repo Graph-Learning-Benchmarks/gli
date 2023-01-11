@@ -1,6 +1,13 @@
-﻿gli.dataloading.get\_gli\_task
-==============================
+﻿
+.. role:: hidden
+    :class: hidden-section
 
 .. currentmodule:: gli.dataloading
 
-.. autofunction:: get_gli_task
+
+get_gli_task
+============
+
+.. autoclass:: get_gli_task
+    :show-inheritance:
+    :members: __init__

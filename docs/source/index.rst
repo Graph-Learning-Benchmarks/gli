@@ -24,6 +24,9 @@ GLI makes an explicit separation between the data storage and the task configura
 .. toctree::
    :maxdepth: 1
    :caption: Get Started
+   :hidden:
+   :glob:
+
 
    start/install
    start/tutorial
@@ -31,10 +34,11 @@ GLI makes an explicit separation between the data storage and the task configura
 
 
 .. toctree:: 
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: API Reference
    :hidden:
    :glob:
+   :titlesonly:
 
    api/gli
    api/task
@@ -46,6 +50,9 @@ GLI makes an explicit separation between the data storage and the task configura
 .. toctree:: 
    :maxdepth: 2
    :caption: File Format
+   :hidden:
+   :glob:
+
 
    format/file
    format/citation

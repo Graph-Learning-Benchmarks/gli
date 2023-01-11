@@ -1,6 +1,13 @@
-﻿gli.task.read\_gli\_task
-========================
+﻿
+.. role:: hidden
+    :class: hidden-section
 
 .. currentmodule:: gli.task
 
-.. autofunction:: read_gli_task
+
+read_gli_task
+=============
+
+.. autoclass:: read_gli_task
+    :show-inheritance:
+    :members: __init__

@@ -1,6 +1,13 @@
-﻿gli.dataloading.combine\_graph\_and\_task
-=========================================
+﻿
+.. role:: hidden
+    :class: hidden-section
 
 .. currentmodule:: gli.dataloading
 
-.. autofunction:: combine_graph_and_task
+
+combine_graph_and_task
+======================
+
+.. autoclass:: combine_graph_and_task
+    :show-inheritance:
+    :members: __init__

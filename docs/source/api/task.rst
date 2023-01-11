@@ -22,6 +22,7 @@ Utility Function
 .. autosummary::
     :toctree: ../generated/
     :nosignatures:
+    :template: classtemplate.rst
 
     read_gli_task
 

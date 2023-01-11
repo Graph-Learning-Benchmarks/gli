@@ -12,6 +12,7 @@ Utility Function
 .. autosummary:: 
     :toctree: ../generated/
     :nosignatures:
+    :template: classtemplate.rst
 
     get_gli_dataset
     get_gli_graph

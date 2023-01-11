@@ -1,5 +1,7 @@
-﻿.. role:: hidden
+﻿
+.. role:: hidden
     :class: hidden-section
+
 .. currentmodule:: gli.task
 
 

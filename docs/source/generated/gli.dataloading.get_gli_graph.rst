@@ -1,6 +1,13 @@
-﻿gli.dataloading.get\_gli\_graph
-===============================
+﻿
+.. role:: hidden
+    :class: hidden-section
 
 .. currentmodule:: gli.dataloading
 
-.. autofunction:: get_gli_graph
+
+get_gli_graph
+=============
+
+.. autoclass:: get_gli_graph
+    :show-inheritance:
+    :members: __init__
