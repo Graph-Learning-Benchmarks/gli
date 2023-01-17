@@ -1,7 +1,7 @@
-"""Base class of graph.
+""":mod:`gli.graph` graph loading module.
 
-Any dataset needs to contain a graph instance. By default, a graph
-instance should be initialized given by a metadata.json.
+The :mod:`gli.graph` module implements the loading of a graph from local files
+in the GLI data format.
 """
 import json
 import os
@@ -17,7 +17,34 @@ from .utils import sparse_to_torch, load_data
 
 
 def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
-    """Initialize and return a Graph instance given metadata.json."""
+    """Read a local `metadata.json` file and return a (or a list of) graph(s).
+
+    :func:`gli.graph.read_gli_graph` reads a graph or a list of graphs
+    according to the `metadata.json` file.
+
+    :param metadata_path: path to the `metadata.json` file.
+    :type metadata_path: :class:`os.PathLike`
+    :param device: device name, defaults to “cpu”.
+    :type device: str, optional
+    :param verbose: verbose level, defaults to False.
+    :type verbose: bool, optional
+
+    :rtype: :class:`dgl.DGLGraph` or a list of :class:`dgl.DGLGraph`
+
+    .. important::
+        The file format of a `metadata.json` is documented in :ref:`format`.
+
+    Notes
+    -----
+    This function is used to read a GLI task file locally. It is not used to
+    fetch a task configuration from a remote server. If you want to download
+    any task configuration provided by GLI, use
+    :func:`gli.dataloading.get_gli_task` instead.
+
+    Additionally, this function is useful when you want to test loading a new
+    task configuration file locally.
+
+    """
     pwd = os.path.dirname(metadata_path)
     with open(metadata_path, "r", encoding="utf-8") as fptr:
         metadata = json.load(fptr)

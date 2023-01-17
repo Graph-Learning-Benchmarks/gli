@@ -1,4 +1,14 @@
-"""Task for GLI."""
+"""
+``gli.task`` module.
+
+The ``gli.task`` module contains task classes allowed by GLI and utilities for
+loading them during runtime. Directly using the classes in this module is still
+experimental. Users are encouraged to use the :func:`gli.task.read_gli_task`
+to load tasks from files instead.
+
+See details of GLI file-based task format in :ref:`format`.
+"""
+
 import json
 import math
 import os
@@ -17,10 +27,67 @@ SUPPORTED_TASK_TYPES = [
 
 
 class GLITask:
-    """GLI task base class."""
+    """The basic GLI task class for creating graph learning tasks.
+
+    This class contains the necessary attributes and methods for all GLI tasks.
+
+    :param task_dict: A dictionary containing the task information.
+    :type task_dict: dict
+    :param pwd: The path to the directory containing the task files.
+    :type pwd: str
+    :param device: The device to load the task data to.
+    :type device: str
+
+    Notes
+    =====
+
+    The ``task_dict`` should at least contain the following keys:
+
+    * ``type``: The type of the task.
+    * ``description``: A description of the task.
+    * ``feature``: A list of features to use for the task.
+    * ``target``: The target to use for the task.
+
+    The :class:`gli.task.GLITask` class also contains split information. There
+    are two split methods supported by GLI tasks: random split and predefined
+    split.
+
+    If the random split is used, the ``task_dict`` should contain the following
+    keys:
+
+    * ``train_ratio``: The ratio of training samples.
+    * ``val_ratio``: The ratio of validation samples.
+    * ``test_ratio``: The ratio of test samples.
+    * ``num_samples``: The number of samples used in random sampling.
+    * ``seed``: The random seed to use for random sampling. (optional)
+
+    Otherwise, in the predefined split method, the ``task_dict`` should contain
+    the following keys:
+
+    * ``train_set``: The path to the file containing the training set.
+    * ``val_set``: The path to the file containing the validation set.
+    * ``test_set``: The path to the file containing the test set.
+
+    Other optional keys include:
+
+    * ``num_splits``: The number of splits to use for the task. (optional, 1 by
+      default)
+
+    Warning
+    -------
+
+    Instantiating a :class:`gli.task.GLITask` object directly is still
+    experimental. Instead, you should use the :func:`gli.task.read_gli_task` or
+    :func:`gli.dataloading.get_gli_task` to load tasks from files.
+
+    """
 
     def __init__(self, task_dict, pwd, device="cpu"):
-        """Initialize GLITask."""
+        """Initialize GLITask.
+
+        This method will infer whether to use random split or predefined split
+        and then load the split information into :attr:`.GLITask.splits`.
+        """
         self.pwd = pwd
         self.type = task_dict["type"]
         self.description = task_dict["description"]
@@ -234,8 +301,26 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
                 setattr(self, neg_idx, indices)
 
 
-def read_gli_task(task_path: os.PathLike, verbose=True):
-    """Initialize and return a Task object given task_path."""
+def read_gli_task(task_path: str, verbose=True):
+    """Read a local GLI task file and return a task object.
+
+    :param task_path: Path to the task file.
+    :type task_path: str
+    :param verbose: Whether to print the task description, defaults to True.
+    :type verbose: bool, optional
+    :return: A task object.
+    :rtype: :class:`gli.task.GLITask`
+
+    Notes
+    -----
+    This function is used to read a GLI task file locally. It is not used to
+    fetch a task configuration from a remote server. If you want to download
+    any task configuration provided by GLI, use
+    :func:`gli.dataloading.get_gli_task` instead.
+
+    Additionally, this function is useful when you want to test loading a new
+    task configuration file locally.
+    """
     pwd = os.path.dirname(task_path)
     with open(task_path, "r", encoding="utf-8") as fptr:
         task_dict = json.load(fptr)

@@ -1,4 +1,4 @@
-"""Data loading module for user-side."""
+"""The ``gli.dataloading`` module provides functions to load graph datasets."""
 import os
 from typing import List, Union
 
@@ -16,30 +16,26 @@ def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
                            task: GLITask) -> DGLDataset:
     """Combine graph(s) and task to get a dataset.
 
-    Parameters
-    ----------
-    graph : Union[DGLGraph, List[DGLGraph]]
-        Graph or a list of graphs.
-    task : GLITask
-        Predefined task configuration.
+    :func:`gli.dataloading.combine_graph_and_task` loads task-specific
+    information into the inputed graph(s) as additional attributes. The
+    graph(s) is then further wrapped by a :class:`dgl.data.DGLDataset` object.
 
-    Returns
+    :param graph: graph or a list of graphs.
+    :type graph: :class:`dgl.DGLGraph` or list of :class:`dgl.DGLGraph`.
+    :param task: predefined task configuration.
+    :type task: :class:`gli.task.GLITask`.
+
+    :rtype: :class:`dgl.data.DGLDataset`.
+
+    Example
     -------
-    DGLDataset
-        Graph dataset instance.
+    .. code-block:: python
 
-    Raises
-    ------
-    NotImplementedError
-        Raised when task types are unknown.
-
-    Examples
-    --------
-    >>> g = get_gli_graph(dataset="cora")
-    >>> t = get_gli_task(dataset="cora", task="NodeClassification")
-    >>> d = combine_graph_and_task(g, t)
-    >>> d.name
-    'CORA dataset. NodeClassification'
+        >>> g = get_gli_graph(dataset="cora")
+        >>> t = get_gli_task(dataset="cora", task="NodeClassification")
+        >>> d = combine_graph_and_task(g, t)
+        >>> d.name
+        'CORA dataset. NodeClassification'
     """
     if task.type in ("NodeClassification", "NodeRegression"):
         return gli.dataset.node_dataset_factory(graph, task)
@@ -58,31 +54,38 @@ def get_gli_dataset(dataset: str,
                     verbose: bool = False) -> DGLDataset:
     """Get a graph dataset given dataset name and task config.
 
-    GLI will download the dataset if the data files do not exist.
+    :param dataset: graph dataset name.
+    :type dataset: str
+    :param task: task type, e.g. "NodeClassification", "NodeRegression".
+    :type task: str
+    :param task_id: task ID defined in dataset folder, defaults to 1.
+    :type task_id: int, optional.
+    :param device: device name, defaults to "cpu".
+    :type device: str, optional
+    :param verbose: verbose level, defaults to False.
+    :type verbose: bool, optional
 
-    Parameters
-    ----------
-    dataset : str
-        Dataset/Graph name
-    task : str
-        Task type
-    task_id : int, optional
-        Task id defined in dataset folder, by default 1
-    device : str, optional
-        Device name, by default "cpu"
-    verbose : bool, optional
-        Verbose level, by default False
+    :rtype: :class:`dgl.data.DGLDataset`.
 
-    Returns
-    -------
-    DGLDataset
-        A DGL dataset instance
+    This function essentially performs the following steps:
+
+    .. code-block:: python
+
+        g = get_gli_graph(dataset, device=device, verbose=verbose) t =
+        get_gli_task(dataset, task, task_id=task_id, verbose=verbose) return
+        combine_graph_and_task(g, t)
+
+    .. note::
+        :func:`gli.dataloading.get_gli_dataset` will download the data files
+        if the data files do not exist in the local file system.
 
     Examples
     --------
-    >>> d = get_gli_dataset(dataset="cora", task="NodeClassification")
-    >>> d.name
-    'CORA dataset. NodeClassification'
+    .. code-block:: python
+
+        >>> d = get_gli_dataset(dataset="cora", task="NodeClassification")
+        >>> d.name
+        'CORA dataset. NodeClassification'
     """
     g = get_gli_graph(dataset, device=device, verbose=verbose)
     t = get_gli_task(dataset, task, task_id=task_id, verbose=verbose)
@@ -92,44 +95,39 @@ def get_gli_dataset(dataset: str,
 def get_gli_graph(dataset: str,
                   device: str = "cpu",
                   verbose: bool = False) -> Union[DGLGraph, List[DGLGraph]]:
-    # pylint: disable=line-too-long
-    """Get a GLI graph object, or a list of GLI graph objects.
+    """Get one (or a list of) :class:`dgl.DGLGraph` object(s) from GLI repo.
 
-    If the metadata defines multiple subgraphs on the dataset, the returned
-    value is a list rather than a single graph.
+    If the loaded graph dataset contains a single graph, the returned value is
+    a single :class:`dgl.DGLGraph` object. Otherwise, if the dataset contains
+    multiple graphs, the returned value is a list of :class:`dgl.DGLGraph`
+    objects.
 
-    Parameters
-    ----------
-    dataset : str
-        Dataset/Graph name
-    device : str, optional
-        Task type, by default "cpu"
-    verbose : bool, optional
-        Verbose level, by default False
+    :param dataset: graph dataset name.
+    :type dataset: str
+    :param device: device name, defaults to "cpu".
+    :type device: str, optional
+    :param verbose: verbose level, defaults to False.
+    :type verbose: bool, optional
 
-    Returns
-    -------
-    Union[DGLGraph, List[DGLGraph]]
-        Graph dataset instance
+    :rtype: :class:`dgl.DGLGraph` or list of :class:`dgl.DGLGraph`.
 
-    Raises
-    ------
-    FileNotFoundError
-        Raised when metadata/task configuration file is not found.
+    :raises FileNotFoundError: Raised when metadata/task configuration file is
+        not found.
+
+    .. note::
+        :func:`gli.dataloading.get_gli_graph` will download the data files if
+        the data files do not exist in the local file system.
 
     Examples
     --------
-    >>> g = get_gli_graph(dataset="cora")
-    >>> g
-    Graph(num_nodes=2708, num_edges=10556,
-        ndata_schemes={'NodeFeature': Scheme(shape=(1433,), dtype=torch.float32), 'NodeLabel': Scheme(shape=(), dtype=torch.int64)}
-        edata_schemes={})
+    .. code-block:: python
 
-    Notes
-    -----
-    The returned graph(s) is essentially DGLGraph with extra attributes defined
-    by GLI.
-    """  # noqa: E501
+        >>> g = gli.get_gli_graph("cora")
+        >>> g
+        Graph(num_nodes=2708, num_edges=10556,
+            ndata_schemes={...}
+            edata_schemes={})
+    """
     data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
     metadata_path = os.path.join(data_dir, "metadata.json")
     if not os.path.isdir(data_dir):
@@ -145,36 +143,32 @@ def get_gli_task(dataset: str,
                  task: str,
                  task_id: int = 1,
                  verbose: bool = False) -> GLITask:
-    """Get a GLI task configuration object.
+    """Get a GLI task configuration object from GLI repo.
 
-    Parameters
-    ----------
-    dataset : str
-        Dataset/Graph name
-    task : str
-        Task type
-    task_id : int, optional
-        Task id defined in dataset folder, by default 1
-    verbose : bool, optional
-        Verbose level, by default False
+    The returned :class:`gli.task.GLITask` object is an intermediate product of
+    the dataloading pipeline. It contains the task-specific information.
 
-    Returns
-    -------
-    GLITask
-        A GLI task configuration
+    :param dataset: graph dataset name.
+    :type dataset: str
+    :param task: task type, e.g. "NodeClassification", "NodeRegression".
+    :type task: str
+    :param task_id: task ID defined in dataset folder, defaults to 1.
+    :type task_id: int, optional.
+    :param verbose: verbose level, defaults to False.
+    :type verbose: bool, optional
 
-    Raises
-    ------
-    NotImplementedError
-        Raised when task type is unsupported.
-    FileNotFoundError
-        Raised when metadata/task configuration file is not found.
+    :rtype: :class:`gli.task.GLITask`
+
+    :raise NotImplementedError: Raised when task type is unsupported.
+    :raise FileNotFoundError: Raised when task configuration file is not found.
 
     Examples
     --------
-    >>> get_gli_task(dataset="cora", task="NodeClassification", task_id=1)
-    Node classification on CORA dataset. Planetoid split.
-    <gli.task.NodeClassificationTask object at 0x100ad5760>
+    .. code-block:: python
+
+        >>> get_gli_task(dataset="cora", task="NodeClassification", task_id=1)
+        Node classification on CORA dataset. Planetoid split.
+        <gli.task.NodeClassificationTask object at 0x...>
     """
     name_map = {
         "NodeClassification": "node_classification",
