@@ -10,4 +10,3 @@ GraphRegressionTask
 
 .. autoclass:: GraphRegressionTask
     :show-inheritance:
-    :members: __init__

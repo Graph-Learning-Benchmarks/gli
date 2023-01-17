@@ -10,4 +10,3 @@ GraphClassificationTask
 
 .. autoclass:: GraphClassificationTask
     :show-inheritance:
-    :members: __init__

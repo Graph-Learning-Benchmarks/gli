@@ -9,4 +9,3 @@
 
 .. autoclass:: {{ name }}
     :show-inheritance:
-    :members: __init__

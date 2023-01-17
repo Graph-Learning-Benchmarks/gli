@@ -10,4 +10,3 @@ get_gli_dataset
 
 .. autoclass:: get_gli_dataset
     :show-inheritance:
-    :members: __init__

@@ -10,4 +10,3 @@ LinkPredictionTask
 
 .. autoclass:: LinkPredictionTask
     :show-inheritance:
-    :members: __init__

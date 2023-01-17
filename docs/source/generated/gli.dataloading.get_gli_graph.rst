@@ -10,4 +10,3 @@ get_gli_graph
 
 .. autoclass:: get_gli_graph
     :show-inheritance:
-    :members: __init__

@@ -10,4 +10,3 @@ get_gli_task
 
 .. autoclass:: get_gli_task
     :show-inheritance:
-    :members: __init__

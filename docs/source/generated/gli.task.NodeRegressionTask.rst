@@ -10,4 +10,3 @@ NodeRegressionTask
 
 .. autoclass:: NodeRegressionTask
     :show-inheritance:
-    :members: __init__
