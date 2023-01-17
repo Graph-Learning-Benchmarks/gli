@@ -1,4 +1,6 @@
 """
+``gli.task`` module.
+
 The ``gli.task`` module contains task classes allowed by GLI and utilities for
 loading them during runtime. Directly using the classes in this module is still
 experimental. Users are encouraged to use the :func:`gli.task.read_gli_task`
@@ -38,7 +40,7 @@ class GLITask:
 
     Notes
     =====
-    
+
     The ``task_dict`` should at least contain the following keys:
 
     * ``type``: The type of the task.
@@ -70,14 +72,14 @@ class GLITask:
 
     * ``num_splits``: The number of splits to use for the task. (optional, 1 by
       default)
-    
+
     Warning
     -------
-    
+
     Instantiating a :class:`gli.task.GLITask` object directly is still
     experimental. Instead, you should use the :func:`gli.task.read_gli_task` or
     :func:`gli.dataloading.get_gli_task` to load tasks from files.
-    
+
     """
 
     def __init__(self, task_dict, pwd, device="cpu"):
@@ -301,21 +303,21 @@ class TimeDependentLinkPredictionTask(LinkPredictionTask):
 
 def read_gli_task(task_path: str, verbose=True):
     """Read a local GLI task file and return a task object.
-    
+
     :param task_path: Path to the task file.
     :type task_path: str
     :param verbose: Whether to print the task description, defaults to True.
     :type verbose: bool, optional
     :return: A task object.
     :rtype: :class:`gli.task.GLITask`
-    
+
     Notes
     -----
     This function is used to read a GLI task file locally. It is not used to
-    fetch a task configuration from a remote server. If you want to download any
-    task configuration provided by GLI, use :func:`gli.dataloading.get_gli_task`
-    instead.
-    
+    fetch a task configuration from a remote server. If you want to download
+    any task configuration provided by GLI, use
+    :func:`gli.dataloading.get_gli_task` instead.
+
     Additionally, this function is useful when you want to test loading a new
     task configuration file locally.
     """

@@ -1,4 +1,5 @@
-"""
+""":mod:`gli.graph` graph loading module.
+
 The :mod:`gli.graph` module implements the loading of a graph from local files
 in the GLI data format.
 """
@@ -18,8 +19,8 @@ from .utils import sparse_to_torch, load_data
 def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     """Read a local `metadata.json` file and return a (or a list of) graph(s).
 
-    :func:`gli.graph.read_gli_graph` reads a graph or a list of graphs according
-    to the `metadata.json` file.
+    :func:`gli.graph.read_gli_graph` reads a graph or a list of graphs
+    according to the `metadata.json` file.
 
     :param metadata_path: path to the `metadata.json` file.
     :type metadata_path: :class:`os.PathLike`
@@ -36,9 +37,9 @@ def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
     Notes
     -----
     This function is used to read a GLI task file locally. It is not used to
-    fetch a task configuration from a remote server. If you want to download any
-    task configuration provided by GLI, use :func:`gli.dataloading.get_gli_task`
-    instead.
+    fetch a task configuration from a remote server. If you want to download
+    any task configuration provided by GLI, use
+    :func:`gli.dataloading.get_gli_task` instead.
 
     Additionally, this function is useful when you want to test loading a new
     task configuration file locally.
