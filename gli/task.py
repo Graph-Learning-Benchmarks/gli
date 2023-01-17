@@ -313,7 +313,11 @@ def read_gli_task(task_path: str, verbose=True):
     -----
     This function is used to read a GLI task file locally. It is not used to
     fetch a task configuration from a remote server. If you want to download any
-    task configuration provided by GLI, use :func:`gli.dataloading.get_gli_task` instead.
+    task configuration provided by GLI, use :func:`gli.dataloading.get_gli_task`
+    instead.
+    
+    Additionally, this function is useful when you want to test loading a new
+    task configuration file locally.
     """
     pwd = os.path.dirname(task_path)
     with open(task_path, "r", encoding="utf-8") as fptr:
