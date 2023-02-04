@@ -33,27 +33,28 @@ def check_file_name(files, dataset_name):
         if check_if_converting_code(file, dataset_name):
             coverting_code_flag = True
 
-    missing_file_messages = []
+    missing_file_messages_error = []
+    missing_file_messages_warning = []
     if not task_json_flag:
-        missing_file_messages.append("missing task_*.json file(s)")
+        missing_file_messages_warning.append("missing task_*.json file(s)")
 
     if not metadata_json_flag:
-        missing_file_messages.append("missing metadata.json")
+        missing_file_messages_error.append("missing metadata.json")
 
     if not urls_jason_flag:
-        missing_file_messages.append("missing urls.json")
+        missing_file_messages_error.append("missing urls.json")
 
     if not readme_flag:
-        missing_file_messages.append("missing README.md")
+        missing_file_messages_error.append("missing README.md")
 
     if not license_flag:
-        missing_file_messages.append("missing LICENSE")
+        missing_file_messages_error.append("missing LICENSE")
 
     if not coverting_code_flag:
-        missing_file_messages.append(
+        missing_file_messages_error.append(
             "missing data conversion code (<dataset>.ipynb or <dataset>.py)")
 
-    return missing_file_messages
+    return missing_file_messages_error, missing_file_messages_warning
 
 
 @pytest.mark.parametrize("dataset_name", find_datasets())
@@ -64,7 +65,7 @@ def test_if_has_essential_files(dataset_name):
     metadata.json file exist in all datasets.
     """
     directory = find_datasets_abs_path(dataset_name)
-    errors = check_file_name(os.listdir(directory), dataset_name)
+    errors, warnings = check_file_name(os.listdir(directory), dataset_name)
 
     if len(errors) > 0:
         print(f"Required files are missing for the dataset at {directory}:")
@@ -74,3 +75,10 @@ def test_if_has_essential_files(dataset_name):
             "Please check if the above file(s) are present and "
             "correctly named.")
     assert len(errors) == 0
+    if len(warnings) > 0:
+        print(f"WARNING: Required files are missing for the dataset at {directory}:")
+        for warn in warnings:
+            print(warn)
+        print(
+            "Please check if the above file(s) are present and "
+            "correctly named.")
