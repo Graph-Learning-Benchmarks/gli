@@ -1,0 +1,46 @@
+{
+    "description": "KGMicrobe dataset.",
+    "data": {
+        "Node": {
+            "NodeName": {
+                "description": "Node (entity) names in KGMicrobe dataset, strings.",
+                "type": "string",
+                "format": "Tensor",
+                "file": "KGMicrobe.npz",
+                "key": "node_name"
+            },
+            "NodeLabel": {
+                "description": "Node labels of KGMicrobe dataset, int ranged from 0 to 10.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "KGMicrobe.npz",
+                "key": "node_class"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "KGMicrobe.npz",
+                "key": "edge"
+            },
+            "EdgeClass": {
+                "description": "Relation type-id of the Edge in the KGMicrobe dataset, int ranged from 0 to 8.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "KGMicrobe.npz",
+                "key": "edge_class"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "KGMicrobe.npz",
+                "key": "node_list"
+            },
+            "_EdgeList": {
+                "file": "KGMicrobe.npz",
+                "key": "edge_list"
+            }
+        }
+    },
+    "citation": "@inproceedings{reese2021kg,\ntitle={KG-COVID-19: a framework to produce customized knowledge graphs for COVID-19 response},\nauthor={Reese, Justin T and Unni, Deepak and Callahan, Tiffany J and Cappelletti, Luca and Ravanmehr, Vida and Carbon, Seth and Shefchek, Kent A and Good, Benjamin M and Balhoff, James P and Fontana, Tommaso and others},\njournal={Patterns},\nvolume={2},\nnumber={1},\npages={100155},\nyear={2021},\npublisher={Elsevier}\n}",
+    "is_heterogeneous": false
+}
