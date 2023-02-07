@@ -100,7 +100,7 @@ def download_file_from_google_drive(g_url: str,
     os.makedirs(root, exist_ok=True)
 
     url = "https://drive.google.com/uc"
-    params = dict(id=file_id, export="download")
+    params = {"id": file_id, "export": "download"}
     with requests.Session() as session:
         response = session.get(url, params=params, stream=True)
 
