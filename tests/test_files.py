@@ -76,7 +76,7 @@ def test_if_has_essential_files(dataset_name):
             "correctly named.")
     assert len(errors) == 0
     if len(warnings) > 0:
-        print(f"WARNING: Required files are missing for the dataset at {directory}:")
+        print(f"Required files are missing for the dataset at {directory}:")
         for warn in warnings:
             print(warn)
         print(
