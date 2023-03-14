@@ -392,3 +392,366 @@ def save_data(prefix, **kwargs):
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
         print("Save sparse matrix", key, "to", f"{prefix}_{key}.sparse.npz")
+
+class HjsonTemplate(object):
+    def __init__(
+        self,
+        name
+    ):
+        self.missing_features_messages_error = []
+        self.missing_features_messages_warning = []
+        self._name = name
+
+    def _check_file_and_key(self, d, v, k):
+        if "file" not in d:
+            self._missing_features_messages_warning.append("%s missing 'file' in %s" % (self._name, v))
+            d.update({"file" : "%s_task.npz" % self._name})
+        if "key" not in d:
+            self._missing_features_messages_warning.append("%s missing 'key' in %s" % (self._name, v))
+            d.update({"key" : k})
+        return d
+    
+    def metadata(
+        self,
+        node=dict(),
+        edge=dict(),
+        graph=dict(),
+        citation=None,
+        is_heterogeneous=True
+    ):
+        # missing_features_messages_error = []
+        # missing_features_messages_warning = []
+        self._node  = node
+        if "_Edge" in edge:
+            edge.update({"_Edge" : self._check_file_and_key(edge.get("_Edge"), "_Edge", "edge")})
+        else:
+            self._missing_features_messages_error.append("%s missing '_Edge'" % self._name) 
+        self._edge = edge
+        if "_NodeList" in graph:
+            if "file" not in graph.get("_NodeList"):
+                self._missing_features_messages_warning.append("%s missing 'file' in '_NodeList'" % self._name)
+                graph.update({"file" : "%s.npz" % self._name})
+            if "key" not in graph.get("_NodeList"):
+                self._missing_features_messages_warning.append("%s missing 'key' in '_NodeList'" % self._name)
+                graph.update({"key" : "node_list"})
+        else:
+            self._missing_features_messages_error.append("%s missing '_NodeList'" % self._name)
+        if "_EdgeList" in graph:
+            if "file" not in graph.get("_EdgeList"):
+                self._missing_features_messages_warning.append("%s missing 'file' in '_EdgeList'" % self._name)
+                graph.update({"file" : "%s.npz" % self._name})
+            if "key" not in graph.get("_EdgeList"):
+                self._missing_features_messages_warning.append("%s missing 'key' in '_EdgeList'" % self._name)
+                graph.update({"key" : "edge_list"})
+        self._graph = graph 
+        self._citation = citation
+        self._is_heterogeneous = is_heterogeneous
+
+        # return missing_features_messages_error, missing_features_messages_warning
+    
+    def save_metadata(self):
+        metadata = {"description" : "%s dataset" % self._name,
+         "Node" : self._node,
+         "Edge" : self._edge,
+         "Graph" : self._graph,
+         "citation" : self._citation,
+         "is_heterogeneous" : self._is_heterogeneous}
+        with open("metadata.json","w") as f:
+            json.dump(metadata,f)
+    
+    def _base_task(
+        self,
+        description="",
+        feature=[],
+        target="",
+        num_classes=0,
+        num_splits=1,
+        train_set=None,
+        val_set=None,
+        test_set=None,
+        num_samples=0,
+        train_ratio=0,
+        val_ratio=0,
+        test_ratio=0
+    ):
+        missing_features_messages_error = []
+        missing_features_messages_warning = []
+        self._description = description
+        self._feature = feature
+        self._target = target
+        self._num_classes = num_classes
+        self._num_splits = num_splits
+        self._num_samples = num_samples
+        self._train_ratio = train_ratio
+        self._val_ratio = val_ratio
+        self._test_ratio = test_ratio
+        if train_set:
+            if "file" not in train_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'train_set'" % self._name)
+                train_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in train_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'train_set'" % self._name)
+                train_set.update({"key" : "train"})
+        self._train_set = train_set
+        if val_set:
+            if "file" not in val_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'val_set'" % self._name)
+                val_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in val_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'val_set'" % self._name)
+                val_set.update({"key" : "val"})
+        self._val_set = val_set
+        if test_set:
+            if "file" not in test_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'test_set'" % self._name)
+                test_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in test_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'test_set'" % self._name)
+                test_set.update({"key" : "val"})
+        self._test_set = test_set
+
+        if ((self._num_samples != 0) or (self._train_ratio != 0) or (self._val_ratio != 0) or (self._test_ratio!= 0)) and (self._train_set or self._val_set or self._test_set):
+            missing_features_messages_error.append("%s has conflict in splits in %s" % (self._name, self._type))
+
+        return missing_features_messages_error, missing_features_messages_warning
+        
+    def task_graph_classification(
+        self,
+        description="",
+        feature=[],
+        target="",
+        num_classes=0,
+        num_splits=1,
+        train_set=None,
+        val_set=None,
+        test_set=None,
+        num_samples=0,
+        train_ratio=0,
+        val_ratio=0,
+        test_ratio=0
+    ):
+        self._type = "GraphClassification"
+        missing_features_messages_error, missing_features_messages_warning = self._base_task(description, feature, target, num_classes, num_splits, train_set, val_set, test_set, num_samples, train_ratio, val_ratio, test_ratio)
+        return missing_features_messages_error, missing_features_messages_warning
+        
+    
+    def task_graph_regression(
+        self,
+        description="",
+        feature=[],
+        target="",
+        num_classes=0,
+        num_splits=1,
+        train_set=None,
+        val_set=None,
+        test_set=None,
+        num_samples=0,
+        train_ratio=0,
+        val_ratio=0,
+        test_ratio=0
+    ):
+        self._type = "GraphRegression"
+        missing_features_messages_error, missing_features_messages_warning = self._base_task(description, feature, target, num_classes, num_splits, train_set, val_set, test_set, num_samples, train_ratio, val_ratio, test_ratio)
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def _base_task_kg(
+        self,
+        description="",
+        feature=[],
+        train_triplet_set=None,
+        val_triplet_set=None,
+        test_triplet_set=None,
+        num_relations=0
+    ):
+        missing_features_messages_error = []
+        missing_features_messages_warning = []
+        self._description = description
+        self._feature = feature
+        self._num_relations = num_relations
+        if train_triplet_set:
+            if "file" not in train_triplet_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'train_triplet_set'" % self._name)
+                train_triplet_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in train_triplet_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'train_triplet_set'" % self._name)
+                train_triplet_set.update({"key" : "train"})
+        self._train_triplet_set = train_triplet_set
+        if val_triplet_set:
+            if "file" not in val_triplet_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'val_triplet_set'" % self._name)
+                val_triplet_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in val_triplet_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'val_triplet_set'" % self._name)
+                val_triplet_set.update({"key" : "val"})
+        self._val_triplet_set = val_triplet_set
+        if test_triplet_set:
+            if "file" not in test_triplet_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'test_triplet_set'" % self._name)
+                test_triplet_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in test_triplet_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'test_triplet_set'" % self._name)
+                test_triplet_set.update({"key" : "val"})
+        self._test_triplet_set = test_triplet_set
+        
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def task_kg_entity_prediction(
+        self,
+        description="",
+        feature=[],
+        train_triplet_set=None,
+        val_triplet_set=None,
+        test_triplet_set=None,
+        num_relations=0
+    ):
+        self._type = "KGEntityPrediction"
+        missing_features_messages_error, missing_features_messages_warning = self._base_task_kg(description, feature, train_triplet_set, val_triplet_set, test_triplet_set, num_relations)
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def task_kg_relation_prediction(
+        self,
+        description="",
+        feature=[],
+        train_triplet_set=None,
+        val_triplet_set=None,
+        test_triplet_set=None,
+        num_relations=0
+    ):
+        self._type = "KGRelationPrediction"
+        missing_features_messages_error, missing_features_messages_warning = self._base_task_kg(description, feature, train_triplet_set, val_triplet_set, test_triplet_set, num_relations)
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def task_link_prediction(
+        self,
+        description="",
+        feature=[],
+        train_set=None,
+        val_set=None,
+        test_set=None,
+        val_neg=None,
+        test_neg=None
+    ):
+        missing_features_messages_error = []
+        missing_features_messages_warning = []
+        self._type = "LinkPrediction"
+        self._description = description
+        self._feature = feature
+        if train_set:
+            if "file" not in train_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'train_set'" % self._name)
+                train_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in train_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'train_set'" % self._name)
+                train_set.update({"key" : "train"})
+        self._train_set = train_set
+        if val_set:
+            if "file" not in val_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'val_set'" % self._name)
+                val_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in val_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'val_set'" % self._name)
+                val_set.update({"key" : "val"})
+        self._val_set = val_set
+        if test_set:
+            if "file" not in test_set:
+                missing_features_messages_warning.append("%s missing 'file' in 'test_set'" % self._name)
+                test_set.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in test_set:
+                missing_features_messages_warning.append("%s missing 'key' in 'test_set'" % self._name)
+                test_set.update({"key" : "val"})
+        self._test_set = test_set
+        if val_neg:
+            if "file" not in val_neg:
+                missing_features_messages_warning.append("%s missing 'file' in 'val_neg'" % self._name)
+                val_neg.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in val_neg:
+                missing_features_messages_warning.append("%s missing 'key' in 'val_neg'" % self._name)
+                val_neg.update({"key" : "val"})
+        self._val_neg = val_neg
+        if test_neg:
+            if "file" not in test_neg:
+                missing_features_messages_warning.append("%s missing 'file' in 'test_neg'" % self._name)
+                test_neg.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in test_neg:
+                missing_features_messages_warning.append("%s missing 'key' in 'test_neg'" % self._name)
+                test_neg.update({"key" : "val"})
+        self._test_neg = test_neg
+
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def task_node_classification(
+        self,
+        description="",
+        feature=[],
+        target="",
+        num_classes=0,
+        num_splits=1,
+        train_set=None,
+        val_set=None,
+        test_set=None,
+        num_samples=0,
+        train_ratio=0,
+        val_ratio=0,
+        test_ratio=0
+    ):
+        self._type = "NodeClassification"
+        missing_features_messages_error, missing_features_messages_warning = self._base_task(description, feature, target, num_classes, num_splits, train_set, val_set, test_set, num_samples, train_ratio, val_ratio, test_ratio)
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def task_node_regression(
+        self,
+        description="",
+        feature=[],
+        target="",
+        num_classes=0,
+        num_splits=1,
+        train_set=None,
+        val_set=None,
+        test_set=None,
+        num_samples=0,
+        train_ratio=0,
+        val_ratio=0,
+        test_ratio=0
+    ):
+        self._type = "NodeRegression"
+        missing_features_messages_error, missing_features_messages_warning = self._base_task(description, feature, target, num_classes, num_splits, train_set, val_set, test_set, num_samples, train_ratio, val_ratio, test_ratio)
+        return missing_features_messages_error, missing_features_messages_warning
+    
+    def task_time_dependent_link_prediction(
+        self,
+        description="",
+        feature=[],
+        time="",
+        train_time_window=[0,0],
+        val_time_window=[0,0],
+        test_time_window=[0,0],
+        val_neg=None,
+        test_neg=None
+    ):
+        self._type = "TimeDependentLinkPrediction"
+        missing_features_messages_error = []
+        missing_features_messages_warning = []
+        self._description = description
+        self._feature = feature
+        self._time = time
+        self._train_time_window = train_time_window
+        self._val_time_window = val_time_window
+        self._test_time_window = test_time_window
+        if val_neg:
+            if "file" not in val_neg:
+                missing_features_messages_warning.append("%s missing 'file' in 'val_neg'" % self._name)
+                val_neg.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in val_neg:
+                missing_features_messages_warning.append("%s missing 'key' in 'val_neg'" % self._name)
+                val_neg.update({"key" : "val"})
+        self._val_neg = val_neg
+        if test_neg:
+            if "file" not in test_neg:
+                missing_features_messages_warning.append("%s missing 'file' in 'test_neg'" % self._name)
+                test_neg.update({"file" : "%s_task.npz" % self._name})
+            if "key" not in test_neg:
+                missing_features_messages_warning.append("%s missing 'key' in 'test_neg'" % self._name)
+                test_neg.update({"key" : "val"})
+        self._test_neg = test_neg
+
+        return missing_features_messages_error, missing_features_messages_warning
