@@ -9,7 +9,7 @@ import gli.dataset
 from gli import ROOT_PATH
 from gli.graph import read_gli_graph
 from gli.task import GLITask, read_gli_task
-from gli.utils import download_data
+from gli.utils import download_data, fetch_dataset
 
 
 def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
@@ -128,7 +128,9 @@ def get_gli_graph(dataset: str,
             ndata_schemes={...}
             edata_schemes={})
     """
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    data_dir = _get_local_data_dir()
+    if data_dir == gli.config.DATASET_PATH:
+        fetch_dataset(dataset)
     metadata_path = os.path.join(data_dir, "metadata.json")
     if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"{data_dir} not found.")
@@ -182,7 +184,9 @@ def get_gli_task(dataset: str,
     }
     if task not in name_map:
         raise NotImplementedError(f"Unsupported task type {task}.")
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    data_dir = _get_local_data_dir()
+    if data_dir == gli.config.DATASET_PATH:
+        fetch_dataset(dataset)
     task_path = os.path.join(data_dir, f"task_{name_map[task]}_{task_id}.json")
     if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"{data_dir} not found.")
@@ -191,3 +195,18 @@ def get_gli_task(dataset: str,
     download_data(dataset, verbose=verbose)
 
     return read_gli_task(task_path, verbose=verbose)
+
+
+def _get_local_data_dir():
+
+    # The repo is cloned to the local file system and is complete
+    # In this case, we use the ./datasets folder
+    full_repo_path = os.path.join(ROOT_PATH, "datasets")
+    if os.path.exists(full_repo_path):
+        return full_repo_path
+
+    # The repo is installed by pypi and is incomplete
+    # In this case, we use the ~/.gli/datasets folder
+    if not os.path.exists(gli.config.DATASET_PATH):
+        os.makedirs(gli.config.DATASET_PATH)
+    return gli.config.DATASET_PATH

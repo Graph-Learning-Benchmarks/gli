@@ -10,8 +10,8 @@ import os
 import re
 import subprocess
 import warnings
-
-from typing import (Iterator, Optional, Tuple)
+import requests
+from typing import Iterator, Optional, Tuple
 from urllib.parse import urlparse
 
 import dgl
@@ -21,7 +21,31 @@ import scipy.sparse as sp
 import torch
 from torch.utils.model_zoo import tqdm
 
-from gli import ROOT_PATH, WARNING_DENSE_SIZE
+from gli import ROOT_PATH, WARNING_DENSE_SIZE, DATASET_PATH
+
+
+def get_available_datasets():
+    GITHUB_API_URL = "https://api.github.com/repos/Graph-Learning-Benchmarks/gli/contents/datasets"
+    response = requests.get(GITHUB_API_URL)
+    response = response.json()
+    return [folder["name"] for folder in response if folder["type"] == "dir"]
+
+
+def fetch_dataset(dataset_name: str):
+    GITHUB_API_URL = f"https://api.github.com/repos/Graph-Learning-Benchmarks/gli/contents/datasets/{dataset_name}"
+    response = requests.get(GITHUB_API_URL)
+    if response.status_code != 200:
+        raise ValueError(f"Dataset {dataset_name} not found.")
+    response = response.json()
+    files = [file["name"] for file in response if file["type"] == "file"]
+    if os.path.exists(f"{DATASET_PATH}/{dataset_name}"):
+        warnings.warn(f"Dataset {dataset_name} already exists.")
+        return
+    else:
+        os.makedirs(f"{DATASET_PATH}/{dataset_name}")
+    for file in files:
+        curl_cmd = f"curl -L https://raw.githubusercontent.com/Graph-Learning-Benchmarks/gli/main/datasets/{dataset_name}/{file} -o {DATASET_PATH}/{dataset_name}/{file}"
+        subprocess.call(curl_cmd, shell=True)
 
 
 def _save_response_content(
