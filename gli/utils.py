@@ -22,6 +22,7 @@ import torch
 from torch.utils.model_zoo import tqdm
 
 from gli import ROOT_PATH, WARNING_DENSE_SIZE, DATASET_PATH
+import gli.config
 
 
 def get_available_datasets():
@@ -254,7 +255,7 @@ def download_data(dataset: str, verbose=False):
         filename (str): Name of configuration file. e.g., `metadata.json`.
         verbose (bool, optional): Defaults to False.
     """
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    data_dir = os.path.join(get_local_data_dir(), dataset)
     if os.path.isdir(data_dir):
         url_file = os.path.join(data_dir, "urls.json")
     else:
@@ -416,3 +417,18 @@ def save_data(prefix, **kwargs):
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
         print("Save sparse matrix", key, "to", f"{prefix}_{key}.sparse.npz")
+
+
+def get_local_data_dir():
+
+    # The repo is cloned to the local file system and is complete
+    # In this case, we use the ./datasets folder
+    full_repo_path = os.path.join(ROOT_PATH, "datasets")
+    if os.path.exists(full_repo_path):
+        return full_repo_path
+
+    # The repo is installed by pypi and is incomplete
+    # In this case, we use the ~/.gli/datasets folder
+    if not os.path.exists(gli.config.DATASET_PATH):
+        os.makedirs(gli.config.DATASET_PATH)
+    return gli.config.DATASET_PATH
