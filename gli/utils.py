@@ -10,7 +10,6 @@ import os
 import re
 import subprocess
 import warnings
-import requests
 from typing import Iterator, Optional, Tuple
 from urllib.parse import urlparse
 
@@ -21,20 +20,34 @@ import scipy.sparse as sp
 import torch
 from torch.utils.model_zoo import tqdm
 
-from gli import ROOT_PATH, WARNING_DENSE_SIZE, DATASET_PATH
 import gli.config
+from gli import DATASET_PATH, ROOT_PATH, WARNING_DENSE_SIZE
 
 
 def get_available_datasets():
-    GITHUB_API_URL = "https://api.github.com/repos/Graph-Learning-Benchmarks/gli/contents/datasets"
-    response = requests.get(GITHUB_API_URL)
+    """Get available datasets from GitHub.
+
+    :return: List of available datasets.
+    :rtype: List[str]
+    """
+    github_api_url = ("https://api.github.com/"
+                      "repos/Graph-Learning-Benchmarks/gli/contents/datasets")
+    response = requests.get(github_api_url, timeout=5)
     response = response.json()
     return [folder["name"] for folder in response if folder["type"] == "dir"]
 
 
 def fetch_dataset(dataset_name: str):
-    GITHUB_API_URL = f"https://api.github.com/repos/Graph-Learning-Benchmarks/gli/contents/datasets/{dataset_name}"
-    response = requests.get(GITHUB_API_URL)
+    """Fetch (Download) a dataset from GitHub.
+
+    Note
+    ====
+    The dataset will be downloaded to `~/.gli/datasets/` by default.
+    """
+    github_api_url = ("https://api.github.com/"
+                      "repos/Graph-Learning-Benchmarks/gli/contents/datasets/"
+                      f"{dataset_name}")
+    response = requests.get(github_api_url, timeout=5)
     if response.status_code != 200:
         raise ValueError(f"Dataset {dataset_name} not found.")
     response = response.json()
@@ -45,7 +58,10 @@ def fetch_dataset(dataset_name: str):
     else:
         os.makedirs(f"{DATASET_PATH}/{dataset_name}")
     for file in files:
-        curl_cmd = f"curl -L https://raw.githubusercontent.com/Graph-Learning-Benchmarks/gli/main/datasets/{dataset_name}/{file} -o {DATASET_PATH}/{dataset_name}/{file}"
+        curl_cmd = (
+            "curl -l https://raw.githubusercontent.com/"
+            "graph-learning-benchmarks/gli/main/datasets/"
+            f"{dataset_name}/{file} -o {DATASET_PATH}/{dataset_name}/{file}")
         subprocess.call(curl_cmd, shell=True)
 
 
@@ -125,7 +141,7 @@ def download_file_from_google_drive(g_url: str,
     os.makedirs(root, exist_ok=True)
 
     url = "https://drive.google.com/uc"
-    params = dict(id=file_id, export="download")
+    params = {"id": file_id, "export": "download"}
     with requests.Session() as session:
         response = session.get(url, params=params, stream=True)
 
@@ -420,7 +436,16 @@ def save_data(prefix, **kwargs):
 
 
 def get_local_data_dir():
+    """Get the local data storage directory.
 
+    The function is used to determine whether the gli module is cloned from
+    GitHub or downloaded by pypi. If the module is cloned from GitHub, the
+    local data storage directory is ``./datasets``. Otherwise, the local data
+    storage directory is ``~/.gli/datasets``.
+
+    :return: gli's local data storage directory
+    :rtype: str
+    """
     # The repo is cloned to the local file system and is complete
     # In this case, we use the ./datasets folder
     full_repo_path = os.path.join(ROOT_PATH, "datasets")

@@ -6,7 +6,6 @@ from dgl import DGLGraph
 from dgl.data import DGLDataset
 
 import gli.dataset
-from gli import ROOT_PATH
 from gli.graph import read_gli_graph
 from gli.task import GLITask, read_gli_task
 from gli.utils import download_data, fetch_dataset, get_local_data_dir
