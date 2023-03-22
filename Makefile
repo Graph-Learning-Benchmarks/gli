@@ -1,5 +1,5 @@
 # Signifies our desired python version
-PYTHON = python3
+PYTHON = python
 PYTHON_FILES := gli/ benchmarks/ tests/ example.py
 
 # .PHONY defines parts of the makefile that are not dependant on any specific file
@@ -19,6 +19,8 @@ help:
 	@echo "            run pytest on a single dataset by arg DATASET."
 	@echo "            e.g., make pytest DATASET=cora"
 	@echo "  donwload: download and preprocess all data files (npz)."
+	@echo "  logs:     create logs directory."
+	@echo "  build:    build the package."
 
 setup:
 	${PYTHON} -m pip install -e ".[test,full]"
@@ -52,3 +54,6 @@ download:
 
 logs:
 	-mkdir logs
+
+build:
+	${PYTHON} -m build

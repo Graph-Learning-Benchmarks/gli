@@ -10,8 +10,7 @@ import os
 import re
 import subprocess
 import warnings
-
-from typing import (Iterator, Optional, Tuple)
+from typing import Iterator, Optional, Tuple
 from urllib.parse import urlparse
 
 import dgl
@@ -21,7 +20,49 @@ import scipy.sparse as sp
 import torch
 from torch.utils.model_zoo import tqdm
 
-from gli import ROOT_PATH, WARNING_DENSE_SIZE
+import gli.config
+from gli import DATASET_PATH, ROOT_PATH, WARNING_DENSE_SIZE
+
+
+def get_available_datasets():
+    """Get available datasets from GitHub.
+
+    :return: List of available datasets.
+    :rtype: List[str]
+    """
+    github_api_url = ("https://api.github.com/"
+                      "repos/Graph-Learning-Benchmarks/gli/contents/datasets")
+    response = requests.get(github_api_url, timeout=5)
+    response = response.json()
+    return [folder["name"] for folder in response if folder["type"] == "dir"]
+
+
+def fetch_dataset(dataset_name: str):
+    """Fetch (Download) a dataset from GitHub.
+
+    Note
+    ====
+    The dataset will be downloaded to `~/.gli/datasets/` by default.
+    """
+    github_api_url = ("https://api.github.com/"
+                      "repos/Graph-Learning-Benchmarks/gli/contents/datasets/"
+                      f"{dataset_name}")
+    response = requests.get(github_api_url, timeout=5)
+    if response.status_code != 200:
+        raise ValueError(f"Dataset {dataset_name} not found.")
+    response = response.json()
+    files = [file["name"] for file in response if file["type"] == "file"]
+    if os.path.exists(f"{DATASET_PATH}/{dataset_name}"):
+        warnings.warn(f"Dataset {dataset_name} already exists.")
+        return
+    else:
+        os.makedirs(f"{DATASET_PATH}/{dataset_name}")
+    for file in files:
+        curl_cmd = (
+            "curl -l https://raw.githubusercontent.com/"
+            "graph-learning-benchmarks/gli/main/datasets/"
+            f"{dataset_name}/{file} -o {DATASET_PATH}/{dataset_name}/{file}")
+        subprocess.call(curl_cmd, shell=True)
 
 
 def _save_response_content(
@@ -230,7 +271,7 @@ def download_data(dataset: str, verbose=False):
         filename (str): Name of configuration file. e.g., `metadata.json`.
         verbose (bool, optional): Defaults to False.
     """
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    data_dir = os.path.join(get_local_data_dir(), dataset)
     if os.path.isdir(data_dir):
         url_file = os.path.join(data_dir, "urls.json")
     else:
@@ -392,3 +433,33 @@ def save_data(prefix, **kwargs):
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
         print("Save sparse matrix", key, "to", f"{prefix}_{key}.sparse.npz")
+
+
+def get_local_data_dir():
+    """Get the local data storage directory.
+
+    The function is used to determine whether the gli module is cloned from
+    GitHub or downloaded by pypi. If the module is cloned from GitHub, the
+    local data storage directory is ``./datasets``. Otherwise, the local data
+    storage directory is ``~/.gli/datasets``.
+
+    Note
+    ----
+    In the future, we will support git partial checkout to download only the
+    source code of gli by git. In this case, the local data storage directory
+    will still be ``./datasets`` but the directory will be empty.
+
+    :return: gli's local data storage directory
+    :rtype: str
+    """
+    # The repo is cloned to the local file system and is complete
+    # In this case, we use the ./datasets folder
+    full_repo_path = os.path.join(ROOT_PATH, "datasets")
+    if os.path.exists(full_repo_path):
+        return full_repo_path
+
+    # The repo is installed by pypi and is incomplete
+    # In this case, we use the ~/.gli/datasets folder
+    if not os.path.exists(gli.config.DATASET_PATH):
+        os.makedirs(gli.config.DATASET_PATH)
+    return gli.config.DATASET_PATH

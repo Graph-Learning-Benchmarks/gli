@@ -6,10 +6,9 @@ from dgl import DGLGraph
 from dgl.data import DGLDataset
 
 import gli.dataset
-from gli import ROOT_PATH
 from gli.graph import read_gli_graph
 from gli.task import GLITask, read_gli_task
-from gli.utils import download_data
+from gli.utils import download_data, fetch_dataset, get_local_data_dir
 
 
 def combine_graph_and_task(graph: Union[DGLGraph, List[DGLGraph]],
@@ -128,7 +127,10 @@ def get_gli_graph(dataset: str,
             ndata_schemes={...}
             edata_schemes={})
     """
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    data_dir = get_local_data_dir()
+    if data_dir == gli.config.DATASET_PATH:
+        fetch_dataset(dataset)
+    data_dir = os.path.join(data_dir, dataset)
     metadata_path = os.path.join(data_dir, "metadata.json")
     if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"{data_dir} not found.")
@@ -182,7 +184,10 @@ def get_gli_task(dataset: str,
     }
     if task not in name_map:
         raise NotImplementedError(f"Unsupported task type {task}.")
-    data_dir = os.path.join(ROOT_PATH, "datasets/", dataset)
+    data_dir = get_local_data_dir()
+    if data_dir == gli.config.DATASET_PATH:
+        fetch_dataset(dataset)
+    data_dir = os.path.join(data_dir, dataset)
     task_path = os.path.join(data_dir, f"task_{name_map[task]}_{task_id}.json")
     if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"{data_dir} not found.")
