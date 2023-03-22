@@ -407,9 +407,31 @@ def save_data(prefix, **kwargs):
     """Save arrays into numpy binary formats.
 
     Dense arrays (numpy) will be saved in the below format as a single file:
-        <prefix>.npz
+    <prefix>.npz
+
     Sparse arrays (scipy) will be saved in the below format individually:
-        <prefix>_<key>.sparse.npz
+    <prefix>_<key>.sparse.npz
+
+    Example
+    -------
+    ```python
+    >>> data = {
+        "node_feats": node_feats,
+        "node_class": node_class,
+        "edge": edge,
+        "node_list": node_list,
+        "edge_list": edge_list
+    }
+    >>> save_data("cora", **data)
+    {'node_class': {'file': 'cora.npz', 'key': 'node_class'},
+     'edge': {'file': 'cora.npz', 'key': 'edge'},
+     'node_list': {'file': 'cora.npz', 'key': 'node_list'},
+     'edge_list': {'file': 'cora.npz', 'key': 'edge_list'},
+     'node_feats': {'file': 'cora_node_feats.sparse.npz'}}
+    ```
+
+    :return: a dictionary that maps the key to the location of the saved array.
+    :rtype: dict
     """
     dense_arrays = {}
     sparse_arrays = {}
@@ -424,15 +446,27 @@ def save_data(prefix, **kwargs):
         else:
             raise TypeError(f"Unsupported format {type(matrix)}.")
 
+    key_to_loc = {}
+
     # Save numpy arrays into a single file
     np.savez_compressed(f"{prefix}.npz", **dense_arrays)
-    print("Save all dense arrays to",
-          f"{prefix}.npz, including {list(dense_arrays.keys())}")
+    key_to_loc.update(
+        {key: {
+            "file": f"{prefix}.npz",
+            "key": key
+        }
+         for key in dense_arrays})
 
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
-        print("Save sparse matrix", key, "to", f"{prefix}_{key}.sparse.npz")
+    key_to_loc.update(
+        {key: {
+            "file": f"{prefix}_{key}.sparse.npz"
+        }
+         for key in sparse_arrays})
+
+    return key_to_loc
 
 
 def get_local_data_dir():
