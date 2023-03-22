@@ -442,7 +442,7 @@ def get_local_data_dir():
     GitHub or downloaded by pypi. If the module is cloned from GitHub, the
     local data storage directory is ``./datasets``. Otherwise, the local data
     storage directory is ``~/.gli/datasets``.
-    
+
     Note
     ----
     In the future, we will support git partial checkout to download only the
