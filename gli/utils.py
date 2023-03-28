@@ -405,13 +405,15 @@ def to_dense(graph: dgl.DGLGraph):
 
 
 def save_data(prefix, **kwargs):
-    """Save arrays into numpy binary formats.
+    """Save arrays into numpy binary formats with unique identifiers.
 
     Dense arrays (numpy) will be saved in the below format as a single file:
-    <prefix>.npz
+    <prefix>__<md5>.npz
 
     Sparse arrays (scipy) will be saved in the below format individually:
-    <prefix>_<key>.sparse.npz
+    <prefix>__<key>__<md5>.sparse.npz
+
+    The MD5 hash is calculated from the content of the file.
 
     Example
     -------
@@ -424,11 +426,11 @@ def save_data(prefix, **kwargs):
         "edge_list": edge_list
     }
     >>> save_data("cora", **data)
-    {'node_class': {'file': 'cora.npz', 'key': 'node_class'},
-     'edge': {'file': 'cora.npz', 'key': 'edge'},
-     'node_list': {'file': 'cora.npz', 'key': 'node_list'},
-     'edge_list': {'file': 'cora.npz', 'key': 'edge_list'},
-     'node_feats': {'file': 'cora_node_feats.sparse.npz'}}
+    {'node_class': {'file': 'cora__<md5>.npz', 'key': 'node_class'},
+     'edge': {'file': 'cora__<md5>.npz', 'key': 'edge'},
+     'node_list': {'file': 'cora__<md5>.npz', 'key': 'node_list'},
+     'edge_list': {'file': 'cora__<md5>.npz', 'key': 'edge_list'},
+     'node_feats': {'file': 'cora__node_feats__<md5>.sparse.npz'}}
     ```
 
     :return: a dictionary that maps the key to the location of the saved array.
@@ -466,12 +468,12 @@ def save_data(prefix, **kwargs):
 
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
-        sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
-        with open(f"{prefix}_{key}.sparse.npz", "rb") as f:
+        sp.save_npz(f"{prefix}__{key}.sparse.npz", matrix)
+        with open(f"{prefix}__{key}.sparse.npz", "rb") as f:
             md5 = hashlib.md5(f.read()).hexdigest()
-        os.rename(f"{prefix}_{key}.sparse.npz",
-                  f"{prefix}_{key}__{md5}.sparse.npz")
-        key_to_loc[key] = {"file": f"{prefix}_{key}__{md5}.sparse.npz"}
+        os.rename(f"{prefix}__{key}.sparse.npz",
+                  f"{prefix}__{key}__{md5}.sparse.npz")
+        key_to_loc[key] = {"file": f"{prefix}__{key}__{md5}.sparse.npz"}
 
     return key_to_loc
 
