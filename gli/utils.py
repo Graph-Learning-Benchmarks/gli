@@ -451,7 +451,8 @@ def save_data(prefix, **kwargs):
 
     # Save numpy arrays into a single file
     np.savez_compressed(f"{prefix}.npz", **dense_arrays)
-    md5 = hashlib.md5(open(f"{prefix}.npz", "rb").read()).hexdigest()
+    with open(f"{prefix}.npz", "rb") as f:
+        md5 = hashlib.md5(f.read()).hexdigest()
     # Rename the file to include the md5 hash
     os.rename(f"{prefix}.npz", f"{prefix}__{md5}.npz")
 
@@ -466,8 +467,8 @@ def save_data(prefix, **kwargs):
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
-        md5 = hashlib.md5(open(f"{prefix}_{key}.sparse.npz",
-                               "rb").read()).hexdigest()
+        with open(f"{prefix}_{key}.sparse.npz", "rb") as f:
+            md5 = hashlib.md5(f.read()).hexdigest()
         os.rename(f"{prefix}_{key}.sparse.npz",
                   f"{prefix}_{key}__{md5}.sparse.npz")
         key_to_loc[key] = {"file": f"{prefix}_{key}__{md5}.sparse.npz"}
