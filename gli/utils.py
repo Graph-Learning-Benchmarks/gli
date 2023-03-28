@@ -453,11 +453,11 @@ def save_data(prefix, **kwargs):
     np.savez_compressed(f"{prefix}.npz", **dense_arrays)
     md5 = hashlib.md5(open(f"{prefix}.npz", "rb").read()).hexdigest()
     # Rename the file to include the md5 hash
-    os.rename(f"{prefix}.npz", f"{prefix}_{md5}.npz")
+    os.rename(f"{prefix}.npz", f"{prefix}__{md5}.npz")
     
     key_to_loc.update(
         {key: {
-            "file": f"{prefix}_{md5}.npz",
+            "file": f"{prefix}__{md5}.npz",
             "key": key
         }
          for key in dense_arrays})
@@ -466,9 +466,9 @@ def save_data(prefix, **kwargs):
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
         md5 = hashlib.md5(open(f"{prefix}_{key}.sparse.npz", "rb").read()).hexdigest()
-        os.rename(f"{prefix}_{key}.sparse.npz", f"{prefix}_{key}_{md5}.sparse.npz")
+        os.rename(f"{prefix}_{key}.sparse.npz", f"{prefix}_{key}__{md5}.sparse.npz")
         key_to_loc[key] = {
-            "file": f"{prefix}_{key}_{md5}.sparse.npz"
+            "file": f"{prefix}_{key}__{md5}.sparse.npz"
         }
 
     return key_to_loc
