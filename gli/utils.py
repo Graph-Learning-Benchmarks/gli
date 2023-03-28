@@ -407,6 +407,12 @@ def to_dense(graph: dgl.DGLGraph):
 def save_data(prefix, **kwargs):
     """Save arrays into numpy binary formats with unique identifiers.
 
+    :param prefix: The prefix of the saved files. See below for details.
+    :type prefix: str
+    :param kwargs: The arrays to be saved. The key will be used as key for
+        dense arrays and will be used in filenames for sparse arrays.
+    :type kwargs: dict[str, numpy.ndarray or scipy.sparse.matrix]
+
     Dense arrays (numpy) will be saved in the below format as a single file:
     <prefix>__<md5>.npz
 
