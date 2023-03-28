@@ -12,6 +12,7 @@ import subprocess
 import warnings
 from typing import Iterator, Optional, Tuple
 from urllib.parse import urlparse
+import hashlib
 
 import dgl
 import numpy as np
@@ -450,9 +451,13 @@ def save_data(prefix, **kwargs):
 
     # Save numpy arrays into a single file
     np.savez_compressed(f"{prefix}.npz", **dense_arrays)
+    md5 = hashlib.md5(open(f"{prefix}.npz", "rb").read()).hexdigest()
+    # Rename the file to include the md5 hash
+    os.rename(f"{prefix}.npz", f"{prefix}_{md5}.npz")
+    
     key_to_loc.update(
         {key: {
-            "file": f"{prefix}.npz",
+            "file": f"{prefix}_{md5}.npz",
             "key": key
         }
          for key in dense_arrays})
@@ -460,11 +465,11 @@ def save_data(prefix, **kwargs):
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
         sp.save_npz(f"{prefix}_{key}.sparse.npz", matrix)
-    key_to_loc.update(
-        {key: {
-            "file": f"{prefix}_{key}.sparse.npz"
+        md5 = hashlib.md5(open(f"{prefix}_{key}.sparse.npz", "rb").read()).hexdigest()
+        os.rename(f"{prefix}_{key}.sparse.npz", f"{prefix}_{key}_{md5}.sparse.npz")
+        key_to_loc[key] = {
+            "file": f"{prefix}_{key}_{md5}.sparse.npz"
         }
-         for key in sparse_arrays})
 
     return key_to_loc
 
