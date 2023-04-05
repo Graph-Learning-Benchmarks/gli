@@ -3,6 +3,7 @@ from gli.utils import save_data
 import numpy as np
 import scipy.sparse as sp
 
+
 class Attributes(object):
     def __init__(
         self,
@@ -29,6 +30,7 @@ class Attributes(object):
                 self.format = "Tensor"
             elif sp.issparse(data):
                 self.format = "SparseTensor"
+
     def to_dict(self, loc : dict()):
         if not loc:
             return None
@@ -42,22 +44,25 @@ class Attributes(object):
         info.update({"file" : loc})
         info.update({"key" : self.key})
         return {self.name : info}
+    
     def get_key(self, prefix):
         # heterogeneous
         # self.key = "%s/%s" % (prefix, self.name)
         if not self.key:
-            self.key = f"{prefix}_{self.name}" #TODO:
+            #TODO:
+            self.key = f"{prefix}_{self.name}" 
         return self.key
 
+
 def save_graph(name,
-    edges,
-    node_list,
-    edge_list=None,
-    node_attrs=[],
-    edge_attrs=[],
-    graph_attrs=[],
-    citation=None,
-    is_heterogeneous = False,
+               edges,
+               node_list,
+               edge_list=None,
+               node_attrs=[],
+               edge_attrs=[],
+               graph_attrs=[],
+               citation=None,
+               is_heterogeneous = False,
 ):
     # save data
     data = dict()
@@ -70,12 +75,14 @@ def save_graph(name,
     if edge_list is not None:
         data.update({"edge_list" : edge_list})
     key_to_loc = save_data(f"{name}__graph", **data)
+
     # save metadata.json
     def _attrs_to_dict(attrs):
         d = dict()
         for a in attrs:
             d.update(a.to_dict(key_to_loc.get(a.key)))
         return d
+    
     node = _attrs_to_dict(node_attrs)
     edge = {"_Edge": key_to_loc.get("edge")}
     edge.update(_attrs_to_dict(edge_attrs))
@@ -84,10 +91,10 @@ def save_graph(name,
         graph.update({"_EdgeList": key_to_loc.get("edge_list")})
     graph.update(_attrs_to_dict(graph_attrs))
     metadata = {"description": "%s dataset" % name,
-         "Node": node,
-         "Edge": edge,
-         "Graph": graph,
-         "citation": citation,
-         "is_heterogeneous": is_heterogeneous}
+                "Node": node,
+                "Edge": edge,
+                "Graph": graph,
+                "citation": citation,
+                "is_heterogeneous": is_heterogeneous}
     with open("metadata.json", "w") as f:
         json.dump(metadata, f, indent=4)
