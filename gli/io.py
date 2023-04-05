@@ -31,26 +31,26 @@ class Attributes(object):
             elif sp.issparse(data):
                 self.format = "SparseTensor"
 
-    def to_dict(self, loc : dict()):
+    def to_dict(self, loc: dict()):
         if not loc:
             return None
         info = dict()
         if self.description:
-            info.update({"description" : self.description})
+            info.update({"description": self.description})
         # if self.type:
-        info.update({"type" : self.type})
+        info.update({"type": self.type})
         # if self.format:
-        info.update({"format" : self.format})
-        info.update({"file" : loc})
-        info.update({"key" : self.key})
-        return {self.name : info}
-    
+        info.update({"format": self.format})
+        info.update({"file": loc})
+        info.update({"key": self.key})
+        return {self.name: info}
+
     def get_key(self, prefix):
         # heterogeneous
         # self.key = "%s/%s" % (prefix, self.name)
         if not self.key:
-            #TODO:
-            self.key = f"{prefix}_{self.name}" 
+            # TODO:
+            self.key = f"{prefix}_{self.name}"
         return self.key
 
 
@@ -62,18 +62,18 @@ def save_graph(name,
                edge_attrs=[],
                graph_attrs=[],
                citation=None,
-               is_heterogeneous = False,
+               is_heterogeneous=False,
 ):
     # save data
     data = dict()
     for e in edge_attrs:
-        data.update({e.get_key("Edge") : e.data})
+        data.update({e.get_key("Edge"): e.data})
     for n in node_attrs:
-        data.update({n.get_key("Node") : n.data})
-    data.update({"edge" : edges})
-    data.update({"node_list" : node_list})
+        data.update({n.get_key("Node"): n.data})
+    data.update({"edge": edges})
+    data.update({"node_list": node_list})
     if edge_list is not None:
-        data.update({"edge_list" : edge_list})
+        data.update({"edge_list": edge_list})
     key_to_loc = save_data(f"{name}__graph", **data)
 
     # save metadata.json
@@ -82,7 +82,7 @@ def save_graph(name,
         for a in attrs:
             d.update(a.to_dict(key_to_loc.get(a.key)))
         return d
-    
+
     node = _attrs_to_dict(node_attrs)
     edge = {"_Edge": key_to_loc.get("edge")}
     edge.update(_attrs_to_dict(edge_attrs))
