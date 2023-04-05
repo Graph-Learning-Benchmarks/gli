@@ -62,8 +62,7 @@ def save_graph(name,
                edge_attrs=[],
                graph_attrs=[],
                citation=None,
-               is_heterogeneous=False,
-):
+               is_heterogeneous=False):
     # save data
     data = dict()
     for e in edge_attrs:
