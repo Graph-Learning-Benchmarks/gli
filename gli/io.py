@@ -77,18 +77,17 @@ def save_graph(name,
             d.update(a.to_dict(key_to_loc.get(a.key)))
         return d
     node = _attrs_to_dict(node_attrs)
-    edge = {"_Edge" : key_to_loc.get("edge")}
+    edge = {"_Edge": key_to_loc.get("edge")}
     edge.update(_attrs_to_dict(edge_attrs))
-    graph = {"_NodeList" : key_to_loc.get("node_list")}
+    graph = {"_NodeList": key_to_loc.get("node_list")}
     if edge_list is not None:
-        graph.update({"_EdgeList" : key_to_loc.get("edge_list")})
+        graph.update({"_EdgeList": key_to_loc.get("edge_list")})
     graph.update(_attrs_to_dict(graph_attrs))
-    metadata = {"description" : "%s dataset" % name,
-         "Node" : node,
-         "Edge" : edge,
-         "Graph" : graph,
-         "citation" : citation,
-         "is_heterogeneous" : is_heterogeneous}
-    with open("metadata.json","w") as f:
-        json.dump(metadata,f, indent = 4)
-        
+    metadata = {"description": "%s dataset" % name,
+         "Node": node,
+         "Edge": edge,
+         "Graph": graph,
+         "citation": citation,
+         "is_heterogeneous": is_heterogeneous}
+    with open("metadata.json", "w") as f:
+        json.dump(metadata, f, indent=4)
