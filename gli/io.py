@@ -54,6 +54,8 @@ class Attribute(object):
         self.name = name
         self.data = data
         self.description = description
+        if description == "":
+            warnings.warn("The description of the attribute is not specified.")
         if data_type is not None:
             self.type = data_type
         else:
@@ -213,6 +215,12 @@ def save_graph(name,
 
     metadata["citation"] = citation
     metadata["is_heterogeneous"] = is_heterogeneous
+
+    if citation == "":
+        warnings.warn("The citation is empty.")
+    if is_heterogeneous:
+        raise NotImplementedError(
+            "Heterogeneous graphs are not supported yet.")
 
     with open("metadata.json", "w") as f:
         json.dump(metadata, f, indent=4)
