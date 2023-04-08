@@ -1,5 +1,6 @@
 """Helper functions for creating datasets in GLI format."""
 import json
+import os
 import warnings
 import numpy as np
 from scipy.sparse import isspmatrix
@@ -93,7 +94,8 @@ def save_graph(name,
                graph_attrs=None,
                description="",
                citation="",
-               is_heterogeneous=False):
+               is_heterogeneous=False,
+               save_dir="."):
     """
     Save the graph information to metadata.json and Numpy data files.
 
@@ -121,6 +123,8 @@ def save_graph(name,
         description (str, optional): The description of the dataset.
         citation (str, optional): The citation of the dataset.
         is_heterogeneous (bool, optional): Whether the graph is heterogeneous.
+        save_dir (str, optional): The directory to save the Numpy data files 
+            and metadata.json.
     """
     # Convert attrs to empty lists if they are None.
     if node_attrs is None:
@@ -203,7 +207,7 @@ def save_graph(name,
             "The name of a graph attribute cannot be 'NodeList' or 'EdgeList'."
         data[f"Graph_{g.name}"] = g.data
     # Call save_data().
-    key_to_loc = save_data(f"{name}__graph", **data)
+    key_to_loc = save_data(f"{name}__graph", save_dir=save_dir, **data)
 
     def _attr_to_metadata_dict(prefix, a):
         """Obtain the metadata dict of the attribute.
@@ -249,7 +253,8 @@ def save_graph(name,
         raise NotImplementedError(
             "Heterogeneous graphs are not supported yet.")
 
-    with open("metadata.json", "w", encoding="utf-8") as f:
+    with open(os.path.join(save_dir, "metadata.json"), "w",
+              encoding="utf-8") as f:
         json.dump(metadata, f, indent=4)
 
     return metadata

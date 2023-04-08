@@ -404,11 +404,13 @@ def to_dense(graph: dgl.DGLGraph):
         raise NotImplementedError("to_dense only works for homograph.")
 
 
-def save_data(prefix, **kwargs):
+def save_data(prefix, save_dir=".", **kwargs):
     """Save arrays into numpy binary formats with unique identifiers.
 
     :param prefix: The prefix of the saved files. See below for details.
     :type prefix: str
+    :param save_dir: The directory to save the files.
+    :type save_dir: str
     :param kwargs: The arrays to be saved. The key will be used as key for
         dense arrays and will be used in filenames for sparse arrays.
     :type kwargs: dict[str, numpy.ndarray or scipy.sparse.matrix]
@@ -457,12 +459,20 @@ def save_data(prefix, **kwargs):
 
     key_to_loc = {}
 
+    # Check if the save_dir exists
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    def _dir(filename):
+        """Prepend save_dir to the file."""
+        return os.path.join(save_dir, filename)
+
     # Save numpy arrays into a single file
-    np.savez_compressed(f"{prefix}.npz", **dense_arrays)
-    with open(f"{prefix}.npz", "rb") as f:
+    np.savez_compressed(_dir(f"{prefix}.npz"), **dense_arrays)
+    with open(_dir(f"{prefix}.npz"), "rb") as f:
         md5 = hashlib.md5(f.read()).hexdigest()
     # Rename the file to include the md5 hash
-    os.rename(f"{prefix}.npz", f"{prefix}__{md5}.npz")
+    os.rename(_dir(f"{prefix}.npz"), _dir(f"{prefix}__{md5}.npz"))
 
     key_to_loc.update({
         key: {
@@ -474,11 +484,11 @@ def save_data(prefix, **kwargs):
 
     # Save scipy sparse matrices into different files by keys
     for key, matrix in sparse_arrays.items():
-        sp.save_npz(f"{prefix}__{key}.sparse.npz", matrix)
-        with open(f"{prefix}__{key}.sparse.npz", "rb") as f:
+        sp.save_npz(_dir(f"{prefix}__{key}.sparse.npz"), matrix)
+        with open(_dir(f"{prefix}__{key}.sparse.npz"), "rb") as f:
             md5 = hashlib.md5(f.read()).hexdigest()
-        os.rename(f"{prefix}__{key}.sparse.npz",
-                  f"{prefix}__{key}__{md5}.sparse.npz")
+        os.rename(_dir(f"{prefix}__{key}.sparse.npz"),
+                  _dir(f"{prefix}__{key}__{md5}.sparse.npz"))
         key_to_loc[key] = {"file": f"{prefix}__{key}__{md5}.sparse.npz"}
 
     return key_to_loc
