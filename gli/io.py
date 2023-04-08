@@ -201,15 +201,15 @@ def save_graph(name,
         # Save the graph dataset.
         save_graph(name="example_dataset",
                    edge=edge,
-                   node_attrs=[dense_node_feats, sparse_node_feats, node_labels],
+                   node_attrs=[dense_node_feats, sparse_node_feats, node_labels],  # noqa pylint: disable=line-too-long
                    description="An exampmle dataset.",
                    citation="some bibtex citation")
 
         # The metadata.json and numpy data files will be saved in the current
         # directory. And the metadata.json will look like something below.
 
+    # noqa pylint: disable=line-too-long
     .. code-block:: json
-
         {
             "description": "An exampmle dataset.",
             "data": {
