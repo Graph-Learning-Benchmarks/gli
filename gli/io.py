@@ -183,7 +183,7 @@ def save_graph(name,
     if graph_edge_lists is not None:  # _EdgeList is optional in metadata.json.
         data["Graph_EdgeList"] = graph_edge_lists
     for g in graph_attrs:
-        assert g.name not in ('NodeList', 'EdgeList'), \
+        assert g.name not in ("NodeList", "EdgeList"), \
             "The name of a graph attribute cannot be 'NodeList' or 'EdgeList'."
         data[f"Graph_{g.name}"] = g.data
     # Call save_data().
