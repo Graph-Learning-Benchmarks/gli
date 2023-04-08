@@ -384,3 +384,396 @@ def save_graph(name,
         json.dump(metadata, f, indent=4)
 
     return metadata
+
+
+def _check_data_splits(train_set, val_set, test_set, train_ratio, val_ratio,
+                       test_ratio, num_samples):
+    """Check the input arguments of data splits are valid."""
+    if train_set is None:
+        assert num_samples is not None, \
+            "If `train_set` is not provided, `num_samples` must be provided."
+        assert 0 < train_ratio + val_ratio + test_ratio <= 1, \
+            "The sum of `train_ratio`, `val_ratio`, and `test_ratio` must " \
+            "be in (0, 1]."
+    else:
+        assert val_set is not None and test_set is not None, \
+            "If `train_set` is provided, `val_set` and `test_set` must be " \
+            "provided."
+        if isinstance(train_set, np.ndarray):
+            train_set = train_set.tolist()
+        if isinstance(val_set, np.ndarray):
+            val_set = val_set.tolist()
+        if isinstance(test_set, np.ndarray):
+            test_set = test_set.tolist()
+        assert isinstance(train_set, list) and \
+            isinstance(val_set, list) and isinstance(test_set, list), \
+            "`train_set`, `val_set`, and `test_set` must be lists."
+        if isinstance(train_set[0], list):  # Multiple splits.
+            assert len(train_set) == len(val_set) == len(test_set), \
+                "If `train_set`, `val_set`, and `test_set` are lists of " \
+                "lists, they must have the same length (number of splits)."
+            # Check the split ratio's of different splits are the same.
+            split_num = (len(train_set[0]), len(val_set[0]), len(test_set[0]))
+            for i in range(len(train_set)):
+                assert len(train_set[i]) == split_num[0] and \
+                    len(val_set[i]) == split_num[1] and \
+                    len(test_set[i]) == split_num[2], \
+                    "The split ratio's of different splits are not the same."
+
+    # Return `train_set`, `val_set`, and `test_set` as lists of lists.
+    return train_set, val_set, test_set
+
+
+def _check_feature(feature):
+    """Check the input argument `feature` is valid."""
+    assert isinstance(feature, list), \
+        "`feature` must be a list of strings."
+    for feat in feature:
+        assert isinstance(feat, str), \
+            "Each element in `feature` must be a string."
+        assert feat.startswith("Node/") or feat.startswith("Edge/") or \
+            feat.startswith("Graph/"), \
+            "Each element in `feature` must be a node/edge/graph attribute."
+
+
+def _check_node_level_target(target):
+    """Check the input argument `target` for node level tasks is valid."""
+    assert isinstance(target, str), \
+        "`target` must be a string."
+    assert target.startswith("Node/"), \
+        "`target` must be a node attribute."
+
+
+def save_task_node_regression(name,
+                              description,
+                              feature,
+                              target,
+                              train_set=None,
+                              val_set=None,
+                              test_set=None,
+                              train_ratio=0.8,
+                              val_ratio=0.1,
+                              test_ratio=0.1,
+                              num_samples=None,
+                              task_id=1,
+                              save_dir="."):
+    """Save the node regression task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the 
+        metadata.json file.
+    :type feature: list of str
+    :param target: The attribute name as prediction target in the task. For
+        this node regression task, the attribute should be a node attribute.
+        For homogeneous graphs, the attribute name should be in the format of
+        "Node/{node_attr_name}". For heterogeneous graphs, the attribute name
+        should be in the format of "Node/{node_type}/{node_attr_name}". The
+        node_attr_name and the node_type should be the ones declared in the
+        metadata.json file.
+    :type target: str
+    :param train_set: A list of training node IDs or a list of list training
+        node IDs. In the latter case, each inner list is the node IDs of one
+        data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
+        will be ignored while `val_set` and `test_set` must present. If None,
+        the task json file will store `train_ratio`, `val_ratio`, and 
+        `test_ratio` and random splits will be generated at run time. Default:
+        None.
+    :type train_set: list of int or list of list of int
+    :param val_set: A list of validation node IDs or a list of list validation
+        node IDs. See `train_set` for more details. Default: None.
+    :type val_set: list of int or list of list of int
+    :param test_set: A list of test node IDs or a list of list test node IDs.
+        See `train_set` for more details. Default: None.
+    :type test_set: list of int or list of list of int
+    :param train_ratio: The ratio of training nodes. See `train_set` for more
+        details. Default: 0.8.
+    :type train_ratio: float
+    :param val_ratio: The ratio of validation nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type val_ratio: float
+    :param test_ratio: The ratio of test nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type test_ratio: float
+    :param num_samples: The total number of nodes in the dataset. This needs to
+        be provided if `train_set`, `val_set`, and `test_set` are not provided.
+        Default: None.
+    :type num_samples: int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+    
+    Example
+    -------
+    .. code-block:: python
+
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        save_task_node_regression(
+            name="example_dataset",
+            description="A node regression task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Node/NodeLabel",
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        # This function will save the task information into a json file named
+        # `task_node_regression_1.json` and one numpy data file storing the
+        # data splits, `train_set`, `val_set`, and `test_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A node regression task for the example dataset.",
+            "type": "NodeRegression",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "target": "Node/NodeLabel",
+            "train_set": {
+                "file": "example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "train_set"
+            },
+            "val_set": {
+                "file": "example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "val_set"
+            },
+            "test_set": {
+                "file": "example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "test_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    _check_node_level_target(target)
+    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
+                                                      test_set, train_ratio,
+                                                      val_ratio, test_ratio,
+                                                      num_samples)
+
+    # Create the dictionary for task json file.
+    task_dict = {
+        "description": description,
+        "type": "NodeRegression",
+        "feature": feature,
+        "target": target
+    }
+    if train_set is not None:
+        # Save the task data files, i.e., the data splits in this task.
+        data_dict = {
+            "train_set": np.array(train_set),
+            "val_set": np.array(val_set),
+            "test_set": np.array(test_set)
+        }
+        key_to_loc = save_data(f"{name}__task_node_classification_{task_id}",
+                               save_dir=save_dir,
+                               **data_dict)
+        # Update the task dictionary with the data file names and keys.
+        task_dict.update(key_to_loc)
+        if isinstance(train_set[0], list):
+            task_dict["num_splits"] = len(train_set)
+    else:
+        task_dict["train_ratio"] = train_ratio
+        task_dict["val_ratio"] = val_ratio
+        task_dict["test_ratio"] = test_ratio
+        task_dict["num_samples"] = num_samples
+
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_node_regression_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
+
+
+def save_task_node_classification(name,
+                                  description,
+                                  feature,
+                                  target,
+                                  num_classes,
+                                  train_set=None,
+                                  val_set=None,
+                                  test_set=None,
+                                  train_ratio=0.8,
+                                  val_ratio=0.1,
+                                  test_ratio=0.1,
+                                  num_samples=None,
+                                  task_id=1,
+                                  save_dir="."):
+    """Save the node classification task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the 
+        metadata.json file.
+    :type feature: list of str
+    :param target: The attribute name as prediction target in the task. For
+        a node classification task, the attribute should be a node attribute.
+        For homogeneous graphs, the attribute name should be in the format of
+        "Node/{node_attr_name}". For heterogeneous graphs, the attribute name
+        should be in the format of "Node/{node_type}/{node_attr_name}". The
+        node_attr_name and the node_type should be the ones declared in the
+        metadata.json file.
+    :type target: str
+    :param num_classes: The number of classes in the task.
+    :type num_classes: int
+    :param train_set: A list of training node IDs or a list of list training
+        node IDs. In the latter case, each inner list is the node IDs of one
+        data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
+        will be ignored while `val_set` and `test_set` must present. If None,
+        the task json file will store `train_ratio`, `val_ratio`, and 
+        `test_ratio` and random splits will be generated at run time. Default:
+        None.
+    :type train_set: list of int or list of list of int
+    :param val_set: A list of validation node IDs or a list of list validation
+        node IDs. See `train_set` for more details. Default: None.
+    :type val_set: list of int or list of list of int
+    :param test_set: A list of test node IDs or a list of list test node IDs.
+        See `train_set` for more details. Default: None.
+    :type test_set: list of int or list of list of int
+    :param train_ratio: The ratio of training nodes. See `train_set` for more
+        details. Default: 0.8.
+    :type train_ratio: float
+    :param val_ratio: The ratio of validation nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type val_ratio: float
+    :param test_ratio: The ratio of test nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type test_ratio: float
+    :param num_samples: The total number of nodes in the dataset. This needs to
+        be provided if `train_set`, `val_set`, and `test_set` are not provided.
+        Default: None.
+    :type num_samples: int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+    
+    Example
+    -------
+    .. code-block:: python
+
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        save_task_node_classification(
+            name="example_dataset",
+            description="A node classification task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Node/NodeLabel",
+            num_classes=4,
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        # This function will save the task information into a json file named
+        # `task_node_classification_1.json` and one numpy data file storing the
+        # data splits, `train_set`, `val_set`, and `test_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A node classification task for the example dataset.",
+            "type": "NodeClassification",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "target": "Node/NodeLabel",
+            "num_classes": 4,
+            "train_set": {
+                "file": "example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "train_set"
+            },
+            "val_set": {
+                "file": "example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "val_set"
+            },
+            "test_set": {
+                "file": "example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "test_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    _check_node_level_target(target)
+    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
+                                                      test_set, train_ratio,
+                                                      val_ratio, test_ratio,
+                                                      num_samples)
+
+    # Create the dictionary for task json file.
+    task_dict = {
+        "description": description,
+        "type": "NodeClassification",
+        "feature": feature,
+        "target": target,
+        "num_classes": num_classes
+    }
+    if train_set is not None:
+        # Save the task data files, i.e., the data splits in this task.
+        data_dict = {
+            "train_set": np.array(train_set),
+            "val_set": np.array(val_set),
+            "test_set": np.array(test_set)
+        }
+        key_to_loc = save_data(f"{name}__task_node_classification_{task_id}",
+                               save_dir=save_dir,
+                               **data_dict)
+        # Update the task dictionary with the data file names and keys.
+        task_dict.update(key_to_loc)
+        if isinstance(train_set[0], list):
+            task_dict["num_splits"] = len(train_set)
+    else:
+        task_dict["train_ratio"] = train_ratio
+        task_dict["val_ratio"] = val_ratio
+        task_dict["test_ratio"] = test_ratio
+        task_dict["num_samples"] = num_samples
+
+    # Save the task json file.
+    with open(os.path.join(save_dir,
+                           f"task_node_classification_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
