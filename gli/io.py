@@ -28,7 +28,13 @@ def detect_array_type(array):
             raise ValueError("The input array is empty.")
 
         # Check for the first non-null element's type
-        for element in array.data:
+        if isspmatrix(array):
+            data = array.data
+        else:
+            # In case array is a multi-dimensional numpy array, flatten it
+            # Otherwise we will not be able to iterate data in the for loop
+            data = array.flatten().data
+        for element in data:
             if element is not None:
                 element_type = type(element)
                 break
