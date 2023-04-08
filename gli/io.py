@@ -123,7 +123,7 @@ def save_graph(name,
         description (str, optional): The description of the dataset.
         citation (str, optional): The citation of the dataset.
         is_heterogeneous (bool, optional): Whether the graph is heterogeneous.
-        save_dir (str, optional): The directory to save the Numpy data files 
+        save_dir (str, optional): The directory to save the Numpy data files
             and metadata.json.
     """
     # Convert attrs to empty lists if they are None.
