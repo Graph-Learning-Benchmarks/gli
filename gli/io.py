@@ -192,24 +192,24 @@ def save_graph(name,
         return metadata
 
     # Create the metadata dict.
-    metadata = {"description": description}
+    metadata = {"description": description, "data": {}}
     # Add the metadata of the node attributes.
     node_dict = dict()
     for n in node_attrs:
         node_dict[n.name] = _attr_to_metadata_dict("Node", n)
-    metadata["Node"] = node_dict
+    metadata["data"]["Node"] = node_dict
     # Add the metadata of the edge attributes.
     edge_dict = {"_Edge": key_to_loc["Edge_Edge"]}
     for e in edge_attrs:
         edge_dict[e.name] = _attr_to_metadata_dict("Edge", e)
-    metadata["Edge"] = edge_dict
+    metadata["data"]["Edge"] = edge_dict
     # Add the metadata of the graph attributes.
     graph_dict = {"_NodeList": key_to_loc["Graph_NodeList"]}
     if graph_edge_lists is not None:
         graph_dict["_EdgeList"] = key_to_loc["Graph_EdgeList"]
     for g in graph_attrs:
         graph_dict[g.name] = _attr_to_metadata_dict("Graph", g)
-    metadata["Graph"] = graph_dict
+    metadata["data"]["Graph"] = graph_dict
 
     metadata["citation"] = citation
     metadata["is_heterogeneous"] = is_heterogeneous
