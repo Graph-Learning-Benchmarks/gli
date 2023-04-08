@@ -1,3 +1,4 @@
+"""Helper functions for creating datasets in GLI format."""
 import json
 import warnings
 import numpy as np
@@ -7,6 +8,7 @@ from gli.utils import save_data
 
 
 def detect_array_type(array):
+    """Detect the type of the data in the array."""
     if isspmatrix(array) or isinstance(array, np.ndarray):
         if array.size == 0:
             raise ValueError("The input array is empty.")
@@ -32,7 +34,7 @@ def detect_array_type(array):
 
 
 class Attribute(object):
-
+    """An attribute of a node, an edge, or a graph."""
     def __init__(self,
                  name,
                  data,
@@ -40,7 +42,7 @@ class Attribute(object):
                  data_type=None,
                  data_format=None):
         """
-        An attribute of a node, an edge, or a graph.
+        Initialize the attribute.
 
         Args:
             name (str): The name of the attribute.
@@ -181,6 +183,7 @@ def save_graph(name,
 
     def _attr_to_metadata_dict(prefix, a):
         """Obtain the metadata dict of the attribute.
+
         Args:
             prefix (str): The prefix of the attribute, i.e., "Node", "Edge", or
                 "Graph".
