@@ -85,11 +85,11 @@ class Attribute(object):
 
 def save_graph(name,
                edge,
-               node_attrs=[],
-               edge_attrs=[],
+               node_attrs=None,
+               edge_attrs=None,
                graph_node_lists=None,
                graph_edge_lists=None,
-               graph_attrs=[],
+               graph_attrs=None,
                description="",
                citation="",
                is_heterogeneous=False):
@@ -121,6 +121,13 @@ def save_graph(name,
         citation (str, optional): The citation of the dataset.
         is_heterogeneous (bool, optional): Whether the graph is heterogeneous.
     """
+    if node_attrs is None:
+        node_attrs = []
+    if edge_attrs is None:
+        edge_attrs = []
+    if graph_attrs is None:
+        graph_attrs = []
+
     # Check `edge` shape.
     if edge.shape[1] != 2:
         raise ValueError("The edge array must have shape (num_edges, 2).")
@@ -151,7 +158,7 @@ def save_graph(name,
                              "`graph_edge_lists`.")
 
     # Create the data dict to be saved using gli.utils.save_data().
-    data = dict()
+    data = {}
     data["Edge_Edge"] = edge.astype(np.int32)
     for n in node_attrs:
         data[f"Node_{n.name}"] = n.data
@@ -176,7 +183,7 @@ def save_graph(name,
     if graph_edge_lists is not None:  # _EdgeList is optional in metadata.json.
         data["Graph_EdgeList"] = graph_edge_lists
     for g in graph_attrs:
-        assert g.name != "NodeList" and g.name != "EdgeList", \
+        assert g.name not in ('NodeList', 'EdgeList'), \
             "The name of a graph attribute cannot be 'NodeList' or 'EdgeList'."
         data[f"Graph_{g.name}"] = g.data
     # Call save_data().
@@ -192,7 +199,7 @@ def save_graph(name,
         Returns:
             dict: The metadata dict of the attribute.
         """
-        metadata = dict()
+        metadata = {}
         metadata.update(a.get_metadata_dict())
         metadata.update(key_to_loc[f"{prefix}_{a.name}"])
         return metadata
@@ -200,7 +207,7 @@ def save_graph(name,
     # Create the metadata dict.
     metadata = {"description": description, "data": {}}
     # Add the metadata of the node attributes.
-    node_dict = dict()
+    node_dict = {}
     for n in node_attrs:
         node_dict[n.name] = _attr_to_metadata_dict("Node", n)
     metadata["data"]["Node"] = node_dict
@@ -226,7 +233,7 @@ def save_graph(name,
         raise NotImplementedError(
             "Heterogeneous graphs are not supported yet.")
 
-    with open("metadata.json", "w") as f:
+    with open("metadata.json", "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=4)
 
     return metadata
