@@ -35,6 +35,7 @@ def detect_array_type(array):
 
 class Attribute(object):
     """An attribute of a node, an edge, or a graph."""
+
     def __init__(self,
                  name,
                  data,
@@ -48,9 +49,9 @@ class Attribute(object):
             name (str): The name of the attribute.
             data (array-like): The data of the attribute.
             description (str, optional): The description of the attribute.
-            data_type (str, optional): The type of the data. If not specified, 
+            data_type (str, optional): The type of the data. If not specified,
                 the type will be automatically detected.
-            data_format (str, optional): The format of the data. If not 
+            data_format (str, optional): The format of the data. If not
                 specified, the format will be automatically detected.
         """
         self.name = name
@@ -103,7 +104,7 @@ def save_graph(name,
             nodes.
         edge_attrs (list of Attribute, optional): A list of attributes of the
             edges.
-        graph_node_lists ((sparse) array, optional): An array of shape 
+        graph_node_lists ((sparse) array, optional): An array of shape
             (num_graphs, num_nodes). Each row corresponds to a graph and each
             column corresponds to a node. The value of the element (i, j) is 1
             if node j is in graph i, otherwise 0. If not specified, the graph
