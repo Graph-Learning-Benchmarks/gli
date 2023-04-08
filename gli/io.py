@@ -9,7 +9,20 @@ from gli.utils import save_data
 
 
 def detect_array_type(array):
-    """Detect the type of the data in the array."""
+    """
+    Detect the type of the data in the array.
+
+    :param array: The input array.
+    :type array: scipy.sparse array or numpy array
+
+    :raises ValueError: If the input array is empty.
+    :raises TypeError: If the input array is not a scipy sparse array or numpy
+        array.
+    :raises TypeError: If the input array contains unsupported data types.
+
+    :return: Data type of the elements in the array.
+    :rtype: str
+    """
     if isspmatrix(array) or isinstance(array, np.ndarray):
         if array.size == 0:
             raise ValueError("The input array is empty.")
@@ -46,14 +59,23 @@ class Attribute(object):
         """
         Initialize the attribute.
 
-        Args:
-            name (str): The name of the attribute.
-            data (array-like): The data of the attribute.
-            description (str, optional): The description of the attribute.
-            data_type (str, optional): The type of the data. If not specified,
-                the type will be automatically detected.
-            data_format (str, optional): The format of the data. If not
-                specified, the format will be automatically detected.
+        :param name: The name of the attribute.
+        :type name: str
+        :param data: The data of the attribute.
+        :type data: array-like
+        :param description: The description of the attribute, defaults to "".
+        :type description: str, optional
+        :param data_type: The type of the data, which must be one of "int",
+            "float", or "str". If not specified, the type will be automatically
+            detected, defaults to None.
+        :type data_type: str, optional
+        :param data_format: The format of the data, which must be one of
+            "Tensor" or "SparseTensor". If not specified, the format will be
+            automatically detected, defaults to None.
+        :type data_format: str, optional
+
+        :raises TypeError: If the input data is not a scipy sparse array or
+            numpy array.
         """
         self.name = name
         self.data = data
@@ -97,47 +119,54 @@ def save_graph(name,
                is_heterogeneous=False,
                save_dir="."):
     """
-    Save the graph information to metadata.json and Numpy data files.
+    Save the graph information to metadata.json and numpy data files.
 
-    Args:
-        name (str): The name of the graph dataset.
-        edge (array): An array of shape (num_edges, 2). Each row is an edge
-            between the two nodes with the given node IDs.
-        node_attrs (list of Attribute, optional): A list of attributes of the
-            nodes.
-        edge_attrs (list of Attribute, optional): A list of attributes of the
-            edges.
-        graph_node_lists ((sparse) array, optional): An array of shape
-            (num_graphs, num_nodes). Each row corresponds to a graph and each
-            column corresponds to a node. The value of the element (i, j) is 1
-            if node j is in graph i, otherwise 0. If not specified, the graph
-            will be considered as a single graph.
-        graph_edge_lists ((sparse) array, optional): An array of shape
-            (num_graphs, num_edges). Each row corresponds to a graph and each
-            column corresponds to an edge. The value of the element (i, j) is 1
-            if edge j is in graph i, otherwise 0. If not specified, the edges
-            contained in each graph specified by `graph_node_lists` will be
-            considered as all the edges among the nodes in the graph.
-        graph_attrs (list of Attribute, optional): A list of attributes of the
-            graphs.
-        description (str, optional): The description of the dataset.
-        citation (str, optional): The citation of the dataset.
-        is_heterogeneous (bool, optional): Whether the graph is heterogeneous.
-        save_dir (str, optional): The directory to save the Numpy data files
-            and metadata.json.
+    :param name: The name of the graph dataset.
+    :type name: str
+    :param edge: An array of shape (num_edges, 2). Each row is an edge between
+        the two nodes with the given node IDs.
+    :type edge: array
+    :param node_attrs: A list of attributes of the nodes, defaults to None.
+    :type node_attrs: list of Attribute, optional
+    :param edge_attrs: A list of attributes of the edges, defaults to None.
+    :type edge_attrs: list of Attribute, optional
+    :param graph_node_lists: An array of shape (num_graphs, num_nodes). Each
+        row corresponds to a graph and each column corresponds to a node. The
+        value of the element (i, j) is 1 if node j is in graph i, otherwise 0.
+        If not specified, the graph will be considered as a single graph,
+        defaults to None.
+    :type graph_node_lists: (sparse) array, optional
+    :param graph_edge_lists: An array of shape (num_graphs, num_edges). Each
+        row corresponds to a graph and each column corresponds to an edge. The
+        value of the element (i, j) is 1 if edge j is in graph i, otherwise 0.
+        If not specified, the edges contained in each graph specified by
+        `graph_node_lists` will be considered as all the edges among the nodes
+        in the graph, defaults to None.
+    :type graph_edge_lists: (sparse) array, optional
+    :param graph_attrs: A list of attributes of the graphs, defaults to None.
+    :type graph_attrs: list of Attribute, optional
+    :param description: The description of the dataset, defaults to "".
+    :type description: str, optional
+    :param citation: The citation of the dataset, defaults to "".
+    :type citation: str, optional
+    :param is_heterogeneous: Whether the graph is heterogeneous, defaults to
+        False.
+    :type is_heterogeneous: bool, optional
+    :param save_dir: The directory to save the numpy data files and
+        `metadata.json`, defaults to ".".
+    :type save_dir: str, optional
 
-    Raises:
-        ValueError: If the length of data of all attributes of the node(s) or
-            edge(s) or graph(s) is not the same.
-        ValueError: If the edge array does not have shape (num_edges, 2).
-        ValueError: If the data type of the `graph_node_lists` and the 
-            `graph_edge_lists` are not binary.
-        ValueError: If the number of graphs in the `graph_node_lists` and the
-            `graph_edge_lists` are not the same.
-        NotImplementedError: If the graph is heterogeneous.
+    :raises ValueError: If the length of data of all attributes of the node(s)
+        or edge(s) or graph(s) is not the same.
+    :raises ValueError: If the edge array does not have shape (num_edges, 2).
+    :raises ValueError: If the data type of the `graph_node_lists` and the
+        `graph_edge_lists` are not binary.
+    :raises ValueError: If the number of graphs in the `graph_node_lists` and
+        the `graph_edge_lists` are not the same.
+    :raises NotImplementedError: If the graph is heterogeneous.
 
-    Returns:
-        The dictionary of the content in `metadata.json`.
+    :return: The dictionary of the content in `metadata.json`.
+    :rtype: dict
     """
     # Convert attrs to empty lists if they are None.
     if node_attrs is None:
