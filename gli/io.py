@@ -56,6 +56,7 @@ class Attribute(object):
         """
         self.name = name
         self.data = data
+        self.num_data = len(data)
         self.description = description
         if description == "":
             warnings.warn("The description of the attribute is not specified.")
@@ -121,12 +122,27 @@ def save_graph(name,
         citation (str, optional): The citation of the dataset.
         is_heterogeneous (bool, optional): Whether the graph is heterogeneous.
     """
+    # Convert attrs to empty lists if they are None.
     if node_attrs is None:
         node_attrs = []
     if edge_attrs is None:
         edge_attrs = []
     if graph_attrs is None:
         graph_attrs = []
+
+    def _verify_attrs_length(attrs, object_name):
+        """Verify all elements in attrs have the same length."""
+        if len(attrs) > 0:
+            num_data = attrs[0].num_data
+            for attr in attrs:
+                if attr.num_data != num_data:
+                    raise ValueError(f"The length of data of all attributes of"
+                                     "the {object_name} must be the same.")
+
+    # Check the length of node/edge/graph attrs.
+    _verify_attrs_length(node_attrs, "node")
+    _verify_attrs_length(edge_attrs, "edge")
+    _verify_attrs_length(graph_attrs, "graph")
 
     # Check `edge` shape.
     if edge.shape[1] != 2:
