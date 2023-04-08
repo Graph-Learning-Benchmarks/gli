@@ -125,6 +125,19 @@ def save_graph(name,
         is_heterogeneous (bool, optional): Whether the graph is heterogeneous.
         save_dir (str, optional): The directory to save the Numpy data files
             and metadata.json.
+
+    Raises:
+        ValueError: If the length of data of all attributes of the node(s) or
+            edge(s) or graph(s) is not the same.
+        ValueError: If the edge array does not have shape (num_edges, 2).
+        ValueError: If the data type of the `graph_node_lists` and the 
+            `graph_edge_lists` are not binary.
+        ValueError: If the number of graphs in the `graph_node_lists` and the
+            `graph_edge_lists` are not the same.
+        NotImplementedError: If the graph is heterogeneous.
+
+    Returns:
+        The dictionary of the content in `metadata.json`.
     """
     # Convert attrs to empty lists if they are None.
     if node_attrs is None:
