@@ -140,8 +140,8 @@ def save_graph(name,
             num_data = attrs[0].num_data
             for attr in attrs:
                 if attr.num_data != num_data:
-                    raise ValueError("The length of data of all attributes of"
-                                     f" the {object_name} must be the same.")
+                    raise ValueError("The length of data of all attributes of "
+                                     f"the {object_name}(s) must be the same.")
 
     # Check the length of node/edge/graph attrs.
     _verify_attrs_length(node_attrs, "node")
