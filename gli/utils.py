@@ -1,8 +1,4 @@
-"""Utility functions.
-
-Download functions for Google Drive come from
-https://github.com/pytorch/vision/blob/main/torchvision/datasets/utils.py.
-"""
+"""Utility functions."""
 import contextlib
 import itertools
 import json
@@ -22,7 +18,7 @@ import torch
 from torch.utils.model_zoo import tqdm
 
 import gli.config
-from gli import DATASET_PATH, ROOT_PATH, WARNING_DENSE_SIZE
+from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE
 
 
 def get_available_datasets():
@@ -264,24 +260,88 @@ def sparse_to_torch(sparse_array: sp.spmatrix,
             raise TypeError(f"Unsupported sparse type {sparse_type}")
 
 
+def _find_data_files_from_json_files(data_dir):
+    """Traverse json files under dataset path and find dependent data files."""
+    json_files = []
+    for file in os.listdir(data_dir):
+        if file.endswith(".json") and file != "urls.json":
+            json_files.append(file)
+
+    def _find_data_files_helper(data):
+        """Get all entries in data with key `file` at all levels."""
+        data_files = []
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if key == "file":
+                    data_files.append(value)
+                else:
+                    data_files.extend(_find_data_files_helper(value))
+        elif isinstance(data, list):
+            for item in data:
+                data_files.extend(_find_data_files_helper(item))
+        return data_files
+
+    # Get all dependent data files from json files.
+    data_files = []
+    for json_file in json_files:
+        with open(os.path.join(data_dir, json_file), "r",
+                  encoding="utf-8") as f:
+            data = json.load(f)
+            data_files.extend(_find_data_files_helper(data))
+    # Deduplicate data_files.
+    data_files = list(set(data_files))
+
+    return data_files
+
+
 def download_data(dataset: str, verbose=False):
     """Download dependent data of a configuration (metadata/task) file.
 
     Args:
         dataset (str): Name of dataset.
-        filename (str): Name of configuration file. e.g., `metadata.json`.
         verbose (bool, optional): Defaults to False.
     """
     data_dir = os.path.join(get_local_data_dir(), dataset)
-    if os.path.isdir(data_dir):
-        url_file = os.path.join(data_dir, "urls.json")
-    else:
+    if not os.path.isdir(data_dir):
         raise FileNotFoundError(f"cannot find dataset {dataset}.")
-    if not os.path.exists(url_file):
-        raise FileNotFoundError(f"cannot find url files of {dataset}.")
-    with open(url_file, "r", encoding="utf-8") as fp:
-        url_dict = json.load(fp)
-    for data_file_name, url in url_dict.items():
+
+    # Get all required dependent data files from json files.
+    data_files = _find_data_files_from_json_files(data_dir)
+    exist_all_files = True
+    for data_file_name in data_files:
+        data_file_path = os.path.join(data_dir, data_file_name)
+        if not os.path.exists(data_file_path):
+            exist_all_files = False
+            break
+    if exist_all_files:
+        if verbose:
+            print("All data files already exist. Skip downloading.")
+        return
+
+    # First, check the local urls.json file.
+    url_file = os.path.join(data_dir, "urls.json")
+    if os.path.exists(url_file):
+        with open(url_file, "r", encoding="utf-8") as fp:
+            url_dict = json.load(fp)
+    else:
+        # Second, try to download and check the global_urls.json file.
+        global_url_file = os.path.join(data_dir, "global_urls.json")
+        _download(GLOBAL_FILE_URL, global_url_file, verbose=verbose)
+        if os.path.exists(global_url_file):
+            with open(global_url_file, "r", encoding="utf-8") as fp:
+                url_dict = json.load(fp)
+        else:
+            raise FileNotFoundError("cannot find urls.json and failed to "
+                                    "download global_urls.json.")
+
+    # Get urls for all required data files.
+    data_file_url_dict = {}
+    for data_file in data_files:
+        if data_file not in url_dict:
+            raise ValueError(f"cannot find url for {data_file}.")
+        data_file_url_dict[data_file] = url_dict[data_file]
+
+    for data_file_name, url in data_file_url_dict.items():
         data_file_path = os.path.join(data_dir, data_file_name)
         if os.path.exists(data_file_path):
             if verbose:
