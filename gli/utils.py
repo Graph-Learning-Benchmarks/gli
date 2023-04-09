@@ -1,8 +1,4 @@
-"""Utility functions.
-
-Download functions for Google Drive come from
-https://github.com/pytorch/vision/blob/main/torchvision/datasets/utils.py.
-"""
+"""Utility functions."""
 import contextlib
 import itertools
 import json
