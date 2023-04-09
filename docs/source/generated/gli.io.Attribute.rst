@@ -2,13 +2,13 @@
 .. role:: hidden
     :class: hidden-section
 
-.. currentmodule:: gli.dataloading
+.. currentmodule:: gli.io
 
 
-get_gli_dataset
-===============
+Attribute
+=========
 
-.. autoclass:: get_gli_dataset
+.. autoclass:: Attribute
     :show-inheritance:
     :members:
 

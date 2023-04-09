@@ -10,3 +10,6 @@ GLITask
 
 .. autoclass:: GLITask
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__

@@ -10,3 +10,6 @@ NodeClassificationTask
 
 .. autoclass:: NodeClassificationTask
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__
