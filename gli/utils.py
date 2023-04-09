@@ -303,7 +303,6 @@ def download_data(dataset: str, verbose=False):
 
     Args:
         dataset (str): Name of dataset.
-        filename (str): Name of configuration file. e.g., `metadata.json`.
         verbose (bool, optional): Defaults to False.
     """
     data_dir = os.path.join(get_local_data_dir(), dataset)
