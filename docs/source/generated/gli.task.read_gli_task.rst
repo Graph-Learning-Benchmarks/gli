@@ -8,8 +8,4 @@
 read_gli_task
 =============
 
-.. autoclass:: read_gli_task
-    :show-inheritance:
-    :members:
-
-    .. automethod:: __init__
+.. autofunction:: read_gli_task

@@ -22,14 +22,14 @@ Utility Function
 .. autosummary::
     :toctree: ../generated/
     :nosignatures:
-    :template: classtemplate.rst
+    :template: functemplate.rst
 
     read_gli_task
 
 Available Tasks
 ---------------
 
-.. autosummary:: 
+.. autosummary::
     :toctree: ../generated/
     :nosignatures:
     :template: classtemplate.rst

@@ -8,8 +8,4 @@
 get_gli_dataset
 ===============
 
-.. autoclass:: get_gli_dataset
-    :show-inheritance:
-    :members:
-
-    .. automethod:: __init__
+.. autofunction:: get_gli_dataset

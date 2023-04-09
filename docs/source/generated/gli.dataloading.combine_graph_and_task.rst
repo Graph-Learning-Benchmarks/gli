@@ -8,8 +8,4 @@
 combine_graph_and_task
 ======================
 
-.. autoclass:: combine_graph_and_task
-    :show-inheritance:
-    :members:
-
-    .. automethod:: __init__
+.. autofunction:: combine_graph_and_task

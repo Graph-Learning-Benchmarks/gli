@@ -8,8 +8,4 @@
 read_gli_graph
 ==============
 
-.. autoclass:: read_gli_graph
-    :show-inheritance:
-    :members:
-
-    .. automethod:: __init__
+.. autofunction:: read_gli_graph

@@ -8,8 +8,4 @@
 save_graph
 ==========
 
-.. autoclass:: save_graph
-    :show-inheritance:
-    :members:
-
-    .. automethod:: __init__
+.. autofunction:: save_graph

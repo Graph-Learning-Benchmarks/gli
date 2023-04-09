@@ -8,8 +8,4 @@
 get_gli_task
 ============
 
-.. autoclass:: get_gli_task
-    :show-inheritance:
-    :members:
-
-    .. automethod:: __init__
+.. autofunction:: get_gli_task
