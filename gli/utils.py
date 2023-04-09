@@ -307,6 +307,16 @@ def download_data(dataset: str, verbose=False):
 
     # Get all required dependent data files from json files.
     data_files = _find_data_files_from_json_files(data_dir)
+    exist_all_files = True
+    for data_file_name in data_files:
+        data_file_path = os.path.join(data_dir, data_file_name)
+        if not os.path.exists(data_file_path):
+            exist_all_files = False
+            break
+    if exist_all_files:
+        if verbose:
+            print("All data files already exist. Skip downloading.")
+        return
 
     # First, check the local urls.json file.
     url_file = os.path.join(data_dir, "urls.json")
