@@ -472,7 +472,7 @@ def save_task_node_regression(name,
         should be in the format of "Node/{node_type}/{node_attr_name}",
         "Edge/{edge_type}/{edge_attr_name}", or
         "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
-        and the node/edge/graph_type should be the ones declared in the 
+        and the node/edge/graph_type should be the ones declared in the
         metadata.json file.
     :type feature: list of str
     :param target: The attribute name as prediction target in the task. For
@@ -487,7 +487,7 @@ def save_task_node_regression(name,
         node IDs. In the latter case, each inner list is the node IDs of one
         data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
         will be ignored while `val_set` and `test_set` must present. If None,
-        the task json file will store `train_ratio`, `val_ratio`, and 
+        the task json file will store `train_ratio`, `val_ratio`, and
         `test_ratio` and random splits will be generated at run time. Default:
         None.
     :type train_set: list/array of int or list of lists/2-d array of int
@@ -516,7 +516,7 @@ def save_task_node_regression(name,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
-    
+
     Example
     -------
     .. code-block:: python
@@ -637,7 +637,7 @@ def save_task_node_classification(name,
         should be in the format of "Node/{node_type}/{node_attr_name}",
         "Edge/{edge_type}/{edge_attr_name}", or
         "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
-        and the node/edge/graph_type should be the ones declared in the 
+        and the node/edge/graph_type should be the ones declared in the
         metadata.json file.
     :type feature: list of str
     :param target: The attribute name as prediction target in the task. For
@@ -654,16 +654,16 @@ def save_task_node_classification(name,
         node IDs. In the latter case, each inner list is the node IDs of one
         data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
         will be ignored while `val_set` and `test_set` must present. If None,
-        the task json file will store `train_ratio`, `val_ratio`, and 
+        the task json file will store `train_ratio`, `val_ratio`, and
         `test_ratio` and random splits will be generated at run time. Default:
         None.
-    :type train_set: list of int or list of list of int
+    :type train_set: list/array of int or list of lists/2-d array of int
     :param val_set: A list of validation node IDs or a list of list validation
         node IDs. See `train_set` for more details. Default: None.
-    :type val_set: list of int or list of list of int
+    :type val_set: list/array of int or list of lists/2-d array of int
     :param test_set: A list of test node IDs or a list of list test node IDs.
         See `train_set` for more details. Default: None.
-    :type test_set: list of int or list of list of int
+    :type test_set: list/array of int or list of lists/2-d array of int
     :param train_ratio: The ratio of training nodes. See `train_set` for more
         details. Default: 0.8.
     :type train_ratio: float
@@ -683,7 +683,7 @@ def save_task_node_classification(name,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
-    
+
     Example
     -------
     .. code-block:: python
