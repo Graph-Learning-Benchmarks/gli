@@ -10,3 +10,6 @@ KGEntityPredictionTask
 
 .. autoclass:: KGEntityPredictionTask
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__

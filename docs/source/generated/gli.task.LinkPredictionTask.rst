@@ -10,3 +10,6 @@ LinkPredictionTask
 
 .. autoclass:: LinkPredictionTask
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__

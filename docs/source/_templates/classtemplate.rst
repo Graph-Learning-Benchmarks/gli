@@ -9,3 +9,6 @@
 
 .. autoclass:: {{ name }}
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__

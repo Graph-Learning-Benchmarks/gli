@@ -33,7 +33,7 @@ GLI makes an explicit separation between the data storage and the task configura
    start/contribute
 
 
-.. toctree:: 
+.. toctree::
    :maxdepth: 1
    :caption: API Reference
    :hidden:
@@ -45,9 +45,10 @@ GLI makes an explicit separation between the data storage and the task configura
    api/graph
    api/dataset
    api/utils
+   api/io
 
 
-.. toctree:: 
+.. toctree::
    :maxdepth: 2
    :caption: File Format
    :hidden:

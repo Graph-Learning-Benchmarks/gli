@@ -10,3 +10,6 @@ KGRelationPredictionTask
 
 .. autoclass:: KGRelationPredictionTask
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__

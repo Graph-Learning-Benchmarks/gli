@@ -10,3 +10,6 @@ TimeDependentLinkPredictionTask
 
 .. autoclass:: TimeDependentLinkPredictionTask
     :show-inheritance:
+    :members:
+
+    .. automethod:: __init__
