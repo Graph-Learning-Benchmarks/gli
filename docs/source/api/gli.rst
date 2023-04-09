@@ -9,10 +9,10 @@ gli.dataloading
 Utility Function
 ----------------
 
-.. autosummary:: 
+.. autosummary::
     :toctree: ../generated/
     :nosignatures:
-    :template: classtemplate.rst
+    :template: functemplate.rst
 
     get_gli_dataset
     get_gli_graph

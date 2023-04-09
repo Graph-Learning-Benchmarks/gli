@@ -21,6 +21,8 @@ Utility functions
 .. autosummary::
     :toctree: ../generated/
     :nosignatures:
-    :template: classtemplate.rst
+    :template: functemplate.rst
 
     save_graph
+    save_task_node_regression
+    save_task_node_classification
