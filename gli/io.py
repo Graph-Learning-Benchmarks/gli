@@ -407,7 +407,8 @@ def _check_data_splits(train_set, val_set, test_set, train_ratio, val_ratio,
             test_set = test_set.tolist()
         assert isinstance(train_set, list) and \
             isinstance(val_set, list) and isinstance(test_set, list), \
-            "`train_set`, `val_set`, and `test_set` must be lists."
+            "`train_set`, `val_set`, and `test_set` must be lists or numpy" \
+            " arrays."
         if isinstance(train_set[0], list):  # Multiple splits.
             assert len(train_set) == len(val_set) == len(test_set), \
                 "If `train_set`, `val_set`, and `test_set` are lists of " \
@@ -489,13 +490,13 @@ def save_task_node_regression(name,
         the task json file will store `train_ratio`, `val_ratio`, and 
         `test_ratio` and random splits will be generated at run time. Default:
         None.
-    :type train_set: list of int or list of list of int
+    :type train_set: list/array of int or list of lists/2-d array of int
     :param val_set: A list of validation node IDs or a list of list validation
         node IDs. See `train_set` for more details. Default: None.
-    :type val_set: list of int or list of list of int
+    :type val_set: list/array of int or list of lists/2-d array of int
     :param test_set: A list of test node IDs or a list of list test node IDs.
         See `train_set` for more details. Default: None.
-    :type test_set: list of int or list of list of int
+    :type test_set: list/array of int or list of lists/2-d array of int
     :param train_ratio: The ratio of training nodes. See `train_set` for more
         details. Default: 0.8.
     :type train_ratio: float
