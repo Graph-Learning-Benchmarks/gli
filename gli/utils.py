@@ -328,7 +328,7 @@ def download_data(dataset: str, verbose=False):
         else:
             raise FileNotFoundError("cannot find urls.json and failed to "
                                     "download global_urls.json.")
-    
+
     # Get urls for all required data files.
     data_file_url_dict = {}
     for data_file in data_files:
