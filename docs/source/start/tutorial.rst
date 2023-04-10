@@ -85,6 +85,14 @@ Then, load the Cora dataset on node classification task.
    g = data[0]
    g = to_dense(g)
 
+   features = g.ndata["NodeFeature"]
+   labels = g.ndata["NodeLabel"]
+   train_mask = g.ndata["train_mask"]
+   val_mask = g.ndata["val_mask"]
+   test_mask = g.ndata["test_mask"]
+   in_feats = features.shape[1]
+   n_classes = data.num_labels
+
 Since there are sparse features in Cora dataset, we need to convert it to dense for later computation.
 
 We then define the evaluation function as below.
