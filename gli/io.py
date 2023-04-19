@@ -445,6 +445,136 @@ def _check_node_level_target(target):
         "`target` must be a node attribute."
 
 
+def _save_task_reg_or_cls(task_type,
+                          name,
+                          description,
+                          feature,
+                          target,
+                          num_classes=None,
+                          train_set=None,
+                          val_set=None,
+                          test_set=None,
+                          train_ratio=0.8,
+                          val_ratio=0.1,
+                          test_ratio=0.1,
+                          num_samples=None,
+                          task_id=1,
+                          save_dir="."):
+    """Save the information of a regression or classification task into task json and data files.
+
+    :param task_type: The type of the task. It should be either
+        "NodeRegression" or "NodeClassification".
+    :type task_type: str
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param target: The attribute name as prediction target in the task.
+    :type target: str
+    :param num_classes: The number of classes in the task.
+    :type num_classes: int
+    :param train_set: A list of training sample IDs or a list of list training
+        sample IDs. In the latter case, each inner list is the sample IDs of
+        one data split. If not None, `train_ratio`, `val_ratio`, and
+        `test_ratio` will be ignored while `val_set` and `test_set` must
+        present. If None, the task json file will store `train_ratio`,
+        `val_ratio`, and `test_ratio` and random splits will be generated at
+        run time. Default: None.
+    :type train_set: list/array of int or list of lists/2-d array of int
+    :param val_set: A list of validation sample IDs or a list of list
+        validation sample IDs. See `train_set` for more details. Default: None.
+    :type val_set: list/array of int or list of lists/2-d array of int
+    :param test_set: A list of test sample IDs or a list of list test sample
+        IDs. See `train_set` for more details. Default: None.
+    :type test_set: list/array of int or list of lists/2-d array of int
+    :param train_ratio: The ratio of training samples. See `train_set` for more
+        details. Default: 0.8.
+    :type train_ratio: float
+    :param val_ratio: The ratio of validation samples. See `train_set` for more
+        details. Default: 0.1.
+    :type val_ratio: float
+    :param test_ratio: The ratio of test samples. See `train_set` for more
+        details. Default: 0.1.
+    :type test_ratio: float
+    :param num_samples: The total number of samples in the dataset. This needs
+        to be provided if `train_set`, `val_set`, and `test_set` are not
+        provided. Default: None.
+    :type num_samples: int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    # Check the input arguments.
+    if task_type == "NodeClassification":
+        task_str = "node_classification"
+    elif task_type == "NodeRegression":
+        task_str = "node_regression"
+        assert num_classes is None, \
+            "`num_classes` must be None for regression tasks."
+    else:
+        raise NotImplementedError(
+            "Task type {} is not supported.".format(task_type))
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    _check_node_level_target(target)
+    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
+                                                      test_set, train_ratio,
+                                                      val_ratio, test_ratio,
+                                                      num_samples)
+
+    # Create the dictionary for task json file.
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+        "target": target
+    }
+    if num_classes is not None:
+        task_dict["num_classes"] = num_classes
+    if train_set is not None:
+        # Save the task data files, i.e., the data splits in this task.
+        data_dict = {
+            "train_set": np.array(train_set),
+            "val_set": np.array(val_set),
+            "test_set": np.array(test_set)
+        }
+        key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                               save_dir=save_dir,
+                               **data_dict)
+        # Update the task dictionary with the data file names and keys.
+        task_dict.update(key_to_loc)
+        if isinstance(train_set[0], list):
+            task_dict["num_splits"] = len(train_set)
+    else:
+        task_dict["train_ratio"] = train_ratio
+        task_dict["val_ratio"] = val_ratio
+        task_dict["test_ratio"] = test_ratio
+        task_dict["num_samples"] = num_samples
+
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
+
+
 def save_task_node_regression(name,
                               description,
                               feature,
@@ -563,50 +693,20 @@ def save_task_node_regression(name,
             }
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
-    # Check the input arguments.
-    assert isinstance(description, str), \
-        "`description` must be a string."
-    _check_feature(feature)
-    _check_node_level_target(target)
-    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
-                                                      test_set, train_ratio,
-                                                      val_ratio, test_ratio,
-                                                      num_samples)
-
-    # Create the dictionary for task json file.
-    task_dict = {
-        "description": description,
-        "type": "NodeRegression",
-        "feature": feature,
-        "target": target
-    }
-    if train_set is not None:
-        # Save the task data files, i.e., the data splits in this task.
-        data_dict = {
-            "train_set": np.array(train_set),
-            "val_set": np.array(val_set),
-            "test_set": np.array(test_set)
-        }
-        key_to_loc = save_data(f"{name}__task_node_classification_{task_id}",
-                               save_dir=save_dir,
-                               **data_dict)
-        # Update the task dictionary with the data file names and keys.
-        task_dict.update(key_to_loc)
-        if isinstance(train_set[0], list):
-            task_dict["num_splits"] = len(train_set)
-    else:
-        task_dict["train_ratio"] = train_ratio
-        task_dict["val_ratio"] = val_ratio
-        task_dict["test_ratio"] = test_ratio
-        task_dict["num_samples"] = num_samples
-
-    # Save the task json file.
-    with open(os.path.join(save_dir, f"task_node_regression_{task_id}.json"),
-              "w",
-              encoding="utf-8") as f:
-        json.dump(task_dict, f, indent=4)
-
-    return task_dict
+    return _save_task_reg_or_cls(task_type="NodeRegression",
+                                 name=name,
+                                 description=description,
+                                 feature=feature,
+                                 target=target,
+                                 train_set=train_set,
+                                 val_set=val_set,
+                                 test_set=test_set,
+                                 train_ratio=train_ratio,
+                                 val_ratio=val_ratio,
+                                 test_ratio=test_ratio,
+                                 num_samples=num_samples,
+                                 task_id=task_id,
+                                 save_dir=save_dir)
 
 
 def save_task_node_classification(name,
@@ -732,49 +832,18 @@ def save_task_node_classification(name,
             }
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
-    # Check the input arguments.
-    assert isinstance(description, str), \
-        "`description` must be a string."
-    _check_feature(feature)
-    _check_node_level_target(target)
-    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
-                                                      test_set, train_ratio,
-                                                      val_ratio, test_ratio,
-                                                      num_samples)
-
-    # Create the dictionary for task json file.
-    task_dict = {
-        "description": description,
-        "type": "NodeClassification",
-        "feature": feature,
-        "target": target,
-        "num_classes": num_classes
-    }
-    if train_set is not None:
-        # Save the task data files, i.e., the data splits in this task.
-        data_dict = {
-            "train_set": np.array(train_set),
-            "val_set": np.array(val_set),
-            "test_set": np.array(test_set)
-        }
-        key_to_loc = save_data(f"{name}__task_node_classification_{task_id}",
-                               save_dir=save_dir,
-                               **data_dict)
-        # Update the task dictionary with the data file names and keys.
-        task_dict.update(key_to_loc)
-        if isinstance(train_set[0], list):
-            task_dict["num_splits"] = len(train_set)
-    else:
-        task_dict["train_ratio"] = train_ratio
-        task_dict["val_ratio"] = val_ratio
-        task_dict["test_ratio"] = test_ratio
-        task_dict["num_samples"] = num_samples
-
-    # Save the task json file.
-    with open(os.path.join(save_dir,
-                           f"task_node_classification_{task_id}.json"),
-              "w",
-              encoding="utf-8") as f:
-        json.dump(task_dict, f, indent=4)
-
-    return task_dict
+    return _save_task_reg_or_cls(task_type="NodeClassification",
+                                 name=name,
+                                 description=description,
+                                 feature=feature,
+                                 target=target,
+                                 num_classes=num_classes,
+                                 train_set=train_set,
+                                 val_set=val_set,
+                                 test_set=test_set,
+                                 train_ratio=train_ratio,
+                                 val_ratio=val_ratio,
+                                 test_ratio=test_ratio,
+                                 num_samples=num_samples,
+                                 task_id=task_id,
+                                 save_dir=save_dir)
