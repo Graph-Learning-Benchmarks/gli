@@ -437,14 +437,6 @@ def _check_feature(feature):
             "Each element in `feature` must be a node/edge/graph attribute."
 
 
-def _check_node_level_target(target):
-    """Check the input argument `target` for node level tasks is valid."""
-    assert isinstance(target, str), \
-        "`target` must be a string."
-    assert target.startswith("Node/") or target.startswith("Graph/"), \
-        "`target` must be a node or graph attribute."
-
-
 def _save_task_reg_or_cls(task_type,
                           name,
                           description,
@@ -544,6 +536,20 @@ def _save_task_reg_or_cls(task_type,
     :rtype: dict
     """  # noqa: E501,E262  #pylint: disable=line-too-long
     # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    assert isinstance(target, str), \
+        "`target` must be a string."
+    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
+                                                      test_set, train_ratio,
+                                                      val_ratio, test_ratio,
+                                                      num_samples)
+
+    # Task-dependent checks.
+    if task_type in ("NodeClassification", "NodeRegression"):
+        assert target.startswith("Node/"), \
+            "`target` must be a node attribute."
     if task_type == "NodeClassification":
         task_str = "node_classification"
     elif task_type == "NodeRegression":
@@ -552,14 +558,6 @@ def _save_task_reg_or_cls(task_type,
             "`num_classes` must be None for regression tasks."
     else:
         raise NotImplementedError(f"Task type {task_type} is not supported.")
-    assert isinstance(description, str), \
-        "`description` must be a string."
-    _check_feature(feature)
-    _check_node_level_target(target)
-    train_set, val_set, test_set = _check_data_splits(train_set, val_set,
-                                                      test_set, train_ratio,
-                                                      val_ratio, test_ratio,
-                                                      num_samples)
 
     # Create the dictionary for task json file.
     task_dict = {
