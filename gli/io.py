@@ -526,8 +526,7 @@ def _save_task_reg_or_cls(task_type,
         assert num_classes is None, \
             "`num_classes` must be None for regression tasks."
     else:
-        raise NotImplementedError(
-            "Task type {} is not supported.".format(task_type))
+        raise NotImplementedError(f"Task type {task_type} is not supported.")
     assert isinstance(description, str), \
         "`description` must be a string."
     _check_feature(feature)
