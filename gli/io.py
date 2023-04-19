@@ -441,8 +441,8 @@ def _check_node_level_target(target):
     """Check the input argument `target` for node level tasks is valid."""
     assert isinstance(target, str), \
         "`target` must be a string."
-    assert target.startswith("Node/"), \
-        "`target` must be a node attribute."
+    assert target.startswith("Node/") or target.startswith("Graph/"), \
+        "`target` must be a node or graph attribute."
 
 
 def _save_task_reg_or_cls(task_type,
@@ -517,6 +517,31 @@ def _save_task_reg_or_cls(task_type,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
+
+    :raises ValueError: If `task_type` is not "NodeRegression" or
+        "NodeClassification".
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+    :raises ValueError: If `target` is not a string.
+    :raises ValueError: If `target` does not correspond to a node/graph
+        attribute.
+    :raises ValueError: If `num_classes` is not None for regression tasks.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `num_samples` is not provided.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `train_ratio`, `val_ratio`, and `test_ratio` do not sum
+        up to 1.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided at the same time.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are provided
+        but they are not lists or numpy arrays.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` contain
+        multiple splits but the split ratio of different splits is different.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
     """  # noqa: E501,E262  #pylint: disable=line-too-long
     # Check the input arguments.
     if task_type == "NodeClassification":
@@ -645,6 +670,31 @@ def save_task_node_regression(name,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
+
+    :raises ValueError: If `task_type` is not "NodeRegression" or
+        "NodeClassification".
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+    :raises ValueError: If `target` is not a string.
+    :raises ValueError: If `target` does not correspond to a node/graph
+        attribute.
+    :raises ValueError: If `num_classes` is not None for regression tasks.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `num_samples` is not provided.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `train_ratio`, `val_ratio`, and `test_ratio` do not sum
+        up to 1.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided at the same time.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are provided
+        but they are not lists or numpy arrays.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` contain
+        multiple splits but the split ratio of different splits is different.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
 
     Example
     -------
@@ -782,6 +832,31 @@ def save_task_node_classification(name,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
+
+    :raises ValueError: If `task_type` is not "NodeRegression" or
+        "NodeClassification".
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+    :raises ValueError: If `target` is not a string.
+    :raises ValueError: If `target` does not correspond to a node/graph
+        attribute.
+    :raises ValueError: If `num_classes` is not None for regression tasks.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `num_samples` is not provided.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `train_ratio`, `val_ratio`, and `test_ratio` do not sum
+        up to 1.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided at the same time.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are provided
+        but they are not lists or numpy arrays.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` contain
+        multiple splits but the split ratio of different splits is different.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
 
     Example
     -------
