@@ -1,7 +1,7 @@
 """Helper functions for creating datasets in GLI format."""
 import json
 import os
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple
 import warnings
 import numpy as np
 from scipy.sparse import isspmatrix, spmatrix
@@ -112,6 +112,18 @@ class Attribute(object):
         }
 
 
+class UniqueID(Attribute):
+
+    def __init__(self, data):
+        super().__init__("ID", data, data_type="int", data_format="Tensor")
+
+
+class Edges(Attribute):
+
+    def __init__(self, data):
+        super().__init__("Edge", data, data_type="int", data_format="Tensor")
+
+
 def _verify_attrs_length(attrs, object_name):
     """verify all elements in attrs have the same length."""
     if len(attrs) > 0:
@@ -131,6 +143,7 @@ def _verify_graph_lists(graph_node_list: spmatrix, graph_edge_list: spmatrix):
     3. graph_node_list and graph_edge_list must have the dtype of bool or
     int32 (only contains 0 and 1).
     """
+
     def _verify_single_graph_list(graph_list, object_name):
         if graph_list is None:
             return
@@ -177,16 +190,18 @@ def _attr_to_metadata_dict(key_to_loc, prefix, a):
     return metadata
 
 
-def save_homograph(name: str,
-                   edge: np.ndarray,
-                   node_attrs: Optional[List[Attribute]] = None,
-                   edge_attrs: Optional[List[Attribute]] = None,
-                   graph_node_list: Optional[spmatrix] = None,
-                   graph_edge_list: Optional[spmatrix] = None,
-                   graph_attrs: List[Attribute] = None,
-                   description: str = "",
-                   citation: str = "",
-                   save_dir: str = "."):
+def save_homograph(
+    name: str,
+    edge: np.ndarray,
+    node_attrs: Optional[List[Attribute]] = None,
+    edge_attrs: Optional[List[Attribute]] = None,
+    graph_node_list: Optional[spmatrix] = None,
+    graph_edge_list: Optional[spmatrix] = None,
+    graph_attrs: Optional[List[Attribute]] = None,
+    description: str = "",
+    citation: str = "",
+    save_dir: str = ".",
+):
     """
     Save the (homogeneous) graph information to metadata.json and numpy data
     files.
@@ -386,6 +401,195 @@ def save_homograph(name: str,
 
     return metadata
 
+
+def _verify_hetero_type(edge: Dict[Tuple[str, str], np.ndarray],
+                        node_attrs: Optional[Dict[str, List[Attribute]]] = None,
+                        edge_attrs: Optional[Dict[Tuple[str, str],
+                                                  List[Attribute]]] = None,
+                        graph_attrs: Optional[List[Attribute]] = None):
+    if not isinstance(edge, dict):
+        raise TypeError(
+            "The `edge` must be a dict of (str, str) -> np.ndarray.")
+    assert all(isinstance(k, tuple) and len(k) == 2
+               for k in edge), "The keys of `edge` must be tuples of length 2."
+    assert all(
+        isinstance(v, np.ndarray) and v.ndim == 2 and v.shape[1] == 2
+        for v in edge.values()
+    ), "The values of `edge` must be 2D numpy arrays with shape (num_edges, 2)."
+    if node_attrs is not None and not isinstance(node_attrs, dict):
+        raise TypeError(
+            "The `node_attrs` must be a dict of str -> List[Attribute].")
+    if edge_attrs is not None and not isinstance(edge_attrs, dict):
+        raise TypeError(
+            "The `edge_attrs` must be a dict of (str, str) -> List[Attribute].")
+    if graph_attrs is not None and not isinstance(graph_attrs, list):
+        raise TypeError("The `graph_attrs` must be a list of Attribute.")
+
+
+def _assign_id(edge: Dict[Tuple[str, str], np.ndarray],
+               num_nodes_dict: Dict[str, int]):
+    """Assign unique IDs to the node groups and edge groups."""
+    node_maps = {}  # original ID -> new ID
+    edge_maps = {}  # original ID -> new ID
+
+    offset = 0
+    for node_group in sorted(num_nodes_dict.keys()):
+        node_maps[node_group] = np.arange(num_nodes_dict[node_group],
+                                          dtype=np.int32) + offset
+        offset += num_nodes_dict[node_group]
+
+    offset = 0
+    for edge_group in sorted(edge.keys()):
+        edge_maps[edge_group] = np.arange(len(edge[edge_group]),
+                                          dtype=np.int32) + offset
+        offset += len(edge[edge_group])
+
+    return node_maps, edge_maps
+
+
+def _infer_num_nodes_dict(edge: Dict[Tuple[str, str], np.ndarray],
+                          node_groups: List[str]):
+    """Infer the number of nodes in each node group from the edge list."""
+    num_nodes_dict = {node_group: 0 for node_group in node_groups}
+    for (src_group, dst_group), edge_array in edge.items():
+        num_nodes_dict[src_group] = max(num_nodes_dict[src_group],
+                                        edge_array[:, 0].max() + 1)
+        num_nodes_dict[dst_group] = max(num_nodes_dict[dst_group],
+                                        edge_array[:, 1].max() + 1)
+    return num_nodes_dict
+
+
+def save_heterograph(
+    name: str,
+    edge: Dict[Tuple[str, str], np.ndarray],
+    num_nodes_dict: Optional[Dict[str, int]] = None,
+    node_attrs: Optional[Dict[str, List[Attribute]]] = None,
+    edge_attrs: Optional[Dict[Tuple[str, str], List[Attribute]]] = None,
+    graph_node_list: Optional[spmatrix] = None,
+    graph_edge_list: Optional[spmatrix] = None,
+    graph_attrs: Optional[List[Attribute]] = None,
+    description: str = "",
+    citation: str = "",
+    save_dir: str = ".",
+):
+    """Save a heterogeneous graph.
+
+    TODO - add more details.
+    """
+    _verify_hetero_type(edge, node_attrs, edge_attrs, graph_attrs)
+
+    edge_groups = list(edge.keys())
+    if num_nodes_dict is None:
+        # infer the node groups from edge groups
+        node_groups = set()
+        for src, dst in edge_groups:
+            node_groups.add(src)
+            node_groups.add(dst)
+        node_groups = list(node_groups)
+        num_nodes_dict = _infer_num_nodes_dict(edge, node_groups)
+    else:
+        node_groups = list(num_nodes_dict.keys())
+
+    # Convert attrs to default empty val if they are None.
+    if node_attrs is None:
+        node_attrs = {node_group: [] for node_group in node_groups}
+    if edge_attrs is None:
+        edge_attrs = {edge_group: [] for edge_group in edge_groups}
+    if graph_attrs is None:
+        graph_attrs = []
+
+    # Check the length of the node groups and node attributes.
+    for node_group in node_groups:
+        _verify_attrs_length(node_attrs[node_group], f"node/{node_group}")
+    for edge_group in edge_groups:
+        _verify_attrs_length(edge_attrs[edge_group], f"edge/{edge_group}")
+    _verify_attrs_length(graph_attrs, "graph")
+
+    # Check the data type and lens of the `graph_node_list` and
+    # `graph_edge_list`.
+    _verify_graph_lists(graph_node_list, graph_edge_list)
+
+    # Assign unique IDs to the node groups and edge groups.
+    node_maps, edge_maps = _assign_id(edge, num_nodes_dict)
+
+    # Add the unique IDs as attributes.
+    for node_group in node_groups:
+        node_attrs[node_group].append(UniqueID(node_maps[node_group]))
+    for edge_group in edge_groups:
+        edge_attrs[edge_group].append(UniqueID(edge_maps[edge_group]))
+
+    # Create the edge array with new IDs.
+    new_edges = {}
+    for edge_group in edge_groups:
+        src_node_group, dst_node_group = edge_group
+        src_node_map = node_maps[src_node_group]
+        dst_node_map = node_maps[dst_node_group]
+        group_edge_array = edge[edge_group]
+        new_edges[edge_group] = np.stack([
+            src_node_map[group_edge_array[:, 0]],
+            dst_node_map[group_edge_array[:, 1]]
+        ],
+                                         axis=1)  # shape (E, 2)
+    for edge_group in edge_groups:
+        edge_attrs[edge_group].append(Edges(new_edges[edge_group]))
+
+    data = {}
+    for node_group in node_groups:
+        for attr in node_attrs[node_group]:
+            key = f"Node_{node_group}_{attr.name}"
+            data[key] = attr.data
+    for edge_group in edge_groups:
+        for attr in edge_attrs[edge_group]:
+            key = f"Edge_{edge_group[0]}_{edge_group[1]}_{attr.name}"
+            data[key] = attr.data
+    for attr in graph_attrs:
+        key = f"Graph_{attr.name}"
+        data[key] = attr.data
+    data["Graph_NodeList"] = graph_node_list
+    if graph_edge_list is not None:
+        data["Graph_EdgeList"] = graph_edge_list
+
+    key_to_loc = save_data(f"{name}__heterograph", save_dir=save_dir, **data)
+
+    # Create the metadata dict.
+    metadata = {
+        "description": description,
+        "citation": citation,
+        "data": {},
+        "is_heterogeneous": True
+    }
+    node_dict = {}
+    for node_group in node_groups:
+        node_dict[node_group] = {}
+        for attr in node_attrs[node_group]:
+            node_dict[node_group][attr.name] = _attr_to_metadata_dict(
+                key_to_loc, f"Node_{node_group}_{attr.name}", attr)
+    metadata["data"]["Node"] = node_dict
+    edge_dict = {}
+    for edge_group in edge_groups:
+        edge_dict[edge_group] = {}
+        for attr in edge_attrs[edge_group]:
+            edge_dict[edge_group][attr.name] = _attr_to_metadata_dict(
+                key_to_loc, f"Edge_{edge_group[0]}_{edge_group[1]}_{attr.name}",
+                attr)
+    metadata["data"]["Edge"] = edge_dict
+    graph_dict = {"_NodeList": key_to_loc["Graph_NodeList"]}
+    if graph_edge_list is not None:
+        graph_dict["_EdgeList"] = key_to_loc["Graph_EdgeList"]
+    for attr in graph_attrs:
+        graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc,
+                                                       f"Graph_{attr.name}",
+                                                       attr)
+    metadata["data"]["Graph"] = graph_dict
+
+    if citation == "":
+        warnings.warn("The citation is empty.")
+
+    with open(os.path.join(save_dir, "metadata.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(metadata, f, indent=4)
+
+    return metadata
 
 def _check_data_splits(train_set, val_set, test_set, train_ratio, val_ratio,
                        test_ratio, num_samples):

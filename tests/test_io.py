@@ -12,7 +12,7 @@ import gli.io
 from gli.io import Attribute
 
 
-def test_save_homograph_wo_graph_lists():
+def test_save_single_homograph():
     """Test saving and loading a homograph.
 
     Create a temporary dir and save a homograph to it.
@@ -63,7 +63,7 @@ def test_save_homograph_wo_graph_lists():
         g = gli.graph.read_gli_graph(metadata_path)
 
 
-def test_save_homograph_with_graph_node_lists():
+def test_save_multi_homograph():
     """Test saving and loading a homograph.
 
     The data to be saved contains a node_graph_list.
@@ -119,3 +119,7 @@ def test_save_homograph_with_graph_node_lists():
         metadata_path = os.path.join(tmpdir, "metadata.json")
         g = gli.graph.read_gli_graph(metadata_path)
         assert len(g) == 2, "The number of graphs should be 2."
+
+
+def test_save_single_heterograph():
+    """TODO"""
