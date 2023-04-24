@@ -228,12 +228,12 @@ def _get_heterograph(data):
     for node_class, node_feats in node_features.items():
         for feat_name, feat_tensor in node_feats.items():
             if len(g.ntypes) == 1:
-                g.ndata[feat_name] = feat_tensor
+                g.ndata[feat_name] = _to_tensor(feat_tensor)
             else:
-                g.ndata[feat_name] = {node_class: feat_tensor}
+                g.ndata[feat_name] = {node_class: _to_tensor(feat_tensor)}
     for edge_class, edge_feats in edge_features.items():
         for feat_name, feat_tensor in edge_feats.items():
-            g.edata[feat_name] = {edge_class: feat_tensor}
+            g.edata[feat_name] = {edge_class: _to_tensor(feat_tensor)}
 
     return g
 

@@ -100,7 +100,7 @@ def test_save_multi_homograph():
         graph_node_list = np.array([
             [1, 1, 1, 0, 0, 0],  # 3 nodes in the first graph
             [0, 0, 0, 1, 1, 1]  # 3 nodes in the second graph
-        ]).astype(np.int32)
+        ]).astype(np.int64)
         # transform graph_node_list to a scipy sparse matrix
         graph_node_list = csr_matrix(graph_node_list)
 
@@ -122,4 +122,62 @@ def test_save_multi_homograph():
 
 
 def test_save_single_heterograph():
-    """TODO"""
+    """Save a single heterograph and load it back."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        node_groups = ["user", "item"]
+        edge_groups = [("user", "click", "item"), ("user", "purchase", "item"),
+                       ("user", "is_friend", "user")]
+        # Create a sample graph with 3 user nodes and 4+1 item nodes.
+        edge = {
+            edge_groups[0]: np.array([[0, 0], [0, 1], [1, 2], [2, 3]]),
+            edge_groups[1]: np.array([[0, 1], [1, 2]]),
+            edge_groups[2]: np.array([[0, 1], [2, 1]])
+        }
+
+        node_attrs = {
+            node_groups[0]: [
+                Attribute("UserDenseFeature", randn(3, 5),
+                          "Dense user features."),
+                Attribute("UserSparseFeature", sparse_random(3, 500),
+                          "Sparse user features."),
+            ],
+            node_groups[1]: [
+                Attribute("ItemDenseFeature", randn(5, 5),
+                          "Dense item features.")
+            ]
+        }
+
+        edge_attrs = {
+            edge_groups[0]: [
+                Attribute("ClickTime", randn(4, 1), "Click time.")
+            ],
+            edge_groups[1]: [
+                Attribute("PurchaseTime", randn(2, 1), "Purchase time.")
+            ],
+            edge_groups[2]: [
+                Attribute("SparseFriendFeature", sparse_random(2, 500),
+                          "Sparse friend features."),
+                Attribute("DenseFriendFeature", randn(2, 5),
+                          "Dense friend features.")
+            ]
+        }
+
+        num_nodes_dict = {
+            node_groups[0]: 3,
+            node_groups[1]:
+                5  # more than the actual number of items in the edges
+        }
+
+        # Save the graph dataset.
+        gli.io.save_heterograph(name="example_hetero_dataset",
+                                edge=edge,
+                                num_nodes_dict=num_nodes_dict,
+                                node_attrs=node_attrs,
+                                edge_attrs=edge_attrs,
+                                description="An example heterograph dataset.",
+                                save_dir=tmpdir)
+
+        # Load the graph dataset.
+        metadata_path = os.path.join(tmpdir, "metadata.json")
+        g = gli.graph.read_gli_graph(metadata_path)

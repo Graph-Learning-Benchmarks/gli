@@ -4,7 +4,7 @@ import os
 from typing import Dict, List, Optional, Tuple
 import warnings
 import numpy as np
-from scipy.sparse import isspmatrix, spmatrix
+from scipy.sparse import isspmatrix, spmatrix, coo_matrix
 
 from gli.utils import save_data
 
@@ -115,13 +115,13 @@ class Attribute(object):
 class UniqueID(Attribute):
 
     def __init__(self, data):
-        super().__init__("ID", data, data_type="int", data_format="Tensor")
+        super().__init__("_ID", data, data_type="int", data_format="Tensor")
 
 
 class Edges(Attribute):
 
     def __init__(self, data):
-        super().__init__("Edge", data, data_type="int", data_format="Tensor")
+        super().__init__("_Edge", data, data_type="int", data_format="Tensor")
 
 
 def _verify_attrs_length(attrs, object_name):
@@ -141,7 +141,7 @@ def _verify_graph_lists(graph_node_list: spmatrix, graph_edge_list: spmatrix):
     1. graph_node_list and graph_edge_list must be scipy sparse matrices.
     2. graph_node_list and graph_edge_list must have the same length.
     3. graph_node_list and graph_edge_list must have the dtype of bool or
-    int32 (only contains 0 and 1).
+    int64 (only contains 0 and 1).
     """
 
     def _verify_single_graph_list(graph_list, object_name):
@@ -151,7 +151,7 @@ def _verify_graph_lists(graph_node_list: spmatrix, graph_edge_list: spmatrix):
             raise TypeError(f"{object_name} must be a scipy sparse matrix.")
         if graph_list.dtype.name == "bool":
             return
-        if graph_list.dtype.name == "int32":
+        if graph_list.dtype.name == "int64":
             # check if data contains only 0 and 1
             unique_values = np.unique(graph_list.data)
             assert len(unique_values) == 1 and unique_values[0] == 1, \
@@ -335,7 +335,7 @@ def save_homograph(
 
     # Create the data dict to be saved using gli.utils.save_data().
     data = {}
-    data["Edge_Edge"] = edge.astype(np.int32)
+    data["Edge_Edge"] = edge.astype(np.int64)
     for n in node_attrs:
         data[f"Node_{n.name}"] = n.data
     for e in edge_attrs:
@@ -353,7 +353,7 @@ def save_homograph(
                           "is inferred from the maximum node ID in `edge` plus"
                           " 1. This may not be correct if there are isolated "
                           "nodes.")
-        data["Graph_NodeList"] = np.ones((1, num_nodes), dtype=np.int32)
+        data["Graph_NodeList"] = np.ones((1, num_nodes), dtype=np.int64)
     else:
         data["Graph_NodeList"] = graph_node_list
     if graph_edge_list is not None:  # _EdgeList is optional in metadata.json.
@@ -402,16 +402,16 @@ def save_homograph(
     return metadata
 
 
-def _verify_hetero_type(edge: Dict[Tuple[str, str], np.ndarray],
+def _verify_hetero_type(edge: Dict[Tuple[str, str, str], np.ndarray],
                         node_attrs: Optional[Dict[str, List[Attribute]]] = None,
-                        edge_attrs: Optional[Dict[Tuple[str, str],
+                        edge_attrs: Optional[Dict[Tuple[str, str, str],
                                                   List[Attribute]]] = None,
                         graph_attrs: Optional[List[Attribute]] = None):
     if not isinstance(edge, dict):
         raise TypeError(
             "The `edge` must be a dict of (str, str) -> np.ndarray.")
-    assert all(isinstance(k, tuple) and len(k) == 2
-               for k in edge), "The keys of `edge` must be tuples of length 2."
+    assert all(isinstance(k, tuple) and len(k) == 3
+               for k in edge), "The keys of `edge` must be tuples of length 3."
     assert all(
         isinstance(v, np.ndarray) and v.ndim == 2 and v.shape[1] == 2
         for v in edge.values()
@@ -421,12 +421,12 @@ def _verify_hetero_type(edge: Dict[Tuple[str, str], np.ndarray],
             "The `node_attrs` must be a dict of str -> List[Attribute].")
     if edge_attrs is not None and not isinstance(edge_attrs, dict):
         raise TypeError(
-            "The `edge_attrs` must be a dict of (str, str) -> List[Attribute].")
+            "The `edge_attrs` must be a dict of (str, str, str) -> List[Attribute].")
     if graph_attrs is not None and not isinstance(graph_attrs, list):
         raise TypeError("The `graph_attrs` must be a list of Attribute.")
 
 
-def _assign_id(edge: Dict[Tuple[str, str], np.ndarray],
+def _assign_id(edge: Dict[Tuple[str, str, str], np.ndarray],
                num_nodes_dict: Dict[str, int]):
     """Assign unique IDs to the node groups and edge groups."""
     node_maps = {}  # original ID -> new ID
@@ -435,19 +435,19 @@ def _assign_id(edge: Dict[Tuple[str, str], np.ndarray],
     offset = 0
     for node_group in sorted(num_nodes_dict.keys()):
         node_maps[node_group] = np.arange(num_nodes_dict[node_group],
-                                          dtype=np.int32) + offset
+                                          dtype=np.int64) + offset
         offset += num_nodes_dict[node_group]
 
     offset = 0
     for edge_group in sorted(edge.keys()):
         edge_maps[edge_group] = np.arange(len(edge[edge_group]),
-                                          dtype=np.int32) + offset
+                                          dtype=np.int64) + offset
         offset += len(edge[edge_group])
 
     return node_maps, edge_maps
 
 
-def _infer_num_nodes_dict(edge: Dict[Tuple[str, str], np.ndarray],
+def _infer_num_nodes_dict(edge: Dict[Tuple[str, str, str], np.ndarray],
                           node_groups: List[str]):
     """Infer the number of nodes in each node group from the edge list."""
     num_nodes_dict = {node_group: 0 for node_group in node_groups}
@@ -461,10 +461,10 @@ def _infer_num_nodes_dict(edge: Dict[Tuple[str, str], np.ndarray],
 
 def save_heterograph(
     name: str,
-    edge: Dict[Tuple[str, str], np.ndarray],
+    edge: Dict[Tuple[str, str, str], np.ndarray],
     num_nodes_dict: Optional[Dict[str, int]] = None,
     node_attrs: Optional[Dict[str, List[Attribute]]] = None,
-    edge_attrs: Optional[Dict[Tuple[str, str], List[Attribute]]] = None,
+    edge_attrs: Optional[Dict[Tuple[str, str, str], List[Attribute]]] = None,
     graph_node_list: Optional[spmatrix] = None,
     graph_edge_list: Optional[spmatrix] = None,
     graph_attrs: Optional[List[Attribute]] = None,
@@ -482,7 +482,7 @@ def save_heterograph(
     if num_nodes_dict is None:
         # infer the node groups from edge groups
         node_groups = set()
-        for src, dst in edge_groups:
+        for src, rel, dst in edge_groups:
             node_groups.add(src)
             node_groups.add(dst)
         node_groups = list(node_groups)
@@ -507,6 +507,9 @@ def save_heterograph(
 
     # Check the data type and lens of the `graph_node_list` and
     # `graph_edge_list`.
+    if graph_node_list is None:
+        num_all_nodes = sum(num_nodes_dict.values())
+        graph_node_list = coo_matrix(np.ones(num_all_nodes, dtype=np.int64))
     _verify_graph_lists(graph_node_list, graph_edge_list)
 
     # Assign unique IDs to the node groups and edge groups.
@@ -521,7 +524,7 @@ def save_heterograph(
     # Create the edge array with new IDs.
     new_edges = {}
     for edge_group in edge_groups:
-        src_node_group, dst_node_group = edge_group
+        src_node_group, rel, dst_node_group = edge_group
         src_node_map = node_maps[src_node_group]
         dst_node_map = node_maps[dst_node_group]
         group_edge_array = edge[edge_group]
@@ -539,8 +542,11 @@ def save_heterograph(
             key = f"Node_{node_group}_{attr.name}"
             data[key] = attr.data
     for edge_group in edge_groups:
+        src_node_group = edge_group[0]
+        rel = edge_group[1]
+        dst_node_group = edge_group[2]
         for attr in edge_attrs[edge_group]:
-            key = f"Edge_{edge_group[0]}_{edge_group[1]}_{attr.name}"
+            key = f"Edge_{src_node_group}_{rel}_{dst_node_group}_{attr.name}"
             data[key] = attr.data
     for attr in graph_attrs:
         key = f"Graph_{attr.name}"
@@ -563,14 +569,18 @@ def save_heterograph(
         node_dict[node_group] = {}
         for attr in node_attrs[node_group]:
             node_dict[node_group][attr.name] = _attr_to_metadata_dict(
-                key_to_loc, f"Node_{node_group}_{attr.name}", attr)
+                key_to_loc, f"Node_{node_group}", attr)
     metadata["data"]["Node"] = node_dict
     edge_dict = {}
     for edge_group in edge_groups:
-        edge_dict[edge_group] = {}
+        src_node_group = edge_group[0]
+        rel = edge_group[1]
+        dst_node_group = edge_group[2]
+        edge_group_key = f"{src_node_group}_{rel}_{dst_node_group}"
+        edge_dict[edge_group_key] = {}
         for attr in edge_attrs[edge_group]:
-            edge_dict[edge_group][attr.name] = _attr_to_metadata_dict(
-                key_to_loc, f"Edge_{edge_group[0]}_{edge_group[1]}_{attr.name}",
+            edge_dict[edge_group_key][attr.name] = _attr_to_metadata_dict(
+                key_to_loc, f"Edge_{src_node_group}_{rel}_{dst_node_group}",
                 attr)
     metadata["data"]["Edge"] = edge_dict
     graph_dict = {"_NodeList": key_to_loc["Graph_NodeList"]}
@@ -578,7 +588,7 @@ def save_heterograph(
         graph_dict["_EdgeList"] = key_to_loc["Graph_EdgeList"]
     for attr in graph_attrs:
         graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc,
-                                                       f"Graph_{attr.name}",
+                                                       f"Graph",
                                                        attr)
     metadata["data"]["Graph"] = graph_dict
 
