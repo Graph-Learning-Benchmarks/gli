@@ -23,6 +23,7 @@ Utility functions
     :nosignatures:
     :template: functemplate.rst
 
-    save_graph
+    save_homograph
+    save_heterograph
     save_task_node_regression
     save_task_node_classification

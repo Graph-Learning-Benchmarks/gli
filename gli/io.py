@@ -213,7 +213,7 @@ def save_homograph(
         the two nodes with the given node IDs.
     :type edge: array
     :param num_nodes: The number of nodes in the graph, defaults to None. If
-        not specified, the number of nodes will be inferred from :param:`edge`.
+        not specified, the number of nodes will be inferred from ``edge``.
     :type num_nodes: int, optional
     :param node_attrs: A list of attributes of the nodes, defaults to None.
     :type node_attrs: list of Attribute, optional
@@ -241,14 +241,6 @@ def save_homograph(
     :param save_dir: The directory to save the numpy data files and
         `metadata.json`, defaults to ".".
     :type save_dir: str, optional
-
-    :raises ValueError: If the length of data of all attributes of the node(s)
-        or edge(s) or graph(s) is not the same.
-    :raises ValueError: If the edge array does not have shape (num_edges, 2).
-    :raises ValueError: If the data type of the `graph_node_list` and the
-        `graph_edge_lists` are not binary.
-    :raises ValueError: If the number of graphs in the `graph_node_list` and
-        the `graph_edge_lists` are not the same.
 
     :return: The dictionary of the content in `metadata.json`.
     :rtype: dict
@@ -490,7 +482,7 @@ def save_heterograph(
         Each node group should be indexed separately from 0.
     :type edge: Dict[Tuple[str, str, str], np.ndarray]
     :param num_nodes_dict: The number of nodes in each node group. If None, it will
-        be infered from the :param:`edge`.
+        be infered from the ``edge``.
     :type num_nodes_dict: Optional[Dict[str, int]]
     :param node_attrs: The node attributes. The key is the node group name and
         the value is a list of Attribute, default to None.
@@ -521,11 +513,13 @@ def save_heterograph(
     :type citation: str
     :param save_dir: The directory to save the graph dataset, defaults to ".".
     :type save_dir: str
+    :return: The dictionary of the content in `metadata.json`.
+    :rtype: dict
 
     Warning
     -------
     Currently gli only support saving a single heterograph dataset. So the
-    parameters :param:`graph_node_list` and :param:`graph_edge_list` are
+    parameters ``graph_node_list`` and ``graph_edge_list`` are
     essentially redundant. They are only kept for future extension.
 
     Note
