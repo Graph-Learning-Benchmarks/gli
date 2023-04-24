@@ -204,8 +204,7 @@ def save_homograph(
     save_dir: str = ".",
 ):
     """
-    Save the (homogeneous) graph information to metadata.json and numpy data
-    files.
+    Save a homogeneous graph information to metadata.json and numpy data files.
 
     :param name: The name of the graph dataset.
     :type name: str
@@ -480,24 +479,24 @@ def save_heterograph(
         dst_node_type). And the map value is a 2D numpy array with shape
         (num_edges, 2). Each row is an edge with the format (src_id, dst_id).
         Each node group should be indexed separately from 0.
-    :type edge: Dict[Tuple[str, str, str], np.ndarray]
+    :type edge: Dict[Tuple[str, str, str], array]
     :param num_nodes_dict: The number of nodes in each node group. If None, it will
         be infered from the ``edge``.
-    :type num_nodes_dict: Optional[Dict[str, int]]
+    :type num_nodes_dict: Dict[str, int], optional
     :param node_attrs: The node attributes. The key is the node group name and
         the value is a list of Attribute, default to None.
-    :type node_attrs: Optional[Dict[str, List[Attribute]]]
+    :type node_attrs: Dict[str, List[Attribute]], optional
     :param edge_attrs: The edge attributes. The key is a tuple of
         (src_node_type, edge_type, dst_node_type) and the value is a list of
         Attribute, default to None.
-    :type edge_attrs: Optional[Dict[Tuple[str, str, str], List[Attribute]]]
+    :type edge_attrs: Dict[Tuple[str, str, str], List[Attribute]], optional
     :param graph_node_list: A sparse matrix of shape (num_graphs, num_nodes). Each row
         corresponds to a graph and each column corresponds to a node. The value
         of the element (i, j) is 1 if node j is in graph i, otherwise 0. If not
         specified, the graph will be considered as a single graph, defaults to
         None. Currently, :func:`save_heterograph` only supports saving a single
         graph.
-    :type graph_node_list: Optional[spmatrix]
+    :type graph_node_list: spmatrix, optional
     :param graph_edge_list: A sparse matrix of shape (num_graphs, num_edges).
         Each row corresponds to a graph and each column corresponds to an edge.
         The value of the element (i, j) is 1 if edge j is in graph i, otherwise
@@ -505,7 +504,7 @@ def save_heterograph(
         defaults to None. Currently, :func:`save_heterograph` only supports
         saving a single graph.
     :param graph_attrs: The graph attributes, defaults to None.
-    :type graph_attrs: Optional[List[Attribute]]
+    :type graph_attrs: List[Attribute], optional
     :param description: The description of the graph dataset, defaults to "".
     :type description: str
     :param citation: The citation of the graph dataset, defaults to "".
