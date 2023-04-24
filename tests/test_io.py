@@ -180,6 +180,8 @@ def test_save_single_heterograph():
 
         # Load the graph dataset.
         metadata_path = os.path.join(tmpdir, "metadata.json")
+        # print(metadata_path)
+        print(open(metadata_path).read())
         g = gli.graph.read_gli_graph(metadata_path)
 
         print(g)

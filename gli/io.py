@@ -193,6 +193,7 @@ def _attr_to_metadata_dict(key_to_loc, prefix, a):
 def save_homograph(
     name: str,
     edge: np.ndarray,
+    num_nodes: Optional[int] = None,
     node_attrs: Optional[List[Attribute]] = None,
     edge_attrs: Optional[List[Attribute]] = None,
     graph_node_list: Optional[spmatrix] = None,
@@ -211,6 +212,9 @@ def save_homograph(
     :param edge: An array of shape (num_edges, 2). Each row is an edge between
         the two nodes with the given node IDs.
     :type edge: array
+    :param num_nodes: The number of nodes in the graph, defaults to None. If
+        not specified, the number of nodes will be inferred from :param:`edge`.
+    :type num_nodes: int, optional
     :param node_attrs: A list of attributes of the nodes, defaults to None.
     :type node_attrs: list of Attribute, optional
     :param edge_attrs: A list of attributes of the edges, defaults to None.
@@ -331,6 +335,9 @@ def save_homograph(
 
     # Check the data type and lens of the `graph_node_list` and the
     # `graph_edge_lists`.
+    if graph_node_list is None:
+        num_nodes = edge.max() + 1 if num_nodes is None else num_nodes
+        graph_node_list = coo_matrix(np.ones(num_nodes))
     _verify_graph_lists(graph_node_list, graph_edge_list)
 
     # Create the data dict to be saved using gli.utils.save_data().
@@ -421,7 +428,8 @@ def _verify_hetero_type(edge: Dict[Tuple[str, str, str], np.ndarray],
             "The `node_attrs` must be a dict of str -> List[Attribute].")
     if edge_attrs is not None and not isinstance(edge_attrs, dict):
         raise TypeError(
-            "The `edge_attrs` must be a dict of (str, str, str) -> List[Attribute].")
+            "The `edge_attrs` must be a dict of (str, str, str) -> List[Attribute]."
+        )
     if graph_attrs is not None and not isinstance(graph_attrs, list):
         raise TypeError("The `graph_attrs` must be a list of Attribute.")
 
@@ -472,10 +480,254 @@ def save_heterograph(
     citation: str = "",
     save_dir: str = ".",
 ):
-    """Save a heterogeneous graph.
+    """Save a heterogeneous graph info to metadata.json and numpy data files.
 
-    TODO - add more details.
-    """
+    :param name: The name of the graph dataset.
+    :type name: str
+    :param edge: The key is a tuple of (src_node_type, edge_type,
+        dst_node_type). And the map value is a 2D numpy array with shape
+        (num_edges, 2). Each row is an edge with the format (src_id, dst_id).
+        Each node group should be indexed separately from 0.
+    :type edge: Dict[Tuple[str, str, str], np.ndarray]
+    :param num_nodes_dict: The number of nodes in each node group. If None, it will
+        be infered from the :param:`edge`.
+    :type num_nodes_dict: Optional[Dict[str, int]]
+    :param node_attrs: The node attributes. The key is the node group name and
+        the value is a list of Attribute, default to None.
+    :type node_attrs: Optional[Dict[str, List[Attribute]]]
+    :param edge_attrs: The edge attributes. The key is a tuple of
+        (src_node_type, edge_type, dst_node_type) and the value is a list of
+        Attribute, default to None.
+    :type edge_attrs: Optional[Dict[Tuple[str, str, str], List[Attribute]]]
+    :param graph_node_list: A sparse matrix of shape (num_graphs, num_nodes). Each row
+        corresponds to a graph and each column corresponds to a node. The value
+        of the element (i, j) is 1 if node j is in graph i, otherwise 0. If not
+        specified, the graph will be considered as a single graph, defaults to
+        None. Currently, :func:`save_heterograph` only supports saving a single
+        graph.
+    :type graph_node_list: Optional[spmatrix]
+    :param graph_edge_list: A sparse matrix of shape (num_graphs, num_edges).
+        Each row corresponds to a graph and each column corresponds to an edge.
+        The value of the element (i, j) is 1 if edge j is in graph i, otherwise
+        0. If not specified, the graph will be considered as a single graph,
+        defaults to None. Currently, :func:`save_heterograph` only supports
+        saving a single graph.
+    :param graph_attrs: The graph attributes, defaults to None.
+    :type graph_attrs: Optional[List[Attribute]]
+    :param description: The description of the graph dataset, defaults to "".
+    :type description: str
+    :param citation: The citation of the graph dataset, defaults to "".
+        Contributors are strongly encouraged to provide a citation.
+    :type citation: str
+    :param save_dir: The directory to save the graph dataset, defaults to ".".
+    :type save_dir: str
+
+    Warning
+    -------
+    Currently gli only support saving a single heterograph dataset. So the
+    parameters :param:`graph_node_list` and :param:`graph_edge_list` are
+    essentially redundant. They are only kept for future extension.
+
+    Note
+    ----
+    Node IDs for each node group should be indexed separately from 0. For
+    example, consider a heterogeneous graph with two node groups "user" and
+    "item". If there are 3 users and 5 items, the node IDs for "user" should be
+    0, 1, 2 and the node IDs for "item" should be 0, 1, 2, 3, 4. gli will
+    internally assign a global ID to each node which is unique across all node.
+    Users can access the global node ID of a graph `g` by `g.node_map` member.
+
+    Example
+    -------
+    .. code-block:: python
+
+        node_groups = ["user", "item"]
+        edge_groups = [("user", "click", "item"), ("user", "purchase", "item"),
+                       ("user", "is_friend", "user")]
+        # Create a sample graph with 3 user nodes and 4+1 item nodes.
+        edge = {
+            edge_groups[0]: np.array([[0, 0], [0, 1], [1, 2], [2, 3]]),
+            edge_groups[1]: np.array([[0, 1], [1, 2]]),
+            edge_groups[2]: np.array([[0, 1], [2, 1]])
+        }
+
+        node_attrs = {
+            node_groups[0]: [
+                Attribute("UserDenseFeature", randn(3, 5),
+                          "Dense user features."),
+                Attribute("UserSparseFeature", sparse_random(3, 500),
+                          "Sparse user features."),
+            ],
+            node_groups[1]: [
+                Attribute("ItemDenseFeature", randn(5, 5),
+                          "Dense item features.")
+            ]
+        }
+
+        edge_attrs = {
+            edge_groups[0]: [
+                Attribute("ClickTime", randn(4, 1), "Click time.")
+            ],
+            edge_groups[1]: [
+                Attribute("PurchaseTime", randn(2, 1), "Purchase time.")
+            ],
+            edge_groups[2]: [
+                Attribute("SparseFriendFeature", sparse_random(2, 500),
+                          "Sparse friend features."),
+                Attribute("DenseFriendFeature", randn(2, 5),
+                          "Dense friend features.")
+            ]
+        }
+
+        num_nodes_dict = {
+            node_groups[0]: 3,
+            node_groups[1]:
+                5  # more than the actual number of items in the edges
+        }
+
+        # Save the graph dataset.
+        gli.io.save_heterograph(name="example_hetero_dataset",
+                                edge=edge,
+                                num_nodes_dict=num_nodes_dict,
+                                node_attrs=node_attrs,
+                                edge_attrs=edge_attrs,
+                                description="An example heterograph dataset.",
+                                save_dir=tmpdir)
+
+    The metadata.json will look like the following:
+
+    .. code-block:: json
+
+        {
+            "description": "An example heterograph dataset.",
+            "citation": "",
+            "data": {
+                "Node": {
+                    "user": {
+                        "UserDenseFeature": {
+                            "description": "Dense user features.",
+                            "type": "float",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Node_user_UserDenseFeature"
+                        },
+                        "UserSparseFeature": {
+                            "description": "Sparse user features.",
+                            "type": "float",
+                            "format": "SparseTensor",
+                            "file": "example_hetero_dataset__heterograph__Node_user_UserSparseFeature__30209d631dcc4ae3813d3c360f9c42dd.sparse.npz"
+                        },
+                        "_ID": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Node_user__ID"
+                        }
+                    },
+                    "item": {
+                        "ItemDenseFeature": {
+                            "description": "Dense item features.",
+                            "type": "float",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Node_item_ItemDenseFeature"
+                        },
+                        "_ID": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Node_item__ID"
+                        }
+                    }
+                },
+                "Edge": {
+                    "user_click_item": {
+                        "ClickTime": {
+                            "description": "Click time.",
+                            "type": "float",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_click_item_ClickTime"
+                        },
+                        "_ID": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_click_item__ID"
+                        },
+                        "_Edge": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_click_item__Edge"
+                        }
+                    },
+                    "user_purchase_item": {
+                        "PurchaseTime": {
+                            "description": "Purchase time.",
+                            "type": "float",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_purchase_item_PurchaseTime"
+                        },
+                        "_ID": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_purchase_item__ID"
+                        },
+                        "_Edge": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_purchase_item__Edge"
+                        }
+                    },
+                    "user_is_friend_user": {
+                        "SparseFriendFeature": {
+                            "description": "Sparse friend features.",
+                            "type": "float",
+                            "format": "SparseTensor",
+                            "file": "example_hetero_dataset__heterograph__Edge_user_is_friend_user_SparseFriendFeature__fc3b5ebfe3efe6ac35e116c02d388ac6.sparse.npz"
+                        },
+                        "DenseFriendFeature": {
+                            "description": "Dense friend features.",
+                            "type": "float",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_is_friend_user_DenseFriendFeature"
+                        },
+                        "_ID": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_is_friend_user__ID"
+                        },
+                        "_Edge": {
+                            "description": "",
+                            "type": "int",
+                            "format": "Tensor",
+                            "file": "example_hetero_dataset__heterograph__aab19db19513942e161ace237aea63b4.npz",
+                            "key": "Edge_user_is_friend_user__Edge"
+                        }
+                    }
+                },
+                "Graph": {
+                    "_NodeList": {
+                        "file": "example_hetero_dataset__heterograph__Graph_NodeList__752140b0bd5669a2580f06dda6a70ced.sparse.npz"
+                    }
+                }
+            },
+            "is_heterogeneous": true
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
     _verify_hetero_type(edge, node_attrs, edge_attrs, graph_attrs)
 
     edge_groups = list(edge.keys())
@@ -511,6 +763,11 @@ def save_heterograph(
         num_all_nodes = sum(num_nodes_dict.values())
         graph_node_list = coo_matrix(np.ones(num_all_nodes, dtype=np.int64))
     _verify_graph_lists(graph_node_list, graph_edge_list)
+    # check if the graph_node_list and graph_edge_list contains multi graphs
+    if graph_node_list.shape[0] > 1 or (graph_edge_list is not None and
+                                        graph_edge_list.shape[0] > 1):
+        raise NotImplementedError(
+            "Currently, gli only supports saving a single hetero graph.")
 
     # Assign unique IDs to the node groups and edge groups.
     node_maps, edge_maps = _assign_id(edge, num_nodes_dict)
@@ -587,8 +844,7 @@ def save_heterograph(
     if graph_edge_list is not None:
         graph_dict["_EdgeList"] = key_to_loc["Graph_EdgeList"]
     for attr in graph_attrs:
-        graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc,
-                                                       f"Graph",
+        graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc, f"Graph",
                                                        attr)
     metadata["data"]["Graph"] = graph_dict
 
@@ -600,6 +856,7 @@ def save_heterograph(
         json.dump(metadata, f, indent=4)
 
     return metadata
+
 
 def _check_data_splits(train_set, val_set, test_set, train_ratio, val_ratio,
                        test_ratio, num_samples):
