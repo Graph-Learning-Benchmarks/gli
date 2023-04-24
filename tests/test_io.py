@@ -1,8 +1,8 @@
+"""Test the io module."""
 import tempfile
 import os
 
 import numpy as np
-import pytest
 from numpy.random import randint, randn
 from scipy.sparse import random as sparse_random
 from scipy.sparse import csr_matrix
@@ -60,7 +60,7 @@ def test_save_single_homograph():
 
         # Load the graph dataset.
         metadata_path = os.path.join(tmpdir, "metadata.json")
-        g = gli.graph.read_gli_graph(metadata_path)
+        _ = gli.graph.read_gli_graph(metadata_path)
 
 
 def test_save_multi_homograph():
@@ -180,14 +180,17 @@ def test_save_single_heterograph():
 
         # Load the graph dataset.
         metadata_path = os.path.join(tmpdir, "metadata.json")
-        # print(metadata_path)
-        print(open(metadata_path).read())
         g = gli.graph.read_gli_graph(metadata_path)
 
         print(g)
         assert g.num_nodes() == 8, "The number of nodes should be 8."
-        assert g.num_nodes("user") == 3, "The number of user nodes should be 3."
-        assert g.num_nodes("item") == 5, "The number of item nodes should be 5."
-        assert g.num_edges() == 8, "The number of edges should be 8."
-        assert g.num_edges("user_click_item") == 4, "The number of click edges should be 4."
-        assert g.num_edges("user_is_friend_user") == 2, "The number of friend edges should be 2."
+        assert g.num_nodes("user") == 3, \
+            "The number of user nodes should be 3."
+        assert g.num_nodes("item") == 5, \
+            "The number of item nodes should be 5."
+        assert g.num_edges() == 8, \
+            "The number of edges should be 8."
+        assert g.num_edges("user_click_item") == 4, \
+            "The number of click edges should be 4."
+        assert g.num_edges("user_is_friend_user") == 2, \
+            "The number of friend edges should be 2."

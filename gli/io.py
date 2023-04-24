@@ -113,19 +113,31 @@ class Attribute(object):
 
 
 class UniqueID(Attribute):
+    """Unique ID of a node or an edge.
+
+    :param data: The data of the unique id.
+    :type data: array
+    """
 
     def __init__(self, data):
+        """Initialize the unique id."""
         super().__init__("_ID", data, data_type="int", data_format="Tensor")
 
 
 class Edges(Attribute):
+    """Edges that contain the unique ids of the source and target nodes.
+
+    :param data: The data of the edges.
+    :type data: array
+    """
 
     def __init__(self, data):
+        """Initialize the edges."""
         super().__init__("_Edge", data, data_type="int", data_format="Tensor")
 
 
 def _verify_attrs_length(attrs, object_name):
-    """verify all elements in attrs have the same length."""
+    """Verify all elements in attrs have the same length."""
     if len(attrs) > 0:
         num_data = attrs[0].num_data
         for attr in attrs:
@@ -400,11 +412,12 @@ def save_homograph(
     return metadata
 
 
-def _verify_hetero_type(edge: Dict[Tuple[str, str, str], np.ndarray],
-                        node_attrs: Optional[Dict[str, List[Attribute]]] = None,
-                        edge_attrs: Optional[Dict[Tuple[str, str, str],
-                                                  List[Attribute]]] = None,
-                        graph_attrs: Optional[List[Attribute]] = None):
+def _verify_hetero_type(
+    edge: Dict[Tuple[str, str, str], np.ndarray],
+    node_attrs: Optional[Dict[str, List[Attribute]]] = None,
+    edge_attrs: Optional[Dict[Tuple[str, str, str], List[Attribute]]] = None,
+    graph_attrs: Optional[List[Attribute]] = None,
+):
     if not isinstance(edge, dict):
         raise TypeError(
             "The `edge` must be a dict of (str, str) -> np.ndarray.")
@@ -413,14 +426,13 @@ def _verify_hetero_type(edge: Dict[Tuple[str, str, str], np.ndarray],
     assert all(
         isinstance(v, np.ndarray) and v.ndim == 2 and v.shape[1] == 2
         for v in edge.values()
-    ), "The values of `edge` must be 2D numpy arrays with shape (num_edges, 2)."
+    ), "values of `edge` must be 2D numpy arrays with shape (num_edges, 2)."
     if node_attrs is not None and not isinstance(node_attrs, dict):
         raise TypeError(
             "The `node_attrs` must be a dict of str -> List[Attribute].")
     if edge_attrs is not None and not isinstance(edge_attrs, dict):
-        raise TypeError(
-            "The `edge_attrs` must be a dict of (str, str, str) -> List[Attribute]."
-        )
+        raise TypeError("`edge_attrs` must be a dict"
+                        "of (str, str, str) -> List[Attribute].")
     if graph_attrs is not None and not isinstance(graph_attrs, list):
         raise TypeError("The `graph_attrs` must be a list of Attribute.")
 
@@ -837,7 +849,7 @@ def save_heterograph(
     if graph_edge_list is not None:
         graph_dict["_EdgeList"] = key_to_loc["Graph_EdgeList"]
     for attr in graph_attrs:
-        graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc, f"Graph",
+        graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc, "Graph",
                                                        attr)
     metadata["data"]["Graph"] = graph_dict
 
