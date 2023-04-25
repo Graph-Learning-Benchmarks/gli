@@ -5,7 +5,7 @@
 .. currentmodule:: gli.io
 
 
-save_graph
-==========
+save_heterograph
+================
 
-.. autofunction:: save_graph
+.. autofunction:: save_heterograph
