@@ -529,8 +529,8 @@ def save_heterograph(
     num_nodes_dict: Optional[Dict[str, int]] = None,
     node_attrs: Optional[Dict[str, List[Attribute]]] = None,
     edge_attrs: Optional[Dict[Tuple[str, str, str], List[Attribute]]] = None,
-    graph_node_list: Optional[spmatrix] = None,
-    graph_edge_list: Optional[spmatrix] = None,
+    graph_node_list: Optional[Dict[str, spmatrix]] = None,
+    graph_edge_list: Optional[Dict[Tuple[str, str, str], spmatrix]] = None,
     graph_attrs: Optional[List[Attribute]] = None,
     description: str = "",
     citation: str = "",
@@ -555,20 +555,20 @@ def save_heterograph(
         (src_node_type, edge_type, dst_node_type) and the value is a list of
         Attribute, default to None.
     :type edge_attrs: Dict[Tuple[str, str, str], List[Attribute]], optional
-    :param graph_node_list: A sparse matrix of shape (num_graphs, num_nodes). Each row
-        corresponds to a graph and each column corresponds to a node. The value
-        of the element (i, j) is 1 if node j is in graph i, otherwise 0. If not
-        specified, the graph will be considered as a single graph, defaults to
-        None. Currently, :func:`save_heterograph` only supports saving a single
-        graph.
-    :type graph_node_list: spmatrix, optional
-    :param graph_edge_list: A sparse matrix of shape (num_graphs, num_edges).
-        Each row corresponds to a graph and each column corresponds to an edge.
-        The value of the element (i, j) is 1 if edge j is in graph i, otherwise
-        0. If not specified, the graph will be considered as a single graph,
-        defaults to None. Currently, :func:`save_heterograph` only supports
-        saving a single graph.
-    :type graph_edge_list: spmatrix, optional
+    :param graph_node_list: A dictionary that maps the node group name to a
+        sparse matrix of shape (num_graphs, num_nodes_in_group). Each row
+        corresponds to a graph and each column corresponds to a node in that
+        node group. The value of the element (i, j) is 1 if node j is in graph
+        i, otherwise 0. If not specified, the graph will be considered as a
+        single graph, defaults to None.
+    :type graph_node_list: Dict[str, spmatrix], optional
+    :param graph_edge_list: A dictionary that maps the edge group to a
+        sparse matrix of shape (num_graphs, num_edges_in_group). Each row
+        corresponds to a graph and each column corresponds to an edge in that
+        edge group. The value of the element (i, j) is 1 if edge j is in graph
+        i, otherwise 0. If not specified, the graph will be considered as a
+        single graph, defaults to None.
+    :type graph_edge_list: Dict[Tuple[str, str, str], spmatrix], optional
     :param graph_attrs: The graph attributes, defaults to None.
     :type graph_attrs: List[Attribute], optional
     :param description: The description of the graph dataset, defaults to "".
