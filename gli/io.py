@@ -524,6 +524,7 @@ def save_heterograph(
         0. If not specified, the graph will be considered as a single graph,
         defaults to None. Currently, :func:`save_heterograph` only supports
         saving a single graph.
+    :type graph_edge_list: spmatrix, optional
     :param graph_attrs: The graph attributes, defaults to None.
     :type graph_attrs: List[Attribute], optional
     :param description: The description of the graph dataset, defaults to "".
