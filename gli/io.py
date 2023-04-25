@@ -236,13 +236,13 @@ def save_homograph(
         specified, the graph will be considered as a single graph, defaults to
         None.
     :type graph_node_list: (sparse) array, optional
-    :param graph_edge_lists: An array of shape (num_graphs, num_edges). Each
+    :param graph_edge_list: An array of shape (num_graphs, num_edges). Each
         row corresponds to a graph and each column corresponds to an edge. The
         value of the element (i, j) is 1 if edge j is in graph i, otherwise 0.
         If not specified, the edges contained in each graph specified by
         `graph_node_list` will be considered as all the edges among the nodes
         in the graph, defaults to None.
-    :type graph_edge_lists: (sparse) array, optional
+    :type graph_edge_list: (sparse) array, optional
     :param graph_attrs: A list of attributes of the graphs, defaults to None.
     :type graph_attrs: list of Attribute, optional
     :param description: The description of the dataset, defaults to "".
@@ -263,8 +263,8 @@ def save_homograph(
         import numpy as np from numpy.random import randn, randint from
         scipy.sparse import random as sparse_random
 
-        # Create a graph with 6 nodes and 5 edges. edge = np.array([[0, 1], [1,
-        2], [2, 3], [3, 4], [4, 5]]) # Create attributes of the nodes.
+        # Create a graph with 6 nodes and 5 edges.
+        edge = np.array([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]) # Create attributes of the nodes.
         dense_node_feats = Attribute(
             name="DenseNodeFeature", data=randn(6, 5),  # 6 nodes, 5 features
             description="Dense node features.")
@@ -275,48 +275,57 @@ def save_homograph(
             name="NodeLabel", data=randint(0, 4, 6),  # 6 nodes, 4 classes
             description="Node labels.")
 
-        # Save the graph dataset. save_graph(name="example_dataset",
-                   edge=edge, node_attrs=[dense_node_feats, sparse_node_feats,
-                   node_labels], description="An exampmle dataset.",
+        # Save the graph dataset.
+        save_graph(name="example_dataset",
+                   edge=edge, node_attrs=[dense_node_feats, sparse_node_feats, node_labels],
+                   description="An exampmle dataset.",
                    citation="some bibtex citation")
 
-        # The metadata.json and numpy data files will be saved in the current #
-        directory. And the metadata.json will look like something below.
+    The metadata.json and numpy data files will be saved in the current
+    directory. And the metadata.json will look like something below.
 
     .. code-block:: json
 
         {
-            "description": "An exampmle dataset.", "data": {
+            "description": "An exampmle dataset.",
+            "data": {
                 "Node": {
                     "DenseNodeFeature": {
-                        "description": "Dense node features.", "type": "float",
-                        "format": "Tensor", "file":
-                        "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
+                        "description": "Dense node features.",
+                        "type": "float",
+                        "format": "Tensor",
+                        "file": "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
                         "key": "Node_DenseNodeFeature"
-                    }, "SparseNodeFeature": {
-                        "description": "Sparse node features.", "type":
-                        "float", "format": "SparseTensor", "file":
-                        "example_dataset__graph__Node_SparseNodeFeature__118f9d2bbc457f9d64fe610a9510db1c.sparse.npz"
-                    }, "NodeLabel": {
-                        "description": "Node labels.", "type": "int", "format":
-                        "Tensor", "file":
-                        "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
+                    },
+                    "SparseNodeFeature": {
+                        "description": "Sparse node features.",
+                        "type": "float",
+                        "format": "SparseTensor",
+                        "file": "example_dataset__graph__Node_SparseNodeFeature__118f9d2bbc457f9d64fe610a9510db1c.sparse.npz"
+                    },
+                    "NodeLabel": {
+                        "description": "Node labels.",
+                        "type": "int",
+                        "format": "Tensor",
+                        "file": "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
                         "key": "Node_NodeLabel"
                     }
-                }, "Edge": {
+                },
+                "Edge": {
                     "_Edge": {
-                        "file":
-                        "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
+                        "file": "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
                         "key": "Edge_Edge"
                     }
-                }, "Graph": {
+                },
+                "Graph": {
                     "_NodeList": {
-                        "file":
-                        "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
+                        "file": "example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz",
                         "key": "Graph_NodeList"
                     }
                 }
-            }, "citation": "some bibtex citation", "is_heterogeneous": false
+            },
+            "citation": "some bibtex citation",
+            "is_heterogeneous": false
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
     # Convert attrs to empty lists if they are None.
