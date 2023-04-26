@@ -1,7 +1,7 @@
 """Helper functions for creating datasets in GLI format."""
 import json
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 import warnings
 import numpy as np
 from scipy.sparse import isspmatrix, spmatrix, coo_matrix
@@ -134,6 +134,51 @@ class Edges(Attribute):
     def __init__(self, data):
         """Initialize the edges."""
         super().__init__("_Edge", data, data_type="int", data_format="Tensor")
+
+
+def save_graph(
+    name: str,
+    edge: Union[np.ndarray, Dict[Tuple[str, str, str], np.ndarray]],
+    num_nodes: Union[int, Dict[str, int], None] = None,
+    node_attrs: Union[List[Attribute], Dict[str,
+                                            List[Attribute]], None] = None,
+    edge_attrs: Union[List[Attribute], Dict[Tuple[str, str, str],
+                                            List[Attribute]], None] = None,
+    graph_node_list: Optional[spmatrix] = None,
+    graph_edge_list: Optional[spmatrix] = None,
+    graph_attrs: Optional[List[Attribute]] = None,
+    is_hetero: bool = False,
+    description: str = "",
+    cite: str = "",
+    save_dir: str = ".",
+):
+    """Save the graph info by the GLI format.
+
+    This is the recommended way to save a graph (rather than saving manually).
+    :func:`save_graph` is the wrapper of :func:`save_homograph` and
+    :func:`save_heterograph`. Please see the documentation of these two
+    functions for more details about the parameters and usage.
+    """
+    if not is_hetero:
+        return save_homograph(name, edge, num_nodes, node_attrs, edge_attrs,
+                              graph_node_list, graph_edge_list, graph_attrs,
+                              description, cite, save_dir)
+    # verify the inputs are dict for heterograph
+    if not isinstance(edge, dict):
+        raise TypeError(
+            "The input edge must be a dictionary for heterograph.")
+    if num_nodes is not None and not isinstance(num_nodes, dict):
+        raise TypeError(
+            "The input num_nodes must be a dictionary for heterograph.")
+    if node_attrs is not None and not isinstance(node_attrs, dict):
+        raise TypeError(
+            "The input node_attrs must be a dictionary for heterograph..")
+    if edge_attrs is not None and not isinstance(edge_attrs, dict):
+        raise TypeError(
+            "The input edge_attrs must be a dictionary for heterograph..")
+    return save_heterograph(name, edge, num_nodes, node_attrs, edge_attrs,
+                            graph_node_list, graph_edge_list, graph_attrs,
+                            description, cite, save_dir)
 
 
 def _verify_attrs_length(attrs, object_name):
@@ -485,8 +530,8 @@ def save_heterograph(
     num_nodes_dict: Optional[Dict[str, int]] = None,
     node_attrs: Optional[Dict[str, List[Attribute]]] = None,
     edge_attrs: Optional[Dict[Tuple[str, str, str], List[Attribute]]] = None,
-    graph_node_list: Optional[spmatrix] = None,
-    graph_edge_list: Optional[spmatrix] = None,
+    graph_node_list: Optional[Dict[str, spmatrix]] = None,
+    graph_edge_list: Optional[Dict[Tuple[str, str, str], spmatrix]] = None,
     graph_attrs: Optional[List[Attribute]] = None,
     description: str = "",
     citation: str = "",
@@ -511,20 +556,20 @@ def save_heterograph(
         (src_node_type, edge_type, dst_node_type) and the value is a list of
         Attribute, default to None.
     :type edge_attrs: Dict[Tuple[str, str, str], List[Attribute]], optional
-    :param graph_node_list: A sparse matrix of shape (num_graphs, num_nodes). Each row
-        corresponds to a graph and each column corresponds to a node. The value
-        of the element (i, j) is 1 if node j is in graph i, otherwise 0. If not
-        specified, the graph will be considered as a single graph, defaults to
-        None. Currently, :func:`save_heterograph` only supports saving a single
-        graph.
-    :type graph_node_list: spmatrix, optional
-    :param graph_edge_list: A sparse matrix of shape (num_graphs, num_edges).
-        Each row corresponds to a graph and each column corresponds to an edge.
-        The value of the element (i, j) is 1 if edge j is in graph i, otherwise
-        0. If not specified, the graph will be considered as a single graph,
-        defaults to None. Currently, :func:`save_heterograph` only supports
-        saving a single graph.
-    :type graph_edge_list: spmatrix, optional
+    :param graph_node_list: A dictionary that maps the node group name to a
+        sparse matrix of shape (num_graphs, num_nodes_in_group). Each row
+        corresponds to a graph and each column corresponds to a node in that
+        node group. The value of the element (i, j) is 1 if node j is in graph
+        i, otherwise 0. If not specified, the graph will be considered as a
+        single graph, defaults to None.
+    :type graph_node_list: Dict[str, spmatrix], optional
+    :param graph_edge_list: A dictionary that maps the edge group to a
+        sparse matrix of shape (num_graphs, num_edges_in_group). Each row
+        corresponds to a graph and each column corresponds to an edge in that
+        edge group. The value of the element (i, j) is 1 if edge j is in graph
+        i, otherwise 0. If not specified, the graph will be considered as a
+        single graph, defaults to None.
+    :type graph_edge_list: Dict[Tuple[str, str, str], spmatrix], optional
     :param graph_attrs: The graph attributes, defaults to None.
     :type graph_attrs: List[Attribute], optional
     :param description: The description of the graph dataset, defaults to "".
