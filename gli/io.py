@@ -166,8 +166,7 @@ def save_graph(
                               description, cite, save_dir)
     # verify the inputs are dict for heterograph
     if not isinstance(edge, dict):
-        raise TypeError(
-            "The input edge must be a dictionary for heterograph.")
+        raise TypeError("The input edge must be a dictionary for heterograph.")
     if num_nodes is not None and not isinstance(num_nodes, dict):
         raise TypeError(
             "The input num_nodes must be a dictionary for heterograph.")
@@ -251,6 +250,7 @@ def _attr_to_metadata_dict(key_to_loc, prefix, a):
 def _get_version():
     """Get the current time as the version."""
     return time.strftime("%Y%m%d%H%M%S")
+
 
 def save_homograph(
     name: str,
@@ -461,7 +461,8 @@ def save_homograph(
     metadata["citation"] = citation
     metadata["is_heterogeneous"] = False
     metadata["version"] = _get_version()
-    print("The graph metadata is saved to", os.path.join(save_dir, "metadata.json"))
+    print("The graph metadata is saved to",
+          os.path.join(save_dir, "metadata.json"))
     print("Version:", metadata["version"])
 
     if citation == "":
@@ -916,7 +917,8 @@ def save_heterograph(
                                                        attr)
     metadata["data"]["Graph"] = graph_dict
     metadata["version"] = _get_version()
-    print("The graph metadata is saved to", os.path.join(save_dir, "metadata.json"))
+    print("The graph metadata is saved to",
+          os.path.join(save_dir, "metadata.json"))
     print("Version:", metadata["version"])
 
     if citation == "":
