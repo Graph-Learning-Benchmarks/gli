@@ -5,6 +5,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import warnings
 import numpy as np
 from scipy.sparse import isspmatrix, spmatrix, coo_matrix
+import time
 
 from gli.utils import save_data
 
@@ -247,6 +248,10 @@ def _attr_to_metadata_dict(key_to_loc, prefix, a):
     return metadata
 
 
+def _get_version():
+    """Get the current time as the version."""
+    return time.strftime("%Y%m%d%H%M%S")
+
 def save_homograph(
     name: str,
     edge: np.ndarray,
@@ -455,6 +460,9 @@ def save_homograph(
 
     metadata["citation"] = citation
     metadata["is_heterogeneous"] = False
+    metadata["version"] = _get_version()
+    print("The graph metadata is saved to", os.path.join(save_dir, "metadata.json"))
+    print("Version:", metadata["version"])
 
     if citation == "":
         warnings.warn("The citation is empty.")
@@ -907,6 +915,9 @@ def save_heterograph(
         graph_dict[attr.name] = _attr_to_metadata_dict(key_to_loc, "Graph",
                                                        attr)
     metadata["data"]["Graph"] = graph_dict
+    metadata["version"] = _get_version()
+    print("The graph metadata is saved to", os.path.join(save_dir, "metadata.json"))
+    print("Version:", metadata["version"])
 
     if citation == "":
         warnings.warn("The citation is empty.")
@@ -983,7 +994,8 @@ def _save_task_reg_or_cls(task_type,
                           test_ratio=0.1,
                           num_samples=None,
                           task_id=1,
-                          save_dir="."):
+                          save_dir=".",
+                          latest_supported_ver=None):
     """Save the information of a regression or classification task into task json and data files.
 
     :param task_type: The type of the task. It should be either
@@ -1041,6 +1053,9 @@ def _save_task_reg_or_cls(task_type,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
+    :param latest_supported_ver: The latest supported version of the
+        metadata.json file.
+    :type latest_supported_ver: str
 
     :raises ValueError: If `task_type` is not "NodeRegression" or
         "NodeClassification".
@@ -1077,6 +1092,9 @@ def _save_task_reg_or_cls(task_type,
                                                       test_set, train_ratio,
                                                       val_ratio, test_ratio,
                                                       num_samples)
+    if latest_supported_ver is None:
+        raise ValueError("The latest supported version of the metadata.json "
+                         "file must be provided.")
 
     # Task-dependent checks.
     if task_type in ("NodeClassification", "NodeRegression"):
@@ -1096,7 +1114,8 @@ def _save_task_reg_or_cls(task_type,
         "description": description,
         "type": task_type,
         "feature": feature,
-        "target": target
+        "target": target,
+        "latest_supported_ver": latest_supported_ver,
     }
     if num_classes is not None:
         task_dict["num_classes"] = num_classes
@@ -1141,7 +1160,8 @@ def save_task_node_regression(name,
                               test_ratio=0.1,
                               num_samples=None,
                               task_id=1,
-                              save_dir="."):
+                              save_dir=".",
+                              latest_supported_ver=None):
     """Save the node regression task information into task json and data files.
 
     :param name: The name of the dataset.
@@ -1200,6 +1220,8 @@ def save_task_node_regression(name,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
+    :param latest_supported_ver: The latest supported version of the metadata.
+    :type latest_supported_ver: str
 
     :raises ValueError: If `task_type` is not "NodeRegression" or
         "NodeClassification".
@@ -1285,7 +1307,8 @@ def save_task_node_regression(name,
                                  test_ratio=test_ratio,
                                  num_samples=num_samples,
                                  task_id=task_id,
-                                 save_dir=save_dir)
+                                 save_dir=save_dir,
+                                 latest_supported_ver=latest_supported_ver)
 
 
 def save_task_node_classification(name,
@@ -1301,7 +1324,8 @@ def save_task_node_classification(name,
                                   test_ratio=0.1,
                                   num_samples=None,
                                   task_id=1,
-                                  save_dir="."):
+                                  save_dir=".",
+                                  latest_supported_ver=None):
     """Save the node classification task information into task json and data files.
 
     :param name: The name of the dataset.
@@ -1450,4 +1474,5 @@ def save_task_node_classification(name,
                                  test_ratio=test_ratio,
                                  num_samples=num_samples,
                                  task_id=task_id,
-                                 save_dir=save_dir)
+                                 save_dir=save_dir,
+                                 latest_supported_ver=latest_supported_ver)
