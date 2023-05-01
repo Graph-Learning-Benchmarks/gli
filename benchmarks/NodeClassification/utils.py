@@ -26,11 +26,13 @@ from models.monet import MoNet
 from models.graph_sage import GraphSAGE
 from models.mlp import MLP
 from models.gcn_minibatch import GCNminibatch
+from models.graph_sage_minibatch import GraphSAGEminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
-Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
+Datasets_need_to_be_undirected = [
+    "pokec", "genius", "penn94", "twitch-gamers"]
 
 
 def generate_model(args, g, in_feats, n_classes, **model_cfg):
@@ -46,7 +48,7 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                     dropout=model_cfg["dropout"])
     elif args.model == "GAT":
         heads = ([model_cfg["num_heads"]] * (model_cfg["num_layers"]))\
-                + [model_cfg["num_out_heads"]]
+            + [model_cfg["num_out_heads"]]
         model = GAT(g,
                     model_cfg["num_layers"],
                     in_feats,
@@ -90,6 +92,14 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                              model_cfg["num_layers"],
                              F.relu,
                              model_cfg["dropout"])
+    elif args.model == "GraphSAGE_minibatch":
+        model = GraphSAGEminibatch(in_feats,
+                                   model_cfg["num_hidden"],
+                                   n_classes,
+                                   model_cfg["num_layers"],
+                                   F.relu,
+                                   model_cfg["dropout"],
+                                   model_cfg["aggregator_type"])
     elif args.model == "MixHop":
         model = MixHop(g,
                        in_dim=in_feats,
@@ -241,7 +251,8 @@ def eval_rocauc(y_pred, y_true):
     if len(y_true.shape) > 1:
         if y_true.shape[1] == 1:
             # use the predicted class for single-class classification
-            y_pred = F.softmax(y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
+            y_pred = F.softmax(
+                y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
         else:
             y_pred = y_pred.detach().cpu().numpy()
 
