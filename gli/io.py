@@ -1090,7 +1090,17 @@ def _save_task_reg_or_cls(task_type,
             "`num_classes` must be None for regression tasks."
     else:
         raise NotImplementedError(f"Task type {task_type} is not supported.")
-
+    if task_type in ("GraphClassification", "GraphRegression"):
+        assert target.startswith("Graph/"), \
+            "`target` must be a node attribute."
+    if task_type == "GraphClassification":
+        task_str = "graph_classification"
+    elif task_type == "GraphRegression":
+        task_str = "graph_regression"
+        assert num_classes is None, \
+            "`num_classes` must be None for regression tasks."
+    else:
+        raise NotImplementedError(f"Task type {task_type} is not supported.")
     # Create the dictionary for task json file.
     task_dict = {
         "description": description,
@@ -1451,3 +1461,161 @@ def save_task_node_classification(name,
                                  num_samples=num_samples,
                                  task_id=task_id,
                                  save_dir=save_dir)
+def save_task_graph_regression(name,
+                              description,
+                              feature,
+                              target,
+                              train_set=None,
+                              val_set=None,
+                              test_set=None,
+                              train_ratio=0.8,
+                              val_ratio=0.1,
+                              test_ratio=0.1,
+                              num_samples=None,
+                              task_id=1,
+                              save_dir="."):
+    return _save_task_reg_or_cls(task_type="GraphRegression",
+                                 name=name,
+                                 description=description,
+                                 feature=feature,
+                                 target=target,
+                                 train_set=train_set,
+                                 val_set=val_set,
+                                 test_set=test_set,
+                                 train_ratio=train_ratio,
+                                 val_ratio=val_ratio,
+                                 test_ratio=test_ratio,
+                                 num_samples=num_samples,
+                                 task_id=task_id,
+                                 save_dir=save_dir)
+
+
+def save_task_graph_classification(name,
+                                  description,
+                                  feature,
+                                  target,
+                                  num_classes,
+                                  train_set=None,
+                                  val_set=None,
+                                  test_set=None,
+                                  train_ratio=0.8,
+                                  val_ratio=0.1,
+                                  test_ratio=0.1,
+                                  num_samples=None,
+                                  task_id=1,
+                                  save_dir="."):
+    return _save_task_reg_or_cls(task_type="GraphClassification",
+                                 name=name,
+                                 description=description,
+                                 feature=feature,
+                                 target=target,
+                                 num_classes=num_classes,
+                                 train_set=train_set,
+                                 val_set=val_set,
+                                 test_set=test_set,
+                                 train_ratio=train_ratio,
+                                 val_ratio=val_ratio,
+                                 test_ratio=test_ratio,
+                                 num_samples=num_samples,
+                                 task_id=task_id,
+                                 save_dir=save_dir)
+
+
+def save_task_link_prediction(name,
+                                  description,
+                                  feature,
+                                  train_set,
+                                  val_set,
+                                  test_set,
+                                  val_neg=None,
+                                  test_neg=None,
+                                  task_id=1,
+                                  save_dir="."):
+    # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    task_type = "LinkPrediction"
+    task_str = "link_prediction"
+
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+    }
+    data_dict = {
+        "train_set": np.array(train_set),
+        "val_set": np.array(val_set),
+        "test_set": np.array(test_set)
+    }
+    if val_neg is not None:
+        data_dict["val_neg"] = val_neg
+    if test_neg is not None:
+        data_dict["test_neg"] = test_neg
+    key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                               save_dir=save_dir,
+                               **data_dict)
+    task_dict.update(key_to_loc)
+    
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
+
+
+def save_task_time_dependent_link_prediction(name,
+                                  description,
+                                  feature,
+                                  time,
+                                  train_time_window,
+                                  val_time_window,
+                                  test_time_window,
+                                  val_neg=None,
+                                  test_neg=None,
+                                  task_id=1,
+                                  save_dir="."):
+    # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    assert isinstance(time, str), \
+        "`time` must be a string."
+    #TODO: pair?
+    assert isinstance(train_time_window, list), \
+        "`train_time_window` must be a list."
+    assert isinstance(val_time_window, list), \
+        "`val_time_window` must be a list."
+    assert isinstance(test_time_window, list), \
+        "`test_time_window` must be a list."
+    task_type = "TimeDependentLinkPrediction"
+    task_str = "time_dependent_link_prediction"
+    
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+        "time": time, #TODO:
+        "train_time_window": train_time_window,
+        "val_time_window": val_time_window,
+        "test_time_window": test_time_window
+    }
+    data_dict = dict()
+    if val_neg is not None:
+        data_dict["val_neg"] = val_neg
+    if test_neg is not None:
+        data_dict["test_neg"] = test_neg
+    key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                               save_dir=save_dir,
+                               **data_dict)
+    task_dict.update(key_to_loc)
+    
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
