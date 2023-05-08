@@ -1,4 +1,5 @@
 """Helper functions for creating datasets in GLI format."""
+import datetime
 import json
 import os
 from typing import Dict, List, Optional, Tuple, Union
@@ -248,8 +249,8 @@ def _attr_to_metadata_dict(key_to_loc, prefix, a):
 
 
 def _get_version():
-    """Get the current time as the version."""
-    return time.strftime("%Y%m%d%H%M%S")
+    """Get the current utc time as the version."""
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H%M%S")
 
 
 def save_homograph(
