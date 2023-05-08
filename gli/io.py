@@ -983,6 +983,14 @@ def _check_feature(feature):
             "Each element in `feature` must be a node/edge/graph attribute."
 
 
+def _get_metadata_version(metadata):
+    """Check the version of the metadata is valid."""
+    assert "version" in metadata, \
+        "The metadata does not contain the version information." \
+        "Please add the version information to the metadata."
+    return metadata["version"]
+
+
 def _save_task_reg_or_cls(task_type,
                           name,
                           description,
@@ -997,8 +1005,7 @@ def _save_task_reg_or_cls(task_type,
                           test_ratio=0.1,
                           num_samples=None,
                           task_id=1,
-                          save_dir=".",
-                          latest_supported_ver=None):
+                          save_dir="."):
     """Save the information of a regression or classification task into task json and data files.
 
     :param task_type: The type of the task. It should be either
@@ -1056,9 +1063,6 @@ def _save_task_reg_or_cls(task_type,
     :param save_dir: The directory to save the task json and data files.
         Default: ".".
     :type save_dir: str
-    :param latest_supported_ver: The latest supported version of the
-        metadata.json file.
-    :type latest_supported_ver: str
 
     :raises ValueError: If `task_type` is not "NodeRegression" or
         "NodeClassification".
@@ -1095,9 +1099,12 @@ def _save_task_reg_or_cls(task_type,
                                                       test_set, train_ratio,
                                                       val_ratio, test_ratio,
                                                       num_samples)
-    if latest_supported_ver is None:
-        raise ValueError("The latest supported version of the metadata.json "
-                         "file must be provided.")
+
+    # Check if metadata.json exists.
+    metadata_path = os.path.join(save_dir, "metadata.json")
+    assert os.path.exists(metadata_path), \
+        "metadata.json does not exist. Please create it first."
+    current_metadata_version = _get_metadata_version(metadata_path)
 
     # Task-dependent checks.
     if task_type in ("NodeClassification", "NodeRegression"):
@@ -1118,7 +1125,7 @@ def _save_task_reg_or_cls(task_type,
         "type": task_type,
         "feature": feature,
         "target": target,
-        "latest_supported_ver": latest_supported_ver,
+        "version": current_metadata_version,
     }
     if num_classes is not None:
         task_dict["num_classes"] = num_classes
