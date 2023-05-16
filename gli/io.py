@@ -1916,8 +1916,8 @@ def save_task_link_prediction(name,
     if test_neg is not None:
         data_dict["test_neg"] = test_neg
     key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
-                               save_dir=save_dir,
-                               **data_dict)
+                           save_dir=save_dir,
+                           **data_dict)
     task_dict.update(key_to_loc)
 
     # Save the task json file.
@@ -2059,8 +2059,8 @@ def save_task_time_dependent_link_prediction(name,
     if test_neg is not None:
         data_dict["test_neg"] = test_neg
     key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
-                               save_dir=save_dir,
-                               **data_dict)
+                           save_dir=save_dir,
+                           **data_dict)
     task_dict.update(key_to_loc)
 
     # Save the task json file.
@@ -2186,8 +2186,8 @@ def save_task_kg_entity_prediction(name,
         "test_triplet_set": np.array(test_triplet_set)
     }
     key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
-                               save_dir=save_dir,
-                               **data_dict)
+                           save_dir=save_dir,
+                           **data_dict)
     # Update the task dictionary with the data file names and keys.
     task_dict.update(key_to_loc)
 
@@ -2321,8 +2321,8 @@ def save_task_kg_relation_prediction(name,
         "test_triplet_set": np.array(test_triplet_set)
     }
     key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
-                               save_dir=save_dir,
-                               **data_dict)
+                           save_dir=save_dir,
+                           **data_dict)
     # Update the task dictionary with the data file names and keys.
     task_dict.update(key_to_loc)
 
