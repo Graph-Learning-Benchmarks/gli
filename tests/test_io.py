@@ -1,6 +1,7 @@
 """Test the io module."""
 import tempfile
 import os
+import json
 
 import numpy as np
 from numpy.random import randint, randn
@@ -194,3 +195,118 @@ def test_save_single_heterograph():
             "The number of click edges should be 4."
         assert g.num_edges("user_is_friend_user") == 2, \
             "The number of friend edges should be 2."
+        
+def test_save_task_graph_regression():
+    """Save a single graph regression task and print it."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        d = gli.io.save_task_graph_regression(
+            name="example_dataset",
+            description="A graph regression task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Graph/GraphLabel",
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        
+        print(json.dumps(d, indent=4))
+
+
+def test_save_task_graph_classification():
+    """Save a single graph classification task and print it."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        d = gli.io.save_task_graph_classification(
+            name="example_dataset",
+            description="A graph classification task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Graph/GraphLabel",
+            num_classes=4,
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        
+        print(json.dumps(d, indent=4))
+
+
+def test_save_task_link_prediction():
+    """Save a single link prediction task and print it."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        d = gli.io.save_task_link_prediction(
+            name="example_dataset",
+            description="A link prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        
+        print(json.dumps(d, indent=4))
+
+
+def test_save_task_time_dependent_link_prediction():
+    """Save a single time dependent link prediction task and print it."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        d = gli.io.save_task_time_dependent_link_prediction(
+            name="example_dataset",
+            description="A time dependent link prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            time="Edge/EdgeYear")
+        
+        print(json.dumps(d, indent=4))
+
+
+def test_save_task_kg_entity_prediction():
+    """Save a kg entity prediction task and print it."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        train_triplet_set = [0, 1]
+        val_triplet_set = [2, 3]
+        test_triplet_set = [4, 5]
+
+        # Save the task information.
+        d = gli.io.save_task_kg_entity_prediction(
+            name="example_dataset",
+            description="A kg entity prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            train_triplet_set=train_triplet_set,
+            val_triplet_set=val_triplet_set,
+            test_triplet_set=test_triplet_set)
+        
+        print(json.dumps(d, indent=4))
+
+def test_save_task_kg_entity_prediction():
+    """Save a kg entity prediction task and print it."""
+    # Create a temporary dir.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        train_triplet_set = [0, 1]
+        val_triplet_set = [2, 3]
+        test_triplet_set = [4, 5]
+
+        # Save the task information.
+        d = gli.io.save_task_kg_relation_prediction(
+            name="example_dataset",
+            description="A kg entity prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Edge/EdgeClass",
+            train_triplet_set=train_triplet_set,
+            val_triplet_set=val_triplet_set,
+            test_triplet_set=test_triplet_set)
+        
+        print(json.dumps(d, indent=4))
