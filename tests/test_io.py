@@ -195,7 +195,8 @@ def test_save_single_heterograph():
             "The number of click edges should be 4."
         assert g.num_edges("user_is_friend_user") == 2, \
             "The number of friend edges should be 2."
-        
+
+
 def test_save_task_graph_regression():
     """Save a single graph regression task and print it."""
     # Create a temporary dir.
@@ -213,7 +214,6 @@ def test_save_task_graph_regression():
             train_set=train_set,
             val_set=val_set,
             test_set=test_set)
-        
         print(json.dumps(d, indent=4))
 
 
@@ -235,7 +235,6 @@ def test_save_task_graph_classification():
             train_set=train_set,
             val_set=val_set,
             test_set=test_set)
-        
         print(json.dumps(d, indent=4))
 
 
@@ -255,7 +254,6 @@ def test_save_task_link_prediction():
             train_set=train_set,
             val_set=val_set,
             test_set=test_set)
-        
         print(json.dumps(d, indent=4))
 
 
@@ -265,10 +263,10 @@ def test_save_task_time_dependent_link_prediction():
     with tempfile.TemporaryDirectory() as tmpdir:
         d = gli.io.save_task_time_dependent_link_prediction(
             name="example_dataset",
-            description="A time dependent link prediction task for the example dataset.",
+            description="A time dependent link prediction task for the \
+                example dataset.",
             feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
             time="Edge/EdgeYear")
-        
         print(json.dumps(d, indent=4))
 
 
@@ -288,11 +286,11 @@ def test_save_task_kg_entity_prediction():
             train_triplet_set=train_triplet_set,
             val_triplet_set=val_triplet_set,
             test_triplet_set=test_triplet_set)
-        
         print(json.dumps(d, indent=4))
 
-def test_save_task_kg_entity_prediction():
-    """Save a kg entity prediction task and print it."""
+
+def test_save_task_kg_relation_prediction():
+    """Save a kg relation prediction task and print it."""
     # Create a temporary dir.
     with tempfile.TemporaryDirectory() as tmpdir:
         train_triplet_set = [0, 1]
@@ -308,5 +306,4 @@ def test_save_task_kg_entity_prediction():
             train_triplet_set=train_triplet_set,
             val_triplet_set=val_triplet_set,
             test_triplet_set=test_triplet_set)
-        
         print(json.dumps(d, indent=4))

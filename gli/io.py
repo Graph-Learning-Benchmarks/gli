@@ -1919,7 +1919,7 @@ def save_task_link_prediction(name,
                                save_dir=save_dir,
                                **data_dict)
     task_dict.update(key_to_loc)
-    
+
     # Save the task json file.
     with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
               "w",
@@ -2053,7 +2053,7 @@ def save_task_time_dependent_link_prediction(name,
         "val_time_window": val_time_window,
         "test_time_window": test_time_window
     }
-    data_dict = dict()
+    data_dict = {}
     if val_neg is not None:
         data_dict["val_neg"] = val_neg
     if test_neg is not None:
@@ -2062,7 +2062,7 @@ def save_task_time_dependent_link_prediction(name,
                                save_dir=save_dir,
                                **data_dict)
     task_dict.update(key_to_loc)
-    
+
     # Save the task json file.
     with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
               "w",
