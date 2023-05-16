@@ -2201,15 +2201,15 @@ def save_task_kg_entity_prediction(name,
 
 
 def save_task_kg_relation_prediction(name,
-                                   description,
-                                   feature,
-                                   target,
-                                   train_triplet_set,
-                                   val_triplet_set,
-                                   test_triplet_set,
-                                   num_relations=0,
-                                   task_id=1,
-                                   save_dir="."):
+                                     description,
+                                     feature,
+                                     target,
+                                     train_triplet_set,
+                                     val_triplet_set,
+                                     test_triplet_set,
+                                     num_relations=0,
+                                     task_id=1,
+                                     save_dir="."):
     """Save the kg relation prediction task information into task json and data files.
 
     :param name: The name of the dataset.
