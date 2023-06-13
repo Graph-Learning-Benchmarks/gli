@@ -198,9 +198,12 @@ def test_save_single_heterograph():
 
 
 def test_save_task_graph_regression():
-    """Save a single graph regression task and print it."""
+    """Save a single graph regression task and load it back."""
     # Create a temporary dir.
     with tempfile.TemporaryDirectory() as tmpdir:
+        _description = "A graph regression task for the example dataset."
+        _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
+        _target = "Graph/GraphLabel"
         train_set = [0, 1]
         val_set = [2, 3]
         test_set = [4, 5]
@@ -208,19 +211,39 @@ def test_save_task_graph_regression():
         # Save the task information.
         d = gli.io.save_task_graph_regression(
             name="example_dataset",
-            description="A graph regression task for the example dataset.",
-            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
-            target="Graph/GraphLabel",
+            description=_description,
+            feature=_feature,
+            target=_target,
             train_set=train_set,
             val_set=val_set,
-            test_set=test_set)
-        print(json.dumps(d, indent=4))
+            test_set=test_set,
+            task_id=1,
+            save_dir=tmpdir)
+        
+        # Load the task dataset.
+        task_path = os.path.join(tmpdir, "task_graph_regression_1.json")
+        t = gli.task.read_gli_task(task_path)
+
+        assert t.description == _description, \
+            "description should be %s" % _description
+        assert t.features == _feature, "features should be %s" % _feature
+        assert t.target == _target, "target should be %s" % _target
+        assert t.split.get("train_set").tolist() == train_set, \
+            "train set should be %s" % train_set
+        assert t.split.get("val_set").tolist() == val_set, \
+            "val set should be %s" % val_set
+        assert t.split.get("test_set").tolist() == test_set, \
+            "test set should be %s" % test_set
 
 
 def test_save_task_graph_classification():
-    """Save a single graph classification task and print it."""
+    """Save a single graph classification task and load it back."""
     # Create a temporary dir.
     with tempfile.TemporaryDirectory() as tmpdir:
+        _description = "A graph classification task for the example dataset."
+        _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
+        _target = "Graph/GraphLabel"
+        _num_classes = 4
         train_set = [0, 1]
         val_set = [2, 3]
         test_set = [4, 5]
@@ -228,20 +251,40 @@ def test_save_task_graph_classification():
         # Save the task information.
         d = gli.io.save_task_graph_classification(
             name="example_dataset",
-            description="A graph classification task for the example dataset.",
-            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
-            target="Graph/GraphLabel",
-            num_classes=4,
+            description=_description,
+            feature=_feature,
+            target=_target,
+            num_classes=_num_classes,
             train_set=train_set,
             val_set=val_set,
-            test_set=test_set)
-        print(json.dumps(d, indent=4))
+            test_set=test_set,
+            task_id=1,
+            save_dir=tmpdir)
+
+        # Load the task dataset.
+        task_path = os.path.join(tmpdir, "task_graph_classification_1.json")
+        t = gli.task.read_gli_task(task_path)
+
+        assert t.description == _description, \
+            "description should be %s" % _description
+        assert t.features == _feature, "features should be %s" % _feature
+        assert t.target == _target, "target should be %s" % _target
+        assert t.num_classes == _num_classes, \
+            "number of classes should be %s" % _num_classes
+        assert t.split.get("train_set").tolist() == train_set, \
+            "train set should be %s" % train_set
+        assert t.split.get("val_set").tolist() == val_set, \
+            "val set should be %s" % val_set
+        assert t.split.get("test_set").tolist() == test_set, \
+            "test set should be %s" % test_set
 
 
 def test_save_task_link_prediction():
-    """Save a single link prediction task and print it."""
+    """Save a single link prediction task and load it back."""
     # Create a temporary dir.
     with tempfile.TemporaryDirectory() as tmpdir:
+        _description = "A link prediction task for the example dataset."
+        _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
         train_set = [0, 1]
         val_set = [2, 3]
         test_set = [4, 5]
@@ -249,31 +292,62 @@ def test_save_task_link_prediction():
         # Save the task information.
         d = gli.io.save_task_link_prediction(
             name="example_dataset",
-            description="A link prediction task for the example dataset.",
-            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            description=_description,
+            feature=_feature,
             train_set=train_set,
             val_set=val_set,
-            test_set=test_set)
-        print(json.dumps(d, indent=4))
+            test_set=test_set,
+            task_id=1,
+            save_dir=tmpdir)
+
+        # Load the task dataset.
+        task_path = os.path.join(tmpdir, "task_link_prediction_1.json")
+        t = gli.task.read_gli_task(task_path)
+
+        assert t.description == _description, \
+            "description should be %s" % _description
+        assert t.features == _feature, "features should be %s" % _feature
+        assert t.split.get("train_set").tolist() == train_set, \
+            "train set should be %s" % train_set
+        assert t.split.get("val_set").tolist() == val_set, \
+            "val set should be %s" % val_set
+        assert t.split.get("test_set").tolist() == test_set, \
+            "test set should be %s" % test_set
 
 
 def test_save_task_time_dependent_link_prediction():
-    """Save a single time dependent link prediction task and print it."""
+    """Save a single time dependent link prediction task and load it back."""
     # Create a temporary dir.
+    _description = "A time dependent link prediction task for the \
+                example dataset."
+    _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
+    _time = time="Edge/EdgeYear"
     with tempfile.TemporaryDirectory() as tmpdir:
         d = gli.io.save_task_time_dependent_link_prediction(
             name="example_dataset",
-            description="A time dependent link prediction task for the \
-                example dataset.",
-            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
-            time="Edge/EdgeYear")
-        print(json.dumps(d, indent=4))
+            description=_description,
+            feature=_feature,
+            time="Edge/EdgeYear",
+            task_id=1,
+            save_dir=tmpdir)
+
+        # Load the task dataset.
+        task_path = os.path.join(tmpdir, \
+                                 "task_time_dependent_link_prediction_1.json")
+        t = gli.task.read_gli_task(task_path)
+
+        assert t.description == _description, \
+            "description should be %s" % _description
+        assert t.features == _feature, "features should be %s" % _feature
+        assert t.time == _time, "time should be %s" % _time
 
 
 def test_save_task_kg_entity_prediction():
-    """Save a kg entity prediction task and print it."""
+    """Save a kg entity prediction task and load it back."""
     # Create a temporary dir.
     with tempfile.TemporaryDirectory() as tmpdir:
+        _description = "A kg entity prediction task for the example dataset."
+        _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
         train_triplet_set = [0, 1]
         val_triplet_set = [2, 3]
         test_triplet_set = [4, 5]
@@ -281,18 +355,36 @@ def test_save_task_kg_entity_prediction():
         # Save the task information.
         d = gli.io.save_task_kg_entity_prediction(
             name="example_dataset",
-            description="A kg entity prediction task for the example dataset.",
-            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            description=_description,
+            feature=_feature,
             train_triplet_set=train_triplet_set,
             val_triplet_set=val_triplet_set,
-            test_triplet_set=test_triplet_set)
-        print(json.dumps(d, indent=4))
+            test_triplet_set=test_triplet_set,
+            task_id=1,
+            save_dir=tmpdir)
+        
+        # Load the task dataset.
+        task_path = os.path.join(tmpdir, "task_kg_entity_prediction_1.json")
+        t = gli.task.read_gli_task(task_path)
+
+        assert t.description == _description, \
+            "description should be %s" % _description
+        assert t.features == _feature, "features should be %s" % _feature
+        assert t.split.get("train_set").tolist() == train_triplet_set, \
+            "train set should be %s" % train_triplet_set
+        assert t.split.get("val_set").tolist() == val_triplet_set, \
+            "val set should be %s" % val_triplet_set
+        assert t.split.get("test_set").tolist() == test_triplet_set, \
+            "test set should be %s" % test_triplet_set
 
 
 def test_save_task_kg_relation_prediction():
-    """Save a kg relation prediction task and print it."""
+    """Save a kg relation prediction task and load it back."""
     # Create a temporary dir.
     with tempfile.TemporaryDirectory() as tmpdir:
+        _description = "A kg entity prediction task for the example dataset."
+        _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
+        _target = "Edge/EdgeClass"
         train_triplet_set = [0, 1]
         val_triplet_set = [2, 3]
         test_triplet_set = [4, 5]
@@ -300,10 +392,29 @@ def test_save_task_kg_relation_prediction():
         # Save the task information.
         d = gli.io.save_task_kg_relation_prediction(
             name="example_dataset",
-            description="A kg entity prediction task for the example dataset.",
-            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
-            target="Edge/EdgeClass",
+            description=_description,
+            feature=_feature,
+            target=_target,
             train_triplet_set=train_triplet_set,
             val_triplet_set=val_triplet_set,
-            test_triplet_set=test_triplet_set)
-        print(json.dumps(d, indent=4))
+            test_triplet_set=test_triplet_set,
+            task_id=1,
+            save_dir=tmpdir)
+
+        # Load the task dataset.
+        task_path = os.path.join(tmpdir, "task_kg_relation_prediction_1.json")
+        t = gli.task.read_gli_task(task_path)
+
+        assert t.description == _description, \
+            "description should be %s" % _description
+        assert t.features == _feature, "features should be %s" % _feature
+        assert t.target == _target, "target should be %s" % _target
+        assert t.split.get("train_set").tolist() == train_triplet_set, \
+            "train set should be %s" % train_triplet_set
+        assert t.split.get("val_set").tolist() == val_triplet_set, \
+            "val set should be %s" % val_triplet_set
+        assert t.split.get("test_set").tolist() == test_triplet_set, \
+            "test set should be %s" % test_triplet_set
+
+if __name__ == '__main__':
+    test_save_task_kg_relation_prediction()
