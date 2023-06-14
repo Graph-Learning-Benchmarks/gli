@@ -225,15 +225,15 @@ def test_save_task_graph_regression():
         t = gli.task.read_gli_task(task_path)
 
         assert t.description == description_, \
-            f'description should be {description_}'
-        assert t.features == feature_, f'features should be {feature_}'
-        assert t.target == target_, f'target should be {target_}'
+            f"description should be {description_}"
+        assert t.features == feature_, f"features should be {feature_}"
+        assert t.target == target_, f"target should be {target_}"
         assert t.split.get("train_set").tolist() == train_set, \
-            f'train set should be train_set'
+            f"train set should be train_set"
         assert t.split.get("val_set").tolist() == val_set, \
-            f'val set should be {val_set}'
+            f"val set should be {val_set}"
         assert t.split.get("test_set").tolist() == test_set, \
-            f'test set should be {test_set}'
+            f"test set should be {test_set}"
 
 
 def test_save_task_graph_classification():
@@ -266,17 +266,17 @@ def test_save_task_graph_classification():
         t = gli.task.read_gli_task(task_path)
 
         assert t.description == description_, \
-            f'description should be {description_}'
-        assert t.features == feature_, f'features should be {feature_}'
-        assert t.target == target_, f'target should be {target_}'
+            f"description should be {description_}"
+        assert t.features == feature_, f"features should be {feature_}"
+        assert t.target == target_, f"target should be {target_}"
         assert t.num_classes == num_classes_, \
-            f'number of classes should be {num_classes_}'
+            f"number of classes should be {num_classes_}"
         assert t.split.get("train_set").tolist() == train_set, \
-            f'train set should be train_set'
+            f"train set should be train_set"
         assert t.split.get("val_set").tolist() == val_set, \
-            f'val set should be {val_set}'
+            f"val set should be {val_set}"
         assert t.split.get("test_set").tolist() == test_set, \
-            f'test set should be {test_set}'
+            f"test set should be {test_set}"
 
 
 def test_save_task_link_prediction():
@@ -305,14 +305,14 @@ def test_save_task_link_prediction():
         t = gli.task.read_gli_task(task_path)
 
         assert t.description == description_, \
-            f'description should be {description_}'
-        assert t.features == feature_, f'features should be {feature_}'
+            f"description should be {description_}"
+        assert t.features == feature_, f"features should be {feature_}"
         assert t.split.get("train_set").tolist() == train_set, \
-            f'train set should be train_set'
+            f"train set should be train_set"
         assert t.split.get("val_set").tolist() == val_set, \
-            f'val set should be {val_set}'
+            f"val set should be {val_set}"
         assert t.split.get("test_set").tolist() == test_set, \
-            f'test set should be {test_set}'
+            f"test set should be {test_set}"
 
 
 def test_save_task_time_dependent_link_prediction():
@@ -337,9 +337,9 @@ def test_save_task_time_dependent_link_prediction():
         t = gli.task.read_gli_task(task_path)
 
         assert t.description == description_, \
-            f'description should be {description_}'
-        assert t.features == feature_, f'features should be {feature_}'
-        assert t.time == time_, f'time should be {time_}'
+            f"description should be {description_}"
+        assert t.features == feature_, f"features should be {feature_}"
+        assert t.time == time_, f"time should be {time_}"
 
 
 def test_save_task_kg_entity_prediction():
@@ -368,14 +368,14 @@ def test_save_task_kg_entity_prediction():
         t = gli.task.read_gli_task(task_path)
 
         assert t.description == description_, \
-            f'description should be {description_}'
-        assert t.features == feature_, f'features should be {feature_}'
+            f"description should be {description_}"
+        assert t.features == feature_, f"features should be {feature_}"
         assert t.split.get("train_set").tolist() == train_triplet_set, \
-            f'train set should be {train_triplet_set}'
+            f"train set should be {train_triplet_set}"
         assert t.split.get("val_set").tolist() == val_triplet_set, \
-            f'val set should be {val_triplet_set}'
+            f"val set should be {val_triplet_set}"
         assert t.split.get("test_set").tolist() == test_triplet_set, \
-            f'test set should be {test_triplet_set}'
+            f"test set should be {test_triplet_set}"
 
 
 def test_save_task_kg_relation_prediction():
@@ -406,12 +406,12 @@ def test_save_task_kg_relation_prediction():
         t = gli.task.read_gli_task(task_path)
 
         assert t.description == description_, \
-            f'description should be {description_}'
-        assert t.features == feature_, f'features should be {feature_}'
-        assert t.target == target_, f'target should be {target_}'
+            f"description should be {description_}"
+        assert t.features == feature_, f"features should be {feature_}"
+        assert t.target == target_, f"target should be {target_}"
         assert t.split.get("train_set").tolist() == train_triplet_set, \
-            f'train set should be {train_triplet_set}'
+            f"train set should be {train_triplet_set}"
         assert t.split.get("val_set").tolist() == val_triplet_set, \
-            f'val set should be {val_triplet_set}'
+            f"val set should be {val_triplet_set}"
         assert t.split.get("test_set").tolist() == test_triplet_set, \
-            f'test set should be {test_triplet_set}'
+            f"test set should be {test_triplet_set}"
