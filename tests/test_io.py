@@ -1,7 +1,6 @@
 """Test the io module."""
 import tempfile
 import os
-import json
 
 import numpy as np
 from numpy.random import randint, randn
@@ -229,7 +228,7 @@ def test_save_task_graph_regression():
         assert t.features == feature_, f"features should be {feature_}"
         assert t.target == target_, f"target should be {target_}"
         assert t.split.get("train_set").tolist() == train_set, \
-            f"train set should be train_set"
+            "train set should be train_set"
         assert t.split.get("val_set").tolist() == val_set, \
             f"val set should be {val_set}"
         assert t.split.get("test_set").tolist() == test_set, \
@@ -272,7 +271,7 @@ def test_save_task_graph_classification():
         assert t.num_classes == num_classes_, \
             f"number of classes should be {num_classes_}"
         assert t.split.get("train_set").tolist() == train_set, \
-            f"train set should be train_set"
+            "train set should be train_set"
         assert t.split.get("val_set").tolist() == val_set, \
             f"val set should be {val_set}"
         assert t.split.get("test_set").tolist() == test_set, \
@@ -308,7 +307,7 @@ def test_save_task_link_prediction():
             f"description should be {description_}"
         assert t.features == feature_, f"features should be {feature_}"
         assert t.split.get("train_set").tolist() == train_set, \
-            f"train set should be train_set"
+            "train set should be train_set"
         assert t.split.get("val_set").tolist() == val_set, \
             f"val set should be {val_set}"
         assert t.split.get("test_set").tolist() == test_set, \
