@@ -219,7 +219,7 @@ def test_save_task_graph_regression():
             test_set=test_set,
             task_id=1,
             save_dir=tmpdir)
-        
+
         # Load the task dataset.
         task_path = os.path.join(tmpdir, "task_graph_regression_1.json")
         t = gli.task.read_gli_task(task_path)
@@ -321,7 +321,7 @@ def test_save_task_time_dependent_link_prediction():
     _description = "A time dependent link prediction task for the \
                 example dataset."
     _feature = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
-    _time = time="Edge/EdgeYear"
+    _time = "Edge/EdgeYear"
     with tempfile.TemporaryDirectory() as tmpdir:
         d = gli.io.save_task_time_dependent_link_prediction(
             name="example_dataset",
@@ -362,7 +362,7 @@ def test_save_task_kg_entity_prediction():
             test_triplet_set=test_triplet_set,
             task_id=1,
             save_dir=tmpdir)
-        
+
         # Load the task dataset.
         task_path = os.path.join(tmpdir, "task_kg_entity_prediction_1.json")
         t = gli.task.read_gli_task(task_path)
@@ -415,6 +415,3 @@ def test_save_task_kg_relation_prediction():
             "val set should be %s" % val_triplet_set
         assert t.split.get("test_set").tolist() == test_triplet_set, \
             "test set should be %s" % test_triplet_set
-
-if __name__ == '__main__':
-    test_save_task_kg_relation_prediction()
