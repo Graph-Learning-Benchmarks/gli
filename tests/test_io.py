@@ -332,7 +332,7 @@ def test_save_task_time_dependent_link_prediction():
             save_dir=tmpdir)
 
         # Load the task dataset.
-        task_path = os.path.join(tmpdir, \
+        task_path = os.path.join(tmpdir,
                                  "task_time_dependent_link_prediction_1.json")
         t = gli.task.read_gli_task(task_path)
 
