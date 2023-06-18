@@ -1933,9 +1933,9 @@ def save_task_time_dependent_link_prediction(name,
                                              description,
                                              feature,
                                              time,
-                                             train_time_window=[0, 0],
-                                             val_time_window=[0, 0],
-                                             test_time_window=[0, 0],
+                                             train_time_window=None,
+                                             val_time_window=None,
+                                             test_time_window=None,
                                              val_neg=None,
                                              test_neg=None,
                                              task_id=1,
@@ -2028,6 +2028,13 @@ def save_task_time_dependent_link_prediction(name,
             ]
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
+    # set default value
+    if train_time_window is None:
+        train_time_window = [0, 0]
+    if val_time_window is None:
+        val_time_window = [0, 0]
+    if test_time_window is None:
+        test_time_window = [0, 0]
     # Check the input arguments.
     assert isinstance(description, str), \
         "`description` must be a string."
@@ -2203,7 +2210,6 @@ def save_task_kg_entity_prediction(name,
 def save_task_kg_relation_prediction(name,
                                      description,
                                      feature,
-                                     target,
                                      train_triplet_set,
                                      val_triplet_set,
                                      test_triplet_set,
@@ -2312,7 +2318,6 @@ def save_task_kg_relation_prediction(name,
         "description": description,
         "type": task_type,
         "feature": feature,
-        "target": target,
         "num_relations": num_relations,
     }
     data_dict = {
