@@ -383,7 +383,6 @@ def test_save_task_kg_relation_prediction():
     with tempfile.TemporaryDirectory() as tmpdir:
         description_ = "A kg entity prediction task for the example dataset."
         feature_ = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
-        target_ = "Edge/EdgeClass"
         train_triplet_set = [0, 1]
         val_triplet_set = [2, 3]
         test_triplet_set = [4, 5]
@@ -393,7 +392,6 @@ def test_save_task_kg_relation_prediction():
             name="example_dataset",
             description=description_,
             feature=feature_,
-            target=target_,
             train_triplet_set=train_triplet_set,
             val_triplet_set=val_triplet_set,
             test_triplet_set=test_triplet_set,
@@ -407,7 +405,6 @@ def test_save_task_kg_relation_prediction():
         assert t.description == description_, \
             f"description should be {description_}"
         assert t.features == feature_, f"features should be {feature_}"
-        assert t.target == target_, f"target should be {target_}"
         assert t.split.get("train_set").tolist() == train_triplet_set, \
             f"train set should be {train_triplet_set}"
         assert t.split.get("val_set").tolist() == val_triplet_set, \
