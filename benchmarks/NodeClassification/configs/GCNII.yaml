@@ -1,0 +1,6 @@
+nlayers: 64
+nhidden: 64
+dropout: 0.6
+lamda: 0.5
+alpha: 0.1
+variant: False

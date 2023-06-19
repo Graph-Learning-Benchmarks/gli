@@ -29,6 +29,9 @@ from models.gcn_minibatch import GCNminibatch
 from models.graph_sage_minibatch import GraphSAGEminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
+from models.appnp import APPNP
+from models.gin import GIN
+from models.gcn2 import GCNII
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
 Datasets_need_to_be_undirected = [
@@ -122,6 +125,29 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       inner_dropout=model_cfg["inner_dropout"],
                       init_layers_A=model_cfg["init_layers_A"],
                       init_layers_X=model_cfg["init_layers_X"])
+    elif args.model == "APPNP":
+        model = APPNP(g=g,
+                      in_feats=in_feats,
+                      hiddens=model_cfg["hidden_sizes"],
+                      n_classes=n_classes,
+                      activation=F.relu,
+                      feat_drop=model_cfg["in_drop"],
+                      edge_drop=model_cfg["edge_drop"],
+                      alpha=model_cfg["alpha"],
+                      k=model_cfg["k"])
+    elif args.model == "GIN":
+        model = GIN(input_dim=in_feats,
+                    hidden_dim=model_cfg["hidden_dim"],
+                    output_dim=n_classes)
+    elif args.model == "GCNII":
+        model = GCNII(nfeat=in_feats,
+                      nlayers=model_cfg["nlayers"],
+                      nhidden=model_cfg["nhidden"],
+                      nclass=n_classes,
+                      dropout=model_cfg["dropout"],
+                      lamda=model_cfg["lamda"],
+                      alpha=model_cfg["alpha"],
+                      variant=model_cfg["variant"])
     try:
         model
     except UnboundLocalError as exc:

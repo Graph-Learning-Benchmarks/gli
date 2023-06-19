@@ -1,0 +1,5 @@
+in_drop: .5
+edge_drop: .5
+hidden_sizes: [64]
+k: 10
+alpha: .1
