@@ -16,6 +16,8 @@ python train.py --dataset <dataset> --model MoNet --model-cfg configs/MoNet.yaml
 python train.py --dataset <dataset> --model MixHop --model-cfg configs/MixHop.yaml
 python train.py --dataset <dataset> --model LINKX --model-cfg configs/LINKX.yaml --train-cfg configs/LINKX_train.yaml
 python train.py --dataset <dataset> --model TAGCN --model-cfg configs/TAGCN.yaml
+python train.py --dataset <dataset> --model GATv2 --model-cfg configs/GATv2.yaml
+python train.py --dataset <dataset> --model SGC --model-cfg configs/SGC.yaml
 
 
 # mini batch
