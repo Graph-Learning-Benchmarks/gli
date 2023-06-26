@@ -12,6 +12,7 @@ from dgl.nn.pytorch import GATv2Conv
 
 class GATv2(nn.Module):
     """GATv2 network."""
+
     def __init__(
         self,
         g,
@@ -48,13 +49,13 @@ class GATv2(nn.Module):
             )
         )
         # hidden layers
-        for l in range(1, num_layers):
+        for layer in range(1, num_layers):
             # due to multi-head, the in_dim = num_hidden * num_heads
             self.gatv2_layers.append(
                 GATv2Conv(
-                    num_hidden * heads[l - 1],
+                    num_hidden * heads[layer - 1],
                     num_hidden,
-                    heads[l],
+                    heads[layer],
                     feat_drop,
                     attn_drop,
                     negative_slope,
@@ -81,10 +82,10 @@ class GATv2(nn.Module):
         )
 
     def forward(self, inputs):
+        """Forward."""
         h = inputs
-        for l in range(self.num_layers):
-            h = self.gatv2_layers[l](self.g, h).flatten(1)
+        for layer in range(self.num_layers):
+            h = self.gatv2_layers[layer](self.g, h).flatten(1)
         # output projection
         logits = self.gatv2_layers[-1](self.g, h).mean(1)
         return logits
-    

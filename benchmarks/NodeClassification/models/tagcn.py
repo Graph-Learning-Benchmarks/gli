@@ -28,7 +28,10 @@ class TAGCN(nn.Module):
         self.g = g
         self.layers = nn.ModuleList()
         # input layer
-        self.layers.append(TAGConv(in_feats, n_hidden, k=k, activation=activation))
+        self.layers.append(TAGConv(in_feats,
+                                   n_hidden,
+                                   k=k,
+                                   activation=activation))
         # hidden layers
         for _ in range(n_layers - 1):
             self.layers.append(
