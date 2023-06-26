@@ -18,7 +18,8 @@ import torch
 from torch.utils.model_zoo import tqdm
 
 import gli.config
-from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE, SERVER_IP
+from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE,\
+    SERVER_IP
 
 
 def get_available_datasets():
@@ -293,19 +294,21 @@ def _find_data_files_from_json_files(data_dir):
 
     return data_files
 
-def _get_url_from_server(data_file:str):
-    """Get url for a specific data file from server."""
 
+def _get_url_from_server(data_file: str):
+    """Get url for a specific data file from server."""
     resp = requests.request("GET",
                             SERVER_IP +
                             "/api/get-url/" +
-                            data_file).json()
+                            data_file,
+                            timeout=5).json()
     if resp["message_type"] == "error":
         return None
     elif resp["message_type"] == "url":
         return resp["content"]
-    else :
+    else:
         return None
+
 
 def download_data(dataset: str, verbose=False):
     """Download dependent data of a configuration (metadata/task) file.
@@ -333,7 +336,7 @@ def download_data(dataset: str, verbose=False):
 
     # First, get urls from EC2
     data_file_url_dict = {}
-    flag = False # Whether all urls are retrieved from server
+    flag = False  # Whether all urls are retrieved from server
     for data_file in data_files:
         data_file_url_dict[data_file] = _get_url_from_server(data_file)
         if data_file_url_dict[data_file] is None:
@@ -347,7 +350,8 @@ def download_data(dataset: str, verbose=False):
                 url_dict = json.load(fp)
         else:
             # Thrid, try to download and check the global_urls.json file.
-            global_url_file = os.path.join(get_local_data_dir(), "global_urls.json")
+            global_url_file = os.path.join(
+                get_local_data_dir(), "global_urls.json")
             _download(GLOBAL_FILE_URL, global_url_file, verbose=verbose)
             if os.path.exists(global_url_file):
                 with open(global_url_file, "r", encoding="utf-8") as fp:
