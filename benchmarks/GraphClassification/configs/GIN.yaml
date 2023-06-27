@@ -1,0 +1,3 @@
+num_hidden: 16
+num_layers: 5
+dropout: .5

@@ -33,12 +33,11 @@ class MLP(nn.Module):
 class GIN(nn.Module):
     """GIN network."""
 
-    def __init__(self, input_dim, hidden_dim, output_dim):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers, dropout):
         """Initiate model."""
         super().__init__()
         self.ginlayers = nn.ModuleList()
         self.batch_norms = nn.ModuleList()
-        num_layers = 5
         # five-layer GCN with two-layer MLP aggregator
         # and sum-neighbor-pooling scheme
         for layer in range(num_layers - 1):
@@ -59,7 +58,7 @@ class GIN(nn.Module):
             else:
                 self.linear_prediction.append(nn.Linear(hidden_dim,
                                                         output_dim))
-        self.drop = nn.Dropout(0.5)
+        self.drop = nn.Dropout(dropout)
         # change to mean readout (AvgPooling) on social network datasets
         self.pool = SumPooling()
 

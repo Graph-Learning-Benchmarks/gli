@@ -135,11 +135,6 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       edge_drop=model_cfg["edge_drop"],
                       alpha=model_cfg["alpha"],
                       k=model_cfg["k"])
-    elif args.model == "GIN":
-        model = GIN(g=g,
-                    input_dim=in_feats,
-                    hidden_dim=model_cfg["hidden_dim"],
-                    output_dim=n_classes)
     try:
         model
     except UnboundLocalError as exc:
