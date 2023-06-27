@@ -33,7 +33,8 @@ from models.appnp import APPNP
 from models.gin import GIN
 from models.gcn2 import GCNII
 
-Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
+Models_need_to_be_densed = ["GCN", "GraphSAGE",
+                            "GAT", "MixHop", "LINKX", "APPNP", "GIN"]
 Datasets_need_to_be_undirected = [
     "pokec", "genius", "penn94", "twitch-gamers"]
 
@@ -136,18 +137,10 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       alpha=model_cfg["alpha"],
                       k=model_cfg["k"])
     elif args.model == "GIN":
-        model = GIN(input_dim=in_feats,
+        model = GIN(g=g,
+                    input_dim=in_feats,
                     hidden_dim=model_cfg["hidden_dim"],
                     output_dim=n_classes)
-    elif args.model == "GCNII":
-        model = GCNII(nfeat=in_feats,
-                      nlayers=model_cfg["nlayers"],
-                      nhidden=model_cfg["nhidden"],
-                      nclass=n_classes,
-                      dropout=model_cfg["dropout"],
-                      lamda=model_cfg["lamda"],
-                      alpha=model_cfg["alpha"],
-                      variant=model_cfg["variant"])
     try:
         model
     except UnboundLocalError as exc:

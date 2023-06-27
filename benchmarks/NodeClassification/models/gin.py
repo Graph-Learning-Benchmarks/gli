@@ -34,9 +34,10 @@ class MLP(nn.Module):
 class GIN(nn.Module):
     """GIN network."""
 
-    def __init__(self, input_dim, hidden_dim, output_dim):
+    def __init__(self, g, input_dim, hidden_dim, output_dim):
         """Init."""
         super().__init__()
+        self.g = g
         self.ginlayers = nn.ModuleList()
         self.batch_norms = nn.ModuleList()
         num_layers = 5
@@ -65,19 +66,19 @@ class GIN(nn.Module):
             SumPooling()
         )  # change to mean readout (AvgPooling) on social network datasets
 
-    def forward(self, g, h):
+    def forward(self, h):
         """Forward."""
         # list of hidden representation at each layer
         # (including the input layer)
         hidden_rep = [h]
         for i, layer in enumerate(self.ginlayers):
-            h = layer(g, h)
+            h = layer(self.g, h)
             h = self.batch_norms[i](h)
             h = F.relu(h)
             hidden_rep.append(h)
         score_over_layer = 0
         # perform graph sum pooling over all nodes in each layer
         for i, h_ in enumerate(hidden_rep):
-            pooled_h = self.pool(g, h_)
+            pooled_h = self.pool(self.g, h_)
             score_over_layer += self.drop(self.linear_prediction[i](pooled_h))
         return score_over_layer
