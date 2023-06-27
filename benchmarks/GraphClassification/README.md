@@ -10,6 +10,7 @@ Example commands to run the code:
 python train.py --dataset <dataset> --model GCN 
 python train.py --dataset <dataset> --model DGN --model-cfg configs/DGN.yaml
 python train.py --dataset <dataset> --model ChebNet --model-cfg configs/ChebNet.yaml
+python train.py --dataset <dataset> --model GIN --model-cfg configs/GIN.yaml
 ```
 
 One can provide a `yaml` file to arguments `--model-cfg` or `--train-cfg` respectively for model configuration or training configuration. If not provided, default configurations (see [model_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/GraphClassification/configs/model_default.yaml) and [train_default.yaml](https://github.com/Graph-Learning-Benchmarks/gli/blob/main/benchmarks/GraphClassification/configs/train_default.yaml)) will be used. 
