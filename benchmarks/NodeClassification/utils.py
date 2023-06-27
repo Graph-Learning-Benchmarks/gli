@@ -30,9 +30,10 @@ from models.graph_sage_minibatch import GraphSAGEminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
 from models.appnp import APPNP
+from models.gcn2 import GCNII
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE",
-                            "GAT", "MixHop", "LINKX", "APPNP", "GIN"]
+                            "GAT", "MixHop", "LINKX", "APPNP", "GCNII"]
 Datasets_need_to_be_undirected = [
     "pokec", "genius", "penn94", "twitch-gamers"]
 
@@ -134,6 +135,16 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       edge_drop=model_cfg["edge_drop"],
                       alpha=model_cfg["alpha"],
                       k=model_cfg["k"])
+    elif args.model == "GCNII":
+        model = GCNII(g=g,
+                      in_feats=in_feats,
+                      num_hidden=model_cfg["num_hidden"],
+                      n_classes=n_classes,
+                      num_layers=model_cfg["num_layers"],
+                      activation=F.relu,
+                      dropout=model_cfg["dropout"],
+                      lambda_=model_cfg["lambda_"],
+                      alpha=model_cfg["alpha"])
     try:
         model
     except UnboundLocalError as exc:

@@ -1,0 +1,5 @@
+num_hidden: 64
+num_layers: 64
+dropout: .6
+lambda_: .5
+alpha: .1

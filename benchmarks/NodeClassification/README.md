@@ -16,7 +16,7 @@ python train.py --dataset <dataset> --model MoNet --model-cfg configs/MoNet.yaml
 python train.py --dataset <dataset> --model MixHop --model-cfg configs/MixHop.yaml
 python train.py --dataset <dataset> --model LINKX --model-cfg configs/LINKX.yaml --train-cfg configs/LINKX_train.yaml
 python train.py --dataset <dataset> --model APPNP --model-cfg configs/APPNP.yaml
-python train.py --dataset <dataset> --model GIN --model-cfg configs/GIN.yaml
+python train.py --dataset <dataset> --model GCNII --model-cfg configs/GCNII.yaml
 
 # mini batch
 python train_minibatch.py --dataset <dataset> --model GCN_minibatch
@@ -45,7 +45,7 @@ The following list of models are supported by this benchmark.
 - `MixHop`
 - `LINKX`
 - `APPNP`
-- `GIN`
+- `GCNII`
 
 ### Mini batch
 
