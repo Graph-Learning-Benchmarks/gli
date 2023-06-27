@@ -30,7 +30,6 @@ from models.graph_sage_minibatch import GraphSAGEminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
 from models.appnp import APPNP
-from models.gin import GIN
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE",
                             "GAT", "MixHop", "LINKX", "APPNP", "GIN"]
