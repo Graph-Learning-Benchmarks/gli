@@ -29,14 +29,14 @@ class GraphSAGEminibatch(nn.Module):
 
         # input layer
         self.layers.append(SAGEConv(in_feats, n_hidden,
-                           aggregator_type, norm='none'))
+                           aggregator_type))
         # hidden layers
         for _ in range(n_layers - 2):
             self.layers.append(SAGEConv(n_hidden, n_hidden,
-                               aggregator_type, norm='none'))
+                               aggregator_type))
         # output layer
         self.layers.append(SAGEConv(n_hidden, n_classes,
-                           aggregator_type, norm='none'))
+                           aggregator_type))
 
     def forward(self, blocks, inputs):
         """Forward."""

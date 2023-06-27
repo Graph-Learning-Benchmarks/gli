@@ -20,7 +20,7 @@ python train.py --dataset <dataset> --model GIN --model-cfg configs/GIN.yaml
 
 # mini batch
 python train_minibatch.py --dataset <dataset> --model GCN_minibatch
-python train_minibatch.py --dataset <dataset> --model GraphSage_minibatch
+python train_minibatch.py --dataset <dataset> --model GraphSAGE_minibatch
 
 # GBDT
 python train_gbdt.py --dataset <dataset>  --model lightgbm
