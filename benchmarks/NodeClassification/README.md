@@ -15,9 +15,12 @@ python train.py --dataset <dataset> --model GraphSAGE --model-cfg configs/GraphS
 python train.py --dataset <dataset> --model MoNet --model-cfg configs/MoNet.yaml
 python train.py --dataset <dataset> --model MixHop --model-cfg configs/MixHop.yaml
 python train.py --dataset <dataset> --model LINKX --model-cfg configs/LINKX.yaml --train-cfg configs/LINKX_train.yaml
+python train.py --dataset <dataset> --model APPNP --model-cfg configs/APPNP.yaml
+python train.py --dataset <dataset> --model GIN --model-cfg configs/GIN.yaml
 
 # mini batch
 python train_minibatch.py --dataset <dataset> --model GCN_minibatch
+python train_minibatch.py --dataset <dataset> --model GraphSage_minibatch
 
 # GBDT
 python train_gbdt.py --dataset <dataset>  --model lightgbm
@@ -41,10 +44,13 @@ The following list of models are supported by this benchmark.
 - `MoNet`
 - `MixHop`
 - `LINKX`
+- `APPNP`
+- `GIN`
 
 ### Mini batch
 
 - `GCN_minibatch`
+- `GraphSage_minibatch`
 
 ### Gradient Boosting Decision Tree (GBDT)
 
