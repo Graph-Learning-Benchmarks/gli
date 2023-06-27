@@ -31,7 +31,6 @@ from models.mixhop import MixHop
 from models.linkx import LINKX
 from models.appnp import APPNP
 from models.gin import GIN
-from models.gcn2 import GCNII
 
 Models_need_to_be_densed = ["GCN", "GraphSAGE",
                             "GAT", "MixHop", "LINKX", "APPNP", "GIN"]
