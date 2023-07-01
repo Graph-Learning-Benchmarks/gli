@@ -28,8 +28,12 @@ from models.mlp import MLP
 from models.gcn_minibatch import GCNminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
+from models.tagcn import TAGCN
+from models.gatv2 import GATv2
+from models.sgc import SGC
 
-Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX"]
+Models_need_to_be_densed = ["GCN", "GraphSAGE",
+                            "GAT", "MixHop", "LINKX", "TAGCN", "GATv2", "SGC"]
 Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
 
 
@@ -112,6 +116,39 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       inner_dropout=model_cfg["inner_dropout"],
                       init_layers_A=model_cfg["init_layers_A"],
                       init_layers_X=model_cfg["init_layers_X"])
+    elif args.model == "TAGCN":
+        model = TAGCN(g,
+                      in_feats,
+                      model_cfg["num_hidden"],
+                      n_classes,
+                      model_cfg["num_layers"],
+                      model_cfg["k"],
+                      F.relu,
+                      model_cfg["dropout"]
+                      )
+    elif args.model == "GATv2":
+        heads = ([model_cfg["num_heads"]] * (model_cfg["num_layers"])
+                 ) + [model_cfg["num_out_heads"]]
+        model = GATv2(
+            g=g,
+            num_layers=model_cfg["num_layers"],
+            in_dim=in_feats,
+            num_hidden=model_cfg["num_hidden"],
+            num_classes=n_classes,
+            heads=heads,
+            activation=F.relu,
+            feat_drop=model_cfg["feat_drop"],
+            attn_drop=model_cfg["attn_drop"],
+            negative_slope=model_cfg["negative_slope"],
+            residual=model_cfg["residual"]
+        )
+    elif args.model == "SGC":
+        model = SGC(
+            g=g,
+            in_feats=in_feats,
+            n_classes=n_classes,
+            k=model_cfg["k"]
+        )
     try:
         model
     except UnboundLocalError as exc:
