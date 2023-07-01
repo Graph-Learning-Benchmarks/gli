@@ -163,3 +163,9 @@ docs/source/_build
 docs/html
 docs/doctrees
 docs/build
+
+# PyTorch model checkpoints
+**/checkpoints
+
+# Global URL
+**/global_urls.json
