@@ -1,6 +1,9 @@
 """
-[Simple and Deep Graph Convolutional Networks]
-(https://arxiv.org/abs/2007.02133)
+GCNII model in GLI.
+
+References:
+https://github.com/dmlc/dgl
+Pull request #5008
 """
 
 import math
@@ -10,7 +13,10 @@ from dgl.sparse import from_coo, diag, identity
 
 
 class GCNIIConvolution(nn.Module):
+    """GCNII Conv."""
+
     def __init__(self, in_size, out_size):
+        """Init."""
         super().__init__()
         self.out_size = out_size
         self.weight = nn.Linear(in_size, out_size, bias=False)
@@ -20,6 +26,7 @@ class GCNIIConvolution(nn.Module):
     # forward process.
     ############################################################################
     def forward(self, A_norm, H, H0, lamda, alpha, l):
+        """Forward."""
         beta = math.log(lamda / l + 1)
 
         # Multiply a sparse matrix by a dense matrix.
@@ -30,6 +37,8 @@ class GCNIIConvolution(nn.Module):
 
 
 class GCNII(nn.Module):
+    """GCNII network."""
+
     def __init__(
         self,
         g,
@@ -41,6 +50,7 @@ class GCNII(nn.Module):
         alpha,
         dropout=0.5,
     ):
+        """Init."""
         super().__init__()
         self.hidden_size = hidden_size
         self.n_layers = n_layers
@@ -62,16 +72,17 @@ class GCNII(nn.Module):
         N = g.num_nodes()
         A = from_coo(dst, src, shape=(N, N))
 
-        ############################################################################
+        #####################################################
         # (HIGHLIGHT) Compute the symmetrically normalized adjacency matrix with
         # Sparse Matrix API
-        ############################################################################
+        #####################################################
         I = identity(A.shape)
         A_hat = A + I
         D_hat = diag(A_hat.sum(1)) ** -0.5
         self.A_norm = D_hat @ A_hat @ D_hat
 
     def forward(self, feature):
+        """Fprward."""
         H = feature
         H = F.dropout(H, self.dropout, training=self.training)
         H = self.layers[0](H)
