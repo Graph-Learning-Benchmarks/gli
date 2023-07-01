@@ -81,6 +81,7 @@ def main():
     if train_cfg["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
+        
     # convert to undirected set
     if train_cfg["to_undirected"] or \
        args.dataset in Datasets_need_to_be_undirected:
@@ -130,7 +131,11 @@ def main():
         model = generate_model(args, g, in_feats, n_classes, **model_cfg)
         loss_fcn = nn.CrossEntropyLoss()
 
-    print(model)
+    if args.model == "GCNII":
+        print("GCNII … print(model) does not work properly")
+    else:
+        print(model)
+
     if cuda:
         model.cuda()
 
@@ -167,6 +172,7 @@ def main():
             if cuda:
                 torch.cuda.synchronize()
             t0 = time.time()
+
         # forward
         logits = model(features)
         loss = loss_fcn(logits[train_mask], labels[train_mask])

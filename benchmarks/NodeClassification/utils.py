@@ -137,14 +137,13 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                       k=model_cfg["k"])
     elif args.model == "GCNII":
         model = GCNII(g=g,
-                      in_feats=in_feats,
-                      num_hidden=model_cfg["num_hidden"],
-                      n_classes=n_classes,
-                      num_layers=model_cfg["num_layers"],
-                      activation=F.relu,
-                      dropout=model_cfg["dropout"],
+                      in_size=in_feats,
+                      out_size=n_classes,
+                      hidden_size=model_cfg["num_hidden"],
+                      n_layers=model_cfg["num_layers"],
                       lambda_=model_cfg["lambda_"],
-                      alpha=model_cfg["alpha"])
+                      alpha=model_cfg["alpha"],
+                      dropout=model_cfg["dropout"])
     try:
         model
     except UnboundLocalError as exc:
