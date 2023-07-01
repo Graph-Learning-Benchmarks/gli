@@ -336,13 +336,13 @@ def download_data(dataset: str, verbose=False):
 
     # First, get urls from EC2
     data_file_url_dict = {}
-    flag = False  # Whether all urls are retrieved from server
+    url_retrieval_success = True  # Whether all urls are retrieved from server
     for data_file in data_files:
         data_file_url_dict[data_file] = _get_url_from_server(data_file)
         if data_file_url_dict[data_file] is None:
-            flag = True
+            url_retrieval_success = False
 
-    if flag:
+    if not url_retrieval_success:
         # Second, check the local urls.json file.
         url_file = os.path.join(data_dir, "urls.json")
         if os.path.exists(url_file):
