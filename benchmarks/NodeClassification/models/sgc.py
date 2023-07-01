@@ -1,5 +1,5 @@
 """
-SGConv mode in GLI.
+SGConv model in GLI.
 
 References:
 https://docs.dgl.ai/generated/dgl.nn.pytorch.conv.SGConv.html

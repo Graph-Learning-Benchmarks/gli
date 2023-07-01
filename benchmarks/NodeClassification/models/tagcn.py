@@ -1,5 +1,5 @@
 """
-TAGCN mode in GLI.
+TAGCN model in GLI.
 
 References:
 https://docs.dgl.ai/generated/dgl.nn.pytorch.conv.TAGConv.html

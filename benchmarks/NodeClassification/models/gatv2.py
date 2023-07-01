@@ -1,5 +1,5 @@
 """
-GATv2 mode in GLI.
+GATv2 model in GLI.
 
 References:
 https://docs.dgl.ai/generated/dgl.nn.pytorch.conv.GATv2Conv.html
