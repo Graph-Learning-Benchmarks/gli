@@ -18,7 +18,8 @@ import torch
 from torch.utils.model_zoo import tqdm
 
 import gli.config
-from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE
+from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE,\
+    SERVER_IP
 
 
 def get_available_datasets():
@@ -294,6 +295,21 @@ def _find_data_files_from_json_files(data_dir):
     return data_files
 
 
+def _get_url_from_server(data_file: str):
+    """Get url for a specific data file from server."""
+    resp = requests.request("GET",
+                            SERVER_IP +
+                            "/api/get-url/" +
+                            data_file,
+                            timeout=5).json()
+    if resp["message_type"] == "error":
+        return None
+    elif resp["message_type"] == "url":
+        return resp["content"]
+    else:
+        return None
+
+
 def download_data(dataset: str, verbose=False):
     """Download dependent data of a configuration (metadata/task) file.
 
@@ -318,28 +334,36 @@ def download_data(dataset: str, verbose=False):
             print("All data files already exist. Skip downloading.")
         return
 
-    # First, check the local urls.json file.
-    url_file = os.path.join(data_dir, "urls.json")
-    if os.path.exists(url_file):
-        with open(url_file, "r", encoding="utf-8") as fp:
-            url_dict = json.load(fp)
-    else:
-        # Second, try to download and check the global_urls.json file.
-        global_url_file = os.path.join(data_dir, "global_urls.json")
-        _download(GLOBAL_FILE_URL, global_url_file, verbose=verbose)
-        if os.path.exists(global_url_file):
-            with open(global_url_file, "r", encoding="utf-8") as fp:
+    # First, get urls from EC2
+    data_file_url_dict = {}
+    url_retrieval_success = True  # Whether all urls are retrieved from server
+    for data_file in data_files:
+        data_file_url_dict[data_file] = _get_url_from_server(data_file)
+        if data_file_url_dict[data_file] is None:
+            url_retrieval_success = False
+
+    if not url_retrieval_success:
+        # Second, check the local urls.json file.
+        url_file = os.path.join(data_dir, "urls.json")
+        if os.path.exists(url_file):
+            with open(url_file, "r", encoding="utf-8") as fp:
                 url_dict = json.load(fp)
         else:
-            raise FileNotFoundError("cannot find urls.json and failed to "
-                                    "download global_urls.json.")
+            # Thrid, try to download and check the global_urls.json file.
+            global_url_file = os.path.join(
+                get_local_data_dir(), "global_urls.json")
+            _download(GLOBAL_FILE_URL, global_url_file, verbose=verbose)
+            if os.path.exists(global_url_file):
+                with open(global_url_file, "r", encoding="utf-8") as fp:
+                    url_dict = json.load(fp)
 
     # Get urls for all required data files.
-    data_file_url_dict = {}
     for data_file in data_files:
-        if data_file not in url_dict:
-            raise ValueError(f"cannot find url for {data_file}.")
-        data_file_url_dict[data_file] = url_dict[data_file]
+        if data_file not in data_file_url_dict:
+            if data_file in url_dict[data_file]:
+                data_file_url_dict[data_file] = url_dict[data_file]
+            else:
+                raise FileNotFoundError(f"cannot find url for {data_file}.")
 
     for data_file_name, url in data_file_url_dict.items():
         data_file_path = os.path.join(data_dir, data_file_name)

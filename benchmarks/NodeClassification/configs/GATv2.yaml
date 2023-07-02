@@ -1,0 +1,8 @@
+num_layers: 1
+num_hidden: 8
+num_heads: 8
+num_out_heads: 2
+residual: False
+feat_drop: .7
+attn_drop: .7
+negative_slope: .2
