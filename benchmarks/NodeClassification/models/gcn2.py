@@ -25,9 +25,9 @@ class GCNIIConvolution(nn.Module):
     # (HIGHLIGHT) Take the advantage of DGL sparse APIs to implement the GCNII
     # forward process.
     ###########################################################################
-    def forward(self, a_norm, h, h0, lamda, alpha, l):
+    def forward(self, a_norm, h, h0, lamda, alpha, index):
         """Forward."""
-        beta = math.log(lamda / l + 1)
+        beta = math.log(lamda / index + 1)
 
         # Multiply a sparse matrix by a dense matrix.
         h = a_norm @ h
