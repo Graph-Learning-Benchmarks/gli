@@ -7,7 +7,7 @@ Pull request #5008
 """
 
 import math
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
 from dgl.sparse import from_coo, diag, identity
 
@@ -21,19 +21,19 @@ class GCNIIConvolution(nn.Module):
         self.out_size = out_size
         self.weight = nn.Linear(in_size, out_size, bias=False)
 
-    ############################################################################
+    ###########################################################################
     # (HIGHLIGHT) Take the advantage of DGL sparse APIs to implement the GCNII
     # forward process.
-    ############################################################################
-    def forward(self, A_norm, H, H0, lamda, alpha, l):
+    ###########################################################################
+    def forward(self, a_norm, h, h0, lamda, alpha, l):
         """Forward."""
         beta = math.log(lamda / l + 1)
 
         # Multiply a sparse matrix by a dense matrix.
-        H = A_norm @ H
-        H = (1 - alpha) * H + alpha * H0
-        H = (1 - beta) * H + beta * self.weight(H)
-        return H
+        h = a_norm @ h
+        h = (1 - alpha) * h + alpha * h0
+        h = (1 - beta) * h + beta * self.weight(h)
+        return h
 
 
 class GCNII(nn.Module):
@@ -69,33 +69,33 @@ class GCNII(nn.Module):
 
         # Create the adjacency matrix of graph.
         src, dst = g.edges()
-        N = g.num_nodes()
-        A = from_coo(dst, src, shape=(N, N))
+        n = g.num_nodes()
+        a = from_coo(dst, src, shape=(n, n))
 
         #####################################################
-        # (HIGHLIGHT) Compute the symmetrically normalized adjacency matrix with
-        # Sparse Matrix API
+        # (HIGHLIGHT) Compute the symmetrically normalized adjacency matrix
+        # with Sparse Matrix API
         #####################################################
-        I = identity(A.shape)
-        A_hat = A + I
-        D_hat = diag(A_hat.sum(1)) ** -0.5
-        self.A_norm = D_hat @ A_hat @ D_hat
+        i = identity(a.shape)
+        a_hat = a + i
+        d_hat = diag(a_hat.sum(1)) ** -0.5
+        self.a_norm = d_hat @ a_hat @ d_hat
 
     def forward(self, feature):
         """Fprward."""
-        H = feature
-        H = F.dropout(H, self.dropout, training=self.training)
-        H = self.layers[0](H)
-        H = self.activation(H)
-        H0 = H
+        h = feature
+        h = F.dropout(h, self.dropout, training=self.training)
+        h = self.layers[0](h)
+        h = self.activation(h)
+        h0 = h
 
         # The GCNII convolution forward.
         for i, conv in enumerate(self.layers[1:-1]):
-            H = F.dropout(H, self.dropout, training=self.training)
-            H = conv(self.A_norm, H, H0, self.lambda_, self.alpha, i + 1)
-            H = self.activation(H)
+            h = F.dropout(h, self.dropout, training=self.training)
+            h = conv(self.a_norm, h, h0, self.lambda_, self.alpha, i + 1)
+            h = self.activation(h)
 
-        H = F.dropout(H, self.dropout, training=self.training)
-        H = self.layers[-1](H)
+        h = F.dropout(h, self.dropout, training=self.training)
+        h = self.layers[-1](h)
 
-        return H
+        return h
