@@ -26,14 +26,17 @@ from models.monet import MoNet
 from models.graph_sage import GraphSAGE
 from models.mlp import MLP
 from models.gcn_minibatch import GCNminibatch
+from models.graph_sage_minibatch import GraphSAGEminibatch
 from models.mixhop import MixHop
 from models.linkx import LINKX
 from models.tagcn import TAGCN
 from models.gatv2 import GATv2
 from models.sgc import SGC
+from models.appnp import APPNP
+from models.gcn2 import GCNII
 
-Models_need_to_be_densed = ["GCN", "GraphSAGE",
-                            "GAT", "MixHop", "LINKX", "TAGCN", "GATv2", "SGC"]
+Models_need_to_be_densed = ["GCN", "GraphSAGE", "GAT", "MixHop", "LINKX",
+                            "TAGCN", "GATv2", "SGC", "APPNP", "GCNII"]
 Datasets_need_to_be_undirected = ["pokec", "genius", "penn94", "twitch-gamers"]
 
 
@@ -50,7 +53,7 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                     dropout=model_cfg["dropout"])
     elif args.model == "GAT":
         heads = ([model_cfg["num_heads"]] * (model_cfg["num_layers"]))\
-                + [model_cfg["num_out_heads"]]
+            + [model_cfg["num_out_heads"]]
         model = GAT(g,
                     model_cfg["num_layers"],
                     in_feats,
@@ -94,6 +97,14 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
                              model_cfg["num_layers"],
                              F.relu,
                              model_cfg["dropout"])
+    elif args.model == "GraphSAGE_minibatch":
+        model = GraphSAGEminibatch(in_feats,
+                                   model_cfg["num_hidden"],
+                                   n_classes,
+                                   model_cfg["num_layers"],
+                                   F.relu,
+                                   model_cfg["dropout"],
+                                   model_cfg["aggregator_type"])
     elif args.model == "MixHop":
         model = MixHop(g,
                        in_dim=in_feats,
@@ -149,6 +160,25 @@ def generate_model(args, g, in_feats, n_classes, **model_cfg):
             n_classes=n_classes,
             k=model_cfg["k"]
         )
+    elif args.model == "APPNP":
+        model = APPNP(g=g,
+                      in_feats=in_feats,
+                      hiddens=model_cfg["hidden_sizes"],
+                      n_classes=n_classes,
+                      activation=F.relu,
+                      feat_drop=model_cfg["in_drop"],
+                      edge_drop=model_cfg["edge_drop"],
+                      alpha=model_cfg["alpha"],
+                      k=model_cfg["k"])
+    elif args.model == "GCNII":
+        model = GCNII(g=g,
+                      in_size=in_feats,
+                      out_size=n_classes,
+                      hidden_size=model_cfg["num_hidden"],
+                      n_layers=model_cfg["num_layers"],
+                      lambda_=model_cfg["lambda_"],
+                      alpha=model_cfg["alpha"],
+                      dropout=model_cfg["dropout"])
     try:
         model
     except UnboundLocalError as exc:
@@ -278,7 +308,8 @@ def eval_rocauc(y_pred, y_true):
     if len(y_true.shape) > 1:
         if y_true.shape[1] == 1:
             # use the predicted class for single-class classification
-            y_pred = F.softmax(y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
+            y_pred = F.softmax(
+                y_pred, dim=-1)[:, 1].unsqueeze(1).cpu().numpy()
         else:
             y_pred = y_pred.detach().cpu().numpy()
 

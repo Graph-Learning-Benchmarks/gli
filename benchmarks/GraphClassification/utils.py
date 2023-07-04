@@ -32,7 +32,9 @@ def generate_model(args, in_feats, n_classes, **model_cfg):
     if args.model == "GIN":
         model = GIN(in_feats,
                     model_cfg["num_hidden"],
-                    n_classes)
+                    n_classes,
+                    model_cfg["num_layers"],
+                    model_cfg["dropout"])
     elif args.model == "GCN":
         model = GCNgraph(in_feats,
                          model_cfg["num_hidden"],

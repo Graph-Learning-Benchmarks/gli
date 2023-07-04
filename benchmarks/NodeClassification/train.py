@@ -15,10 +15,10 @@ import numpy as np
 import dgl
 import gli
 from utils import generate_model, parse_args, Models_need_to_be_densed,\
-                  load_config_file, check_multiple_split,\
-                  EarlyStopping, set_seed, check_binary_classification,\
-                  eval_rocauc, Datasets_need_to_be_undirected,\
-                  get_label_number
+    load_config_file, check_multiple_split,\
+    EarlyStopping, set_seed, check_binary_classification,\
+    eval_rocauc, Datasets_need_to_be_undirected,\
+    get_label_number
 from gli.utils import to_dense
 
 
@@ -81,6 +81,7 @@ def main():
     if train_cfg["self_loop"]:
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
+
     # convert to undirected set
     if train_cfg["to_undirected"] or \
        args.dataset in Datasets_need_to_be_undirected:
@@ -131,6 +132,7 @@ def main():
         loss_fcn = nn.CrossEntropyLoss()
 
     print(model)
+
     if cuda:
         model.cuda()
 
@@ -167,6 +169,7 @@ def main():
             if cuda:
                 torch.cuda.synchronize()
             t0 = time.time()
+
         # forward
         logits = model(features)
         loss = loss_fcn(logits[train_mask], labels[train_mask])
