@@ -131,10 +131,7 @@ def main():
         model = generate_model(args, g, in_feats, n_classes, **model_cfg)
         loss_fcn = nn.CrossEntropyLoss()
 
-    if args.model == "GCNII":
-        print("GCNII … print(model) does not work properly")
-    else:
-        print(model)
+    print(model)
 
     if cuda:
         model.cuda()
