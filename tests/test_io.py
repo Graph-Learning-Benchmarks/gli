@@ -321,9 +321,9 @@ def test_save_task_time_dependent_link_prediction():
                 example dataset."
     feature_ = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
     time_ = "Edge/EdgeYear"
-    train_time_window_ = [1,2]
-    val_time_window_ = [3,4]
-    test_time_window_ = [5,6]
+    train_time_window_ = [1, 2]
+    val_time_window_ = [3, 4]
+    test_time_window_ = [5, 6]
     with tempfile.TemporaryDirectory() as tmpdir:
         gli.io.save_task_time_dependent_link_prediction(
             name="example_dataset",
