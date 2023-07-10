@@ -1099,9 +1099,6 @@ def _save_task_reg_or_cls(task_type,
             "`num_classes` must be None for regression tasks."
     else:
         raise NotImplementedError(f"Task type {task_type} is not supported.")
-    if task_type in ("GraphClassification", "GraphRegression"):
-        assert target.startswith("Graph/"), \
-            "`target` must be a node attribute."
     if task_type == "GraphClassification":
         task_str = "graph_classification"
     elif task_type == "GraphRegression":
@@ -1503,25 +1500,25 @@ def save_task_graph_regression(name,
         metadata.json file.
     :type feature: list of str
     :param target: The attribute name as prediction target in the task. For
-        this node regression task, the attribute should be a node attribute.
+        this graph regression task, the attribute should be a node attribute.
         For homogeneous graphs, the attribute name should be in the format of
         "Graph/{graph_attr_name}". For heterogeneous graphs, the attribute name
         should be in the format of "Graph/{graph_type}/{graph_attr_name}". The
         graph_attr_name and the graph_type should be the ones declared in the
         metadata.json file.
     :type target: str
-    :param train_set: A list of training node IDs or a list of list training
-        node IDs. In the latter case, each inner list is the node IDs of one
+    :param train_set: A list of training graph IDs or a list of list training
+        graph IDs. In the latter case, each inner list is the graph IDs of one
         data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
         will be ignored while `val_set` and `test_set` must present. If None,
         the task json file will store `train_ratio`, `val_ratio`, and
         `test_ratio` and random splits will be generated at run time. Default:
         None.
     :type train_set: list/array of int or list of lists/2-d array of int
-    :param val_set: A list of validation node IDs or a list of list validation
-        node IDs. See `train_set` for more details. Default: None.
+    :param val_set: A list of validation graph IDs or a list of list validation
+        graph IDs. See `train_set` for more details. Default: None.
     :type val_set: list/array of int or list of lists/2-d array of int
-    :param test_set: A list of test node IDs or a list of list test node IDs.
+    :param test_set: A list of test graph IDs or a list of list test graph IDs.
         See `train_set` for more details. Default: None.
     :type test_set: list/array of int or list of lists/2-d array of int
     :param train_ratio: The ratio of training nodes. See `train_set` for more
@@ -1672,18 +1669,18 @@ def save_task_graph_classification(name,
     :type target: str
     :param num_classes: The number of classes in the task.
     :type num_classes: int
-    :param train_set: A list of training node IDs or a list of list training
-        node IDs. In the latter case, each inner list is the node IDs of one
+    :param train_set: A list of training graph IDs or a list of list training
+        graph IDs. In the latter case, each inner list is the graph IDs of one
         data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
         will be ignored while `val_set` and `test_set` must present. If None,
         the task json file will store `train_ratio`, `val_ratio`, and
         `test_ratio` and random splits will be generated at run time. Default:
         None.
     :type train_set: list/array of int or list of lists/2-d array of int
-    :param val_set: A list of validation node IDs or a list of list validation
-        node IDs. See `train_set` for more details. Default: None.
+    :param val_set: A list of validation graph IDs or a list of list validation
+        graph IDs. See `train_set` for more details. Default: None.
     :type val_set: list/array of int or list of lists/2-d array of int
-    :param test_set: A list of test node IDs or a list of list test node IDs.
+    :param test_set: A list of test graph IDs or a list of list test graph IDs.
         See `train_set` for more details. Default: None.
     :type test_set: list/array of int or list of lists/2-d array of int
     :param train_ratio: The ratio of training nodes. See `train_set` for more
@@ -1823,13 +1820,13 @@ def save_task_link_prediction(name,
         and the node/edge/graph_type should be the ones declared in the
         metadata.json file.
     :type feature: list of str
-    :param train_set: A list of training node IDs or a list of list training
-        node IDs. 
+    :param train_set: A list of training edge IDs or a list of list training
+        edge IDs. 
     :type train_set: list/array of int or list of lists/2-d array of int
-    :param val_set: A list of validation node IDs or a list of list validation
-        node IDs. 
+    :param val_set: A list of validation edge IDs or a list of list validation
+        edge IDs. 
     :type val_set: list/array of int or list of lists/2-d array of int
-    :param test_set: A list of test node IDs or a list of list test node IDs.
+    :param test_set: A list of test edge IDs or a list of list test edge IDs.
     :type test_set: list/array of int or list of lists/2-d array of int
     :param val_neg: Negative samples of edges to validate. Default: None.
     :type val_neg: list/array of int or list of lists/2-d array of int
@@ -1933,9 +1930,9 @@ def save_task_time_dependent_link_prediction(name,
                                              description,
                                              feature,
                                              time,
-                                             train_time_window=None,
-                                             val_time_window=None,
-                                             test_time_window=None,
+                                             train_time_window,
+                                             val_time_window,
+                                             test_time_window,
                                              val_neg=None,
                                              test_neg=None,
                                              task_id=1,
@@ -1957,14 +1954,14 @@ def save_task_time_dependent_link_prediction(name,
         and the node/edge/graph_type should be the ones declared in the
         metadata.json file.
     :type feature: list of str
-    :param time: The time attribute that indicates edge order in the format of "Edge/{time_type}"
+    :param time: The time attribute that indicates edge order in the format of "Edge/{edge_attr_name}"
     :type time: str
-    :param train_time_window: Training time window (left inclusive and right exclusive). Default: [0, 0].
-    :type train_time_window: list of two int
-    :param val_time_window: Validation time window (left inclusive and right exclusive). Default: [0, 0].
-    :type val_time_window: list of two int
-    :param test_time_window: Testing time window (left inclusive and right exclusive). Default: [0, 0].
-    :type test_time_window: list of two int
+    :param train_time_window: Training time window (left inclusive and right exclusive).
+    :type train_time_window: list of two float
+    :param val_time_window: Validation time window (left inclusive and right exclusive).
+    :type val_time_window: list of two float
+    :param test_time_window: Testing time window (left inclusive and right exclusive).
+    :type test_time_window: list of two float
     :param val_neg: Negative samples of edges to validate. Default: None.
     :type val_neg: list/array of int or list of lists/2-d array of int
     :param test_neg: Negative samples of edges to test. Default: None.
@@ -1998,7 +1995,7 @@ def save_task_time_dependent_link_prediction(name,
             name="example_dataset",
             description="A time dependent link prediction task for the example dataset.",
             feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
-            time="Edge/EdgeYear")
+            time="Edge/EdgeYear",train_time_window=[1,2],val_time_window=[3,4],test_time_window[5,6],)
         # This function will save the task information into a json file named
         # `task_node_classification_1.json` and one numpy data file storing the
         # data splits, `train_set`, `val_set`, and `test_set`. The json file
@@ -2015,26 +2012,19 @@ def save_task_time_dependent_link_prediction(name,
             ],
             "time": "Edge/EdgeYear",
             "train_time_window": [
-                0,
-                0
+                1,
+                2
             ],
             "val_time_window": [
-                0,
-                0
+                3,
+                4
             ],
             "test_time_window": [
-                0,
-                0
+                5,
+                6
             ]
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
-    # set default value
-    if train_time_window is None:
-        train_time_window = [0, 0]
-    if val_time_window is None:
-        val_time_window = [0, 0]
-    if test_time_window is None:
-        test_time_window = [0, 0]
     # Check the input arguments.
     assert isinstance(description, str), \
         "`description` must be a string."
@@ -2049,6 +2039,27 @@ def save_task_time_dependent_link_prediction(name,
         "`val_time_window` must be a list."
     assert isinstance(test_time_window, list), \
         "`test_time_window` must be a list."
+    assert len(train_time_window) == 2, \
+        "`train_time_window` must be a list of 2."
+    assert len(val_time_window) == 2, \
+        "`val_time_window` must be a list of 2."
+    assert len(test_time_window) == 2, \
+        "`test_time_window` must be a list of 2."
+    assert isinstance(train_time_window[0], float) \
+        and isinstance(train_time_window[1], float), \
+        "`train_time_window` must be a list of numbers."
+    assert isinstance(val_time_window[0], float) \
+        and isinstance(val_time_window[1], float), \
+        "`val_time_window` must be a list of numbers."
+    assert isinstance(test_time_window[0], float) \
+        and isinstance(test_time_window[1], float), \
+        "`test_time_window` must be a list of numbers."
+    assert train_time_window[0] < train_time_window[1], \
+        "`train_time_window` must not overlap."
+    assert val_time_window[0] < val_time_window[1], \
+        "`val_time_window` must not overlap."
+    assert test_time_window[0] < test_time_window[1], \
+        "`test_time_window` must not overlap."
     task_type = "TimeDependentLinkPrediction"
     task_str = "time_dependent_link_prediction"
     task_dict = {
@@ -2086,6 +2097,7 @@ def save_task_kg_entity_prediction(name,
                                    val_triplet_set,
                                    test_triplet_set,
                                    num_relations=0,
+                                   predict_tail=True,
                                    task_id=1,
                                    save_dir="."):
     """Save the kg entity prediction task information into task json and data files.
@@ -2210,6 +2222,7 @@ def save_task_kg_entity_prediction(name,
 def save_task_kg_relation_prediction(name,
                                      description,
                                      feature,
+                                     target,
                                      train_triplet_set,
                                      val_triplet_set,
                                      test_triplet_set,
@@ -2310,6 +2323,8 @@ def save_task_kg_relation_prediction(name,
     """  # noqa: E501,E262  #pylint: disable=line-too-long
     assert isinstance(description, str), \
         "`description` must be a string."
+    assert isinstance(target, str), \
+        "`target` must be a string."
     _check_feature(feature)
     task_type = "KGRelationPrediction"
     task_str = "kg_relation_prediction"

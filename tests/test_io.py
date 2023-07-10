@@ -321,12 +321,18 @@ def test_save_task_time_dependent_link_prediction():
                 example dataset."
     feature_ = ["Node/DenseNodeFeature", "Node/SparseNodeFeature"]
     time_ = "Edge/EdgeYear"
+    train_time_window_ = [1,2]
+    val_time_window_ = [3,4]
+    test_time_window_ = [5,6]
     with tempfile.TemporaryDirectory() as tmpdir:
         gli.io.save_task_time_dependent_link_prediction(
             name="example_dataset",
             description=description_,
             feature=feature_,
             time="Edge/EdgeYear",
+            train_time_window=train_time_window_,
+            val_time_window=val_time_window_,
+            test_time_window=test_time_window_,
             task_id=1,
             save_dir=tmpdir)
 
@@ -339,6 +345,18 @@ def test_save_task_time_dependent_link_prediction():
             f"description should be {description_}"
         assert t.features == feature_, f"features should be {feature_}"
         assert t.time == time_, f"time should be {time_}"
+        assert t.train_time_window[0] == train_time_window_[0], \
+            f"train_time_window should be {train_time_window_}"
+        assert t.train_time_window[1] == train_time_window_[1], \
+            f"train_time_window should be {train_time_window_}"
+        assert t.val_time_window[0] == val_time_window_[0], \
+            f"val_time_window should be {val_time_window_}"
+        assert t.val_time_window[1] == val_time_window_[1], \
+            f"val_time_window should be {val_time_window_}"
+        assert t.val_time_window[0] == val_time_window_[0], \
+            f"val_time_window should be {val_time_window_}"
+        assert t.val_time_window[1] == val_time_window_[1], \
+            f"val_time_window should be {val_time_window_}"
 
 
 def test_save_task_kg_entity_prediction():
@@ -386,12 +404,14 @@ def test_save_task_kg_relation_prediction():
         train_triplet_set = [0, 1]
         val_triplet_set = [2, 3]
         test_triplet_set = [4, 5]
+        target_ = "Edge/EdgeClass"
 
         # Save the task information.
         gli.io.save_task_kg_relation_prediction(
             name="example_dataset",
             description=description_,
             feature=feature_,
+            target=target_,
             train_triplet_set=train_triplet_set,
             val_triplet_set=val_triplet_set,
             test_triplet_set=test_triplet_set,
@@ -405,6 +425,7 @@ def test_save_task_kg_relation_prediction():
         assert t.description == description_, \
             f"description should be {description_}"
         assert t.features == feature_, f"features should be {feature_}"
+        assert t.target == target_, f"target should be {target_}"
         assert t.split.get("train_set").tolist() == train_triplet_set, \
             f"train set should be {train_triplet_set}"
         assert t.split.get("val_set").tolist() == val_triplet_set, \
