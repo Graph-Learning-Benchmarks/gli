@@ -251,6 +251,7 @@ class KGEntityPredictionTask(GLITask):
         # REVIEW - only supports runtime sampling for now
         self.sample_runtime = True
         self.num_relations = task_dict["num_relations"]
+        self.predict_tail = task_dict["predict_tail"]
         super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
@@ -270,6 +271,7 @@ class KGRelationPredictionTask(GLITask):
         # REVIEW - only supports runtime sampling for now
         self.sample_runtime = True
         self.num_relations = task_dict["num_relations"]
+        self.target = task_dict["target"]
         super().__init__(task_dict, pwd, device)
 
     def _load(self, task_dict):
