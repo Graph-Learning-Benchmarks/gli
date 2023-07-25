@@ -359,8 +359,9 @@ def download_data(dataset: str, verbose=False):
 
     # Get urls for all required data files.
     for data_file in data_files:
-        if data_file not in data_file_url_dict:
-            if data_file in url_dict[data_file]:
+        if data_file not in data_file_url_dict \
+                or data_file_url_dict[data_file] is None:
+            if data_file in url_dict:
                 data_file_url_dict[data_file] = url_dict[data_file]
             else:
                 raise FileNotFoundError(f"cannot find url for {data_file}.")
