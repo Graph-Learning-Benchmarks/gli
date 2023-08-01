@@ -182,7 +182,6 @@ def test_save_single_heterograph():
         metadata_path = os.path.join(tmpdir, "metadata.json")
         g = gli.graph.read_gli_graph(metadata_path)
 
-        print(g)
         assert g.num_nodes() == 8, "The number of nodes should be 8."
         assert g.num_nodes("user") == 3, \
             "The number of user nodes should be 3."
@@ -345,17 +344,17 @@ def test_save_task_time_dependent_link_prediction():
             f"description should be {description_}"
         assert t.features == feature_, f"features should be {feature_}"
         assert t.time == time_, f"time should be {time_}"
-        assert t.train_time_window[0] == train_time_window_[0], \
+        assert t.time_window['train_time_window'][0] == train_time_window_[0], \
+            f"train_time_window should be {train_time_window_[0]}"
+        assert t.time_window['train_time_window'][1] == train_time_window_[1], \
             f"train_time_window should be {train_time_window_}"
-        assert t.train_time_window[1] == train_time_window_[1], \
-            f"train_time_window should be {train_time_window_}"
-        assert t.val_time_window[0] == val_time_window_[0], \
+        assert t.time_window['val_time_window'][0] == val_time_window_[0], \
             f"val_time_window should be {val_time_window_}"
-        assert t.val_time_window[1] == val_time_window_[1], \
+        assert t.time_window['val_time_window'][1] == val_time_window_[1], \
             f"val_time_window should be {val_time_window_}"
-        assert t.val_time_window[0] == val_time_window_[0], \
+        assert t.time_window['val_time_window'][0] == val_time_window_[0], \
             f"val_time_window should be {val_time_window_}"
-        assert t.val_time_window[1] == val_time_window_[1], \
+        assert t.time_window['val_time_window'][1] == val_time_window_[1], \
             f"val_time_window should be {val_time_window_}"
 
 
@@ -432,3 +431,6 @@ def test_save_task_kg_relation_prediction():
             f"val set should be {val_triplet_set}"
         assert t.split.get("test_set").tolist() == test_triplet_set, \
             f"test set should be {test_triplet_set}"
+
+if __name__ == '__main__':
+    test_save_task_time_dependent_link_prediction()
