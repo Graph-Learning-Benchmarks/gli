@@ -1099,14 +1099,6 @@ def _save_task_reg_or_cls(task_type,
             "`num_classes` must be None for regression tasks."
     else:
         raise NotImplementedError(f"Task type {task_type} is not supported.")
-    if task_type == "GraphClassification":
-        task_str = "graph_classification"
-    elif task_type == "GraphRegression":
-        task_str = "graph_regression"
-        assert num_classes is None, \
-            "`num_classes` must be None for regression tasks."
-    else:
-        raise NotImplementedError(f"Task type {task_type} is not supported.")
     # Create the dictionary for task json file.
     task_dict = {
         "description": description,
