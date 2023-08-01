@@ -433,3 +433,4 @@ def test_save_task_kg_relation_prediction():
             f"val set should be {val_triplet_set}"
         assert t.split.get("test_set").tolist() == test_triplet_set, \
             f"test set should be {test_triplet_set}"
+        
