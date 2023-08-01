@@ -2046,19 +2046,19 @@ def save_task_time_dependent_link_prediction(name,
     assert len(test_time_window) == 2, \
         "`test_time_window` must be a list of 2."
     # print("train_time_window[0]: ", train_time_window[0])
-    assert (isinstance(train_time_window[0], float) \
+    assert (isinstance(train_time_window[0], float)
              or isinstance(train_time_window[0], int)) \
-        and (isinstance(train_time_window[1], float) \
+        and (isinstance(train_time_window[1], float)
             or isinstance(train_time_window[1], int)), \
         "`train_time_window` must be a list of numbers."
-    assert (isinstance(val_time_window[0], float) \
+    assert (isinstance(val_time_window[0], float)
             or isinstance(val_time_window[0], int)) \
-        and (isinstance(val_time_window[1], float) \
+        and (isinstance(val_time_window[1], float)
              or isinstance(val_time_window[1], int)), \
         "`val_time_window` must be a list of numbers."
-    assert (isinstance(test_time_window[0], float) \
+    assert (isinstance(test_time_window[0], float)
             or isinstance(test_time_window[0], int)) \
-        and (isinstance(test_time_window[1], float) \
+        and (isinstance(test_time_window[1], float)
              or isinstance(test_time_window[1], int)), \
         "`test_time_window` must be a list of numbers."
     assert train_time_window[0] < train_time_window[1], \
