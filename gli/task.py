@@ -239,6 +239,9 @@ class LinkPredictionTask(GLITask):
         self.sample_runtime = self.val_neg is None
         super().__init__(task_dict, pwd)
 
+    def _load(self, task_dict):
+        self._load_split(task_dict)
+
 
 class KGEntityPredictionTask(GLITask):
     """Knowledge graph entity prediction task."""
@@ -268,6 +271,7 @@ class KGRelationPredictionTask(GLITask):
         self.sample_runtime = True
         self.num_relations = task_dict["num_relations"]
         super().__init__(task_dict, pwd, device)
+        self.target = task_dict["target"]
 
     def _load(self, task_dict):
         self._load_split(task_dict)
