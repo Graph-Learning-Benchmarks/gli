@@ -2038,20 +2038,14 @@ def save_task_time_dependent_link_prediction(name,
     assert len(test_time_window) == 2, \
         "`test_time_window` must be a list of 2."
     # print("train_time_window[0]: ", train_time_window[0])
-    assert (isinstance(train_time_window[0], float)
-            or isinstance(train_time_window[0], int)) \
-        and (isinstance(train_time_window[1], float)
-             or isinstance(train_time_window[1], int)), \
+    assert isinstance(train_time_window[0], (float, int)) \
+        and isinstance(train_time_window[1], (float, int)), \
         "`train_time_window` must be a list of numbers."
-    assert (isinstance(val_time_window[0], float)
-            or isinstance(val_time_window[0], int)) \
-        and (isinstance(val_time_window[1], float)
-             or isinstance(val_time_window[1], int)), \
+    assert isinstance(val_time_window[0], (float, int)) \
+        and isinstance(val_time_window[1], (float, int)), \
         "`val_time_window` must be a list of numbers."
-    assert (isinstance(test_time_window[0], float)
-            or isinstance(test_time_window[0], int)) \
-        and (isinstance(test_time_window[1], float)
-             or isinstance(test_time_window[1], int)), \
+    assert isinstance(test_time_window[0], (float, int)) \
+        and isinstance(test_time_window[1], (float, int)), \
         "`test_time_window` must be a list of numbers."
     assert train_time_window[0] < train_time_window[1], \
         "`train_time_window` must not overlap."
@@ -2125,6 +2119,9 @@ def save_task_kg_entity_prediction(name,
     :param num_relations: The total number of different relations between entities.
         Default: 0.
     :type num_relations: int
+    :param predict_tail: The bool determines whether it predicts tail. 
+        Default: True.
+    :type predict_tail: Bool
     
     :param task_id: The task ID. This is needed when there are multiple tasks
         of the same task type are defined on the dataset. Default: 1.
@@ -2172,6 +2169,7 @@ def save_task_kg_entity_prediction(name,
                 "Node/SparseNodeFeature"
             ],
             "num_relations": 0,
+            "predict_tail": True,
             "train_triplet_set": {
                 "file": "example_dataset__task_kg_entity_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
                 "key": "train_triplet_set"
@@ -2197,6 +2195,7 @@ def save_task_kg_entity_prediction(name,
         "type": task_type,
         "feature": feature,
         "num_relations": num_relations,
+        "predict_tail": predict_tail
     }
     data_dict = {
         "train_triplet_set": np.array(train_triplet_set),
@@ -2332,7 +2331,8 @@ def save_task_kg_relation_prediction(name,
         "description": description,
         "type": task_type,
         "feature": feature,
-        "num_relations": num_relations,
+        "target": target,
+        "num_relations": num_relations
     }
     data_dict = {
         "train_triplet_set": np.array(train_triplet_set),

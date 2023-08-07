@@ -344,19 +344,19 @@ def test_save_task_time_dependent_link_prediction():
             f"description should be {description_}"
         assert t.features == feature_, f"features should be {feature_}"
         assert t.time == time_, f"time should be {time_}"
-        assert t.time_window['train_time_window'][0] == \
+        assert t.time_window["train_time_window"][0] == \
             train_time_window_[0], \
             f"train_time_window should be {train_time_window_[0]}"
-        assert t.time_window['train_time_window'][1] == \
+        assert t.time_window["train_time_window"][1] == \
             train_time_window_[1], \
             f"train_time_window should be {train_time_window_}"
-        assert t.time_window['val_time_window'][0] == val_time_window_[0], \
+        assert t.time_window["val_time_window"][0] == val_time_window_[0], \
             f"val_time_window should be {val_time_window_}"
-        assert t.time_window['val_time_window'][1] == val_time_window_[1], \
+        assert t.time_window["val_time_window"][1] == val_time_window_[1], \
             f"val_time_window should be {val_time_window_}"
-        assert t.time_window['val_time_window'][0] == val_time_window_[0], \
+        assert t.time_window["val_time_window"][0] == val_time_window_[0], \
             f"val_time_window should be {val_time_window_}"
-        assert t.time_window['val_time_window'][1] == val_time_window_[1], \
+        assert t.time_window["val_time_window"][1] == val_time_window_[1], \
             f"val_time_window should be {val_time_window_}"
 
 
