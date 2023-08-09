@@ -273,6 +273,7 @@ class KGRelationPredictionTask(GLITask):
         self.num_relations = task_dict["num_relations"]
         self.target = task_dict["target"]
         super().__init__(task_dict, pwd, device)
+        self.target = task_dict["target"]
 
     def _load(self, task_dict):
         self._load_split(task_dict)

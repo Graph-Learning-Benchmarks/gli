@@ -1082,15 +1082,23 @@ def _save_task_reg_or_cls(task_type,
     if task_type in ("NodeClassification", "NodeRegression"):
         assert target.startswith("Node/"), \
             "`target` must be a node attribute."
+    if task_type in ("GraphClassification", "GraphRegression"):
+        assert target.startswith("Graph/"), \
+            "`target` must be a graph attribute."
     if task_type == "NodeClassification":
         task_str = "node_classification"
     elif task_type == "NodeRegression":
         task_str = "node_regression"
         assert num_classes is None, \
             "`num_classes` must be None for regression tasks."
+    elif task_type == "GraphClassification":
+        task_str = "graph_classification"
+    elif task_type == "GraphRegression":
+        task_str = "graph_regression"
+        assert num_classes is None, \
+            "`num_classes` must be None for regression tasks."
     else:
         raise NotImplementedError(f"Task type {task_type} is not supported.")
-
     # Create the dictionary for task json file.
     task_dict = {
         "description": description,
@@ -1451,3 +1459,896 @@ def save_task_node_classification(name,
                                  num_samples=num_samples,
                                  task_id=task_id,
                                  save_dir=save_dir)
+
+
+def save_task_graph_regression(name,
+                               description,
+                               feature,
+                               target,
+                               train_set=None,
+                               val_set=None,
+                               test_set=None,
+                               train_ratio=0.8,
+                               val_ratio=0.1,
+                               test_ratio=0.1,
+                               num_samples=None,
+                               task_id=1,
+                               save_dir="."):
+    """Save the graph regression task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param target: The attribute name as prediction target in the task. For
+        this graph regression task, the attribute should be a node attribute.
+        For homogeneous graphs, the attribute name should be in the format of
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the attribute name
+        should be in the format of "Graph/{graph_type}/{graph_attr_name}". The
+        graph_attr_name and the graph_type should be the ones declared in the
+        metadata.json file.
+    :type target: str
+    :param train_set: A list of training graph IDs or a list of list training
+        graph IDs. In the latter case, each inner list is the graph IDs of one
+        data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
+        will be ignored while `val_set` and `test_set` must present. If None,
+        the task json file will store `train_ratio`, `val_ratio`, and
+        `test_ratio` and random splits will be generated at run time. Default:
+        None.
+    :type train_set: list/array of int or list of lists/2-d array of int
+    :param val_set: A list of validation graph IDs or a list of list validation
+        graph IDs. See `train_set` for more details. Default: None.
+    :type val_set: list/array of int or list of lists/2-d array of int
+    :param test_set: A list of test graph IDs or a list of list test graph IDs.
+        See `train_set` for more details. Default: None.
+    :type test_set: list/array of int or list of lists/2-d array of int
+    :param train_ratio: The ratio of training nodes. See `train_set` for more
+        details. Default: 0.8.
+    :type train_ratio: float
+    :param val_ratio: The ratio of validation nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type val_ratio: float
+    :param test_ratio: The ratio of test nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type test_ratio: float
+    :param num_samples: The total number of nodes in the dataset. This needs to
+        be provided if `train_set`, `val_set`, and `test_set` are not provided.
+        Default: None.
+    :type num_samples: int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+
+    :raises ValueError: If `task_type` is not "GraphRegression" or
+        "GraphClassification".
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+    :raises ValueError: If `target` is not a string.
+    :raises ValueError: If `target` does not correspond to a node/graph
+        attribute.
+    :raises ValueError: If `num_classes` is not None for regression tasks.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `num_samples` is not provided.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `train_ratio`, `val_ratio`, and `test_ratio` do not sum
+        up to 1.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided at the same time.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are provided
+        but they are not lists or numpy arrays.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` contain
+        multiple splits but the split ratio of different splits is different.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
+
+    Example
+    -------
+    .. code-block:: python
+
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        d = gli.io.save_task_graph_regression(
+            name="example_dataset",
+            description="A graph regression task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Graph/GraphLabel",
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        # This function will save the task information into a json file named
+        # `task_graph_regression_1.json` and one numpy data file storing the
+        # data splits, `train_set`, `val_set`, and `test_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A graph regression task for the example dataset.",
+            "type": "GraphRegression",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "target": "Graph/GraphLabel",
+            "train_set": {
+                "file": "example_dataset__task_graph_regression_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "train_set"
+            },
+            "val_set": {
+                "file": "example_dataset__task_graph_regression_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "val_set"
+            },
+            "test_set": {
+                "file": "example_dataset__task_graph_regression_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "test_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    return _save_task_reg_or_cls(task_type="GraphRegression",
+                                 name=name,
+                                 description=description,
+                                 feature=feature,
+                                 target=target,
+                                 train_set=train_set,
+                                 val_set=val_set,
+                                 test_set=test_set,
+                                 train_ratio=train_ratio,
+                                 val_ratio=val_ratio,
+                                 test_ratio=test_ratio,
+                                 num_samples=num_samples,
+                                 task_id=task_id,
+                                 save_dir=save_dir)
+
+
+def save_task_graph_classification(name,
+                                   description,
+                                   feature,
+                                   target,
+                                   num_classes,
+                                   train_set=None,
+                                   val_set=None,
+                                   test_set=None,
+                                   train_ratio=0.8,
+                                   val_ratio=0.1,
+                                   test_ratio=0.1,
+                                   num_samples=None,
+                                   task_id=1,
+                                   save_dir="."):
+    """Save the graph classification task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param target: The attribute name as prediction target in the task. For
+        a graph classification task, the attribute should be a graph attribute.
+        For homogeneous graphs, the attribute name should be in the format of
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the attribute name
+        should be in the format of "Graph/{graph_type}/{graph_attr_name}". The
+        graph_attr_name and the graph_type should be the ones declared in the
+        metadata.json file.
+    :type target: str
+    :param num_classes: The number of classes in the task.
+    :type num_classes: int
+    :param train_set: A list of training graph IDs or a list of list training
+        graph IDs. In the latter case, each inner list is the graph IDs of one
+        data split. If not None, `train_ratio`, `val_ratio`, and `test_ratio`
+        will be ignored while `val_set` and `test_set` must present. If None,
+        the task json file will store `train_ratio`, `val_ratio`, and
+        `test_ratio` and random splits will be generated at run time. Default:
+        None.
+    :type train_set: list/array of int or list of lists/2-d array of int
+    :param val_set: A list of validation graph IDs or a list of list validation
+        graph IDs. See `train_set` for more details. Default: None.
+    :type val_set: list/array of int or list of lists/2-d array of int
+    :param test_set: A list of test graph IDs or a list of list test graph IDs.
+        See `train_set` for more details. Default: None.
+    :type test_set: list/array of int or list of lists/2-d array of int
+    :param train_ratio: The ratio of training nodes. See `train_set` for more
+        details. Default: 0.8.
+    :type train_ratio: float
+    :param val_ratio: The ratio of validation nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type val_ratio: float
+    :param test_ratio: The ratio of test nodes. See `train_set` for more
+        details. Default: 0.1.
+    :type test_ratio: float
+    :param num_samples: The total number of nodes in the dataset. This needs to
+        be provided if `train_set`, `val_set`, and `test_set` are not provided.
+        Default: None.
+    :type num_samples: int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+
+    :raises ValueError: If `task_type` is not "GraphRegression" or
+        "GraphClassification".
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+    :raises ValueError: If `target` is not a string.
+    :raises ValueError: If `target` does not correspond to a node/graph
+        attribute.
+    :raises ValueError: If `num_classes` is not None for regression tasks.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `num_samples` is not provided.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided and `train_ratio`, `val_ratio`, and `test_ratio` do not sum
+        up to 1.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are not
+        provided at the same time.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` are provided
+        but they are not lists or numpy arrays.
+    :raises ValueError: If `train_set`, `val_set`, and `test_set` contain
+        multiple splits but the split ratio of different splits is different.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
+
+    Example
+    -------
+    .. code-block:: python
+
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        save_task_graph_classification(
+            name="example_dataset",
+            description="A graph classification task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Graph/GraphLabel",
+            num_classes=4,
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        # This function will save the task information into a json file named
+        # `task_node_classification_1.json` and one numpy data file storing the
+        # data splits, `train_set`, `val_set`, and `test_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A graph classification task for the example dataset.",
+            "type": "GraphClassification",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "target": "Graph/GraphLabel",
+            "num_classes": 4,
+            "train_set": {
+                "file": "example_dataset__task_graph_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "train_set"
+            },
+            "val_set": {
+                "file": "example_dataset__task_graph_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "val_set"
+            },
+            "test_set": {
+                "file": "example_dataset__task_graph_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "test_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    return _save_task_reg_or_cls(task_type="GraphClassification",
+                                 name=name,
+                                 description=description,
+                                 feature=feature,
+                                 target=target,
+                                 num_classes=num_classes,
+                                 train_set=train_set,
+                                 val_set=val_set,
+                                 test_set=test_set,
+                                 train_ratio=train_ratio,
+                                 val_ratio=val_ratio,
+                                 test_ratio=test_ratio,
+                                 num_samples=num_samples,
+                                 task_id=task_id,
+                                 save_dir=save_dir)
+
+
+def save_task_link_prediction(name,
+                              description,
+                              feature,
+                              train_set,
+                              val_set,
+                              test_set,
+                              val_neg=None,
+                              test_neg=None,
+                              task_id=1,
+                              save_dir="."):
+    """Save the link prediction task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param train_set: A list of training edge IDs or a list of list training
+        edge IDs. 
+    :type train_set: list/array of int or list of lists/2-d array of int
+    :param val_set: A list of validation edge IDs or a list of list validation
+        edge IDs. 
+    :type val_set: list/array of int or list of lists/2-d array of int
+    :param test_set: A list of test edge IDs or a list of list test edge IDs.
+    :type test_set: list/array of int or list of lists/2-d array of int
+    :param val_neg: Negative samples of edges to validate. Default: None.
+    :type val_neg: list/array of int or list of lists/2-d array of int
+    :param test_neg: Negative samples of edges to test. Default: None.
+    :type test_neg: list/array of int or list of lists/2-d array of int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
+
+    Example
+    -------
+    .. code-block:: python
+
+        train_set = [0, 1]
+        val_set = [2, 3]
+        test_set = [4, 5]
+
+        # Save the task information.
+        save_task_link_prediction(
+            name="example_dataset",
+            description="A link prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            train_set=train_set,
+            val_set=val_set,
+            test_set=test_set)
+        # This function will save the task information into a json file named
+        # `task_node_classification_1.json` and one numpy data file storing the
+        # data splits, `train_set`, `val_set`, and `test_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A link prediction task for the example dataset.",
+            "type": "LinkPrediction",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "train_set": {
+                "file": "example_dataset__task_link_prediction_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "train_set"
+            },
+            "val_set": {
+                "file": "example_dataset__task_link_prediction_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "val_set"
+            },
+            "test_set": {
+                "file": "example_dataset__task_link_prediction_1__4dcac617700f69a6dec06c2b5f75a246.npz",
+                "key": "test_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    task_type = "LinkPrediction"
+    task_str = "link_prediction"
+
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+    }
+    data_dict = {
+        "train_set": np.array(train_set),
+        "val_set": np.array(val_set),
+        "test_set": np.array(test_set)
+    }
+    if val_neg is not None:
+        data_dict["val_neg"] = val_neg
+    if test_neg is not None:
+        data_dict["test_neg"] = test_neg
+    key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                           save_dir=save_dir,
+                           **data_dict)
+    task_dict.update(key_to_loc)
+
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
+
+
+def save_task_time_dependent_link_prediction(name,
+                                             description,
+                                             feature,
+                                             time,
+                                             train_time_window,
+                                             val_time_window,
+                                             test_time_window,
+                                             val_neg=None,
+                                             test_neg=None,
+                                             task_id=1,
+                                             save_dir="."):
+    """Save the time dependent link prediction task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param time: The time attribute that indicates edge order in the format of "Edge/{edge_attr_name}"
+    :type time: str
+    :param train_time_window: Training time window (left inclusive and right exclusive).
+    :type train_time_window: list of two float
+    :param val_time_window: Validation time window (left inclusive and right exclusive).
+    :type val_time_window: list of two float
+    :param test_time_window: Testing time window (left inclusive and right exclusive).
+    :type test_time_window: list of two float
+    :param val_neg: Negative samples of edges to validate. Default: None.
+    :type val_neg: list/array of int or list of lists/2-d array of int
+    :param test_neg: Negative samples of edges to test. Default: None.
+    :type test_neg: list/array of int or list of lists/2-d array of int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `time` is not a string.
+    :raises ValueError: If `time` do not correspond to edge attributes.
+    :raises ValueError: If `train_time_window` is not a list.
+    :raises ValueError: If `val_time_window` is not a list.
+    :raises ValueError: If `test_time_window` is not a list.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
+
+    Example
+    -------
+    .. code-block:: python
+
+        # Save the task information.
+        save_task_time_dependent_link_prediction(
+            name="example_dataset",
+            description="A time dependent link prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            time="Edge/EdgeYear",train_time_window=[1, 2],val_time_window=[3, 4],test_time_window[5, 6],)
+        # This function will save the task information into a json file named
+        # `task_node_classification_1.json` and one numpy data file storing the
+        # data splits, `train_set`, `val_set`, and `test_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A time dependent link prediction task for the example dataset.",
+            "type": "TimeDependentLinkPrediction",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "time": "Edge/EdgeYear",
+            "train_time_window": [
+                1,
+                2
+            ],
+            "val_time_window": [
+                3,
+                4
+            ],
+            "test_time_window": [
+                5,
+                6
+            ]
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    # Check the input arguments.
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    assert isinstance(time, str), \
+        "`time` must be a string."
+    assert time.startswith("Edge/"), \
+        "`time` must be an edge attribute."
+    assert isinstance(train_time_window, list), \
+        "`train_time_window` must be a list."
+    assert isinstance(val_time_window, list), \
+        "`val_time_window` must be a list."
+    assert isinstance(test_time_window, list), \
+        "`test_time_window` must be a list."
+    assert len(train_time_window) == 2, \
+        "`train_time_window` must be a list of 2."
+    assert len(val_time_window) == 2, \
+        "`val_time_window` must be a list of 2."
+    assert len(test_time_window) == 2, \
+        "`test_time_window` must be a list of 2."
+    # print("train_time_window[0]: ", train_time_window[0])
+    assert isinstance(train_time_window[0], (float, int)) \
+        and isinstance(train_time_window[1], (float, int)), \
+        "`train_time_window` must be a list of numbers."
+    assert isinstance(val_time_window[0], (float, int)) \
+        and isinstance(val_time_window[1], (float, int)), \
+        "`val_time_window` must be a list of numbers."
+    assert isinstance(test_time_window[0], (float, int)) \
+        and isinstance(test_time_window[1], (float, int)), \
+        "`test_time_window` must be a list of numbers."
+    assert train_time_window[0] < train_time_window[1], \
+        "`train_time_window` must not overlap."
+    assert val_time_window[0] < val_time_window[1], \
+        "`val_time_window` must not overlap."
+    assert test_time_window[0] < test_time_window[1], \
+        "`test_time_window` must not overlap."
+    task_type = "TimeDependentLinkPrediction"
+    task_str = "time_dependent_link_prediction"
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+        "time": time,
+        "train_time_window": train_time_window,
+        "val_time_window": val_time_window,
+        "test_time_window": test_time_window
+    }
+    data_dict = {}
+    if val_neg is not None:
+        data_dict["val_neg"] = val_neg
+    if test_neg is not None:
+        data_dict["test_neg"] = test_neg
+    key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                           save_dir=save_dir,
+                           **data_dict)
+    task_dict.update(key_to_loc)
+
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
+
+
+def save_task_kg_entity_prediction(name,
+                                   description,
+                                   feature,
+                                   train_triplet_set,
+                                   val_triplet_set,
+                                   test_triplet_set,
+                                   num_relations=0,
+                                   predict_tail=True,
+                                   task_id=1,
+                                   save_dir="."):
+    """Save the kg entity prediction task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param train_triplet_set: A list of training edge indices.
+    :type train_triplet_set: list/array of int
+    :param val_triplet_set: A list of validation edge indices.
+    :type val_triplet_set: list/array of int
+    :param val_triplet_set: A list of testing edge indices.
+    :type val_triplet_set: list/array of int
+    :param num_relations: The total number of different relations between entities.
+        Default: 0.
+    :type num_relations: int
+    :param predict_tail: The bool determines whether it predicts tail. 
+        Default: True.
+    :type predict_tail: Bool
+    
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
+
+    Example
+    -------
+    .. code-block:: python
+
+        train_triplet_set = [0, 1]
+        val_triplet_set = [2, 3]
+        test_triplet_set = [4, 5]
+
+        # Save the task information.
+        save_task_kg_entity_prediction(
+            name="example_dataset",
+            description="A kg entity prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            train_triplet_set=train_triplet_set,
+            val_triplet_set=val_triplet_set,
+            test_triplet_set=test_triplet_set)
+        # This function will save the task information into a json file named
+        # `task_kg_entity_prediction_1.json` and one numpy data file storing the
+        # data splits, `train_triplet_set`, `val_triplet_set`, and `test_triplet_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A kg entity prediction task for the example dataset.",
+            "type": "KGEntityPrediction",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "num_relations": 0,
+            "predict_tail": True,
+            "train_triplet_set": {
+                "file": "example_dataset__task_kg_entity_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
+                "key": "train_triplet_set"
+            },
+            "val_triplet_set": {
+                "file": "example_dataset__task_kg_entity_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
+                "key": "val_triplet_set"
+            },
+            "test_triplet_set": {
+                "file": "example_dataset__task_kg_entity_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
+                "key": "test_triplet_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    _check_feature(feature)
+    task_type = "KGEntityPrediction"
+    task_str = "kg_entity_prediction"
+
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+        "num_relations": num_relations,
+        "predict_tail": predict_tail
+    }
+    data_dict = {
+        "train_triplet_set": np.array(train_triplet_set),
+        "val_triplet_set": np.array(val_triplet_set),
+        "test_triplet_set": np.array(test_triplet_set)
+    }
+    key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                           save_dir=save_dir,
+                           **data_dict)
+    # Update the task dictionary with the data file names and keys.
+    task_dict.update(key_to_loc)
+
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
+
+
+def save_task_kg_relation_prediction(name,
+                                     description,
+                                     feature,
+                                     target,
+                                     train_triplet_set,
+                                     val_triplet_set,
+                                     test_triplet_set,
+                                     num_relations=0,
+                                     task_id=1,
+                                     save_dir="."):
+    """Save the kg relation prediction task information into task json and data files.
+
+    :param name: The name of the dataset.
+    :type name: str
+    :param description: The description of the task.
+    :type description: str
+    :param feature: The list of feature names to be used in the task. The
+        features could be node attributes, edge attributes, or graph
+        attributes. For homogeneous graphs, the feature names should be in the
+        format of "Node/{node_attr_name}", "Edge/{edge_attr_name}", or
+        "Graph/{graph_attr_name}". For heterogeneous graphs, the feature names
+        should be in the format of "Node/{node_type}/{node_attr_name}",
+        "Edge/{edge_type}/{edge_attr_name}", or
+        "Graph/{graph_type}/{graph_attr_name}". The node/edge/graph_attr_name,
+        and the node/edge/graph_type should be the ones declared in the
+        metadata.json file.
+    :type feature: list of str
+    :param target: The attribute name as prediction target in the task. For
+        a kg relation prediction task, the attribute should be a edge attribute
+        with format "Edge/{edge_attr_name}". 
+    :type target: str
+    :param train_triplet_set: A list of training edge indices.
+    :type train_triplet_set: list/array of int
+    :param val_triplet_set: A list of validation edge indices.
+    :type val_triplet_set: list/array of int
+    :param val_triplet_set: A list of testing edge indices.
+    :type val_triplet_set: list/array of int
+    :param num_relations: The total number of different relations between entities.
+        Default: 0.
+    :type num_relations: int
+    :param task_id: The task ID. This is needed when there are multiple tasks
+        of the same task type are defined on the dataset. Default: 1.
+    :type task_id: int
+    :param save_dir: The directory to save the task json and data files.
+        Default: ".".
+    :type save_dir: str
+
+    :raises ValueError: If `description` is not a string.
+    :raises ValueError: If `feature` is not a list of strings.
+    :raises ValueError: If elements in `feature` do not correspond to
+        node/edge/graph attributes.
+
+    :return: The dictionary of the content in the task json file.
+    :rtype: dict
+
+    Example
+    -------
+    .. code-block:: python
+
+        train_triplet_set = [0, 1]
+        val_triplet_set = [2, 3]
+        test_triplet_set = [4, 5]
+
+        # Save the task information.
+        save_task_kg_relation_prediction(
+            name="example_dataset",
+            description="A kg entity prediction task for the example dataset.",
+            feature=["Node/DenseNodeFeature", "Node/SparseNodeFeature"],
+            target="Edge/EdgeClass",
+            train_triplet_set=train_triplet_set,
+            val_triplet_set=val_triplet_set,
+            test_triplet_set=test_triplet_set)
+        # This function will save the task information into a json file named
+        # `task_kg_entity_prediction_1.json` and one numpy data file storing the
+        # data splits, `train_triplet_set`, `val_triplet_set`, and `test_triplet_set`. The json file
+        # will look like the following.
+
+    .. code-block:: json
+
+        {
+            "description": "A kg entity prediction task for the example dataset.",
+            "type": "KGRelationPrediction",
+            "feature": [
+                "Node/DenseNodeFeature",
+                "Node/SparseNodeFeature"
+            ],
+            "target": "Edge/EdgeClass",
+            "num_relations": 0,
+            "train_triplet_set": {
+                "file": "example_dataset__task_kg_relation_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
+                "key": "train_triplet_set"
+            },
+            "val_triplet_set": {
+                "file": "example_dataset__task_kg_relation_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
+                "key": "val_triplet_set"
+            },
+            "test_triplet_set": {
+                "file": "example_dataset__task_kg_relation_prediction_1__d4e39475e078fa07e18e57fdda149d36.npz",
+                "key": "test_triplet_set"
+            }
+        }
+    """  # noqa: E501,E262  #pylint: disable=line-too-long
+    assert isinstance(description, str), \
+        "`description` must be a string."
+    assert isinstance(target, str), \
+        "`target` must be a string."
+    _check_feature(feature)
+    task_type = "KGRelationPrediction"
+    task_str = "kg_relation_prediction"
+
+    task_dict = {
+        "description": description,
+        "type": task_type,
+        "feature": feature,
+        "target": target,
+        "num_relations": num_relations
+    }
+    data_dict = {
+        "train_triplet_set": np.array(train_triplet_set),
+        "val_triplet_set": np.array(val_triplet_set),
+        "test_triplet_set": np.array(test_triplet_set)
+    }
+    key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
+                           save_dir=save_dir,
+                           **data_dict)
+    # Update the task dictionary with the data file names and keys.
+    task_dict.update(key_to_loc)
+
+    # Save the task json file.
+    with open(os.path.join(save_dir, f"task_{task_str}_{task_id}.json"),
+              "w",
+              encoding="utf-8") as f:
+        json.dump(task_dict, f, indent=4)
+
+    return task_dict
