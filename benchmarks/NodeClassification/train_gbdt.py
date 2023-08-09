@@ -15,7 +15,7 @@ import numpy as np
 from sklearn.model_selection import ParameterGrid
 
 import gli
-from utils import parse_args, set_seed,\
+from utils import parse_args, set_seed, \
                   load_config_file, check_multiple_split
 from gli.utils import to_dense
 from models.gbdt import GBDTCatBoost, GBDTLGBM

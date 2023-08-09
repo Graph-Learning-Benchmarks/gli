@@ -9,9 +9,9 @@ import torch
 from torch import nn
 from torch import optim
 import gli
-from utils import generate_model, load_config_file,\
-                  set_seed, parse_args, EarlyStopping,\
-                  check_binary_classification, eval_rocauc, eval_acc,\
+from utils import generate_model, load_config_file, \
+                  set_seed, parse_args, EarlyStopping, \
+                  check_binary_classification, eval_rocauc, eval_acc, \
                   get_label_number, eval_ap
 from dgl.dataloading import GraphDataLoader
 from dgl import add_self_loop

@@ -14,10 +14,10 @@ from torch import nn
 import numpy as np
 import dgl
 import gli
-from utils import generate_model, parse_args, Models_need_to_be_densed,\
-    load_config_file, check_multiple_split,\
-    EarlyStopping, set_seed, check_binary_classification,\
-    eval_rocauc, Datasets_need_to_be_undirected,\
+from utils import generate_model, parse_args, Models_need_to_be_densed, \
+    load_config_file, check_multiple_split, \
+    EarlyStopping, set_seed, check_binary_classification, \
+    eval_rocauc, Datasets_need_to_be_undirected, \
     get_label_number
 from gli.utils import to_dense
 
