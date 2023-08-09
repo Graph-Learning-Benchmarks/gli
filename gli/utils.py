@@ -18,7 +18,7 @@ import torch
 from torch.utils.model_zoo import tqdm
 
 import gli.config
-from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE,\
+from gli import DATASET_PATH, GLOBAL_FILE_URL, ROOT_PATH, WARNING_DENSE_SIZE, \
     SERVER_IP
 
 

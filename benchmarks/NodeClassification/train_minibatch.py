@@ -15,7 +15,7 @@ import numpy as np
 import dgl
 import gli
 from utils import generate_model, parse_args, \
-                  load_config_file, check_multiple_split,\
+                  load_config_file, check_multiple_split, \
                   EarlyStopping, set_seed
 from gli.utils import to_dense
 from dgl.dataloading import MultiLayerFullNeighborSampler as Sampler
