@@ -7,15 +7,15 @@
     "target": "Node/NodeLabel",
     "num_classes": 7,
     "train_set": {
-        "file": "cora_task.npz",
-        "key": "train"
+        "file": "cora__task_node_classification_1__41e167258678b585872679839ce9c40f.npz",
+        "key": "train_set"
     },
     "val_set": {
-        "file": "cora_task.npz",
-        "key": "val"
+        "file": "cora__task_node_classification_1__41e167258678b585872679839ce9c40f.npz",
+        "key": "val_set"
     },
     "test_set": {
-        "file": "cora_task.npz",
-        "key": "test"
+        "file": "cora__task_node_classification_1__41e167258678b585872679839ce9c40f.npz",
+        "key": "test_set"
     }
 }
