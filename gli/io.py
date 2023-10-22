@@ -181,9 +181,17 @@ def save_graph(
                             description, cite, save_dir)
 
 
-def _verify_attrs_length(attrs, object_name):
-    """Verify all elements in attrs have the same length."""
+def _verify_attrs(attrs, object_name):
+    """Verify all elements in attrs are proper inputs.
+
+    In particular, test if all elements in attrs are Attribute and have the
+    same length of data.
+    """
     if len(attrs) > 0:
+        if not (isinstance(attrs, list) and
+                all(isinstance(a, Attribute) for a in attrs)):
+            raise TypeError(f"All elements of {object_name}_attrs must be "
+                            "Attribute.")
         num_data = attrs[0].num_data
         for attr in attrs:
             if attr.num_data != num_data:
@@ -382,9 +390,9 @@ def save_homograph(
         graph_attrs = []
 
     # Check the length of node/edge/graph attrs.
-    _verify_attrs_length(node_attrs, "node")
-    _verify_attrs_length(edge_attrs, "edge")
-    _verify_attrs_length(graph_attrs, "graph")
+    _verify_attrs(node_attrs, "node")
+    _verify_attrs(edge_attrs, "edge")
+    _verify_attrs(graph_attrs, "graph")
 
     # Check `edge` shape.
     if edge.shape[1] != 2:
@@ -812,10 +820,10 @@ def save_heterograph(
 
     # Check the length of the node groups and node attributes.
     for node_group in node_groups:
-        _verify_attrs_length(node_attrs[node_group], f"node/{node_group}")
+        _verify_attrs(node_attrs[node_group], f"node/{node_group}")
     for edge_group in edge_groups:
-        _verify_attrs_length(edge_attrs[edge_group], f"edge/{edge_group}")
-    _verify_attrs_length(graph_attrs, "graph")
+        _verify_attrs(edge_attrs[edge_group], f"edge/{edge_group}")
+    _verify_attrs(graph_attrs, "graph")
 
     # Check the data type and lens of the `graph_node_list` and
     # `graph_edge_list`.
@@ -1813,10 +1821,10 @@ def save_task_link_prediction(name,
         metadata.json file.
     :type feature: list of str
     :param train_set: A list of training edge IDs or a list of list training
-        edge IDs. 
+        edge IDs.
     :type train_set: list/array of int or list of lists/2-d array of int
     :param val_set: A list of validation edge IDs or a list of list validation
-        edge IDs. 
+        edge IDs.
     :type val_set: list/array of int or list of lists/2-d array of int
     :param test_set: A list of test edge IDs or a list of list test edge IDs.
     :type test_set: list/array of int or list of lists/2-d array of int
@@ -2119,10 +2127,10 @@ def save_task_kg_entity_prediction(name,
     :param num_relations: The total number of different relations between entities.
         Default: 0.
     :type num_relations: int
-    :param predict_tail: The bool determines whether it predicts tail. 
+    :param predict_tail: The bool determines whether it predicts tail.
         Default: True.
     :type predict_tail: Bool
-    
+
     :param task_id: The task ID. This is needed when there are multiple tasks
         of the same task type are defined on the dataset. Default: 1.
     :type task_id: int
@@ -2246,7 +2254,7 @@ def save_task_kg_relation_prediction(name,
     :type feature: list of str
     :param target: The attribute name as prediction target in the task. For
         a kg relation prediction task, the attribute should be a edge attribute
-        with format "Edge/{edge_attr_name}". 
+        with format "Edge/{edge_attr_name}".
     :type target: str
     :param train_triplet_set: A list of training edge indices.
     :type train_triplet_set: list/array of int
