@@ -17,7 +17,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint numpy torch scipy
+        pip install numpy torch scipy
+        pip install --force-reinstall pylint==2.17.5
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py') --rcfile .pylintrc
