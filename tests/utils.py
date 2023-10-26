@@ -113,7 +113,7 @@ def check_if_metadata_json(file):
 
 
 def check_if_urls_json(file):
-    """Check if it is metadata.json and correctly named."""
+    """Check if it is urls.json and correctly named."""
     urls_exp = re.compile(r".*urls.*")
     json_exp = re.compile(r"\B.*\.json$")
     if urls_exp.search(file) and json_exp.search(file):
@@ -129,14 +129,14 @@ def check_if_readme(file):
 
 
 def check_if_license(file):
-    """Check if it is README.md and correctly named."""
+    """Check if it is LICENSE and correctly named."""
     if file == "LICENSE":
         return True
     return False
 
 
 def check_if_converting_code(file, dataset):
-    """Check if it is README.md and correctly named."""
+    """Check if it is .ipynb or .py file and correctly named."""
     if file in (f"{dataset}.ipynb", file == f"{dataset}.py"):
         return True
     return False
