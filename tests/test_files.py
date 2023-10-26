@@ -42,7 +42,7 @@ def check_file_name(files, dataset_name):
         missing_file_messages_error.append("missing metadata.json")
 
     if not urls_jason_flag:
-        missing_file_messages_error.append("missing urls.json")
+        missing_file_messages_warning.append("missing urls.json")
 
     if not readme_flag:
         missing_file_messages_error.append("missing README.md")
