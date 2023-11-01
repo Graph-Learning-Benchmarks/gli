@@ -3,33 +3,28 @@
     "data": {
         "Node": {
             "NodeFeature": {
-                "description": "Node features of Citeseer dataset.",
-                "type": "float",
+                "description": "Node features of Citeseer dataset, 1/0-valued vectors.",
+                "type": "int",
                 "format": "SparseTensor",
-                "file": "citeseer_node_feats.sparse.npz"
+                "file": "citeseer__graph__Node_NodeFeature__48cffb6534f4b56a45196efa8b32cdac.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Citeseer dataset, int ranged from 1 to 6.",
                 "type": "int",
                 "format": "Tensor",
-                "file": "citeseer.npz",
-                "key": "node_class"
+                "file": "citeseer__graph__aed93544b5c54381d05b5452603278fb.npz",
+                "key": "Node_NodeLabel"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "citeseer.npz",
-                "key": "edge"
+                "file": "citeseer__graph__aed93544b5c54381d05b5452603278fb.npz",
+                "key": "Edge_Edge"
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "citeseer.npz",
-                "key": "node_list"
-            },
-            "_EdgeList": {
-                "file": "citeseer.npz",
-                "key": "edge_list"
+                "file": "citeseer__graph__Graph_NodeList__be3f84ead018cfb899bd6f98d0bb92db.sparse.npz"
             }
         }
     },
