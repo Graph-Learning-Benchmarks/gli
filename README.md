@@ -1,3 +1,8 @@
+<p align='center'>
+  <img width='40%' src='/img/gli-banner.png' />
+</p>
+
+
 # Graph Learning Indexer (GLI)
 
 [![Pycodestyle](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pycodestyle.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pycodestyle.yml)
