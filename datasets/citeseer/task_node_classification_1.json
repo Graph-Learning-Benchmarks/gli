@@ -7,15 +7,15 @@
     "target": "Node/NodeLabel",
     "num_classes": 6,
     "train_set": {
-        "file": "citeseer_task.npz",
-        "key": "train"
+        "file": "citeseer__task_node_classification_1__d0b7b5f7e7e7cb9b84e0b3e97354e16e.npz",
+        "key": "train_set"
     },
     "val_set": {
-        "file": "citeseer_task.npz",
-        "key": "val"
+        "file": "citeseer__task_node_classification_1__d0b7b5f7e7e7cb9b84e0b3e97354e16e.npz",
+        "key": "val_set"
     },
     "test_set": {
-        "file": "citeseer_task.npz",
-        "key": "test"
+        "file": "citeseer__task_node_classification_1__d0b7b5f7e7e7cb9b84e0b3e97354e16e.npz",
+        "key": "test_set"
     }
 }

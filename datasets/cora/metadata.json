@@ -6,30 +6,25 @@
                 "description": "Node features of Cora dataset, 1/0-valued vectors.",
                 "type": "int",
                 "format": "SparseTensor",
-                "file": "cora_node_feats.sparse.npz"
+                "file": "cora__graph__Node_NodeFeature__7032c9c380d1889061dcbbcd76b8c427.sparse.npz"
             },
             "NodeLabel": {
                 "description": "Node labels of Cora dataset, int ranged from 1 to 7.",
                 "type": "int",
                 "format": "Tensor",
-                "file": "cora.npz",
-                "key": "node_class"
+                "file": "cora__graph__6c912909fa18eff10797210ea5e485fe.npz",
+                "key": "Node_NodeLabel"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "cora.npz",
-                "key": "edge"
+                "file": "cora__graph__6c912909fa18eff10797210ea5e485fe.npz",
+                "key": "Edge_Edge"
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "cora.npz",
-                "key": "node_list"
-            },
-            "_EdgeList": {
-                "file": "cora.npz",
-                "key": "edge_list"
+                "file": "cora__graph__Graph_NodeList__23bbef862fd6037395412eb03b4e1d9c.sparse.npz"
             }
         }
     },
