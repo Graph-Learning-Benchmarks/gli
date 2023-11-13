@@ -1,5 +1,0 @@
-{
-    "actor.npz": "https://www.dropbox.com/s/r3i76dkk1gzwhc4/actor.npz",
-    "actor_node_feats.sparse.npz": "https://www.dropbox.com/s/jutinvjnfgm33hm/actor_node_feats.sparse.npz",
-    "actor_task.npz": "https://www.dropbox.com/s/ri4mqix1w8dnygn/actor_task.npz"
-}
