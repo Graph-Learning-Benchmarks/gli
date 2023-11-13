@@ -1,3 +1,4 @@
+"""Knowledge graph task related helper functions."""
 import os
 import json
 import numpy as np

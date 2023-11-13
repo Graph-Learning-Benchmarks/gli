@@ -1,3 +1,4 @@
+"""Graph metadata and data saving helper functions."""
 import json
 import os
 from typing import Dict, List, Optional, Tuple, Union
@@ -779,8 +780,8 @@ def _verify_attrs(attrs, object_name):
     same length of data.
     """
     if len(attrs) > 0:
-        if not (isinstance(attrs, list) and
-                all(isinstance(a, Attribute) for a in attrs)):
+        if not (isinstance(attrs, list)
+                and all(isinstance(a, Attribute) for a in attrs)):
             raise TypeError(f"All elements of {object_name}_attrs must be "
                             "Attribute.")
         num_data = attrs[0].num_data

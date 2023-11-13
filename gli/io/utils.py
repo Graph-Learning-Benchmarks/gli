@@ -1,10 +1,8 @@
 """Utils functions for gli.io module."""
 import json
 import os
-from typing import Dict, List, Optional, Tuple
-import warnings
 import numpy as np
-from scipy.sparse import isspmatrix, spmatrix
+from scipy.sparse import isspmatrix
 
 from gli.utils import save_data
 

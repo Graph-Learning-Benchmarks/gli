@@ -1,3 +1,4 @@
+"""Node task related helper functions."""
 from .utils import save_task_reg_or_cls
 
 
@@ -145,19 +146,19 @@ def save_task_node_regression(name,
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
     return save_task_reg_or_cls(task_type="NodeRegression",
-                                 name=name,
-                                 description=description,
-                                 feature=feature,
-                                 target=target,
-                                 train_set=train_set,
-                                 val_set=val_set,
-                                 test_set=test_set,
-                                 train_ratio=train_ratio,
-                                 val_ratio=val_ratio,
-                                 test_ratio=test_ratio,
-                                 num_samples=num_samples,
-                                 task_id=task_id,
-                                 save_dir=save_dir)
+                                name=name,
+                                description=description,
+                                feature=feature,
+                                target=target,
+                                train_set=train_set,
+                                val_set=val_set,
+                                test_set=test_set,
+                                train_ratio=train_ratio,
+                                val_ratio=val_ratio,
+                                test_ratio=test_ratio,
+                                num_samples=num_samples,
+                                task_id=task_id,
+                                save_dir=save_dir)
 
 
 def save_task_node_classification(name,
@@ -309,17 +310,17 @@ def save_task_node_classification(name,
         }
     """  # noqa: E501,E262  #pylint: disable=line-too-long
     return save_task_reg_or_cls(task_type="NodeClassification",
-                                 name=name,
-                                 description=description,
-                                 feature=feature,
-                                 target=target,
-                                 num_classes=num_classes,
-                                 train_set=train_set,
-                                 val_set=val_set,
-                                 test_set=test_set,
-                                 train_ratio=train_ratio,
-                                 val_ratio=val_ratio,
-                                 test_ratio=test_ratio,
-                                 num_samples=num_samples,
-                                 task_id=task_id,
-                                 save_dir=save_dir)
+                                name=name,
+                                description=description,
+                                feature=feature,
+                                target=target,
+                                num_classes=num_classes,
+                                train_set=train_set,
+                                val_set=val_set,
+                                test_set=test_set,
+                                train_ratio=train_ratio,
+                                val_ratio=val_ratio,
+                                test_ratio=test_ratio,
+                                num_samples=num_samples,
+                                task_id=task_id,
+                                save_dir=save_dir)
