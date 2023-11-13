@@ -21,4 +21,4 @@ jobs:
         pip install --force-reinstall pylint==2.17.5
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --rcfile .pylintrc
+        pylint $(git ls-files '*.py') --rcfile .pylintrc --recursive y

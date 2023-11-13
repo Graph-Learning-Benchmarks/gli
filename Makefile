@@ -36,7 +36,7 @@ pystyle: logs
 	-pydocstyle ${PYTHON_FILES} | tee logs/pydocstyle.log
 
 pylint: logs
-	-pylint ${PYTHON_FILES} --rcfile .pylintrc | tee logs/pylint.log
+	-pylint ${PYTHON_FILES} --rcfile .pylintrc --recursive y | tee logs/pylint.log
 
 pytest: logs
 ifndef DATASET
