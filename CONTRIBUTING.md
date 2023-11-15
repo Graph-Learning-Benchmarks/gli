@@ -10,11 +10,12 @@ We also provide some times on how to [start developing GLI on your local machine
 
 ## Contributing A New Dataset or Task
 
-If you want to contribute a new dataset or task, please take a look at the following three sections for information relevant to dataset contribution.  
+If you want to contribute a new dataset or task, please take a look at the following three sections for information relevant to dataset contribution.
 
 ### Dataset Contribution Workflow
 
-Detailed instructions on the dataset contribution workflow can be found in the dedicated [Dataset Submission Guide](./DATASET_SUBMISSION.md).
+Detailed instructions on the dataset contribution workflow can be found in the [Dataset Submission Guideline
+](https://github.com/Graph-Learning-Benchmarks/gli/wiki/Dataset-Submission-Guideline).
 
 ### Code of Ethics on Dataset Contribution
 
@@ -22,7 +23,7 @@ Ethical considerations are critical components of the quality of datasets. We ha
 
 ### Data Removal Policy
 
-The original contributor(s) of a dataset may request a removal of the dataset. Project maintainers will notify all the subsequent contributors to that dataset, and remove the dataset from the main branch and the cloud storage platform within 30 days, if there is no reasonable objection from the subsequent contributors. 
+The original contributor(s) of a dataset may request a removal of the dataset. Project maintainers will notify all the subsequent contributors to that dataset, and remove the dataset from the main branch and the cloud storage platform within 30 days, if there is no reasonable objection from the subsequent contributors.
 
 **Warning:** It may not be possible to remove the datasets completely once contributed to GLI. The metadata information will remain in the commit history, and there might be other distributions on the internet.
 

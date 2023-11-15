@@ -298,10 +298,10 @@ def _find_data_files_from_json_files(data_dir):
 def _get_url_from_server(data_file: str):
     """Get url for a specific data file from server."""
     resp = requests.request("GET",
-                            SERVER_IP +
-                            "/api/get-url/" +
-                            data_file,
-                            timeout=5).json()
+                            f"{SERVER_IP}/api/get-url/{data_file}",
+                            timeout=5)
+    print(resp.url)
+    resp = resp.json()
     if resp["message_type"] == "error":
         return None
     elif resp["message_type"] == "url":
@@ -349,7 +349,7 @@ def download_data(dataset: str, verbose=False):
             with open(url_file, "r", encoding="utf-8") as fp:
                 url_dict = json.load(fp)
         else:
-            # Thrid, try to download and check the global_urls.json file.
+            # Third, try to download and check the global_urls.json file.
             global_url_file = os.path.join(
                 get_local_data_dir(), "global_urls.json")
             _download(GLOBAL_FILE_URL, global_url_file, verbose=verbose)

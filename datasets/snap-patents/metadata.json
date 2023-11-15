@@ -6,30 +6,30 @@
                 "description": "Node features of snap-patents dataset.",
                 "type": "float32",
                 "format": "Tensor",
-                "file": "snap-patents.npz",
+                "file": "snap_patents.npz",
                 "key": "node_feats"
             },
             "NodeLabel": {
                 "description": "Node labels of snap-patents dataset, int ranged from 0 to 4.",
                 "type": "int64",
                 "format": "Tensor",
-                "file": "snap-patents.npz",
+                "file": "snap_patents.npz",
                 "key": "node_class"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "snap-patents.npz",
+                "file": "snap_patents.npz",
                 "key": "edge"
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "snap-patents.npz",
+                "file": "snap_patents.npz",
                 "key": "node_list"
             },
             "_EdgeList": {
-                "file": "snap-patents.npz",
+                "file": "snap_patents.npz",
                 "key": "edge_list"
             }
         }

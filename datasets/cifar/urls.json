@@ -1,6 +1,0 @@
-{
-    "cifar.npz": "https://www.dropbox.com/s/2cw7ozdh5a5jptx/cifar.npz",
-    "cifar_node_list.sparse.npz": "https://www.dropbox.com/s/8ac96dik8oig0ph/cifar_node_list.sparse.npz",
-    "cifar_task.npz": "https://www.dropbox.com/s/lzuyosingee7fkd/cifar_task.npz"
-
-}
