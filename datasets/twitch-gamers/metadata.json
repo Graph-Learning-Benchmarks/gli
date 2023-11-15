@@ -6,30 +6,30 @@
                 "description": "Node features of twitch-gamers dataset.",
                 "type": "float32",
                 "format": "Tensor",
-                "file": "twitch-gamers.npz",
+                "file": "twitch_gamers.npz",
                 "key": "node_feats"
             },
             "NodeLabel": {
                 "description": "Node labels of twitch-gamers dataset, 1/0-valued vectors.",
                 "type": "int64",
                 "format": "Tensor",
-                "file": "twitch-gamers.npz",
+                "file": "twitch_gamers.npz",
                 "key": "node_class"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "twitch-gamers.npz",
+                "file": "twitch_gamers.npz",
                 "key": "edge"
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "twitch-gamers.npz",
+                "file": "twitch_gamers.npz",
                 "key": "node_list"
             },
             "_EdgeList": {
-                "file": "twitch-gamers.npz",
+                "file": "twitch_gamers.npz",
                 "key": "edge_list"
             }
         }
