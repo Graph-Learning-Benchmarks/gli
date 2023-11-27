@@ -60,7 +60,7 @@ git clone https://github.com/Graph-Learning-Benchmarks/gli.git
 cd gli
 pip install -e .
 ```
-MacOS users may need to install `wget` in terminal to avoid `FileNotFoundError: [Errno 2] No such file or directory: 'wget'`. Run `brew install wget` to solve this problem (you should have [homebrew](https://brew.sh/) installed first)
+> *Note: [wget](https://www.gnu.org/software/wget/) is required to download datasets.*
 
 To test the installation, run the following command:
 
