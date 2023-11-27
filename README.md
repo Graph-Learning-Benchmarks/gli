@@ -55,6 +55,7 @@ git clone https://github.com/Graph-Learning-Benchmarks/gli.git
 cd gli
 pip install -e .
 ```
+> *Note: [wget](https://www.gnu.org/software/wget/) is required to download datasets.*
 
 To test the installation, run the following command:
 
