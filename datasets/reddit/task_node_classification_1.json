@@ -1,0 +1,21 @@
+{
+    "description": "Node classification on Reddit dataset.",
+    "type": "NodeClassification",
+    "feature": [
+        "Node/NodeFeature"
+    ],
+    "target": "Node/NodeLabel",
+    "num_classes": 41,
+    "train_set": {
+        "file": "reddit__task_node_classification_1__6fe97708fb6455da63be0668604f29c5.npz",
+        "key": "train_set"
+    },
+    "val_set": {
+        "file": "reddit__task_node_classification_1__6fe97708fb6455da63be0668604f29c5.npz",
+        "key": "val_set"
+    },
+    "test_set": {
+        "file": "reddit__task_node_classification_1__6fe97708fb6455da63be0668604f29c5.npz",
+        "key": "test_set"
+    }
+}
