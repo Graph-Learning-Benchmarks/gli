@@ -37,16 +37,10 @@ Statistics:
 ```
 
 - Previous Version
-  + [Website](https://drive.google.com/drive/folders/1rq-H0XUM0BIRW9Pq5P4FMC9Xirpdx6zs)
-  + LICENSE: [MIT](https://github.com/GraphSAINT/GraphSAINT/blob/master/LICENSE)
-```
-@article{zeng2019graphsaint,
-  title={Graphsaint: Graph sampling based inductive learning method},
-  author={Zeng, Hanqing and Zhou, Hongkuan and Srivastava, Ajitesh and Kannan, Rajgopal and Prasanna, Viktor},
-  journal={arXiv preprint arXiv:1907.04931},
-  year={2019}
-}
-```
+
+
+
+
 ## Available Tasks
 
 - Task type: `NodeClassification`
