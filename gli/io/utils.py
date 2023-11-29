@@ -245,9 +245,9 @@ def save_task_reg_or_cls(task_type,
     if train_set is not None:
         # Save the task data files, i.e., the data splits in this task.
         data_dict = {
-            "train_set": np.array(train_set),
-            "val_set": np.array(val_set),
-            "test_set": np.array(test_set)
+            "train_set": np.array(train_set, dtype=np.int64),
+            "val_set": np.array(val_set, dtype=np.int64),
+            "test_set": np.array(test_set, dtype=np.int64)
         }
         key_to_loc = save_data(f"{name}__task_{task_str}_{task_id}",
                                save_dir=save_dir,

@@ -118,9 +118,9 @@ def save_task_link_prediction(name,
         "feature": feature,
     }
     data_dict = {
-        "train_set": np.array(train_set),
-        "val_set": np.array(val_set),
-        "test_set": np.array(test_set)
+        "train_set": np.array(train_set, dtype=np.int64),
+        "val_set": np.array(val_set, dtype=np.int64),
+        "test_set": np.array(test_set, dtype=np.int64),
     }
     if val_neg is not None:
         data_dict["val_neg"] = val_neg
