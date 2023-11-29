@@ -7,15 +7,15 @@
     "target": "Node/NodeLabel",
     "num_classes": 41,
     "train_set": {
-        "file": "reddit__task_node_classification_1__6fe97708fb6455da63be0668604f29c5.npz",
+        "file": "reddit__task_node_classification_1__f966ab3b42876ca118130cd1ea52237f.npz",
         "key": "train_set"
     },
     "val_set": {
-        "file": "reddit__task_node_classification_1__6fe97708fb6455da63be0668604f29c5.npz",
+        "file": "reddit__task_node_classification_1__f966ab3b42876ca118130cd1ea52237f.npz",
         "key": "val_set"
     },
     "test_set": {
-        "file": "reddit__task_node_classification_1__6fe97708fb6455da63be0668604f29c5.npz",
+        "file": "reddit__task_node_classification_1__f966ab3b42876ca118130cd1ea52237f.npz",
         "key": "test_set"
     }
 }
