@@ -430,6 +430,7 @@ def save_heterograph(
     Example
     -------
     .. code-block:: python
+    
         import numpy as np from numpy.random 
         import randn, randint from scipy.sparse import random as sparse_random
 
