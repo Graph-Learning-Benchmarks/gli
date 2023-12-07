@@ -1,0 +1,34 @@
+{
+    "description": "Reddit dataset.",
+    "data": {
+        "Node": {
+            "NodeFeature": {
+                "description": "Node features of Reddit dataset, incorporating pretrained GloVe CommonCrawl word embeddings.",
+                "type": "float",
+                "format": "Tensor",
+                "file": "reddit__graph__bfb7717c1f9b72842adc4af257467122.npz",
+                "key": "Node_NodeFeature"
+            },
+            "NodeLabel": {
+                "description": "Node labels of Reddit dataset, int ranged from 0 to 40.",
+                "type": "int",
+                "format": "Tensor",
+                "file": "reddit__graph__bfb7717c1f9b72842adc4af257467122.npz",
+                "key": "Node_NodeLabel"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "reddit__graph__bfb7717c1f9b72842adc4af257467122.npz",
+                "key": "Edge_Edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "reddit__graph__Graph_NodeList__e4f77fbbcc4906feaf9f51e8d2a6da98.sparse.npz"
+            }
+        }
+    },
+    "citation": "@article{hamilton2017inductive,\ntitle={Inductive representation learning on large graphs},\nauthor={Hamilton, Will and Ying, Zhitao and Leskovec, Jure},\njournal={Advances in neural information processing systems},\nvolume={30},\nyear={2017}}",
+    "is_heterogeneous": false
+}

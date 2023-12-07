@@ -1,5 +1,0 @@
-{
-    "citeseer.npz": "https://www.dropbox.com/s/sc3fz6v139x6szd/citeseer.npz",
-    "citeseer_node_feats.sparse.npz": "https://www.dropbox.com/s/3h4amgwa5h6fw51/citeseer_node_feats.sparse.npz",
-    "citeseer_task.npz": "https://www.dropbox.com/s/ccmvbc63fzj9ogm/citeseer_task.npz"
-}

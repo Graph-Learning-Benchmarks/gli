@@ -6,30 +6,30 @@
                 "description": "Node features of arXiv-year dataset.",
                 "type": "float32",
                 "format": "Tensor",
-                "file": "arxiv-year.npz",
+                "file": "arxiv_year.npz",
                 "key": "node_feats"
             },
             "NodeLabel": {
                 "description": "Node labels of arXiv-year dataset, int ranged from 0 to 4.",
                 "type": "int64",
                 "format": "Tensor",
-                "file": "arxiv-year.npz",
+                "file": "arxiv_year.npz",
                 "key": "node_class"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "arxiv-year.npz",
+                "file": "arxiv_year.npz",
                 "key": "edge"
             }
         },
         "Graph": {
             "_NodeList": {
-                "file": "arxiv-year.npz",
+                "file": "arxiv_year.npz",
                 "key": "node_list"
             },
             "_EdgeList": {
-                "file": "arxiv-year.npz",
+                "file": "arxiv_year.npz",
                 "key": "edge_list"
             }
         }

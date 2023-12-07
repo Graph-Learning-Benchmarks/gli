@@ -9,20 +9,23 @@
 [![Pydocstyle](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pydocstyle.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pydocstyle.yml)
 [![Pylint](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pylint.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pytest.yml/badge.svg)](https://github.com/Graph-Learning-Benchmarks/gli/actions/workflows/pytest.yml)
+[![arXiv](https://img.shields.io/badge/arXiv-2212.04537-<COLOR>.svg)](https://arxiv.org/abs/2212.04537)
 
-Graph Learning Indexer (GLI) is a benchmark curation platform for graph learning. 
+Graph Learning Indexer (GLI) is a benchmark curation platform for graph learning.
 
 ## Design Objectives
-In comparison to previous graph learning libraries, GLI highlights two design objectives. 
+In comparison to previous graph learning libraries, GLI highlights two design objectives.
 
-* GLI is designed to better serve **dataset contributors** by minimizing the effort of contributing and maintaining a dataset. 
-* GLI is designed to create a knowledge base (as opposed to a simple collection) of benchmarks with **rich meta information** about the datasets.
+* GLI is designed to better serve **dataset contributors** by minimizing the effort of contributing and maintaining a dataset.
+* GLI is designed to create a knowledge base (as opposed to a simple
+  collection) of benchmarks with **rich meta-information** about the datasets.
+  See the [GLI meta-info page](https://gli-vis.streamlit.app/) for details.
 
 ## Highlighted Features
 
 ### File-Based Data API
 
-GLI defines a file-based standard dataset API that is both efficient in storage and flexible for various graph structures. In comparison to the common code-based dataset API, the file-based design can significantly reduce the maintainance effort required for the dataset contributors.
+GLI defines a file-based standard dataset API that is both efficient in storage and flexible for various graph structures. In comparison to the common code-based dataset API, the file-based design can significantly reduce the maintenance effort required for the dataset contributors.
 
 ### Explicit Separation of Data and Task
 
@@ -30,9 +33,9 @@ GLI makes an explicit separation between the data storage and the task configura
 
 The explicit separation of data and task provides a number of benefits:
 
-- The API becomes more exensible to new tasks.
+- The API becomes more extensible to new tasks.
 - The automated tests can be separated by tasks and become more modularized.
-- It allows to implement general data loading schemes for each task.
+- It allows implementation of general data loading schemes for each task.
 
 
 ### Automated Tests
@@ -42,14 +45,14 @@ GLI implements a wide range of automated tests for new dataset submissions, whic
 
 ### Rich Meta Information
 
-GLI also provides tools to calculate graph properties (such as clustering coefficients or homophily ratio) and benchmark popular models for newly contributed datasets, which can augment new datasets with rich meta information.
+GLI also provides tools to calculate graph properties (such as clustering coefficients or homophily ratio) and benchmark popular models for newly contributed datasets, which can augment new datasets with rich meta-information.
 
 
 <!-- TODO: Add more highlighted features. -->
 
 ## Get Started
 
-This is a quickstart for users who want to use the existing datasets hosted in GLI. For users who want to contribute a new dataset, please refer to our [Contribution Guide](./CONTRIBUTING.md).
+This is a quick start for users who want to use the existing datasets hosted in GLI. For users who want to contribute a new dataset, please refer to our [Contribution Guide](./CONTRIBUTING.md).
 
 ### Installation
 
