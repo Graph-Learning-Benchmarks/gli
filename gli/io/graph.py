@@ -193,8 +193,10 @@ def save_homograph(
     -------
     .. code-block:: python
 
-        import numpy as np from numpy.random import randn, randint from
-        scipy.sparse import random as sparse_random
+        from gli.io import save_homograph, Attribute
+        import numpy as np 
+        from numpy.random import randn, randint 
+        from scipy.sparse import random as sparse_random
 
         # Create a graph with 6 nodes and 5 edges.
         edge = np.array([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]]) # Create attributes of the nodes.
@@ -202,14 +204,14 @@ def save_homograph(
             name="DenseNodeFeature", data=randn(6, 5),  # 6 nodes, 5 features
             description="Dense node features.")
         sparse_node_feats = Attribute(
-            name="SparseNodeFeature", data=sparse_random(6, 500),  # 6 nodes,
-            500 features description="Sparse node features.")
+            name="SparseNodeFeature", data=sparse_random(6, 500),  # 6 nodes, 500 features 
+            description="Sparse node features.")
         node_labels = Attribute(
             name="NodeLabel", data=randint(0, 4, 6),  # 6 nodes, 4 classes
             description="Node labels.")
-
+        
         # Save the graph dataset.
-        save_graph(name="example_dataset",
+        save_homograph(name="example_dataset",
                    edge=edge, node_attrs=[dense_node_feats, sparse_node_feats, node_labels],
                    description="An exampmle dataset.",
                    citation="some bibtex citation")
@@ -431,9 +433,11 @@ def save_heterograph(
     -------
     .. code-block:: python
     
-        import numpy as np from numpy.random 
-        import randn, randint from scipy.sparse import random as sparse_random
-
+        import numpy as np 
+        from numpy.random import randn
+        from scipy.sparse import random as sparse_random
+        from gli.io import save_heterograph, Attribute
+        
         node_groups = ["user", "item"]
         edge_groups = [("user", "click", "item"), ("user", "purchase", "item"),
                        ("user", "is_friend", "user")]
@@ -443,7 +447,7 @@ def save_heterograph(
             edge_groups[1]: np.array([[0, 1], [1, 2]]),
             edge_groups[2]: np.array([[0, 1], [2, 1]])
         }
-
+        
         node_attrs = {
             node_groups[0]: [
                 Attribute("UserDenseFeature", randn(3, 5),
@@ -456,7 +460,7 @@ def save_heterograph(
                           "Dense item features.")
             ]
         }
-
+        
         edge_attrs = {
             edge_groups[0]: [
                 Attribute("ClickTime", randn(4, 1), "Click time.")
@@ -471,21 +475,20 @@ def save_heterograph(
                           "Dense friend features.")
             ]
         }
-
+        
         num_nodes_dict = {
             node_groups[0]: 3,
             node_groups[1]:
                 5  # more than the actual number of items in the edges
         }
-
+        
         # Save the graph dataset.
-        gli.io.save_heterograph(name="example_hetero_dataset",
+        save_heterograph(name="example_hetero_dataset",
                                 edge=edge,
                                 num_nodes_dict=num_nodes_dict,
                                 node_attrs=node_attrs,
                                 edge_attrs=edge_attrs,
-                                description="An example heterograph dataset.",
-                                save_dir=tmpdir)
+                                description="An example heterograph dataset.")
 
     The metadata.json will look like the following:
 
