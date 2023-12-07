@@ -430,6 +430,8 @@ def save_heterograph(
     Example
     -------
     .. code-block:: python
+        import numpy as np from numpy.random 
+        import randn, randint from scipy.sparse import random as sparse_random
 
         node_groups = ["user", "item"]
         edge_groups = [("user", "click", "item"), ("user", "purchase", "item"),
