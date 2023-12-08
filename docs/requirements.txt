@@ -1,0 +1,6 @@
+sphinx-rtd-theme
+sphinx-copybutton
+numpy>=1.19
+scipy>=1.5
+torch>=1.10
+dgl>=0.6
