@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>save_homograph &mdash; GLI 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="save_heterograph" href="gli.io.save_heterograph.html" />
+    <link rel="prev" title="Attribute" href="gli.io.Attribute.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GLI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/contribute.html">Contributor Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../api/gli.html">gli.dataloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/task.html">gli.task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/graph.html">gli.graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/dataset.html">gli.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/utils.html">gli.utils</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api/io.html">gli.io</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gli.io.Attribute.html">Attribute</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">save_homograph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gli.io.save_heterograph.html">save_heterograph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gli.io.save_task_node_regression.html">save_task_node_regression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gli.io.save_task_node_classification.html">save_task_node_classification</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">File Format</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../format/file.html">GLI Data and Task File Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../format/citation.html">Citation and License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GLI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api/io.html">gli.io</a></li>
+      <li class="breadcrumb-item active">save_homograph</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/gli.io.save_homograph.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="save-homograph">
+<h1>save_homograph<a class="headerlink" href="#save-homograph" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gli.io.save_homograph">
+<span class="sig-prename descclassname"><span class="pre">gli.io.</span></span><span class="sig-name descname"><span class="pre">save_homograph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_attrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="gli.io.Attribute.html#gli.io.Attribute" title="gli.io.graph.Attribute"><span class="pre">Attribute</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_attrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="gli.io.Attribute.html#gli.io.Attribute" title="gli.io.graph.Attribute"><span class="pre">Attribute</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_node_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_edge_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">spmatrix</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_attrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="gli.io.Attribute.html#gli.io.Attribute" title="gli.io.graph.Attribute"><span class="pre">Attribute</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">citation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gli.io.save_homograph" title="Permalink to this definition"></a></dt>
+<dd><p>Save a homogeneous graph information to metadata.json and numpy data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the graph dataset.</p></li>
+<li><p><strong>edge</strong> (<em>array</em>) – An array of shape (num_edges, 2). Each row is an edge between
+the two nodes with the given node IDs.</p></li>
+<li><p><strong>num_nodes</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of nodes in the graph, defaults to None. If
+not specified, the number of nodes will be inferred from <code class="docutils literal notranslate"><span class="pre">edge</span></code>.</p></li>
+<li><p><strong>node_attrs</strong> (<em>list</em><em> of </em><a class="reference internal" href="gli.io.Attribute.html#gli.io.Attribute" title="gli.io.Attribute"><em>Attribute</em></a><em>, </em><em>optional</em>) – A list of attributes of the nodes, defaults to None.</p></li>
+<li><p><strong>edge_attrs</strong> (<em>list</em><em> of </em><a class="reference internal" href="gli.io.Attribute.html#gli.io.Attribute" title="gli.io.Attribute"><em>Attribute</em></a><em>, </em><em>optional</em>) – A list of attributes of the edges, defaults to None.</p></li>
+<li><p><strong>graph_node_list</strong> (<em>(</em><em>sparse</em><em>) </em><em>array</em><em>, </em><em>optional</em>) – An array of shape (num_graphs, num_nodes). Each row
+corresponds to a graph and each column corresponds to a node. The value
+of the element (i, j) is 1 if node j is in graph i, otherwise 0. If not
+specified, the graph will be considered as a single graph, defaults to
+None.</p></li>
+<li><p><strong>graph_edge_list</strong> (<em>(</em><em>sparse</em><em>) </em><em>array</em><em>, </em><em>optional</em>) – An array of shape (num_graphs, num_edges). Each
+row corresponds to a graph and each column corresponds to an edge. The
+value of the element (i, j) is 1 if edge j is in graph i, otherwise 0.
+If not specified, the edges contained in each graph specified by
+<cite>graph_node_list</cite> will be considered as all the edges among the nodes
+in the graph, defaults to None.</p></li>
+<li><p><strong>graph_attrs</strong> (<em>list</em><em> of </em><a class="reference internal" href="gli.io.Attribute.html#gli.io.Attribute" title="gli.io.Attribute"><em>Attribute</em></a><em>, </em><em>optional</em>) – A list of attributes of the graphs, defaults to None.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – The description of the dataset, defaults to “”.</p></li>
+<li><p><strong>citation</strong> (<em>str</em><em>, </em><em>optional</em>) – The citation of the dataset, defaults to “”.</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – The directory to save the numpy data files and
+<cite>metadata.json</cite>, defaults to “.”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The dictionary of the content in <cite>metadata.json</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gli.io</span> <span class="kn">import</span> <span class="n">save_homograph</span><span class="p">,</span> <span class="n">Attribute</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">randn</span><span class="p">,</span> <span class="n">randint</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">random</span> <span class="k">as</span> <span class="n">sparse_random</span>
+
+<span class="c1"># Create a graph with 6 nodes and 5 edges.</span>
+<span class="n">edge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span> <span class="c1"># Create attributes of the nodes.</span>
+<span class="n">dense_node_feats</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DenseNodeFeature&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>  <span class="c1"># 6 nodes, 5 features</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Dense node features.&quot;</span><span class="p">)</span>
+<span class="n">sparse_node_feats</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SparseNodeFeature&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">sparse_random</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>  <span class="c1"># 6 nodes, 500 features</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sparse node features.&quot;</span><span class="p">)</span>
+<span class="n">node_labels</span> <span class="o">=</span> <span class="n">Attribute</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;NodeLabel&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>  <span class="c1"># 6 nodes, 4 classes</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Node labels.&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save the graph dataset.</span>
+<span class="n">save_homograph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;example_dataset&quot;</span><span class="p">,</span>
+           <span class="n">edge</span><span class="o">=</span><span class="n">edge</span><span class="p">,</span> <span class="n">node_attrs</span><span class="o">=</span><span class="p">[</span><span class="n">dense_node_feats</span><span class="p">,</span> <span class="n">sparse_node_feats</span><span class="p">,</span> <span class="n">node_labels</span><span class="p">],</span>
+           <span class="n">description</span><span class="o">=</span><span class="s2">&quot;An exampmle dataset.&quot;</span><span class="p">,</span>
+           <span class="n">citation</span><span class="o">=</span><span class="s2">&quot;some bibtex citation&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The metadata.json and numpy data files will be saved in the current
+directory. And the metadata.json will look like something below.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;An exampmle dataset.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Node&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;DenseNodeFeature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dense node features.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tensor&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node_DenseNodeFeature&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;SparseNodeFeature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sparse node features.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SparseTensor&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__graph__Node_SparseNodeFeature__118f9d2bbc457f9d64fe610a9510db1c.sparse.npz&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;NodeLabel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node labels.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tensor&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node_NodeLabel&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;_Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Edge_Edge&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;Graph&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;_NodeList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__graph__4b7f4a5f08ad24b27423daaa8d445238.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Graph_NodeList&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;citation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some bibtex citation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;is_heterogeneous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gli.io.Attribute.html" class="btn btn-neutral float-left" title="Attribute" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gli.io.save_heterograph.html" class="btn btn-neutral float-right" title="save_heterograph" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, GLI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

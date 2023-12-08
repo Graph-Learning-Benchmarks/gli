@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gli.task &mdash; GLI 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GLITask" href="../generated/gli.task.GLITask.html" />
+    <link rel="prev" title="combine_graph_and_task" href="../generated/gli.dataloading.combine_graph_and_task.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GLI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/contribute.html">Contributor Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="gli.html">gli.dataloading</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">gli.task</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.GLITask.html">GLITask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.read_gli_task.html">read_gli_task</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.NodeClassificationTask.html">NodeClassificationTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.NodeRegressionTask.html">NodeRegressionTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.GraphClassificationTask.html">GraphClassificationTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.GraphRegressionTask.html">GraphRegressionTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.LinkPredictionTask.html">LinkPredictionTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.TimeDependentLinkPredictionTask.html">TimeDependentLinkPredictionTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.KGEntityPredictionTask.html">KGEntityPredictionTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generated/gli.task.KGRelationPredictionTask.html">KGRelationPredictionTask</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="graph.html">gli.graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dataset.html">gli.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">gli.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">gli.io</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">File Format</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../format/file.html">GLI Data and Task File Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../format/citation.html">Citation and License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GLI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">gli.task</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/task.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-gli.task">
+<span id="gli-task"></span><span id="task"></span><h1>gli.task<a class="headerlink" href="#module-gli.task" title="Permalink to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">gli.task</span></code> module.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">gli.task</span></code> module contains task classes allowed by GLI and utilities for
+loading them during runtime. Directly using the classes in this module is still
+experimental. Users are encouraged to use the <a class="reference internal" href="../generated/gli.task.read_gli_task.html#gli.task.read_gli_task" title="gli.task.read_gli_task"><code class="xref py py-func docutils literal notranslate"><span class="pre">gli.task.read_gli_task()</span></code></a>
+to load tasks from files instead.</p>
+<p>See details of GLI file-based task format in <a class="reference internal" href="../format/file.html#format"><span class="std std-ref">GLI Data and Task File Formats</span></a>.</p>
+<section id="base-class">
+<h2>Base Class<a class="headerlink" href="#base-class" title="Permalink to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/gli.task.GLITask.html#gli.task.GLITask" title="gli.task.GLITask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GLITask</span></code></a></p></td>
+<td><p>The basic GLI task class for creating graph learning tasks.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="utility-function">
+<h2>Utility Function<a class="headerlink" href="#utility-function" title="Permalink to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/gli.task.read_gli_task.html#gli.task.read_gli_task" title="gli.task.read_gli_task"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_gli_task</span></code></a></p></td>
+<td><p>Read a local GLI task file and return a task object.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="available-tasks">
+<h2>Available Tasks<a class="headerlink" href="#available-tasks" title="Permalink to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/gli.task.NodeClassificationTask.html#gli.task.NodeClassificationTask" title="gli.task.NodeClassificationTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeClassificationTask</span></code></a></p></td>
+<td><p>Node classification task, alias.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../generated/gli.task.NodeRegressionTask.html#gli.task.NodeRegressionTask" title="gli.task.NodeRegressionTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeRegressionTask</span></code></a></p></td>
+<td><p>Node regression task, alias.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/gli.task.GraphClassificationTask.html#gli.task.GraphClassificationTask" title="gli.task.GraphClassificationTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GraphClassificationTask</span></code></a></p></td>
+<td><p>Graph classification task, alias.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../generated/gli.task.GraphRegressionTask.html#gli.task.GraphRegressionTask" title="gli.task.GraphRegressionTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GraphRegressionTask</span></code></a></p></td>
+<td><p>Graph regression task, alias.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/gli.task.LinkPredictionTask.html#gli.task.LinkPredictionTask" title="gli.task.LinkPredictionTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkPredictionTask</span></code></a></p></td>
+<td><p>Link prediction task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../generated/gli.task.TimeDependentLinkPredictionTask.html#gli.task.TimeDependentLinkPredictionTask" title="gli.task.TimeDependentLinkPredictionTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeDependentLinkPredictionTask</span></code></a></p></td>
+<td><p>Time dependent link prediction task.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../generated/gli.task.KGEntityPredictionTask.html#gli.task.KGEntityPredictionTask" title="gli.task.KGEntityPredictionTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KGEntityPredictionTask</span></code></a></p></td>
+<td><p>Knowledge graph entity prediction task.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../generated/gli.task.KGRelationPredictionTask.html#gli.task.KGRelationPredictionTask" title="gli.task.KGRelationPredictionTask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KGRelationPredictionTask</span></code></a></p></td>
+<td><p>Knowledge graph relation prediction task.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../generated/gli.dataloading.combine_graph_and_task.html" class="btn btn-neutral float-left" title="combine_graph_and_task" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../generated/gli.task.GLITask.html" class="btn btn-neutral float-right" title="GLITask" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, GLI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

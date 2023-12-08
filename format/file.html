@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GLI Data and Task File Formats &mdash; GLI 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Citation and License" href="citation.html" />
+    <link rel="prev" title="save_task_node_classification" href="../generated/gli.io.save_task_node_classification.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GLI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/contribute.html">Contributor Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/gli.html">gli.dataloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/task.html">gli.task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/graph.html">gli.graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/dataset.html">gli.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/utils.html">gli.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/io.html">gli.io</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">File Format</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GLI Data and Task File Formats</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gli-data-storage">GLI Data Storage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#graph-representation">Graph Representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#objects-and-attributes">Objects and Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-homogeneous-graph">Example (Homogeneous Graph)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#heterogeneous-graph">Heterogeneous Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-heterogeneous-graph">Example (Heterogeneous Graph)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gli-task-configuration">GLI Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#supported-tasks">Supported Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataset-split">Dataset Split</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-node-classification">Example (Node Classification)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gli-auxiliary">GLI Auxiliary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#documentation-readme-md">Documentation (<code class="docutils literal notranslate"><span class="pre">README.md</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conversion-script-dataset-name-ipynb-py">Conversion Script (<code class="docutils literal notranslate"><span class="pre">&lt;dataset_name&gt;.ipynb/.py</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-link-urls-json">Download Link (<code class="docutils literal notranslate"><span class="pre">urls.json</span></code>)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation and License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GLI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">GLI Data and Task File Formats</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/format/file.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gli-data-and-task-file-formats">
+<span id="format"></span><h1>GLI Data and Task File Formats<a class="headerlink" href="#gli-data-and-task-file-formats" title="Permalink to this heading"></a></h1>
+<a class="reference internal image-reference" href="../_images/GLI-File-Structure.png"><img alt="GLI File Structure" src="../_images/GLI-File-Structure.png" style="width: 100%;" /></a>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>The GLI file format is designed to be a unified file format for storing graph
+learning datasets, allowing a general data loading scheme through GLI. The
+figure on the top gives an overview of the GLI file structure.</p>
+<p>This section illustrates the GLI file structure through three components:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#gli-data-storage">GLI Data Storage</a></p></li>
+<li><p><a class="reference internal" href="#gli-task-configuration">GLI Task Configuration</a></p></li>
+<li><p><a class="reference internal" href="#gli-auxiliary">GLI Auxiliary</a></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GLI provides a rich list of templates for these files.
+See <a class="reference external" href="https://github.com/Graph-Learning-Benchmarks/gli/tree/main/templates">https://github.com/Graph-Learning-Benchmarks/gli/tree/main/templates</a>
+for more details.</p>
+</div>
+<p>In brief, <a class="reference internal" href="#gli-data-storage">GLI Data Storage</a> stores all the necessary information to construct
+a graph. <a class="reference internal" href="#gli-task-configuration">GLI Task Configuration</a> stores the task-specific information, and may
+have multiple variants defined on one graph. <a class="reference internal" href="#gli-auxiliary">GLI Auxiliary</a> stores the
+auxiliary information about the graph dataset, such as the license.</p>
+<p>In addition, GLI further compress big chunks of data (such as the attributes or
+edge list) into <a class="reference external" href="https://numpy.org/devdocs/reference/generated/numpy.lib.format.html#module-numpy.lib.format">NumPy standard binary format</a> (.npz file, green box in the figure), with
+indexes to these data stored in JSON files (blue box in the figure).</p>
+<div class="admonition-numpy-standard-binary-format-npz admonition">
+<p class="admonition-title">Numpy Standard Binary Format (.npz)</p>
+<p>The <cite>.npz</cite> format is the standard format for persisting multiple NumPy
+arrays on disk. A <cite>.npz</cite> file is a zip file containing multiple <cite>.npy</cite>
+files, one for each array. In GLI, we use <code class="docutils literal notranslate"><span class="pre">file</span></code> and <code class="docutils literal notranslate"><span class="pre">key</span></code> to jointly
+index a <cite>Tensor/SparseTensor</cite>.</p>
+</div>
+</section>
+<section id="gli-data-storage">
+<h2>GLI Data Storage<a class="headerlink" href="#gli-data-storage" title="Permalink to this heading"></a></h2>
+<p>The metadata of the graph dataset should be stored in a file named as
+<cite>metadata.json</cite>, which contains the pointers to various npz files storing the
+actual data. There are four required fields in <cite>metadata.json</cite>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code>: A short description of the dataset, typically the dataset name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: The graph objects as well as their attributes, see <a class="reference internal" href="#objects-and-attributes">Objects and Attributes</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">citation</span></code>: The bibtex of the original dataset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">is_heterogeneous</span></code>: A boolean value that indicates the graph heterogeneity.</p></li>
+</ul>
+<p>Since GLI is designed to separate tasks from graph data, this file should not
+contain any information regarding task configuration, e.g., negative edges in
+link prediction tasks.</p>
+<section id="graph-representation">
+<h3>Graph Representation<a class="headerlink" href="#graph-representation" title="Permalink to this heading"></a></h3>
+<p>We define a graph as <span class="math notranslate nohighlight">\(G=(V, E)\)</span>, where <span class="math notranslate nohighlight">\(V\)</span> is a set of nodes
+(<span class="math notranslate nohighlight">\(1,2,\dots,|V|\)</span>) and <span class="math notranslate nohighlight">\(E\)</span> is a set of edges, each of which
+<span class="math notranslate nohighlight">\(e=(v_i,v_j)\)</span> is an ordered tuple.</p>
+<p>Each node and edge can be associated with multiple <em>attributes</em> of different forms
+(scalar, vector, string, etc) that may serve as the <em>features</em> or <em>targets</em> in a
+graph learning task. Mathematically, for a <span class="math notranslate nohighlight">\(d\)</span>-dimension <em>node attribute</em>,
+one can represent them by a <span class="math notranslate nohighlight">\(|V|\times d\)</span> matrix <span class="math notranslate nohighlight">\(X_V\)</span>, and for a
+<span class="math notranslate nohighlight">\(d\)</span>-dimension <em>edge attribute</em>, one can represent them by a <span class="math notranslate nohighlight">\(|E|\times
+d\)</span> matrix <span class="math notranslate nohighlight">\(X_E\)</span>.</p>
+<p>It is common to divide the graph into multiple <em>subgraphs</em>. To divide a large
+graph <span class="math notranslate nohighlight">\(G\)</span> into <span class="math notranslate nohighlight">\(N\)</span> <em>node-induced subgraphs</em>, we may use a binary
+<span class="math notranslate nohighlight">\(N\times |V|\)</span> matrix <span class="math notranslate nohighlight">\(S_V\)</span> to represent the subgraphs, where
+<span class="math notranslate nohighlight">\(S_{Vij}=1\)</span> if node <span class="math notranslate nohighlight">\(j\)</span> belongs to subgraph <span class="math notranslate nohighlight">\(i\)</span>, and
+<span class="math notranslate nohighlight">\(S_{Vij}=0\)</span> otherwise. Alternatively, we can divide <span class="math notranslate nohighlight">\(G\)</span> into
+<span class="math notranslate nohighlight">\(N\)</span> <em>edge-induced subgraphs</em> by a <span class="math notranslate nohighlight">\(N\times |E|\)</span> matrix <span class="math notranslate nohighlight">\(S_E\)</span> in
+an analogous way. Additionally, each subgraph may be associated with multiple
+<em>attributes</em> just like node and edge attributes by a matrix <span class="math notranslate nohighlight">\(X_S\)</span>.</p>
+</section>
+<section id="objects-and-attributes">
+<h3>Objects and Attributes<a class="headerlink" href="#objects-and-attributes" title="Permalink to this heading"></a></h3>
+<p>GLI represents a graph through three <em>levels/objects</em> with attributes: <strong>Node</strong>,
+<strong>Edge</strong>, and <strong>Graph</strong>. They are stored under the <code class="docutils literal notranslate"><span class="pre">data</span></code> field in
+<cite>metadata.json</cite> For each object, one can define multiple attributes that
+associated with it. There are three <em>reserved attributes</em>: <code class="docutils literal notranslate"><span class="pre">_Edge</span></code>,
+<code class="docutils literal notranslate"><span class="pre">_NodeList</span></code>, and <code class="docutils literal notranslate"><span class="pre">_EdgeList</span></code> that stores the essential info about graph
+structure. Except for them, users are free to define any extra ones. The
+following table summarizes the three levels and the three reserved attributes:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Objects</p></td>
+<td><p>Information</p></td>
+<td><p>Predefined attributes</p></td>
+</tr>
+<tr class="row-even"><td><p>Node</p></td>
+<td><p><span class="math notranslate nohighlight">\(X_V\)</span></p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-odd"><td><p>Edge</p></td>
+<td><p><span class="math notranslate nohighlight">\(E\)</span>,
+<span class="math notranslate nohighlight">\(X_E\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">_Edge</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Graph</p></td>
+<td><p><span class="math notranslate nohighlight">\(A_V\)</span>,
+<span class="math notranslate nohighlight">\(A_E\)</span>,
+<span class="math notranslate nohighlight">\(X_S\)</span></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">_NodeList</span></code>,
+<code class="docutils literal notranslate"><span class="pre">_EdgeList</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-reserved-attributes-format admonition">
+<p class="admonition-title">Reserved Attributes Format</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_Edge</span></code> (<em>required</em>): A <code class="docutils literal notranslate"><span class="pre">Tensor</span></code> in shape <cite>(n_edges, 2)</cite>. <code class="docutils literal notranslate"><span class="pre">_Edge[i]</span></code> stores the i-th edge in the form of <cite>(src_node_id, dst_node_id)</cite>. <strong>Notice that nodes indices are zero-based. i.e., node ID starts from 0.</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_NodeList</span></code> (<em>required</em>): A 0/1-valued <code class="docutils literal notranslate"><span class="pre">Tensor</span></code>/<cite>SparseTensor</cite> in shape <cite>(n_graphs, n_nodes)</cite>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_EdgeList</span></code> (<em>optional</em>): A 0/1-valued <code class="docutils literal notranslate"><span class="pre">Tensor</span></code>/<cite>SparseTensor</cite> in shape <cite>(n_graphs, n_edges)</cite>. This attribute is optional when the <code class="docutils literal notranslate"><span class="pre">_EdgeList</span></code> of each subgraph can be inferred from <code class="docutils literal notranslate"><span class="pre">_NodeList</span></code>.</p></li>
+</ul>
+</div>
+<p>For any user-defined attribute, one needs to specify these five fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code>: A short description of the attribute.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: The type of the attribute. Currently, GLI supports <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code> and <code class="docutils literal notranslate"><span class="pre">string</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code>: The storing format of the attribute. Currently, GLI supports <code class="docutils literal notranslate"><span class="pre">Tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">SparseTensor</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>: The name of the npz file storing the attribute.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">key</span></code>: The key in the npz file that maps to the attribute.</p></li>
+</ul>
+<p>For predefined attributes (e.g. <code class="docutils literal notranslate"><span class="pre">_NodeList</span></code>), one only needs to specify two fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span></code>: The name of the npz file storing the attribute.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">key</span></code>: The key in the npz file that maps to the attribute.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Only <cite>csr</cite> and <cite>coo</cite> format are stably supported for <code class="docutils literal notranslate"><span class="pre">SparseTensor</span></code> in GLI.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GLI provides a utility function <code class="xref py py-func docutils literal notranslate"><span class="pre">gli.utils.save_data()</span></code> to help
+contributors store attributes data conveniently. Contributors are encouraged
+to use this function to store their data rather than storing mannually with
+Numpy.</p>
+</div>
+</section>
+<section id="example-homogeneous-graph">
+<h3>Example (Homogeneous Graph)<a class="headerlink" href="#example-homogeneous-graph" title="Permalink to this heading"></a></h3>
+<p>Here is a minimal example of <cite>metadata.json</cite> of the famous CORA dataset.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CORA dataset.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Node&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;NodeFeature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node features of Cora dataset, 1/0-valued vectors.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SparseTensor&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora_node_feats.sparse.npz&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;NodeLabel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node labels of Cora dataset, int ranged from 1 to 7.&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tensor&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;node_class&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;_Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;edge&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;Graph&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;_NodeList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;node_list&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;citation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@inproceedings{yang2016revisiting,\ntitle={Revisiting</span>
+<span class="s2">        semi-supervised learning with graph embeddings},\nauthor={Yang, Zhilin</span>
+<span class="s2">        and Cohen, William and Salakhudinov, Ruslan},\nbooktitle={International</span>
+<span class="s2">        conference on machine</span>
+<span class="s2">        learning},\npages={40--48},\nyear={2016},\norganization={PMLR}\n}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;is_heterogeneous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="heterogeneous-graph">
+<h3>Heterogeneous Graph<a class="headerlink" href="#heterogeneous-graph" title="Permalink to this heading"></a></h3>
+<p>Heterogeneous graph has multiple kinds of nodes and edges. For a heterograph,
+<code class="docutils literal notranslate"><span class="pre">Node</span></code> and <code class="docutils literal notranslate"><span class="pre">Edge</span></code> are dictionaries that map node/edge group name to its
+attributes. In addition to the required attributes that homogeneous graph needs,
+metadata of a heterogeneous graph requires these attributes:</p>
+<ul class="simple">
+<li><p>Node <code class="docutils literal notranslate"><span class="pre">_ID</span></code>: The unique indices for all nodes.</p></li>
+<li><p>Edge <code class="docutils literal notranslate"><span class="pre">_ID</span></code>: The unique indices for all edges.</p></li>
+</ul>
+<p>Both <code class="docutils literal notranslate"><span class="pre">_ID</span></code> should follow <strong>zero-based indexing</strong>.</p>
+</section>
+<section id="example-heterogeneous-graph">
+<h3>Example (Heterogeneous Graph)<a class="headerlink" href="#example-heterogeneous-graph" title="Permalink to this heading"></a></h3>
+<p>Here is a complete example of heterograph’s <cite>metadata.json</cite>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;OGBN-MAG dataset.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;Node&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;PaperNode&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PaperNode_id&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;PaperFeature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node features of ogbn-mag dataset.&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tensor&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_feats&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;PaperLabel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node labels of ogbn-mag dataset, int ranged from 1 to 40.&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tensor&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_class&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;PaperYear&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Year of the article represented by the Node&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tensor&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_year&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;AuthorNode&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AuthorNode_id&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;InstitutionNode&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;InstitutionNode_id&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;FieldOfStudyNode&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FieldOfStudyNode_id&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;Author_affiliated_with_Institution&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;author_institution_id&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;_Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;author_institution_edge&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;Author_writes_Paper&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;author_paper_id&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;_Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;author_paper_edge&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;Paper_cites_Paper&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_paper_id&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;_Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_paper_edge&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;Paper_has_topic_FieldOfStudy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_FieldOfStudy_id&quot;</span>
+<span class="w">                </span><span class="p">},</span>
+<span class="w">                </span><span class="nt">&quot;_Edge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paper_FieldOfStudy_edge&quot;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;Graph&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;_NodeList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;node_list&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;_EdgeList&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ogbn-mag.npz&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;edge_list&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;citation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@inproceedings{wang2020microsoft,\ntitle={Microsoft</span>
+<span class="s2">        academic graph: When experts are not enough},\nauthor={Wang, Kuansan and</span>
+<span class="s2">        Shen, Zhihong and Huang, Chiyuan and Wu, Chieh-Han and Dong, Yuxiao and</span>
+<span class="s2">        Kanakia, Anshul},\nbooktitle={Quantitative Science</span>
+<span class="s2">        Studies},\npages={396--413},\nyear={2020}\n}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;is_heterogeneous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See <a class="reference external" href="https://github.com/Graph-Learning-Benchmarks/gli/tree/main/datasets">https://github.com/Graph-Learning-Benchmarks/gli/tree/main/datasets</a> for a list of available examples.</p>
+</div>
+</section>
+</section>
+<section id="gli-task-configuration">
+<h2>GLI Task Configuration<a class="headerlink" href="#gli-task-configuration" title="Permalink to this heading"></a></h2>
+<p>The information about a graph learning task (e.g., the train/test splits or the
+prediction target) should be stored in a <em>task configuration file</em> named as
+<cite>task_&lt;task_type&gt;.json</cite>. There could be multiple different tasks for a single
+graph dataset, such as node classification and link prediction. Node
+classification with different data split can also be viewed as different tasks.
+There are four required fields in a <cite>task_&lt;task_type&gt;.json</cite>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code>:  A short description of the task.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: The type of the task. A list of supported tasks is available at <a class="reference internal" href="../api/task.html#task"><span class="std std-ref">gli.task</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">feature</span></code>: The attributes that used as features in the graph learning task.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target</span></code>: The attribute that used as the prediction target in the graph learning task.</p></li>
+</ul>
+<section id="supported-tasks">
+<h3>Supported Tasks<a class="headerlink" href="#supported-tasks" title="Permalink to this heading"></a></h3>
+<p>See <a class="reference internal" href="../api/task.html#task"><span class="std std-ref">gli.task</span></a>.</p>
+</section>
+<section id="dataset-split">
+<h3>Dataset Split<a class="headerlink" href="#dataset-split" title="Permalink to this heading"></a></h3>
+<p>There are two ways to specify the dataset split for a task: random split and
+predefined split.</p>
+</section>
+<section id="example-node-classification">
+<h3>Example (Node Classification)<a class="headerlink" href="#example-node-classification" title="Permalink to this heading"></a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node classification on CORA dataset. Planetoid split.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NodeClassification&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;feature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;Node/NodeFeature&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node/NodeLabel&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;num_classes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;train_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora_task.npz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;train&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;val_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora_task.npz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;test_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cora_task.npz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="gli-auxiliary">
+<h2>GLI Auxiliary<a class="headerlink" href="#gli-auxiliary" title="Permalink to this heading"></a></h2>
+<p>GLI auxiliary files do not directly contribute to the dataloading process. Instead, they contain extra information about the dataset, such as the citation of the dataset, the license of the dataset, or the conversion script that transform the raw data into GLI format.</p>
+<section id="documentation-readme-md">
+<h3>Documentation (<code class="docutils literal notranslate"><span class="pre">README.md</span></code>)<a class="headerlink" href="#documentation-readme-md" title="Permalink to this heading"></a></h3>
+<p>A document that contains the necessary information about the dataset and task(s), including description, citation(s), available task(s), and extra required packages for the conversion script. See <a class="reference internal" href="citation.html#citation"><span class="std std-ref">Citation and License</span></a> for citation formats.</p>
+</section>
+<section id="conversion-script-dataset-name-ipynb-py">
+<h3>Conversion Script (<code class="docutils literal notranslate"><span class="pre">&lt;dataset_name&gt;.ipynb/.py</span></code>)<a class="headerlink" href="#conversion-script-dataset-name-ipynb-py" title="Permalink to this heading"></a></h3>
+<p>A jupyter notebook or python script to convert the raw data into GLI format.</p>
+</section>
+<section id="license">
+<h3>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h3>
+<p>A license file used by the current version of the dataset.</p>
+</section>
+<section id="download-link-urls-json">
+<h3>Download Link (<code class="docutils literal notranslate"><span class="pre">urls.json</span></code>)<a class="headerlink" href="#download-link-urls-json" title="Permalink to this heading"></a></h3>
+<p>A json file that contains the download links of npz files. The key of the json file is the name of the npz file, and the value is the download link.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../generated/gli.io.save_task_node_classification.html" class="btn btn-neutral float-left" title="save_task_node_classification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="citation.html" class="btn btn-neutral float-right" title="Citation and License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, GLI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

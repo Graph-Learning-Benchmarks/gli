@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>save_task_node_classification &mdash; GLI 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e031e9a9"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GLI Data and Task File Formats" href="../format/file.html" />
+    <link rel="prev" title="save_task_node_regression" href="gli.io.save_task_node_regression.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            GLI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/contribute.html">Contributor Guidelines</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../api/gli.html">gli.dataloading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/task.html">gli.task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/graph.html">gli.graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/dataset.html">gli.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/utils.html">gli.utils</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api/io.html">gli.io</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gli.io.Attribute.html">Attribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gli.io.save_homograph.html">save_homograph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gli.io.save_heterograph.html">save_heterograph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gli.io.save_task_node_regression.html">save_task_node_regression</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">save_task_node_classification</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">File Format</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../format/file.html">GLI Data and Task File Formats</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../format/citation.html">Citation and License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">GLI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api/io.html">gli.io</a></li>
+      <li class="breadcrumb-item active">save_task_node_classification</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/gli.io.save_task_node_classification.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="save-task-node-classification">
+<h1>save_task_node_classification<a class="headerlink" href="#save-task-node-classification" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="gli.io.save_task_node_classification">
+<span class="sig-prename descclassname"><span class="pre">gli.io.</span></span><span class="sig-name descname"><span class="pre">save_task_node_classification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gli.io.save_task_node_classification" title="Permalink to this definition"></a></dt>
+<dd><p>Save the node classification task information into task json and data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the dataset.</p></li>
+<li><p><strong>description</strong> (<em>str</em>) – The description of the task.</p></li>
+<li><p><strong>feature</strong> (<em>list</em><em> of </em><em>str</em>) – The list of feature names to be used in the task. The
+features could be node attributes, edge attributes, or graph
+attributes. For homogeneous graphs, the feature names should be in the
+format of “Node/{node_attr_name}”, “Edge/{edge_attr_name}”, or
+“Graph/{graph_attr_name}”. For heterogeneous graphs, the feature names
+should be in the format of “Node/{node_type}/{node_attr_name}”,
+“Edge/{edge_type}/{edge_attr_name}”, or
+“Graph/{graph_type}/{graph_attr_name}”. The node/edge/graph_attr_name,
+and the node/edge/graph_type should be the ones declared in the
+metadata.json file.</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – The attribute name as prediction target in the task. For
+a node classification task, the attribute should be a node attribute.
+For homogeneous graphs, the attribute name should be in the format of
+“Node/{node_attr_name}”. For heterogeneous graphs, the attribute name
+should be in the format of “Node/{node_type}/{node_attr_name}”. The
+node_attr_name and the node_type should be the ones declared in the
+metadata.json file.</p></li>
+<li><p><strong>num_classes</strong> (<em>int</em>) – The number of classes in the task.</p></li>
+<li><p><strong>train_set</strong> (<em>list/array</em><em> of </em><em>int</em><em> or </em><em>list</em><em> of </em><em>lists/2-d array</em><em> of </em><em>int</em>) – A list of training node IDs or a list of list training
+node IDs. In the latter case, each inner list is the node IDs of one
+data split. If not None, <cite>train_ratio</cite>, <cite>val_ratio</cite>, and <cite>test_ratio</cite>
+will be ignored while <cite>val_set</cite> and <cite>test_set</cite> must present. If None,
+the task json file will store <cite>train_ratio</cite>, <cite>val_ratio</cite>, and
+<cite>test_ratio</cite> and random splits will be generated at run time. Default:
+None.</p></li>
+<li><p><strong>val_set</strong> (<em>list/array</em><em> of </em><em>int</em><em> or </em><em>list</em><em> of </em><em>lists/2-d array</em><em> of </em><em>int</em>) – A list of validation node IDs or a list of list validation
+node IDs. See <cite>train_set</cite> for more details. Default: None.</p></li>
+<li><p><strong>test_set</strong> (<em>list/array</em><em> of </em><em>int</em><em> or </em><em>list</em><em> of </em><em>lists/2-d array</em><em> of </em><em>int</em>) – A list of test node IDs or a list of list test node IDs.
+See <cite>train_set</cite> for more details. Default: None.</p></li>
+<li><p><strong>train_ratio</strong> (<em>float</em>) – The ratio of training nodes. See <cite>train_set</cite> for more
+details. Default: 0.8.</p></li>
+<li><p><strong>val_ratio</strong> (<em>float</em>) – The ratio of validation nodes. See <cite>train_set</cite> for more
+details. Default: 0.1.</p></li>
+<li><p><strong>test_ratio</strong> (<em>float</em>) – The ratio of test nodes. See <cite>train_set</cite> for more
+details. Default: 0.1.</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – The total number of nodes in the dataset. This needs to
+be provided if <cite>train_set</cite>, <cite>val_set</cite>, and <cite>test_set</cite> are not provided.
+Default: None.</p></li>
+<li><p><strong>task_id</strong> (<em>int</em>) – The task ID. This is needed when there are multiple tasks
+of the same task type are defined on the dataset. Default: 1.</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – The directory to save the task json and data files.
+Default: “.”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If <cite>task_type</cite> is not “NodeRegression” or
+“NodeClassification”.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>description</cite> is not a string.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>feature</cite> is not a list of strings.</p></li>
+<li><p><strong>ValueError</strong> – If elements in <cite>feature</cite> do not correspond to
+node/edge/graph attributes.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>target</cite> is not a string.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>target</cite> does not correspond to a node/graph
+attribute.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>num_classes</cite> is not None for regression tasks.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>train_set</cite>, <cite>val_set</cite>, and <cite>test_set</cite> are not
+provided and <cite>num_samples</cite> is not provided.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>train_set</cite>, <cite>val_set</cite>, and <cite>test_set</cite> are not
+provided and <cite>train_ratio</cite>, <cite>val_ratio</cite>, and <cite>test_ratio</cite> do not sum
+up to 1.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>train_set</cite>, <cite>val_set</cite>, and <cite>test_set</cite> are not
+provided at the same time.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>train_set</cite>, <cite>val_set</cite>, and <cite>test_set</cite> are provided
+but they are not lists or numpy arrays.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>train_set</cite>, <cite>val_set</cite>, and <cite>test_set</cite> contain
+multiple splits but the split ratio of different splits is different.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dictionary of the content in the task json file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">train_set</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">val_set</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">test_set</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="c1"># Save the task information.</span>
+<span class="n">save_task_node_classification</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;example_dataset&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A node classification task for the example dataset.&quot;</span><span class="p">,</span>
+    <span class="n">feature</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Node/DenseNodeFeature&quot;</span><span class="p">,</span> <span class="s2">&quot;Node/SparseNodeFeature&quot;</span><span class="p">],</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;Node/NodeLabel&quot;</span><span class="p">,</span>
+    <span class="n">num_classes</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">train_set</span><span class="o">=</span><span class="n">train_set</span><span class="p">,</span>
+    <span class="n">val_set</span><span class="o">=</span><span class="n">val_set</span><span class="p">,</span>
+    <span class="n">test_set</span><span class="o">=</span><span class="n">test_set</span><span class="p">)</span>
+<span class="c1"># This function will save the task information into a json file named</span>
+<span class="c1"># `task_node_classification_1.json` and one numpy data file storing the</span>
+<span class="c1"># data splits, `train_set`, `val_set`, and `test_set`. The json file</span>
+<span class="c1"># will look like the following.</span>
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A node classification task for the example dataset.&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NodeClassification&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;feature&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;Node/DenseNodeFeature&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;Node/SparseNodeFeature&quot;</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;target&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Node/NodeLabel&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;num_classes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;train_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;train_set&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;val_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;val_set&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;test_set&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;example_dataset__task_node_classification_1__4dcac617700f69a6dec06c2b5f75a246.npz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test_set&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gli.io.save_task_node_regression.html" class="btn btn-neutral float-left" title="save_task_node_regression" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../format/file.html" class="btn btn-neutral float-right" title="GLI Data and Task File Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, GLI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
