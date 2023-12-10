@@ -1,0 +1,889 @@
+{
+    "description": "MUTAG Dataset.",
+    "citation": "@article{Debnath1991StructureactivityRO,\ntitle={Structure-activity relationship of mutagenic aromatic and heteroaromatic nitro compounds. Correlation with molecular orbital energies and hydrophobicity.},\nauthor={Asim Kumar Debnath and R L Compadre and Gargi Debnath and Alan J. Shusterman and Corwin Hansch},\njournal={Journal of medicinal chemistry},\nyear={1991},\nvolume={34 2},\npages={786-97},\nurl={https://api.semanticscholar.org/CorpusID:19990980}}",
+    "data": {
+        "Node": {
+            "SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_SCHEMA__ID"
+                }
+            },
+            "_Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node__Literal__ID"
+                }
+            },
+            "bond": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_bond__ID"
+                }
+            },
+            "d": {
+                "label": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_d_label"
+                },
+                "labels": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_d_labels"
+                },
+                "test_mask": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_d_test_mask"
+                },
+                "train_mask": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_d_train_mask"
+                },
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_d__ID"
+                }
+            },
+            "hasStructure": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Node_hasStructure__ID"
+                }
+            }
+        },
+        "Edge": {
+            "SCHEMA_22-rdf-syntax-ns#type_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_22-rdf-syntax-ns#type_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_22-rdf-syntax-ns#type_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_owl#disjointWith_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_owl#disjointWith_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_owl#disjointWith_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rdf-schema#domain_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rdf-schema#domain_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rdf-schema#domain_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rdf-schema#range_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rdf-schema#range_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rdf-schema#range_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rdf-schema#subClassOf_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rdf-schema#subClassOf_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rdf-schema#subClassOf_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rev-22-rdf-syntax-ns#type_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-22-rdf-syntax-ns#type_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-22-rdf-syntax-ns#type_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rev-22-rdf-syntax-ns#type_bond": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-22-rdf-syntax-ns#type_bond__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-22-rdf-syntax-ns#type_bond__Edge"
+                }
+            },
+            "SCHEMA_rev-22-rdf-syntax-ns#type_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-22-rdf-syntax-ns#type_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-22-rdf-syntax-ns#type_d__Edge"
+                }
+            },
+            "SCHEMA_rev-owl#disjointWith_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-owl#disjointWith_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-owl#disjointWith_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rev-rdf-schema#domain_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-rdf-schema#domain_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-rdf-schema#domain_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rev-rdf-schema#range_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-rdf-schema#range_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-rdf-schema#range_SCHEMA__Edge"
+                }
+            },
+            "SCHEMA_rev-rdf-schema#subClassOf_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-rdf-schema#subClassOf_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_SCHEMA_rev-rdf-schema#subClassOf_SCHEMA__Edge"
+                }
+            },
+            "_Literal_rev-amesTestPositive_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-amesTestPositive_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-amesTestPositive_d__Edge"
+                }
+            },
+            "_Literal_rev-charge_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-charge_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-charge_d__Edge"
+                }
+            },
+            "_Literal_rev-chromaberr_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-chromaberr_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-chromaberr_d__Edge"
+                }
+            },
+            "_Literal_rev-chromex_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-chromex_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-chromex_d__Edge"
+                }
+            },
+            "_Literal_rev-cytogen_ca_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-cytogen_ca_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-cytogen_ca_d__Edge"
+                }
+            },
+            "_Literal_rev-cytogen_sce_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-cytogen_sce_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-cytogen_sce_d__Edge"
+                }
+            },
+            "_Literal_rev-drosophila_rt_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-drosophila_rt_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-drosophila_rt_d__Edge"
+                }
+            },
+            "_Literal_rev-drosophila_slrl_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-drosophila_slrl_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-drosophila_slrl_d__Edge"
+                }
+            },
+            "_Literal_rev-micronuc_f_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-micronuc_f_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-micronuc_f_d__Edge"
+                }
+            },
+            "_Literal_rev-micronuc_m_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-micronuc_m_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-micronuc_m_d__Edge"
+                }
+            },
+            "_Literal_rev-mouse_lymph_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-mouse_lymph_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-mouse_lymph_d__Edge"
+                }
+            },
+            "_Literal_rev-salmonella_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-salmonella_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-salmonella_d__Edge"
+                }
+            },
+            "_Literal_rev-salmonella_n_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-salmonella_n_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-salmonella_n_d__Edge"
+                }
+            },
+            "_Literal_rev-salmonella_reduc_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-salmonella_reduc_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge__Literal_rev-salmonella_reduc_d__Edge"
+                }
+            },
+            "bond_22-rdf-syntax-ns#type_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_bond_22-rdf-syntax-ns#type_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_bond_22-rdf-syntax-ns#type_SCHEMA__Edge"
+                }
+            },
+            "bond_inBond_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_bond_inBond_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_bond_inBond_d__Edge"
+                }
+            },
+            "bond_rev-hasBond_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_bond_rev-hasBond_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_bond_rev-hasBond_d__Edge"
+                }
+            },
+            "d_22-rdf-syntax-ns#type_SCHEMA": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_22-rdf-syntax-ns#type_SCHEMA__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_22-rdf-syntax-ns#type_SCHEMA__Edge"
+                }
+            },
+            "d_amesTestPositive__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_amesTestPositive__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_amesTestPositive__Literal__Edge"
+                }
+            },
+            "d_charge__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_charge__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_charge__Literal__Edge"
+                }
+            },
+            "d_chromaberr__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_chromaberr__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_chromaberr__Literal__Edge"
+                }
+            },
+            "d_chromex__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_chromex__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_chromex__Literal__Edge"
+                }
+            },
+            "d_cytogen_ca__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_cytogen_ca__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_cytogen_ca__Literal__Edge"
+                }
+            },
+            "d_cytogen_sce__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_cytogen_sce__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_cytogen_sce__Literal__Edge"
+                }
+            },
+            "d_drosophila_rt__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_drosophila_rt__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_drosophila_rt__Literal__Edge"
+                }
+            },
+            "d_drosophila_slrl__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_drosophila_slrl__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_drosophila_slrl__Literal__Edge"
+                }
+            },
+            "d_hasAtom_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_hasAtom_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_hasAtom_d__Edge"
+                }
+            },
+            "d_hasBond_bond": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_hasBond_bond__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_hasBond_bond__Edge"
+                }
+            },
+            "d_hasStructure_hasStructure": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_hasStructure_hasStructure__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_hasStructure_hasStructure__Edge"
+                }
+            },
+            "d_micronuc_f__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_micronuc_f__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_micronuc_f__Literal__Edge"
+                }
+            },
+            "d_micronuc_m__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_micronuc_m__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_micronuc_m__Literal__Edge"
+                }
+            },
+            "d_mouse_lymph__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_mouse_lymph__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_mouse_lymph__Literal__Edge"
+                }
+            },
+            "d_rev-hasAtom_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_rev-hasAtom_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_rev-hasAtom_d__Edge"
+                }
+            },
+            "d_rev-inBond_bond": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_rev-inBond_bond__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_rev-inBond_bond__Edge"
+                }
+            },
+            "d_salmonella__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_salmonella__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_salmonella__Literal__Edge"
+                }
+            },
+            "d_salmonella_n__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_salmonella_n__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_salmonella_n__Literal__Edge"
+                }
+            },
+            "d_salmonella_reduc__Literal": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_salmonella_reduc__Literal__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_d_salmonella_reduc__Literal__Edge"
+                }
+            },
+            "hasStructure_rev-hasStructure_d": {
+                "_ID": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_hasStructure_rev-hasStructure_d__ID"
+                },
+                "_Edge": {
+                    "description": "",
+                    "type": "int",
+                    "format": "Tensor",
+                    "file": "MUTAG__heterograph__9cea5bb4360603ef4117ff6b4c6c0103.npz",
+                    "key": "Edge_hasStructure_rev-hasStructure_d__Edge"
+                }
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "MUTAG__heterograph__Graph_NodeList__804c9125dc997d017012d4a6d8e9623c.sparse.npz"
+            }
+        }
+    },
+    "is_heterogeneous": true
+}
