@@ -1,0 +1,7 @@
+num_hidden: 16
+num_layers: 1
+dropout: .5
+inner_activation: False
+inner_dropout: False
+init_layers_A: 1
+init_layers_X: 1

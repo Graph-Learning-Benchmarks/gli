@@ -1,0 +1,6 @@
+num_hidden: 8
+p: [0, 1, 2]
+num_layers: 2
+dropout: .5
+layer_dropout: 0.9
+batchnorm: False
