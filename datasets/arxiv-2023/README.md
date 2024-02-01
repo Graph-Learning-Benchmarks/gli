@@ -2,7 +2,8 @@
 
 ## Dataset Description
 
-arxiv-2023 is collected to be compared with ogbn-arxiv. Both datasets represent directed citation networks where each node corresponds to a paper published on arXiv and each edge indicates one paper citing another.
+A text attributed graph dataset where each node is associated with multiple text attributes.
+It is collected to be compared with ogbn-arxiv. Both datasets represent directed citation networks where each node corresponds to a paper published on arXiv and each edge indicates one paper citing another.
 
 Statistics:
 - Nodes: 33868
@@ -44,10 +45,6 @@ Statistics:
       primaryClass={cs.LG}
 }
 ```
-
-- Previous Version
-	+ [Website](<URL to website>)
-	+ LICENSE: [<license type>](<URL to license>)
 
 
 ## Available Tasks
