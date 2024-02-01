@@ -7,15 +7,15 @@
     "target": "Node/NodeLabel",
     "num_classes": 40,
     "train_set": {
-        "file": "arxiv-2023__task_node_classification_1__96c4df545b7523dab7ea703813687c06.npz",
+        "file": "arxiv-2023__task_node_classification_1__707e9444940a9744a72ae8a990fe9136.npz",
         "key": "train_set"
     },
     "val_set": {
-        "file": "arxiv-2023__task_node_classification_1__96c4df545b7523dab7ea703813687c06.npz",
+        "file": "arxiv-2023__task_node_classification_1__707e9444940a9744a72ae8a990fe9136.npz",
         "key": "val_set"
     },
     "test_set": {
-        "file": "arxiv-2023__task_node_classification_1__96c4df545b7523dab7ea703813687c06.npz",
+        "file": "arxiv-2023__task_node_classification_1__707e9444940a9744a72ae8a990fe9136.npz",
         "key": "test_set"
     }
 }
