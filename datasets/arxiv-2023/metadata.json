@@ -6,27 +6,34 @@
                 "description": "Title of each node",
                 "type": "str",
                 "format": "Tensor",
-                "file": "arxiv-2023__graph__d37b1b1dcaf915e00432000c09872b62.npz",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
                 "key": "Node_Titles"
             },
             "Abstracts": {
                 "description": "Abstract of each article(node)",
                 "type": "str",
                 "format": "Tensor",
-                "file": "arxiv-2023__graph__d37b1b1dcaf915e00432000c09872b62.npz",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
                 "key": "Node_Abstracts"
             },
             "Ids": {
                 "description": "Id of each article(node)",
                 "type": "str",
                 "format": "Tensor",
-                "file": "arxiv-2023__graph__d37b1b1dcaf915e00432000c09872b62.npz",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
                 "key": "Node_Ids"
+            },
+            "Labels": {
+                "description": "Label",
+                "type": "str",
+                "format": "Tensor",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
+                "key": "Node_Labels"
             }
         },
         "Edge": {
             "_Edge": {
-                "file": "arxiv-2023__graph__d37b1b1dcaf915e00432000c09872b62.npz",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
                 "key": "Edge_Edge"
             }
         },
