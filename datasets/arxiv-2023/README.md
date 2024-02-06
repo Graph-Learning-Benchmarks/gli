@@ -14,7 +14,6 @@ Statistics:
 
 - Original Source
 	+ [Website](https://github.com/TRAIS-Lab/LLM-Structured-Data)
-	+ LICENSE: [<license type>](<URL to license>)
 
 
 
@@ -31,7 +30,6 @@ Statistics:
 
 - Current Version
 	+ [Website](https://github.com/TRAIS-Lab/LLM-Structured-Data)
-	+ LICENSE: [<license type>](<URL to license>)
 
 
 
@@ -48,9 +46,6 @@ Statistics:
 
 
 ## Available Tasks
-
-### <Task Name>
-
 
 
 - Task type: `NodeClassification`

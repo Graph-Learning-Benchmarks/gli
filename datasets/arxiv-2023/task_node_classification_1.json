@@ -2,9 +2,10 @@
     "description": "Node classification on arxiv-2023 dataset.",
     "type": "NodeClassification",
     "feature": [
-        "Node/NodeFeature"
+        "Node/Titles",
+        "Node/Abstracts"
     ],
-    "target": "Node/NodeLabel",
+    "target": "Node/Labels",
     "num_classes": 40,
     "train_set": {
         "file": "arxiv-2023__task_node_classification_1__707e9444940a9744a72ae8a990fe9136.npz",
