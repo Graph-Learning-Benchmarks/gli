@@ -1,0 +1,48 @@
+{
+    "description": "ARXIV-2023 dataset.",
+    "data": {
+        "Node": {
+            "Titles": {
+                "description": "Title of each node",
+                "type": "str",
+                "format": "Tensor",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
+                "key": "Node_Titles"
+            },
+            "Abstracts": {
+                "description": "Abstract of each article(node)",
+                "type": "str",
+                "format": "Tensor",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
+                "key": "Node_Abstracts"
+            },
+            "Ids": {
+                "description": "Id of each article(node)",
+                "type": "str",
+                "format": "Tensor",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
+                "key": "Node_Ids"
+            },
+            "Labels": {
+                "description": "Label",
+                "type": "str",
+                "format": "Tensor",
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
+                "key": "Node_Labels"
+            }
+        },
+        "Edge": {
+            "_Edge": {
+                "file": "arxiv-2023__graph__4c1b3c1c22882e1d9660a6e5cafcd1a4.npz",
+                "key": "Edge_Edge"
+            }
+        },
+        "Graph": {
+            "_NodeList": {
+                "file": "arxiv-2023__graph__Graph_NodeList__a133ca6cee0eff3cc4ae10d024cc0c02.sparse.npz"
+            }
+        }
+    },
+    "citation": "@misc{huang2023llms,\ntitle={Can LLMs Effectively Leverage Graph Structural Information: When and Why},\nauthor={Jin Huang and Xingjian Zhang and Qiaozhu Mei and Jiaqi Ma},\nyear={2023},\neprint={2309.16595},\narchivePrefix={arXiv},\nprimaryClass={cs.LG}\n}",
+    "is_heterogeneous": false
+}
