@@ -1,0 +1,43 @@
+name: Process Question in PR
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  process-question:
+    if: contains(github.event.comment.body, '\question') && github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install langchain langchain_openai langchain_core langchain_community
+
+      - name: Extract Question
+        id: get-question
+        run: |
+          QUESTION=$(echo "${{ github.event.comment.body }}" | grep -oP '(?<=\\question ).*')
+          echo "::set-output name=question::$QUESTION"
+
+      - name: Run Python script
+        id: run-script
+        env:
+          QUESTION: ${{ steps.get-question.outputs.question }}
+        run: |
+          echo "::set-output name=answer::$(python .github/document_QA_script.py)"
+
+      - name: Create Comment with Answer
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Here is the answer to your question:
+            ${{ steps.run-script.outputs.answer }}
+          token: ${{ secrets.GITHUB_TOKEN }}
