@@ -1,43 +1,76 @@
-name: Process Question in PR
+name: Process Question in Issue Comment
 on:
   issue_comment:
     types: [created]
+  issues:
+    types: [opened]
 
 jobs:
   process-question:
-    if: contains(github.event.comment.body, '\question') && github.event.issue.pull_request
+    if: >
+      github.event_name == 'issue_comment' && contains(github.event.comment.body, '@bot') ||
+      github.event_name == 'issues' && contains(github.event.issue.body, '@bot')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.9"
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+            !~/.cache/pip/log
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
-          pip install langchain langchain_openai langchain_core langchain_community
+          pip install -r requirements.txt
 
       - name: Extract Question
         id: get-question
         run: |
-          QUESTION=$(echo "${{ github.event.comment.body }}" | grep -oP '(?<=\\question ).*')
-          echo "::set-output name=question::$QUESTION"
+          if [ "${{ github.event_name }}" == "issue_comment" ]; then
+            QUESTION=$(echo "${{ github.event.comment.body }}" | grep -oP '(?<=@bot ).*')
+          else
+            QUESTION=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=@bot ).*')
+          fi
+          echo "question=$QUESTION" >> $GITHUB_OUTPUT
 
       - name: Run Python script
         id: run-script
         env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           QUESTION: ${{ steps.get-question.outputs.question }}
         run: |
-          echo "::set-output name=answer::$(python .github/document_QA_script.py)"
+          ANSWER=$(python .github/scripts/document_QA_script.py)
+          echo "encoded_answer=$ANSWER" >> $GITHUB_ENV
+
+      - name: Decode and create comment
+        id: decode-answer
+        env:
+          ENCODED_ANSWER: ${{ env.encoded_answer }}
+        run: |
+          echo "Decoding..."
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          DECODED_ANSWER=$(echo $ENCODED_ANSWER | base64 --decode)
+          echo "answer<<$EOF" >> $GITHUB_OUTPUT
+          echo "$DECODED_ANSWER" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
 
       - name: Create Comment with Answer
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Here is the answer to your question:
-            ${{ steps.run-script.outputs.answer }}
+            ${{ steps.decode-answer.outputs.answer }}
+          reactions: "+1"
           token: ${{ secrets.GITHUB_TOKEN }}
