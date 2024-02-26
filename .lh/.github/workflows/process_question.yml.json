@@ -1,0 +1,18 @@
+{
+    "sourceFile": ".github/workflows/process_question.yml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1708923888992,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1708923888992,
+            "name": "Commit-0",
+            "content": "name: Process Question in Issue Comment\non:\n  issue_comment:\n    types: [created]\n  issues:\n    types: [opened]\n\njobs:\n  process-question:\n    if: >\n      github.event_name == 'issue_comment' && contains(github.event.comment.body, '@bot') ||\n      github.event_name == 'issues' && contains(github.event.issue.body, '@bot')\n    runs-on: ubuntu-latest\n    steps:\n      - name: Checkout code\n        uses: actions/checkout@v2\n\n      - name: Set up Python 3.9\n        uses: actions/setup-python@v2\n        with:\n          python-version: \"3.9\"\n\n      - name: Cache Python dependencies\n        uses: actions/cache@v2\n        with:\n          path: |\n            ~/.cache/pip\n            !~/.cache/pip/log\n          key: ${{ runner.os }}-pip-${{ hashFiles('**/.github/requirements.txt') }}\n          restore-keys: |\n            ${{ runner.os }}-pip-\n\n      - name: Install dependencies\n        run: |\n          pip install -r ./.github/requirements.txt\n\n      - name: Extract Question\n        id: get-question\n        run: |\n          if [ \"${{ github.event_name }}\" == \"issue_comment\" ]; then\n            QUESTION=$(echo \"${{ github.event.comment.body }}\" | grep -oP '(?<=@bot ).*')\n          else\n            QUESTION=$(echo \"${{ github.event.issue.body }}\" | grep -oP '(?<=@bot ).*')\n          fi\n          echo \"question=$QUESTION\" >> $GITHUB_OUTPUT\n\n      - name: Run Python script\n        id: run-script\n        env:\n          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}\n          QUESTION: ${{ steps.get-question.outputs.question }}\n        run: |\n          ANSWER=$(python .github/scripts/document_QA_script.py)\n          echo \"encoded_answer=$ANSWER\" >> $GITHUB_ENV\n\n      - name: Decode and create comment\n        id: decode-answer\n        env:\n          ENCODED_ANSWER: ${{ env.encoded_answer }}\n        run: |\n          echo \"Decoding...\"\n          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)\n          DECODED_ANSWER=$(echo $ENCODED_ANSWER | base64 --decode)\n          echo \"answer<<$EOF\" >> $GITHUB_OUTPUT\n          echo \"$DECODED_ANSWER\" >> $GITHUB_OUTPUT\n          echo \"$EOF\" >> $GITHUB_OUTPUT\n\n      - name: Create Comment with Answer\n        uses: peter-evans/create-or-update-comment@v4\n        with:\n          issue-number: ${{ github.event.issue.number }}\n          body: |\n            Here is the answer to your question:\n            ${{ steps.decode-answer.outputs.answer }}\n          reactions: \"+1\"\n          token: ${{ secrets.GITHUB_TOKEN }}\n"
+        }
+    ]
+}

@@ -26,13 +26,13 @@ jobs:
           path: |
             ~/.cache/pip
             !~/.cache/pip/log
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/.github/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r ./.github/requirements.txt
 
       - name: Extract Question
         id: get-question
