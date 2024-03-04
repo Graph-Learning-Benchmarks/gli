@@ -363,7 +363,8 @@ def save_homograph(
     raw_text_dict = {}
     for r in raw_text_attrs:
         print(f"{r.name = }")
-        raw_text_dict[r.name] = _attr_to_metadata_dict(key_to_loc, "RawText", r)
+        raw_text_dict[r.name] = _attr_to_metadata_dict(key_to_loc,
+                                                       "RawText", r)
     metadata["data"]["RawText"] = raw_text_dict
 
     metadata["citation"] = citation

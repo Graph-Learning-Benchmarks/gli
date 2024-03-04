@@ -15,8 +15,6 @@ from torch_geometric.datasets import Planetoid
 
 sys.path.append("../")
 
-
-
 DATASET_W_RAW_TEXT = ["cora", "pubmed", "ogbn-arxiv",
                       "arxiv-2023", "ogbn-products"]
 
@@ -26,7 +24,7 @@ def load_data(dataset, use_text=False, seed=0):
     Load data based on the dataset name.
 
     Parameters:
-        dataset (str): Name of the dataset to be loaded. 
+        dataset (str): Name of the dataset to be loaded.
             Options are "cora", "pubmed", "arxiv", "arxiv_2023", and "product".
         use_text (bool, optional): Whether to use text data. Default is False.
         seed (int, optional): Random seed for data loading. Default is 0.
@@ -37,7 +35,6 @@ def load_data(dataset, use_text=False, seed=0):
     Raises:
         ValueError: If the dataset name is not recognized.
     """
-
     if dataset == "cora":
         data, text = get_raw_text_cora(use_text, seed)
     elif dataset == "pubmed":
@@ -53,15 +50,16 @@ def load_data(dataset, use_text=False, seed=0):
     return data, text
 
 
-################# Ogbn-arxiv #################
+# Ogbn-arxiv
 
 
 def get_raw_text_arxiv(use_text=False):
     """
+    Get raw text data for the ogbn-arxiv dataset.
+
     Reference: https://github.com/XiaoxinHe/TAPE/blob/
     main/core/data_utils/load_arxiv.py
     """
-
     dataset = PygNodePropPredDataset(name="ogbn-arxiv")
     data = dataset[0]
 
@@ -96,7 +94,7 @@ def get_raw_text_arxiv(use_text=False):
 
     # Load the label index to arXiv category mapping data
     label_mapping_path = "dataset/ogbn_arxiv/mapping/"\
-                        "labelidx2arxivcategeory.csv.gz"
+                         "labelidx2arxivcategeory.csv.gz"
     label_mapping_data = pd.read_csv(label_mapping_path)
     label_mapping_data.columns = ["label_idx", "arxiv_category"]
 
@@ -105,19 +103,20 @@ def get_raw_text_arxiv(use_text=False):
             label_mapping_data["label_idx"].isin(data.y[i].numpy())]
         # If the row doesn"t exist, return a message indicating this
         if len(row) == 0:
-            raise ValueError("No matching arXiv category found for this label.")
+            raise ValueError("No matching arXiv category for this label.")
 
         # Parse the arXiv category string to be in the desired format "cs.XX"
         arxiv_category = "cs." + row["arxiv_category"]\
-                        .values[0].split()[-1].upper()
+                         .values[0].split()[-1].upper()
         text["label"].append(arxiv_category)
 
     return data, text
 
 
 def generate_arxiv_keys_list():
+    """Return a list of arXiv categories."""
     label_mapping_path = "dataset/ogbn_arxiv/mapping/"\
-                        "labelidx2arxivcategeory.csv.gz"
+                         "labelidx2arxivcategeory.csv.gz"
     label_mapping_data = pd.read_csv(label_mapping_path, compression="gzip")
     label_mapping_data.columns = ["label_idx", "arxiv_category"]
     arxiv_categories = label_mapping_data["arxiv_category"].unique()
@@ -125,10 +124,11 @@ def generate_arxiv_keys_list():
             for category in arxiv_categories]
 
 
+# Arxiv-2023
 
-################# Arxiv-2023 #################
 
 def get_raw_text_arxiv_2023(use_text=True, base_path="dataset/arxiv_2023"):
+    """Return data and text for arxiv_2023 dataset."""
     # Load processed data
     edge_index = torch.load(os.path.join(base_path,
                                          "processed", "edge_index.pt"))
@@ -136,7 +136,7 @@ def get_raw_text_arxiv_2023(use_text=True, base_path="dataset/arxiv_2023"):
     titles_df = pd.read_csv(os.path.join(base_path,
                             "raw", "titles.csv.gz"), compression="gzip")
     abstracts_df = pd.read_csv(os.path.join(base_path,
-                                "raw", "abstracts.csv.gz"), compression="gzip")
+                               "raw", "abstracts.csv.gz"), compression="gzip")
     ids_df = pd.read_csv(os.path.join(base_path, "raw", "ids.csv.gz"),
                          compression="gzip")
     labels_df = pd.read_csv(os.path.join(base_path, "raw", "labels.csv.gz"),
@@ -189,7 +189,8 @@ def get_raw_text_arxiv_2023(use_text=True, base_path="dataset/arxiv_2023"):
 
     return data, text
 
-################# Cora #################
+# Cora
+
 
 cora_mapping = {
     0: "Case Based",
@@ -201,12 +202,15 @@ cora_mapping = {
     6: "Theory"
 }
 
+
 def get_cora_casestudy(seed=0):
     """
+    Get raw text data for the cora dataset.
+
     Reference: https://github.com/XiaoxinHe/TAPE/blob/main/
     core/data_utils/load_cora.py
     """
-    data_x, data_y, data_citeid, data_edges = parse_cora()
+    (data_x, data_y, data_citeid, data_edges) = parse_cora()
     # data_x = sklearn.preprocessing.normalize(data_x, norm="l1")
 
     torch.manual_seed(seed)
@@ -245,8 +249,10 @@ def get_cora_casestudy(seed=0):
 
     return data, data_citeid
 
+
 # credit: https://github.com/tkipf/pygcn/issues/27, xuhaiyun
 def parse_cora():
+    """Parse the cora dataset."""
     path = "cora_raw/cora"
     idx_features_labels = np.genfromtxt(
         f"{path}.content", dtype=np.dtype(str))
@@ -259,20 +265,24 @@ def parse_cora():
                                              "Reinforcement_Learning",
                                              "Rule_Learning",
                                              "Theory"])}
-    data_y = np.array([class_map[l] for l in labels])
+    data_y = np.array([class_map[lb] for lb in labels])
     data_citeid = idx_features_labels[:, 0]
     idx = np.array(data_citeid, dtype=np.dtype(str))
     idx_map = {j: i for i, j in enumerate(idx)}
     edges_unordered = np.genfromtxt(
         f"{path}.cites", dtype=np.dtype(str))
-    edges = np.array(list(map(idx_map.get, edges_unordered.flatten()))).reshape(
-        edges_unordered.shape)
+    edges = np.array(list(map(idx_map.get, edges_unordered.flatten())))\
+        .reshape(edges_unordered.shape)
     data_edges = np.array(edges[~(edges is None).max(1)], dtype="int")
     data_edges = np.vstack((data_edges, np.fliplr(data_edges)))
-    return data_x, data_y, data_citeid, \
-           np.unique(data_edges, axis=0).transpose()
+    return (data_x,
+            data_y,
+            data_citeid,
+            np.unique(data_edges, axis=0).transpose())
+
 
 def get_raw_text_cora(use_text=False, seed=0):
+    """Return data and text for cora dataset."""
     data, data_citeid = get_cora_casestudy(seed)
     if not use_text:
         return data, None
@@ -317,22 +327,22 @@ def get_raw_text_cora(use_text=False, seed=0):
     return data, text
 
 
-################# Ogbn-product #################
+# Ogbn-product
 
-
-
-def get_raw_dataset(raw_train="dataset/ogbn_products/Amazon-3M.raw/trn.json.gz",
-                    raw_test="dataset/ogbn_products/"\
+def get_raw_dataset(raw_train="dataset/ogbn_products/Amazon-3M.raw/"
+                              "trn.json.gz",
+                    raw_test="dataset/ogbn_products/"
                              "Amazon-3M.raw/tst.json.gz",
-                    label2cat="dataset/ogbn_products/mapping/"\
+                    label2cat="dataset/ogbn_products/mapping/"
                               "labelidx2productcategory.csv.gz",
-                    idx2asin="dataset/ogbn_products/mapping/"\
+                    idx2asin="dataset/ogbn_products/mapping/"
                              "nodeidx2asin.csv.gz"):
     """
+    Get raw dataset for the ogbn-products dataset.
+
     mapping references:
     https://github.com/CurryTang/Graph-LLM/blob/master/utils.py
     """
-
     train_part = load_dataset("json", data_files=raw_train)
     test_part = load_dataset("json", data_files=raw_test)
     train_df = train_part["train"].to_pandas()
@@ -349,7 +359,9 @@ def get_raw_dataset(raw_train="dataset/ogbn_products/Amazon-3M.raw/trn.json.gz",
 
     return idx_mapping, content_mapping, label_mapping
 
+
 def get_raw_text_products(use_text=False):
+    """Return data and text for the ogbn-products dataset."""
     dataset = PygNodePropPredDataset(name="ogbn-products")
     data = dataset[0]
 
@@ -390,63 +402,57 @@ def get_raw_text_products(use_text=False):
 
 
 products_mapping = {"Home & Kitchen": "Home & Kitchen",
-        "Health & Personal Care": "Health & Personal Care",
-        "Beauty": "Beauty",
-        "Sports & Outdoors": "Sports & Outdoors",
-        "Books": "Books",
-        "Patio, Lawn & Garden": "Patio, Lawn & Garden",
-        "Toys & Games": "Toys & Games",
-        "CDs & Vinyl": "CDs & Vinyl",
-        "Cell Phones & Accessories": "Cell Phones & Accessories",
-        "Grocery & Gourmet Food": "Grocery & Gourmet Food",
-        "Arts, Crafts & Sewing": "Arts, Crafts & Sewing",
-        "Clothing, Shoes & Jewelry": "Clothing, Shoes & Jewelry",
-        "Electronics": "Electronics",
-        "Movies & TV": "Movies & TV",
-        "Software": "Software",
-        "Video Games": "Video Games",
-        "Automotive": "Automotive",
-        "Pet Supplies": "Pet Supplies",
-        "Office Products": "Office Products",
-        "Industrial & Scientific": "Industrial & Scientific",
-        "Musical Instruments": "Musical Instruments",
-        "Tools & Home Improvement": "Tools & Home Improvement",
-        "Magazine Subscriptions": "Magazine Subscriptions",
-        "Baby Products": "Baby Products",
-        "label 25": "label 25",
-        "Appliances": "Appliances",
-        "Kitchen & Dining": "Kitchen & Dining",
-        "Collectibles & Fine Art": "Collectibles & Fine Art",
-        "All Beauty": "All Beauty",
-        "Luxury Beauty": "Luxury Beauty",
-        "Amazon Fashion": "Amazon Fashion",
-        "Computers": "Computers",
-        "All Electronics": "All Electronics",
-        "Purchase Circles": "Purchase Circles",
-        "MP3 Players & Accessories": "MP3 Players & Accessories",
-        "Gift Cards": "Gift Cards",
-        "Office & School Supplies": "Office & School Supplies",
-        "Home Improvement": "Home Improvement",
-        "Camera & Photo": "Camera & Photo",
-        "GPS & Navigation": "GPS & Navigation",
-        "Digital Music": "Digital Music",
-        "Car Electronics": "Car Electronics",
-        "Baby": "Baby",
-        "Kindle Store": "Kindle Store",
-        "Buy a Kindle": "Buy a Kindle",
-        "Furniture & D&#233;cor": "Furniture & Decor",
-        "#508510": "#508510"}
+                    "Health & Personal Care": "Health & Personal Care",
+                    "Beauty": "Beauty",
+                    "Sports & Outdoors": "Sports & Outdoors",
+                    "Books": "Books",
+                    "Patio, Lawn & Garden": "Patio, Lawn & Garden",
+                    "Toys & Games": "Toys & Games",
+                    "CDs & Vinyl": "CDs & Vinyl",
+                    "Cell Phones & Accessories": "Cell Phones & Accessories",
+                    "Grocery & Gourmet Food": "Grocery & Gourmet Food",
+                    "Arts, Crafts & Sewing": "Arts, Crafts & Sewing",
+                    "Clothing, Shoes & Jewelry": "Clothing, Shoes & Jewelry",
+                    "Electronics": "Electronics",
+                    "Movies & TV": "Movies & TV",
+                    "Software": "Software",
+                    "Video Games": "Video Games",
+                    "Automotive": "Automotive",
+                    "Pet Supplies": "Pet Supplies",
+                    "Office Products": "Office Products",
+                    "Industrial & Scientific": "Industrial & Scientific",
+                    "Musical Instruments": "Musical Instruments",
+                    "Tools & Home Improvement": "Tools & Home Improvement",
+                    "Magazine Subscriptions": "Magazine Subscriptions",
+                    "Baby Products": "Baby Products",
+                    "label 25": "label 25",
+                    "Appliances": "Appliances",
+                    "Kitchen & Dining": "Kitchen & Dining",
+                    "Collectibles & Fine Art": "Collectibles & Fine Art",
+                    "All Beauty": "All Beauty",
+                    "Luxury Beauty": "Luxury Beauty",
+                    "Amazon Fashion": "Amazon Fashion",
+                    "Computers": "Computers",
+                    "All Electronics": "All Electronics",
+                    "Purchase Circles": "Purchase Circles",
+                    "MP3 Players & Accessories": "MP3 Players & Accessories",
+                    "Gift Cards": "Gift Cards",
+                    "Office & School Supplies": "Office & School Supplies",
+                    "Home Improvement": "Home Improvement",
+                    "Camera & Photo": "Camera & Photo",
+                    "GPS & Navigation": "GPS & Navigation",
+                    "Digital Music": "Digital Music",
+                    "Car Electronics": "Car Electronics",
+                    "Baby": "Baby",
+                    "Kindle Store": "Kindle Store",
+                    "Buy a Kindle": "Buy a Kindle",
+                    "Furniture & D&#233;cor": "Furniture & Decor",
+                    "#508510": "#508510"}
 
 products_keys_list = list(products_mapping.keys())
 
 
-
-################# Pubmed #################
-
-"""
-Reference: https://github.com/XiaoxinHe/TAPE/blob/main/core/
-data_utils/load_pubmed.py
-"""
+# Pubmed
 
 pubmed_mapping = {
     0: "Experimentally induced diabetes",
@@ -454,8 +460,15 @@ pubmed_mapping = {
     2: "Type 2 diabetes",
 }
 
+
 def get_pubmed_casestudy(corrected=False, seed=0):
-    _, data_x, data_y, data_pubid, data_edges = parse_pubmed()
+    """
+    Get raw text data for the pubmed dataset.
+
+    Reference: https://github.com/XiaoxinHe/TAPE/blob/main/core/
+    data_utils/load_pubmed.py
+    """
+    (_, data_x, data_y, data_pubid, data_edges) = parse_pubmed()
     data_x = normalize(data_x, norm="l1")
 
     torch.manual_seed(seed)
@@ -503,6 +516,7 @@ def get_pubmed_casestudy(corrected=False, seed=0):
 
 
 def parse_pubmed():
+    """Parse the pubmed dataset."""
     path = "dataset/PubMed/data/"
 
     n_nodes = 19717
@@ -517,8 +531,8 @@ def parse_pubmed():
     feature_to_index = {}
 
     # parse nodes
-    with open(path + "Pubmed-Diabetes.NODE.paper.tab", "r", encoding="UTF-8")\
-        as node_file:
+    with open(path + "Pubmed-Diabetes.NODE.paper.tab",
+              "r", encoding="UTF-8") as node_file:
         # first two lines are headers
         node_file.readline()
         node_file.readline()
@@ -575,11 +589,15 @@ def parse_pubmed():
                 data_edges.append(
                     (paper_to_index[tail], paper_to_index[head]))
 
-    return data_a, data_x, data_y, data_pubid,\
-           np.unique(data_edges, axis=0).transpose()
+    return (data_a,
+            data_x,
+            data_y,
+            data_pubid,
+            np.unique(data_edges, axis=0).transpose())
 
 
 def get_raw_text_pubmed(use_text=False, seed=0):
+    """Return the data and text for the pubmed dataset."""
     data, _ = get_pubmed_casestudy(seed=seed)
     if not use_text:
         return data, None
