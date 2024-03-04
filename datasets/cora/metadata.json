@@ -29,7 +29,7 @@
         },
         "RawText": {
             "NodeRawText": {
-                "description": "Raw text of title, abstract and label of each node in Cora dataset, string.",
+                "description": "Raw text of title, abstract and label of each node in Cora dataset, dict of list of strings.",
                 "type": "Dict",
                 "format": "Dict[str, list[str]]",
                 "optional file": "cora__graph__835178b65ba8cfdfb9c91f33c6260506.optional.npz",

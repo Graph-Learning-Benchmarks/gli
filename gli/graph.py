@@ -177,6 +177,9 @@ def _get_homograph(data, load_raw_text=False):
         g.edata[attr] = _to_tensor(array)
 
     if load_raw_text:
+        assert "RawText" in data, "RawText is not found in the data,"\
+                                  " please verify that the dataset "\
+                                  "contains raw text."
         for attr, raw_text_dict in data["RawText"].items():
             setattr(g, attr, raw_text_dict)
 

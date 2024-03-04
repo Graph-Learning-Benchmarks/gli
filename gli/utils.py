@@ -309,7 +309,6 @@ def _get_url_from_server(data_file: str):
     resp = requests.request("GET",
                             f"{SERVER_IP}/api/get-url/{data_file}",
                             timeout=5)
-    print(resp.url)
     resp = resp.json()
     if resp["message_type"] == "error":
         return None

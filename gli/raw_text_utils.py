@@ -273,7 +273,11 @@ def parse_cora():
         f"{path}.cites", dtype=np.dtype(str))
     edges = np.array(list(map(idx_map.get, edges_unordered.flatten())))\
         .reshape(edges_unordered.shape)
-    data_edges = np.array(edges[~(edges is None).max(1)], dtype="int")
+    # data_edges = np.array(edges[~(edges == None).max(1)], dtype="int")
+    # edges = np.where(edges == None, np.nan, edges)
+    edges = np.array([[np.nan if x is None else x for x in row]
+                      for row in edges])
+    data_edges = np.array(edges[~np.isnan(edges).any(1)], dtype="int")
     data_edges = np.vstack((data_edges, np.fliplr(data_edges)))
     return (data_x,
             data_y,
