@@ -55,8 +55,12 @@ class Attribute(object):
         else:
             raise TypeError("The input data must be a scipy sparse array "
                             "or numpy array.")
-
-        self.num_data = len(data) if self.format == "Tensor" else data.shape[0]
+        if self.format == "Tensor":
+            self.num_data = len(data)
+        elif self.format == "Dict[str, list[str]]":
+            self.num_data = None
+        else:
+            self.num_data = data.shape[0]
 
     def get_metadata_dict(self):
         """Return the metadata dictionary of the attribute."""
@@ -102,6 +106,7 @@ def save_graph(
     graph_node_list: Optional[spmatrix] = None,
     graph_edge_list: Optional[spmatrix] = None,
     graph_attrs: Optional[List[Attribute]] = None,
+    raw_text_attrs: Optional[List[Attribute]] = None,
     is_hetero: bool = False,
     description: str = "",
     cite: str = "",
@@ -117,7 +122,7 @@ def save_graph(
     if not is_hetero:
         return save_homograph(name, edge, num_nodes, node_attrs, edge_attrs,
                               graph_node_list, graph_edge_list, graph_attrs,
-                              description, cite, save_dir)
+                              raw_text_attrs, description, cite, save_dir)
     # verify the inputs are dict for heterograph
     if not isinstance(edge, dict):
         raise TypeError("The input edge must be a dictionary for heterograph.")
@@ -144,6 +149,7 @@ def save_homograph(
     graph_node_list: Optional[spmatrix] = None,
     graph_edge_list: Optional[spmatrix] = None,
     graph_attrs: Optional[List[Attribute]] = None,
+    raw_text_attrs: Optional[List[Attribute]] = None,
     description: str = "",
     citation: str = "",
     save_dir: str = ".",
@@ -178,6 +184,8 @@ def save_homograph(
     :type graph_edge_list: (sparse) array, optional
     :param graph_attrs: A list of attributes of the graphs, defaults to None.
     :type graph_attrs: list of Attribute, optional
+    :param raw_text: A list of raw text data, defaults to None.8
+    :type raw_text: dict, optional
     :param description: The description of the dataset, defaults to "".
     :type description: str, optional
     :param citation: The citation of the dataset, defaults to "".
@@ -190,6 +198,7 @@ def save_homograph(
     :rtype: dict
 
     Example
+    TODO: update this code example for raw_text
     -------
     .. code-block:: python
 
@@ -270,6 +279,8 @@ def save_homograph(
         edge_attrs = []
     if graph_attrs is None:
         graph_attrs = []
+    if raw_text_attrs is None:
+        raw_text_attrs = []
 
     # Check the length of node/edge/graph attrs.
     _verify_attrs(node_attrs, "node")
@@ -316,9 +327,14 @@ def save_homograph(
         assert g.name not in ("NodeList", "EdgeList"), \
             "The name of a graph attribute cannot be 'NodeList' or 'EdgeList'."
         data[f"Graph_{g.name}"] = g.data
+    if raw_text_attrs is not None:
+        for r in raw_text_attrs:
+            data[f"RawText_{r.name}"] = r.data
 
     # Call save_data().
     key_to_loc = save_data(f"{name}__graph", save_dir=save_dir, **data)
+
+    print(f"{key_to_loc = }")
 
     # Create the metadata dict.
     metadata = {"description": description, "data": {}}
@@ -342,6 +358,13 @@ def save_homograph(
     for g in graph_attrs:
         graph_dict[g.name] = _attr_to_metadata_dict(key_to_loc, "Graph", g)
     metadata["data"]["Graph"] = graph_dict
+
+    # Add the metadata of the raw text
+    raw_text_dict = {}
+    for r in raw_text_attrs:
+        print(f"{r.name = }")
+        raw_text_dict[r.name] = _attr_to_metadata_dict(key_to_loc, "RawText", r)
+    metadata["data"]["RawText"] = raw_text_dict
 
     metadata["citation"] = citation
     metadata["is_heterogeneous"] = False

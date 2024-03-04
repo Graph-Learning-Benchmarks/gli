@@ -26,6 +26,15 @@
             "_NodeList": {
                 "file": "cora__graph__Graph_NodeList__23bbef862fd6037395412eb03b4e1d9c.sparse.npz"
             }
+        },
+        "RawText": {
+            "NodeRawText": {
+                "description": "Raw text of title, abstract and label of each node in Cora dataset, string.",
+                "type": "Dict",
+                "format": "Dict[str, list[str]]",
+                "optional file": "cora__graph__835178b65ba8cfdfb9c91f33c6260506.optional.npz",
+                "key": "RawText_NodeRawText"
+            }
         }
     },
     "citation": "@inproceedings{yang2016revisiting,\ntitle={Revisiting semi-supervised learning with graph embeddings},\nauthor={Yang, Zhilin and Cohen, William and Salakhudinov, Ruslan},\nbooktitle={International conference on machine learning},\npages={40--48},\nyear={2016},\norganization={PMLR}\n}",

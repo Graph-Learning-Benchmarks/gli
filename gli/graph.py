@@ -16,7 +16,8 @@ from tqdm import tqdm
 from .utils import sparse_to_torch, load_data
 
 
-def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
+def read_gli_graph(metadata_path: os.PathLike, device="cpu",
+                   load_raw_text=False, verbose=True):
     """Read a local `metadata.json` file and return a (or a list of) graph(s).
 
     :func:`gli.graph.read_gli_graph` reads a graph or a list of graphs
@@ -64,10 +65,12 @@ def read_gli_graph(metadata_path: os.PathLike, device="cpu", verbose=True):
             "data"], f"attribute `{neg}` not in metadata.json"
 
     data = copy(metadata["data"])
-    data = _dfs_read_file(pwd, data, device="cpu")
+    data = _dfs_read_file(pwd, data, device="cpu",
+                          load_raw_text=load_raw_text)
 
     if _is_single_graph(data):
-        return _get_single_graph(data, device, hetero=hetero, name=name)
+        return _get_single_graph(data, device, hetero=hetero,
+                                 name=name, load_raw_text=load_raw_text)
     else:
         return _get_multi_graph(data, device, name=name)
 
@@ -102,12 +105,13 @@ def _to_tensor(x, device="cpu"):
     return x
 
 
-def _get_single_graph(data, device="cpu", hetero=False, name=None):
+def _get_single_graph(data, device="cpu", hetero=False,
+                      name=None, load_raw_text=False):
     """Initialize and return a single Graph instance given data."""
     if hetero:
         g = _get_heterograph(data)
     else:
-        g = _get_homograph(data)
+        g = _get_homograph(data, load_raw_text=load_raw_text)
 
     setattr(g, "name", name)
     return g.to(device=device)
@@ -154,7 +158,7 @@ def _get_multi_graph(data, device="cpu", name=None):
     return graphs
 
 
-def _get_homograph(data):
+def _get_homograph(data, load_raw_text=False):
     """Get a homogeneous graph from data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
@@ -171,6 +175,11 @@ def _get_homograph(data):
 
     for attr, array in data["Edge"].items():
         g.edata[attr] = _to_tensor(array)
+
+    if load_raw_text:
+        for attr, raw_text_dict in data["RawText"].items():
+            setattr(g, attr, raw_text_dict)
+
     return g
 
 
@@ -245,20 +254,25 @@ def _dict_depth(d):
     return 0
 
 
-def _dfs_read_file(pwd, d, device="cpu"):
+def _dfs_read_file(pwd, d, device="cpu", load_raw_text=False):
     """Read file efficiently."""
-    return _dfs_read_file_helper(pwd, d, device)
+    return _dfs_read_file_helper(pwd, d, device, load_raw_text)
 
 
-def _dfs_read_file_helper(pwd, d, device="cpu"):
+def _dfs_read_file_helper(pwd, d, device="cpu", load_raw_text=False):
     """Read file recursively (helper of `_dfs_read_file`)."""
-    if "file" in d:
-        path = os.path.join(pwd, d["file"])
-        return load_data(path, d.get("key"), device)
+    if "file" in d or "optional file" in d:
+        if "file" in d:
+            path = os.path.join(pwd, d["file"])
+        else:
+            path = os.path.join(pwd, d["optional file"])
+        return load_data(path, d.get("key"), device, load_raw_text)
 
     empty_keys = []
     for k in d:
-        entry = _dfs_read_file_helper(pwd, d[k], device=device)
+        entry = _dfs_read_file_helper(pwd, d[k],
+                                      load_raw_text=load_raw_text,
+                                      device=device)
         if entry is None:
             empty_keys.append(k)
         else:

@@ -182,7 +182,7 @@ def download_file_from_google_drive(g_url: str,
         print(f"Successfully downloaded {filename} to {root} from {g_url}.")
 
 
-def load_data(path, key=None, device="cpu"):
+def load_data(path, key=None, device="cpu", load_raw_text=False):
     """Load data from npy or npz file, return sparse array or torch tensor.
 
     Parameters
@@ -211,6 +211,15 @@ def load_data(path, key=None, device="cpu"):
         # Sparse matrix
         assert key is None, "Sparse format cannot contain key."
         return sp.load_npz(path)
+
+    if path.endswith(".optional.npz"):
+        # For raw text, which is saved as a dict
+        if load_raw_text:
+            a = np.load(path, allow_pickle=True)
+            d = {k: a[k].item() for k in a.files}
+            return d
+        else:
+            return None
 
     # Dense arrays file with a key
     raw = np.load(path, allow_pickle=False)
@@ -261,7 +270,7 @@ def sparse_to_torch(sparse_array: sp.spmatrix,
             raise TypeError(f"Unsupported sparse type {sparse_type}")
 
 
-def _find_data_files_from_json_files(data_dir):
+def _find_data_files_from_json_files(data_dir, load_raw_text):
     """Traverse json files under dataset path and find dependent data files."""
     json_files = []
     for file in os.listdir(data_dir):
@@ -273,7 +282,7 @@ def _find_data_files_from_json_files(data_dir):
         data_files = []
         if isinstance(data, dict):
             for key, value in data.items():
-                if key == "file":
+                if key == "file" or (key == "optional file" and load_raw_text):
                     data_files.append(value)
                 else:
                     data_files.extend(_find_data_files_helper(value))
@@ -310,11 +319,12 @@ def _get_url_from_server(data_file: str):
         return None
 
 
-def download_data(dataset: str, verbose=False):
+def download_data(dataset: str, load_raw_text=False, verbose=False):
     """Download dependent data of a configuration (metadata/task) file.
 
     Args:
         dataset (str): Name of dataset.
+        load_raw_text (bool, optional): Defaults to False.
         verbose (bool, optional): Defaults to False.
     """
     data_dir = os.path.join(get_local_data_dir(), dataset)
@@ -322,7 +332,7 @@ def download_data(dataset: str, verbose=False):
         raise FileNotFoundError(f"cannot find dataset {dataset}.")
 
     # Get all required dependent data files from json files.
-    data_files = _find_data_files_from_json_files(data_dir)
+    data_files = _find_data_files_from_json_files(data_dir, load_raw_text)
     exist_all_files = True
     for data_file_name in data_files:
         data_file_path = os.path.join(data_dir, data_file_name)
@@ -531,8 +541,11 @@ def save_data(prefix, save_dir=".", **kwargs):
     """
     dense_arrays = {}
     sparse_arrays = {}
+    dict_array = {}
     for key, matrix in kwargs.items():
-        if sp.issparse(matrix):
+        if isinstance(matrix, dict):
+            dict_array[key] = matrix
+        elif sp.issparse(matrix):
             sparse_arrays[key] = matrix
         elif isinstance(matrix, np.ndarray):
             dense_arrays[key] = matrix
@@ -551,6 +564,21 @@ def save_data(prefix, save_dir=".", **kwargs):
     def _dir(filename):
         """Prepend save_dir to the file."""
         return os.path.join(save_dir, filename)
+
+    # Save dict with raw text to "optional file"
+    if dict_array:
+        np.savez_compressed(_dir(f"{prefix}.optional.npz"), **dict_array)
+        with open(_dir(f"{prefix}.optional.npz"), "rb") as f:
+            md5 = hashlib.md5(f.read()).hexdigest()
+        os.rename(_dir(f"{prefix}.optional.npz"),
+                  _dir(f"{prefix}__{md5}.optional.npz"))
+        key_to_loc.update({
+            key: {
+                "optional file": f"{prefix}__{md5}.optional.npz",
+                "key": key
+            }
+            for key in dict_array
+        })
 
     # Save numpy arrays into a single file
     np.savez_compressed(_dir(f"{prefix}.npz"), **dense_arrays)
