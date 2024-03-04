@@ -334,8 +334,6 @@ def save_homograph(
     # Call save_data().
     key_to_loc = save_data(f"{name}__graph", save_dir=save_dir, **data)
 
-    print(f"{key_to_loc = }")
-
     # Create the metadata dict.
     metadata = {"description": description, "data": {}}
 
@@ -362,7 +360,6 @@ def save_homograph(
     # Add the metadata of the raw text
     raw_text_dict = {}
     for r in raw_text_attrs:
-        print(f"{r.name = }")
         raw_text_dict[r.name] = _attr_to_metadata_dict(key_to_loc,
                                                        "RawText", r)
     metadata["data"]["RawText"] = raw_text_dict
