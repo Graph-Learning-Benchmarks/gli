@@ -69,8 +69,7 @@ def read_gli_graph(metadata_path: os.PathLike, device="cpu",
                           load_raw_text=load_raw_text)
 
     if _is_single_graph(data):
-        return _get_single_graph(data, device, hetero=hetero,
-                                 name=name, load_raw_text=load_raw_text)
+        return _get_single_graph(data, device, hetero=hetero, name=name)
     else:
         return _get_multi_graph(data, device, name=name)
 
@@ -106,12 +105,12 @@ def _to_tensor(x, device="cpu"):
 
 
 def _get_single_graph(data, device="cpu", hetero=False,
-                      name=None, load_raw_text=False):
+                      name=None):
     """Initialize and return a single Graph instance given data."""
     if hetero:
         g = _get_heterograph(data)
     else:
-        g = _get_homograph(data, load_raw_text=load_raw_text)
+        g = _get_homograph(data)
 
     setattr(g, "name", name)
     return g.to(device=device)
@@ -158,7 +157,7 @@ def _get_multi_graph(data, device="cpu", name=None):
     return graphs
 
 
-def _get_homograph(data, load_raw_text=False):
+def _get_homograph(data):
     """Get a homogeneous graph from data."""
     edges = data["Edge"].pop("_Edge")  # (num_edges, 2)
     src_nodes, dst_nodes = edges.T[0], edges.T[1]
@@ -171,17 +170,15 @@ def _get_homograph(data, load_raw_text=False):
                                 device="cpu")
 
     for attr, array in data["Node"].items():
-        g.ndata[attr] = _to_tensor(array)
+        if "RawText" not in attr:
+            g.ndata[attr] = _to_tensor(array)
+        else:
+            # For any raw text attributes as list of strings,
+            # store them as a attribute of the graph object.
+            setattr(g, attr, array)
 
     for attr, array in data["Edge"].items():
         g.edata[attr] = _to_tensor(array)
-
-    if load_raw_text:
-        assert "RawText" in data, "RawText is not found in the data,"\
-                                  " please verify that the dataset "\
-                                  "contains raw text."
-        for attr, raw_text_dict in data["RawText"].items():
-            setattr(g, attr, raw_text_dict)
 
     return g
 

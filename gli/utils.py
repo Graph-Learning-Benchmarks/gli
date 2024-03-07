@@ -213,11 +213,10 @@ def load_data(path, key=None, device="cpu", load_raw_text=False):
         return sp.load_npz(path)
 
     if path.endswith(".optional.npz"):
-        # For raw text, which is saved as a dict
         if load_raw_text:
-            a = np.load(path, allow_pickle=True)
-            d = {k: a[k].item() for k in a.files}
-            return d
+            loaded_data = np.load(path, allow_pickle=True)
+            loaded_list = loaded_data["arr_0"]
+            return loaded_list
         else:
             return None
 
@@ -540,10 +539,10 @@ def save_data(prefix, save_dir=".", **kwargs):
     """
     dense_arrays = {}
     sparse_arrays = {}
-    dict_array = {}
+    list_arrays = {}
     for key, matrix in kwargs.items():
-        if isinstance(matrix, dict):
-            dict_array[key] = matrix
+        if isinstance(matrix, list):
+            list_arrays[key] = matrix
         elif sp.issparse(matrix):
             sparse_arrays[key] = matrix
         elif isinstance(matrix, np.ndarray):
@@ -565,19 +564,18 @@ def save_data(prefix, save_dir=".", **kwargs):
         return os.path.join(save_dir, filename)
 
     # Save dict with raw text to "optional file"
-    if dict_array:
-        np.savez_compressed(_dir(f"{prefix}.optional.npz"), **dict_array)
-        with open(_dir(f"{prefix}.optional.npz"), "rb") as f:
-            md5 = hashlib.md5(f.read()).hexdigest()
-        os.rename(_dir(f"{prefix}.optional.npz"),
-                  _dir(f"{prefix}__{md5}.optional.npz"))
-        key_to_loc.update({
-            key: {
-                "optional file": f"{prefix}__{md5}.optional.npz",
+    if list_arrays:
+        for key, list_ in list_arrays.items():
+            array_ = np.array(list_, dtype=str)
+            np.savez_compressed(_dir(f"{prefix}__{key}.optional.npz"), array_)
+            with open(_dir(f"{prefix}__{key}.optional.npz"), "rb") as f:
+                md5 = hashlib.md5(f.read()).hexdigest()
+            os.rename(_dir(f"{prefix}__{key}.optional.npz"),
+                      _dir(f"{prefix}__{key}__{md5}.optional.npz"))
+            key_to_loc[key] = {
+                "optional file": f"{prefix}__{key}__{md5}.optional.npz",
                 "key": key
             }
-            for key in dict_array
-        })
 
     # Save numpy arrays into a single file
     np.savez_compressed(_dir(f"{prefix}.npz"), **dense_arrays)

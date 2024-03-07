@@ -14,6 +14,27 @@
                 "format": "Tensor",
                 "file": "cora__graph__6c912909fa18eff10797210ea5e485fe.npz",
                 "key": "Node_NodeLabel"
+            },
+            "NodeRawTextTitle": {
+                "description": "Raw text of title of each node in Cora dataset, list of strings.",
+                "type": "str",
+                "format": "List[str]",
+                "optional file": "cora__graph__Node_NodeRawTextTitle__4a9ad6575f5acfe3b828fe66f072bd5c.optional.npz",
+                "key": "Node_NodeRawTextTitle"
+            },
+            "NodeRawTextAbstract": {
+                "description": "Raw text of abstract of each node in Cora dataset, list of strings.",
+                "type": "str",
+                "format": "List[str]",
+                "optional file": "cora__graph__Node_NodeRawTextAbstract__d0e5436087314624c74a9f040d6f394f.optional.npz",
+                "key": "Node_NodeRawTextAbstract"
+            },
+            "NodeRawTextLabel": {
+                "description": "Raw text of label of each node in Cora dataset, list of strings.",
+                "type": "str",
+                "format": "List[str]",
+                "optional file": "cora__graph__Node_NodeRawTextLabel__06d184316789acc0902db2b8c1472f95.optional.npz",
+                "key": "Node_NodeRawTextLabel"
             }
         },
         "Edge": {
@@ -25,15 +46,6 @@
         "Graph": {
             "_NodeList": {
                 "file": "cora__graph__Graph_NodeList__23bbef862fd6037395412eb03b4e1d9c.sparse.npz"
-            }
-        },
-        "RawText": {
-            "NodeRawText": {
-                "description": "Raw text of title, abstract and label of each node in Cora dataset, dict of list of strings.",
-                "type": "Dict",
-                "format": "Dict[str, list[str]]",
-                "optional file": "cora__graph__835178b65ba8cfdfb9c91f33c6260506.optional.npz",
-                "key": "RawText_NodeRawText"
             }
         }
     },
