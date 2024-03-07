@@ -22,15 +22,16 @@ optional-dependencies = { test = [
     "pytest",
     "pydocstyle",
     "pycodestyle",
-    "pylint",
+    "pylint",pydantic
     "pyyaml",
     "pre-commit",
 ], doc = [
     "sphinx",
     "sphinx-rtd-theme",
     "sphinx_copybutton",
+    "pylint",pydantic
     "pandas",
-    "PyYAML"
+    "pyyaml"
 ], tag = [
     "powerlaw",
 ] }
