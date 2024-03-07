@@ -49,6 +49,11 @@ def check_essential_keys_metadata_json_homogeneous(dic):
                         # Scipy sparse file only stores one array
                         # No `key` is needed.
                         continue
+                elif sub_key == "file":
+                    alt_key = "optional file"
+                    if dic["data"]["Node"][key].get(alt_key, None)\
+                       is not None:
+                        continue
                 missing_keys.append("data: Node: " + key + ": " + sub_key)
 
     for sup_key in ["Edge", "Graph"]:

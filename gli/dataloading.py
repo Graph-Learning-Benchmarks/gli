@@ -50,6 +50,7 @@ def get_gli_dataset(dataset: str,
                     task: str,
                     task_id: int = 1,
                     device: str = "cpu",
+                    load_raw_text: bool = False,
                     verbose: bool = False) -> DGLDataset:
     """Get a graph dataset given dataset name and task config.
 
@@ -61,6 +62,8 @@ def get_gli_dataset(dataset: str,
     :type task_id: int, optional.
     :param device: device name, defaults to "cpu".
     :type device: str, optional
+    :param load_raw_text: whether to load raw text data, defaults to False.
+    :type load_raw_text: bool, optional
     :param verbose: verbose level, defaults to False.
     :type verbose: bool, optional
 
@@ -86,13 +89,15 @@ def get_gli_dataset(dataset: str,
         >>> d.name
         'CORA dataset. NodeClassification'
     """
-    g = get_gli_graph(dataset, device=device, verbose=verbose)
+    g = get_gli_graph(dataset, device=device, load_raw_text=load_raw_text,
+                      verbose=verbose)
     t = get_gli_task(dataset, task, task_id=task_id, verbose=verbose)
     return combine_graph_and_task(g, t)
 
 
 def get_gli_graph(dataset: str,
                   device: str = "cpu",
+                  load_raw_text: bool = False,
                   verbose: bool = False) -> Union[DGLGraph, List[DGLGraph]]:
     """Get one (or a list of) :class:`dgl.DGLGraph` object(s) from GLI repo.
 
@@ -105,6 +110,8 @@ def get_gli_graph(dataset: str,
     :type dataset: str
     :param device: device name, defaults to "cpu".
     :type device: str, optional
+    :param load_raw_text: whether to load raw text data, defaults to False.
+    :type load_raw_text: bool, optional
     :param verbose: verbose level, defaults to False.
     :type verbose: bool, optional
 
@@ -136,9 +143,10 @@ def get_gli_graph(dataset: str,
         raise FileNotFoundError(f"{data_dir} not found.")
     if not os.path.exists(metadata_path):
         raise FileNotFoundError(f"{metadata_path} not found.")
-    download_data(dataset, verbose=verbose)
+    download_data(dataset, load_raw_text=load_raw_text, verbose=verbose)
 
-    return read_gli_graph(metadata_path, device=device, verbose=verbose)
+    return read_gli_graph(metadata_path, device=device,
+                          load_raw_text=load_raw_text, verbose=verbose)
 
 
 def get_gli_task(dataset: str,

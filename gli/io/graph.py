@@ -55,8 +55,12 @@ class Attribute(object):
         else:
             raise TypeError("The input data must be a scipy sparse array "
                             "or numpy array.")
-
-        self.num_data = len(data) if self.format == "Tensor" else data.shape[0]
+        if self.format == "Tensor":
+            self.num_data = len(data)
+        elif self.format == "List[str]":
+            self.num_data = len(data)
+        else:
+            self.num_data = data.shape[0]
 
     def get_metadata_dict(self):
         """Return the metadata dictionary of the attribute."""
@@ -178,6 +182,8 @@ def save_homograph(
     :type graph_edge_list: (sparse) array, optional
     :param graph_attrs: A list of attributes of the graphs, defaults to None.
     :type graph_attrs: list of Attribute, optional
+    :param raw_text: A list of raw text data, defaults to None.8
+    :type raw_text: dict, optional
     :param description: The description of the dataset, defaults to "".
     :type description: str, optional
     :param citation: The citation of the dataset, defaults to "".

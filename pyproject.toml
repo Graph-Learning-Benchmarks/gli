@@ -28,7 +28,10 @@ optional-dependencies = { test = [
 ], doc = [
     "sphinx",
     "sphinx-rtd-theme",
-    "sphinx_copybutton"
+    "sphinx_copybutton",
+    "pydantic",
+    "pandas",
+    "pyyaml"
 ], tag = [
     "powerlaw",
 ] }
