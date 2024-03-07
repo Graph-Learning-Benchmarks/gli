@@ -22,7 +22,7 @@ optional-dependencies = { test = [
     "pytest",
     "pydocstyle",
     "pycodestyle",
-    "pylint",pydantic
+    "pylint",
     "pyyaml",
     "pre-commit",
 ], doc = [
