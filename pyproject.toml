@@ -30,7 +30,7 @@ optional-dependencies = { test = [
     "sphinx-rtd-theme",
     "sphinx_copybutton",
     "pandas",
-    "yaml"
+    "PyYAML"
 ], tag = [
     "powerlaw",
 ] }
