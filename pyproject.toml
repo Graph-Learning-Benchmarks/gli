@@ -29,7 +29,7 @@ optional-dependencies = { test = [
     "sphinx",
     "sphinx-rtd-theme",
     "sphinx_copybutton",
-    "pylint",pydantic
+    "pydantic",
     "pandas",
     "pyyaml"
 ], tag = [
